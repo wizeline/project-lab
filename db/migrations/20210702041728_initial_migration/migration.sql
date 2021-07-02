@@ -1,5 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS unaccent;
 
 -- CreateEnum
 CREATE TYPE "TokenType" AS ENUM ('RESET_PASSWORD');
@@ -98,6 +99,19 @@ CREATE TABLE "Profiles" (
     PRIMARY KEY ("id")
 );
 
+create or replace function searchCol() RETURNS trigger AS
+$$
+begin
+    NEW."searchCol" := unaccent(NEW."firstName" || ' ' || NEW."lastName");
+    return NEW;
+end;
+$$ language plpgsql;
+
+create trigger __200_search_col
+    before insert or update on "Profiles"
+    for each row
+execute procedure searchCol();
+
 -- CreateTable
 CREATE TABLE "ProjectMembers" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -188,7 +202,7 @@ CREATE INDEX "profiles_job_title_id_idx" ON "Profiles"("jobTitleId");
 CREATE INDEX "profiles_location_id_idx" ON "Profiles"("locationId");
 
 -- CreateIndex
-CREATE INDEX "profiles_search_col_idx" ON "Profiles"("searchCol");
+CREATE INDEX "profiles_search_col_idx" ON "Profiles" USING gin ("searchCol" gin_trgm_ops);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "project_members_project_id_profile_id_key" ON "ProjectMembers"("projectId", "profileId");
