@@ -1,3 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- CreateEnum
 CREATE TYPE "TokenType" AS ENUM ('RESET_PASSWORD');
 
@@ -209,7 +212,7 @@ CREATE INDEX "projects_owner_id_idx" ON "Projects"("ownerId");
 CREATE INDEX "projects_status_idx" ON "Projects"("status");
 
 -- CreateIndex
-CREATE INDEX "skills_name_idx" ON "Skills"("name");
+CREATE INDEX "skills_name_idx" ON "Skills" USING gin ("name" gin_trgm_ops);
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
