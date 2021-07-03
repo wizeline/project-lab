@@ -153,6 +153,7 @@ CREATE TABLE "Projects" (
     "demo" TEXT,
     "repoUrl" TEXT,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
+    "vector"     tsvector,
     "status" TEXT DEFAULT E'Draft',
     "positions" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -160,6 +161,19 @@ CREATE TABLE "Projects" (
 
     PRIMARY KEY ("id")
 );
+
+create or replace function vectorCol() RETURNS trigger AS
+$$
+begin
+    NEW."vector" := setweight(to_tsvector(NEW."name"), 'A') || setweight(to_tsvector(concat(NEW."description", ' ', NEW."valueStatement")), 'B');
+    return NEW;
+end;
+$$ language plpgsql;
+
+create trigger __200_vector_col
+    before insert or update on "Projects"
+    for each row
+execute procedure vectorCol();
 
 -- CreateTable
 CREATE TABLE "Skills" (
@@ -224,6 +238,9 @@ CREATE INDEX "projects_owner_id_idx" ON "Projects"("ownerId");
 
 -- CreateIndex
 CREATE INDEX "projects_status_idx" ON "Projects"("status");
+
+-- CreateIndex
+CREATE INDEX "projects_vector_idx" ON "Projects" USING gin ("vector");
 
 -- CreateIndex
 CREATE INDEX "skills_name_idx" ON "Skills" USING gin ("name" gin_trgm_ops);

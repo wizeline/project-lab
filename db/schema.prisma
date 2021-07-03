@@ -148,8 +148,8 @@ model ProjectStatus {
 }
 
 model Projects {
-  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ownerId        String?          @db.Uuid
+  id             String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId        String?                  @db.Uuid
   name           String
   logo           String?
   description    String?
@@ -157,18 +157,20 @@ model Projects {
   target         String?
   demo           String?
   repoUrl        String?
-  isApproved     Boolean          @default(false)
-  status         String?          @default("Draft")
+  vector         Unsupported("tsvector")?
+  isApproved     Boolean                  @default(false)
+  status         String?                  @default("Draft")
   positions      String?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now())
-  profiles       Profiles?        @relation(fields: [ownerId], references: [id])
-  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name])
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @default(now())
+  profiles       Profiles?                @relation(fields: [ownerId], references: [id])
+  projectStatus  ProjectStatus?           @relation(fields: [status], references: [name])
   projectMembers ProjectMembers[]
   projectSkills  ProjectSkills[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
+  @@index([vector], name: "projects_vector_idx")
 }
 
 model Skills {
