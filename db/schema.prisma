@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -41,11 +41,11 @@ model Session {
 }
 
 model Token {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   hashedToken String
-  type        TokenType
+  type        String
   expiresAt   DateTime
   sentTo      String
 
@@ -55,12 +55,8 @@ model Token {
   @@unique([hashedToken, type])
 }
 
-enum TokenType {
-  RESET_PASSWORD
-}
-
 model JobTitles {
-  id               String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id               String     @id @default(uuid())
   name             String?
   nameAbbreviation String?
   createdAt        DateTime   @default(now())
@@ -69,7 +65,7 @@ model JobTitles {
 }
 
 model Locations {
-  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String     @id @default(uuid())
   name      String     @unique
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
@@ -77,9 +73,9 @@ model Locations {
 }
 
 model ProfileSkills {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  profileId   String   @db.Uuid
-  skillId     String   @db.Uuid
+  id          String   @id @default(uuid())
+  profileId   String
+  skillId     String
   proficiency String?
   profiles    Profiles @relation(fields: [profileId], references: [id])
   skills      Skills   @relation(fields: [skillId], references: [id])
@@ -89,14 +85,14 @@ model ProfileSkills {
 }
 
 model Profiles {
-  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id             String           @id @default(uuid())
   email          String           @unique
   firstName      String
   lastName       String
   searchCol      String?
   avatarUrl      String?
-  locationId     String?          @db.Uuid
-  jobTitleId     String?          @db.Uuid
+  locationId     String?
+  jobTitleId     String?
   jobLevelTier   String?
   jobLevelTitle  String?
   department     String?
@@ -116,9 +112,9 @@ model Profiles {
 }
 
 model ProjectMembers {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  projectId String    @db.Uuid
-  profileId String    @db.Uuid
+  id        String    @id @default(uuid())
+  projectId String
+  profileId String
   startDate DateTime?
   endDate   DateTime?
   role      String?
@@ -132,9 +128,9 @@ model ProjectMembers {
 }
 
 model ProjectSkills {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  projectId String   @db.Uuid
-  skillId   String   @db.Uuid
+  id        String   @id @default(uuid())
+  projectId String
+  skillId   String
   projects  Projects @relation(fields: [projectId], references: [id])
   skills    Skills   @relation(fields: [skillId], references: [id])
 
@@ -148,8 +144,8 @@ model ProjectStatus {
 }
 
 model Projects {
-  id             String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ownerId        String?                  @db.Uuid
+  id             String           @id @default(uuid())
+  ownerId        String?
   name           String
   logo           String?
   description    String?
@@ -157,24 +153,22 @@ model Projects {
   target         String?
   demo           String?
   repoUrl        String?
-  vector         Unsupported("tsvector")?
-  isApproved     Boolean                  @default(false)
-  status         String?                  @default("Draft")
+  isApproved     Boolean          @default(false)
+  status         String?          @default("Draft")
   positions      String?
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @default(now())
-  profiles       Profiles?                @relation(fields: [ownerId], references: [id])
-  projectStatus  ProjectStatus?           @relation(fields: [status], references: [name])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+  profiles       Profiles?        @relation(fields: [ownerId], references: [id])
+  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name])
   projectMembers ProjectMembers[]
   projectSkills  ProjectSkills[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
-  @@index([vector], name: "projects_vector_idx")
 }
 
 model Skills {
-  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id            String          @id @default(uuid())
   name          String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
