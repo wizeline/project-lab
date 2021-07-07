@@ -169,7 +169,7 @@ model Projects {
 
 model Skills {
   id            String          @id @default(uuid())
-  name          String
+  name          String          @unique
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
   profileSkills ProfileSkills[]

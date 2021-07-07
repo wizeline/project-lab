@@ -196,6 +196,9 @@ CREATE INDEX "projects_status_idx" ON "Projects"("status");
 -- CreateIndex
 CREATE INDEX "skills_name_idx" ON "Skills"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Skills.name_unique" ON "Skills"("name");
+
 -- Create full text search index
 CREATE VIRTUAL TABLE projects_idx USING fts5(id, "name", "description", "valueStatement", content='Projects');
 
