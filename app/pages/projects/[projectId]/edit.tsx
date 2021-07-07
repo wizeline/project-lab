@@ -7,7 +7,7 @@ import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 
 export const EditProject = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
+  const projectId = useParam("projectId", "string")
   const [project, { setQueryData }] = useQuery(
     getProject,
     { id: projectId },
