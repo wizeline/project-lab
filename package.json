@@ -9,7 +9,8 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "sync-skills": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncSkills.ts"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "@prisma/client": "2.25.0",
+    "axios": "0.21.1",
     "blitz": "0.38.1",
     "final-form": "4.20.2",
     "passport-auth0": "1.4.0",
