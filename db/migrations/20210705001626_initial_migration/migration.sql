@@ -207,7 +207,7 @@ CREATE TRIGGER projects_idx_i AFTER INSERT ON "Projects" BEGIN
   INSERT INTO projects_idx(id, "name", "description", "valueStatement") VALUES (new.id, new."name", new."description", new."valueStatement");
 END;
 CREATE TRIGGER projects_idx_d AFTER DELETE ON "Projects" BEGIN
-  INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", new."valueStatement");
+  INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
 END;
 CREATE TRIGGER projects_idx_u AFTER UPDATE ON "Projects" BEGIN
   INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
