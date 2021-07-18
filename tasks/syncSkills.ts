@@ -54,13 +54,13 @@ async function getSkillsFromWizelineOS(): Promise<string[]> {
     process.env.WOS_API_URL,
     {
       query: `
-            query GetSkills {
-              skills {
-                  name
-                  createdAt
-              }
+        query GetSkills {
+          skills {
+            name
+            createdAt
           }
-          `,
+        }
+      `,
     },
     {
       headers: {
