@@ -14,8 +14,13 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <div>
       <h1>Login</h1>
+      <div>
+        <Link href="/api/auth/auth0">
+          <a>Login with your Wizeline email account</a>
+        </Link>
+      </div>
 
-      <Form
+      {/* <Form
         submitText="Login"
         schema={Login}
         initialValues={{ email: "", password: "" }}
@@ -46,7 +51,7 @@ export const LoginForm = (props: LoginFormProps) => {
 
       <div style={{ marginTop: "1rem" }}>
         Or <Link href={Routes.SignupPage()}>Sign Up</Link>
-      </div>
+      </div> */}
     </div>
   )
 }
