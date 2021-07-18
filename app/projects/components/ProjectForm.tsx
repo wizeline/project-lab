@@ -7,6 +7,16 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
   return (
     <Form<S> {...props}>
       <LabeledTextField name="name" label="Name" placeholder="Name" />
+      <LabeledTextField
+        name="description"
+        label="Problem statement"
+        placeholder="How might we..."
+      />
+      <LabeledTextField
+        name="valueStatement"
+        label="Your proposal"
+        placeholder="Explain us your proposal"
+      />
     </Form>
   )
 }

@@ -1,55 +1,30 @@
-import { Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
+import { Link, Image, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import createProject from "app/projects/mutations/createProject"
-import { Form, FORM_ERROR } from "app/core/components/Form"
-import { LabeledTextField } from "app/core/components/LabeledTextField"
-import { QuickCreate } from "app/projects/validations"
 
 const NewProjectPage: BlitzPage = () => {
-  const router = useRouter()
-  const [createProjectMutation] = useMutation(createProject)
-
   return (
     <div>
-      <h1>Create New Project</h1>
-
-      <Form
-        submitText="Create Project"
-        // TODO use a zod schema for form validation
-        //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-        //         then import and use it here
-        // initialValues={{}}
-        schema={QuickCreate}
-        onSubmit={async (values) => {
-          try {
-            const project = await createProjectMutation(values)
-            router.push(Routes.ShowProjectPage({ projectId: project.id }))
-          } catch (error) {
-            console.error(error)
-            return {
-              [FORM_ERROR]: error.toString(),
-            }
-          }
-        }}
-      >
-        <LabeledTextField name="name" label="Name" placeholder="Name" />
-        <LabeledTextField
-          name="description"
-          label="Problem statement"
-          placeholder="How might we..."
-        />
-        <LabeledTextField
-          name="valueStatement"
-          label="Your proposal"
-          placeholder="Explain us your proposal"
-        />
-      </Form>
-
-      <p>
-        <Link href={Routes.ProjectsPage()}>
-          <a>Projects</a>
+      <h1>What type of proposal you want to submit?</h1>
+      <h2>
+        <Link href={Routes.QuickProjectPage()}>
+          <Image src="/easy.png" alt="Quick Proposal" width={540} height={405} />
         </Link>
-      </p>
+      </h2>
+      <h2>
+        <Link href={Routes.QuickProjectPage()}>
+          <a>Quick proposal</a>
+        </Link>
+      </h2>
+      <h2>
+        <Link href={Routes.FullProjectPage()}>
+          <Image src="/full.png" alt="Detailed Proposal" width={540} height={405} />
+        </Link>
+      </h2>
+      <h2>
+        <Link href={Routes.FullProjectPage()}>
+          <a>Detailed proposal</a>
+        </Link>
+      </h2>
     </div>
   )
 }
