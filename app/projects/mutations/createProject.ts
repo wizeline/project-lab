@@ -2,6 +2,11 @@ import { resolver, Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
 
+export class SessionNotFoundError extends Error {
+  name = "SessionNotFoundError"
+  message = "There is no profile for current user."
+}
+
 export class ProfileNotFoundError extends Error {
   name = "ProfileNotFoundError"
   message = "There is no profile for current user."
@@ -21,7 +26,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async (input, { session }: Ctx) => {
     // TODO: use userId to get profileId
-    if (!session.userId) return null
+    if (!session.userId) throw new SessionNotFoundError()
 
     const result = await db.$queryRaw`SELECT p.id FROM Profiles p
       INNER JOIN User u ON u.email = p.email
