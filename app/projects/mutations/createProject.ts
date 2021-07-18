@@ -4,6 +4,11 @@ import { z } from "zod"
 
 const CreateProject = z.object({
   name: z.string(),
+  description: z.string().optional(),
+  valueStatement: z.string().optional(),
+  target: z.string().optional(),
+  demo: z.string().optional(),
+  repoUrl: z.string().optional(),
 })
 
 export default resolver.pipe(resolver.zod(CreateProject), resolver.authorize(), async (input) => {
