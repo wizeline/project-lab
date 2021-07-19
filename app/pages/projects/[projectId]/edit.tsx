@@ -4,6 +4,7 @@ import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
+import { FullCreate } from "app/projects/validations"
 
 export const EditProject = () => {
   const router = useRouter()
@@ -33,7 +34,7 @@ export const EditProject = () => {
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateProject}
+          schema={FullCreate}
           initialValues={project}
           onSubmit={async (values) => {
             try {
