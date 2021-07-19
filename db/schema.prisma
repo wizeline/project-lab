@@ -112,15 +112,14 @@ model Profiles {
 }
 
 model ProjectMembers {
-  id        String    @id @default(uuid())
-  projectId String
-  profileId String
-  startDate DateTime?
-  endDate   DateTime?
-  role      String?
-  status    String?
-  profiles  Profiles  @relation(fields: [profileId], references: [id])
-  projects  Projects  @relation(fields: [projectId], references: [id])
+  id           String   @id @default(uuid())
+  projectId    String
+  profileId    String
+  hoursPerWeek Int?
+  role         String?
+  active       Boolean  @default(true)
+  profiles     Profiles @relation(fields: [profileId], references: [id])
+  projects     Projects @relation(fields: [projectId], references: [id])
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")
   @@index([profileId], name: "project_members_profile_id_idx")
