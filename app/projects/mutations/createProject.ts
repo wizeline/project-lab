@@ -14,11 +14,11 @@ export class ProfileNotFoundError extends Error {
 
 const CreateProject = z.object({
   name: z.string(),
-  description: z.string().optional(),
-  valueStatement: z.string().optional(),
-  target: z.string().optional(),
-  demo: z.string().optional(),
-  repoUrl: z.string().optional(),
+  description: z.string().optional().nullable(),
+  valueStatement: z.string().optional().nullable(),
+  target: z.string().optional().nullable(),
+  demo: z.string().optional().nullable(),
+  repoUrl: z.string().optional().nullable(),
 })
 
 export default resolver.pipe(

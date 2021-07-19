@@ -3,7 +3,7 @@ import Layout from "app/core/layouts/Layout"
 import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
-import { QuickCreate } from "app/projects/validations"
+import { FullCreate } from "app/projects/validations"
 
 const FullProjectPage: BlitzPage = () => {
   const router = useRouter()
@@ -19,7 +19,7 @@ const FullProjectPage: BlitzPage = () => {
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and
         //         then import and use it here
         // initialValues={{}}
-        schema={QuickCreate}
+        schema={FullCreate}
         onSubmit={async (values) => {
           try {
             const project = await createProjectMutation(values)
