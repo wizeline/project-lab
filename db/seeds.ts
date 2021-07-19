@@ -11,6 +11,28 @@ const seed = async () => {
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
+  await db.$executeRaw`
+    CREATE VIRTUAL TABLE projects_idx USING fts5(id, name, description, valueStatement, content='Projects');
+  `
+  await db.$executeRaw`
+    CREATE TRIGGER projects_idx_i AFTER INSERT ON "Projects" BEGIN
+      INSERT INTO projects_idx(id, "name", "description", "valueStatement") VALUES (new.id, new."name", new."description", new."valueStatement");
+    END;
+  `
+  await db.$executeRaw`
+    CREATE TRIGGER projects_idx_d AFTER DELETE ON "Projects" BEGIN
+      INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
+    END;
+  `
+  await db.$executeRaw`
+    CREATE TRIGGER projects_idx_u AFTER UPDATE ON "Projects" BEGIN
+      INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
+      INSERT INTO projects_idx(id, "name", "description", "valueStatement") VALUES (new.id, new."name", new."description", new."valueStatement");
+    END;
+  `
+  // this allows running queries like:
+  // select * from projects_idx where projects_idx match 'labs';
+
   await db.projectStatus.upsert({
     where: { name: "Draft" },
     update: {},

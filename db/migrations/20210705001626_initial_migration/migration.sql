@@ -198,18 +198,3 @@ CREATE INDEX "skills_name_idx" ON "Skills"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Skills.name_unique" ON "Skills"("name");
-
--- Create full text search index
-CREATE VIRTUAL TABLE projects_idx USING fts5(id, "name", "description", "valueStatement", content='Projects');
-
--- Triggers to keep the FTS index up to date.
-CREATE TRIGGER projects_idx_i AFTER INSERT ON "Projects" BEGIN
-  INSERT INTO projects_idx(id, "name", "description", "valueStatement") VALUES (new.id, new."name", new."description", new."valueStatement");
-END;
-CREATE TRIGGER projects_idx_d AFTER DELETE ON "Projects" BEGIN
-  INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
-END;
-CREATE TRIGGER projects_idx_u AFTER UPDATE ON "Projects" BEGIN
-  INSERT INTO projects_idx(projects_idx, id, "name", "description", "valueStatement") VALUES('delete', old.id, old."name", old."description", old."valueStatement");
-  INSERT INTO projects_idx(id, "name", "description", "valueStatement") VALUES (new.id, new."name", new."description", new."valueStatement");
-END;
