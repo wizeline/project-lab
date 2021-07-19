@@ -19,13 +19,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Ensure the `.env.local` file has required environment variables:
 
 ```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/proposalHunt
+DATABASE_URL="file:./db.sqlite"
+AUTH0_CLIENT_ID=
+AUTH0_DOMAIN=
+AUTH0_CLIENT_SECRET=
+
+## Optional, for sync-skills command
+WOS_AUTH_API_URL=
+WOS_AUTH_API_AUDIENCE=
+WOS_AUTH_API_CLIENT_ID=
+WOS_AUTH_API_CLIENT_SECRET=
+WOS_API_URL=
 ```
 
 Ensure the `.env.test.local` file has required environment variables:
 
 ```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/proposalHunt_test
+DATABASE_URL="file:./db_test.sqlite"
 ```
 
 ## Tests
