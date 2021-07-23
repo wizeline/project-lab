@@ -142,6 +142,11 @@ model ProjectStatus {
   projects Projects[]
 }
 
+model Category {
+  name     String     @id
+  projects Projects[]
+}
+
 model Projects {
   id             String           @id @default(uuid())
   ownerId        String?
@@ -153,17 +158,20 @@ model Projects {
   demo           String?
   repoUrl        String?
   isApproved     Boolean          @default(false)
-  status         String?          @default("Draft")
+  status         String           @default("Draft")
+  categoryName   String           @default("Experiment")
   positions      String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
-  profiles       Profiles?        @relation(fields: [ownerId], references: [id])
+  owner          Profiles?        @relation(fields: [ownerId], references: [id])
   projectStatus  ProjectStatus?   @relation(fields: [status], references: [name])
+  category       Category         @relation(fields: [categoryName], references: [name])
   projectMembers ProjectMembers[]
   projectSkills  ProjectSkills[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
+  @@index([categoryName], name: "projects_category_idx")
 }
 
 model Skills {

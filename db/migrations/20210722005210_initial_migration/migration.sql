@@ -111,6 +111,11 @@ CREATE TABLE "ProjectStatus" (
 );
 
 -- CreateTable
+CREATE TABLE "Category" (
+    "name" TEXT NOT NULL PRIMARY KEY
+);
+
+-- CreateTable
 CREATE TABLE "Projects" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "ownerId" TEXT,
@@ -123,11 +128,13 @@ CREATE TABLE "Projects" (
     "repoUrl" TEXT,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT DEFAULT 'Draft',
+    "categoryName" TEXT NOT NULL DEFAULT 'Experiment',
     "positions" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("ownerId") REFERENCES "Profiles" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY ("categoryName") REFERENCES "Category" ("name") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -191,6 +198,9 @@ CREATE INDEX "projects_owner_id_idx" ON "Projects"("ownerId");
 
 -- CreateIndex
 CREATE INDEX "projects_status_idx" ON "Projects"("status");
+
+-- CreateIndex
+CREATE INDEX "projects_category_idx" ON "Projects"("categoryName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Skills.name_unique" ON "Skills"("name");
