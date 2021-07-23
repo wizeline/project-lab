@@ -1,56 +1,50 @@
-import { forwardRef, PropsWithoutRef } from "react"
-import { useField } from "react-final-form"
+import { PropsWithoutRef } from "react"
+import { Field } from "react-final-form"
+import FieldError from "./FieldError"
 
-export interface LabeledTextAreaFieldProps
-  extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
-  /** Field name. */
+interface LabeledTextAreaFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   name: string
-  /** Field label. */
   label: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextAreaFieldProps>(
-  ({ name, label, outerProps, ...props }, ref) => {
-    const {
-      input,
-      meta: { touched, error, submitError, submitting },
-    } = useField(name)
+export function LabeledTextAreaField({
+  name,
+  label,
+  outerProps,
+  ...props
+}: LabeledTextAreaFieldProps) {
+  return (
+    <Field name={name}>
+      {({ input, meta: { submitting } }) => (
+        <div {...outerProps}>
+          <label>
+            {label}
+            <textarea {...input} disabled={submitting} {...props} />
+          </label>
 
-    const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+          <FieldError name={name} />
 
-    return (
-      <div {...outerProps}>
-        <label>
-          {label}
-          <textarea {...input} disabled={submitting} {...props} ref={ref} />
-        </label>
-
-        {touched && normalizedError && (
-          <div role="alert" style={{ color: "red" }}>
-            {normalizedError}
-          </div>
-        )}
-
-        <style jsx>{`
-          label {
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            font-size: 1rem;
-          }
-          textarea {
-            font-size: 1rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 3px;
-            border: 1px solid purple;
-            appearance: none;
-            margin-top: 0.5rem;
-          }
-        `}</style>
-      </div>
-    )
-  }
-)
+          <style jsx>{`
+            label {
+              display: flex;
+              flex-direction: column;
+              align-items: start;
+              font-size: 1rem;
+            }
+            textarea {
+              font-size: 1rem;
+              padding: 0.25rem 0.5rem;
+              border-radius: 3px;
+              border: 1px solid purple;
+              appearance: none;
+              margin-top: 0.5rem;
+            }
+          `}</style>
+        </div>
+      )}
+    </Field>
+  )
+}
 
 export default LabeledTextAreaField
