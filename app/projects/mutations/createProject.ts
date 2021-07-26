@@ -42,8 +42,11 @@ export default resolver.pipe(
 
     const project = await db.projects.create({
       data: {
-        ownerId: result[0].id,
         ...input,
+        owner: { connect: { id: result[0].id } },
+        skills: {
+          connect: input.skills,
+        },
       },
     })
 
