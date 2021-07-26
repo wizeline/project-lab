@@ -8,7 +8,12 @@ export const QuickCreate = z.object({
 
 export const FullCreate = z.object({
   name: z.string(),
-  description: z.string().nullable(),
-  valueStatement: z.string().nullable(),
-  target: z.string().nullable(),
+  description: z.string().nullable().optional(),
+  valueStatement: z.string().nullable().optional(),
+  target: z.string().nullable().optional(),
+  skills: z.array(
+    z.object({
+      id: z.string(),
+    })
+  ),
 })

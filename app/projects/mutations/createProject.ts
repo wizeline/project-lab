@@ -19,6 +19,13 @@ const CreateProject = z.object({
   target: z.string().optional().nullable(),
   demo: z.string().optional().nullable(),
   repoUrl: z.string().optional().nullable(),
+  skills: z
+    .array(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .optional(),
 })
 
 export default resolver.pipe(

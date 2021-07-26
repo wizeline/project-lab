@@ -126,17 +126,6 @@ model ProjectMembers {
   @@index([projectId], name: "project_members_project_id_idx")
 }
 
-model ProjectSkills {
-  id        String   @id @default(uuid())
-  projectId String
-  skillId   String
-  projects  Projects @relation(fields: [projectId], references: [id])
-  skills    Skills   @relation(fields: [skillId], references: [id])
-
-  @@index([projectId], name: "project_skills_project_id_idx")
-  @@index([skillId], name: "project_skills_skill_id_idx")
-}
-
 model ProjectStatus {
   name     String     @id
   projects Projects[]
@@ -167,7 +156,7 @@ model Projects {
   projectStatus  ProjectStatus?   @relation(fields: [status], references: [name])
   category       Category         @relation(fields: [categoryName], references: [name])
   projectMembers ProjectMembers[]
-  projectSkills  ProjectSkills[]
+  skills         Skills[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
@@ -180,7 +169,7 @@ model Skills {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
   profileSkills ProfileSkills[]
-  projectSkills ProjectSkills[]
+  projects      Projects[]
 
   @@index([name], name: "skills_name_idx")
 }

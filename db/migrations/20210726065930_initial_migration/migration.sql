@@ -97,15 +97,6 @@ CREATE TABLE "ProjectMembers" (
 );
 
 -- CreateTable
-CREATE TABLE "ProjectSkills" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "projectId" TEXT NOT NULL,
-    "skillId" TEXT NOT NULL,
-    FOREIGN KEY ("projectId") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("skillId") REFERENCES "Skills" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- CreateTable
 CREATE TABLE "ProjectStatus" (
     "name" TEXT NOT NULL PRIMARY KEY
 );
@@ -127,13 +118,13 @@ CREATE TABLE "Projects" (
     "demo" TEXT,
     "repoUrl" TEXT,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
-    "status" TEXT DEFAULT 'Draft',
+    "status" TEXT NOT NULL DEFAULT 'Draft',
     "categoryName" TEXT NOT NULL DEFAULT 'Experiment',
     "positions" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("ownerId") REFERENCES "Profiles" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("categoryName") REFERENCES "Category" ("name") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -143,6 +134,14 @@ CREATE TABLE "Skills" (
     "name" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "_ProjectsToSkills" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    FOREIGN KEY ("A") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("B") REFERENCES "Skills" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -188,12 +187,6 @@ CREATE INDEX "project_members_profile_id_idx" ON "ProjectMembers"("profileId");
 CREATE INDEX "project_members_project_id_idx" ON "ProjectMembers"("projectId");
 
 -- CreateIndex
-CREATE INDEX "project_skills_project_id_idx" ON "ProjectSkills"("projectId");
-
--- CreateIndex
-CREATE INDEX "project_skills_skill_id_idx" ON "ProjectSkills"("skillId");
-
--- CreateIndex
 CREATE INDEX "projects_owner_id_idx" ON "Projects"("ownerId");
 
 -- CreateIndex
@@ -207,3 +200,9 @@ CREATE UNIQUE INDEX "Skills.name_unique" ON "Skills"("name");
 
 -- CreateIndex
 CREATE INDEX "skills_name_idx" ON "Skills"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_ProjectsToSkills_AB_unique" ON "_ProjectsToSkills"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_ProjectsToSkills_B_index" ON "_ProjectsToSkills"("B");
