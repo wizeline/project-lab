@@ -15,6 +15,12 @@ const Layout = ({ title, children }: LayoutProps) => {
       </Head>
 
       {children}
+      <style jsx global>{`
+        body {
+          font-family: "Poppins", sans-serif;
+          background-color: #f2f4f4;
+        }
+      `}</style>
     </>
   )
 }

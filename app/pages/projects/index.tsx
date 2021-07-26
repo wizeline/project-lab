@@ -2,6 +2,9 @@ import { Suspense } from "react"
 import { Head, Link, usePaginatedQuery, useRouter, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
+import CardBox from "app/core/components/CardBox"
+import ProposalCard from "app/core/components/ProposalCard"
+import { popularHomeProposals, newForYouHome, myProposals } from "app/core/utils/mock_data"
 
 const ITEMS_PER_PAGE = 100
 
@@ -40,12 +43,24 @@ export const ProjectsList = () => {
 }
 
 const ProjectsPage: BlitzPage = () => {
+  const mapRenderProposals = (item, i) => {
+    return (
+      <ProposalCard
+        key={i}
+        title={item.title}
+        date={item.date}
+        description={item.description}
+        status={item.status}
+        votes={item.votes}
+      />
+    )
+  }
+
   return (
     <>
       <Head>
         <title>Projects</title>
       </Head>
-
       <div>
         <p>
           <Link href={Routes.NewProjectPage()}>
@@ -57,6 +72,68 @@ const ProjectsPage: BlitzPage = () => {
           <ProjectsList />
         </Suspense>
       </div>
+      <div className="homeWrapper">
+        <div className="homeWrapper__navbar" />
+        <div className="homeWrapper--content">
+          <div className="homeWrapper__information">
+            <div className="homeWrapper__information--row">
+              <CardBox title="Popular">
+                <div className="homeWrapper__items">
+                  {popularHomeProposals.map(mapRenderProposals)}
+                </div>
+              </CardBox>
+            </div>
+            <div className="homeWrapper__information--row">
+              <CardBox title="New for you">
+                <div className="homeWrapper__items">
+                  {popularHomeProposals.map(mapRenderProposals)}
+                </div>
+              </CardBox>
+            </div>
+          </div>
+          <div className="homeWrapper__proposals">
+            <CardBox title="My proposals">{myProposals.map(mapRenderProposals)}</CardBox>
+          </div>
+        </div>
+      </div>
+      <style jsx>{`
+        .homeWrapper {
+          margin-top: 35px;
+          margin-bottom: 100px;
+          max-width: 960px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .homeWrapper--content {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+        .homeWrapper__navbar {
+        }
+        .homeWrapper__information {
+          width: 100%;
+          max-width: 560px;
+        }
+        .homeWrapper__information--row {
+          margin-bottom: 20px;
+        }
+        .homeWrapper__information--row:last-child {
+          margin-bottom: 0px;
+        }
+        .homeWrapper__items {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          row-gap: 35px;
+          column-gap: 15px;
+          margin-bottom: 35px;
+        }
+        .homeWrapper__proposals {
+          width: 100%;
+          max-width: 390px;
+          margin-left: 15px;
+        }
+      `}</style>
     </>
   )
 }
