@@ -25,10 +25,15 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "11.4.0",
+    "@emotion/server": "11.4.0",
+    "@emotion/styled": "11.3.0",
+    "@material-ui/core": "5.0.0-beta.1",
     "@prisma/client": "2.25.0",
     "axios": "0.21.1",
     "blitz": "0.38.1",
     "final-form": "4.20.2",
+    "lodash.debounce": "4.0.8",
     "passport-auth0": "1.4.0",
     "react": "alpha",
     "react-dom": "alpha",
