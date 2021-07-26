@@ -33,6 +33,17 @@ const seed = async () => {
   // this allows running queries like:
   // select * from projects_idx where projects_idx match 'labs';
 
+  // Dummy skills, use only if you are not running `yarn sync-skills`
+  // insert into Skills (id, name) values
+  //   ('Go', 'Go'),
+  //   ('Javascript', 'Javascript'),
+  //   ('Typescript', 'Typescript'),
+  //   ('Java', 'Java'),
+  //   ('React', 'React'),
+  //   ('Python', 'Python'),
+  //   ('Scala', 'Scala'),
+  //   ('GraphQL', 'GraphQL');
+
   await db.projectStatus.upsert({
     where: { name: "Draft" },
     update: {},
