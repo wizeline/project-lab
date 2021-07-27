@@ -16,6 +16,10 @@ const Layout = ({ title, children }: LayoutProps) => {
 
       {children}
       <style jsx global>{`
+        * {
+          margin: 0px;
+          padding: 0px;
+        }
         body {
           font-family: "Poppins", sans-serif;
           background-color: #f2f4f4;
