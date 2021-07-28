@@ -6,16 +6,9 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 ## Getting Started
 
-Run your app in the development mode.
-
-```
-blitz dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
 ## Environment Variables
 
+Create `.env.local` and `.env.test.local` files in root
 Ensure the `.env.local` file has required environment variables:
 
 ```
@@ -37,6 +30,23 @@ Ensure the `.env.test.local` file has required environment variables:
 ```
 DATABASE_URL="file:./db_test.sqlite"
 ```
+
+Ensure the `seeds.ts` file was updated with your user
+
+```
+  await db.profiles.upsert({
+    where: { email: "[youremail]]wizeline.com" }, ...
+```
+
+```
+yarn install
+blitz prisma migrate dev
+blitz db seed
+yarn sync-skills
+blitz dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Tests
 

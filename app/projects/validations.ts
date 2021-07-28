@@ -16,4 +16,9 @@ export const FullCreate = z.object({
       id: z.string(),
     })
   ),
+  labels: z.array(
+    z.object({
+      id: z.string(),
+    })
+  ),
 })

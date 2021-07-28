@@ -96,6 +96,17 @@ const seed = async () => {
     create: { name: "Strategic Differentiator" },
   })
 
+  await db.labels.upsert({
+    where: { name: "Innovation Camp 2020" },
+    update: {},
+    create: { name: "Innovation Camp 2020" },
+  })
+  await db.labels.upsert({
+    where: { name: "Innovation Camp 2021" },
+    update: {},
+    create: { name: "Innovation Camp 2021" },
+  })
+
   await db.profiles.upsert({
     where: { email: "antonio.torres@wizeline.com" },
     update: {},
@@ -183,6 +194,16 @@ const seed = async () => {
       email: "joaquin.popoca@wizeline.com",
       firstName: "Joaquin",
       lastName: "Popoca",
+      department: "Engineering",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "ruben.zavala@wizeline.com" },
+    update: {},
+    create: {
+      email: "ruben.zavala@wizeline.com",
+      firstName: "Rubén",
+      lastName: "Zavala",
       department: "Engineering",
     },
   })

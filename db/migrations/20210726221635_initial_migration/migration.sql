@@ -137,11 +137,27 @@ CREATE TABLE "Skills" (
 );
 
 -- CreateTable
+CREATE TABLE "Labels" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "_ProjectsToSkills" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
     FOREIGN KEY ("A") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("B") REFERENCES "Skills" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "_LabelsToProjects" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    FOREIGN KEY ("A") REFERENCES "Labels" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("B") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -202,7 +218,16 @@ CREATE UNIQUE INDEX "Skills.name_unique" ON "Skills"("name");
 CREATE INDEX "skills_name_idx" ON "Skills"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Labels.name_unique" ON "Labels"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_ProjectsToSkills_AB_unique" ON "_ProjectsToSkills"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_ProjectsToSkills_B_index" ON "_ProjectsToSkills"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_LabelsToProjects_AB_unique" ON "_LabelsToProjects"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_LabelsToProjects_B_index" ON "_LabelsToProjects"("B");
