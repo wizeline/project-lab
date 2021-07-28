@@ -2,6 +2,8 @@ import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextAreaField } from "app/core/components/LabeledTextAreaField"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { LabelsSelect } from "app/core/components/LabelsSelect"
+
 import { z } from "zod"
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -25,6 +27,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         placeholder="Millenials"
       />
       <SkillsSelect name="skills" label="Skills" />
+      <LabelsSelect name="labels" label="Labels" />
     </Form>
   )
 }

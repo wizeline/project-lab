@@ -17,6 +17,13 @@ const UpdateProject = z.object({
       })
     )
     .optional(),
+  labels: z
+    .array(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .optional(),
 })
 
 export default resolver.pipe(
@@ -31,8 +38,11 @@ export default resolver.pipe(
         skills: {
           set: data.skills,
         },
+        labels: {
+          set: data.labels,
+        },
       },
-      include: { skills: true },
+      include: { skills: true, labels: true },
     })
 
     return project

@@ -157,6 +157,7 @@ model Projects {
   category       Category         @relation(fields: [categoryName], references: [name])
   projectMembers ProjectMembers[]
   skills         Skills[]
+  labels         Labels[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
@@ -172,4 +173,12 @@ model Skills {
   projects      Projects[]
 
   @@index([name], name: "skills_name_idx")
+}
+
+model Labels {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  projects  Projects[]
 }

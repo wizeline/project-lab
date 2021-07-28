@@ -26,6 +26,13 @@ const CreateProject = z.object({
       })
     )
     .optional(),
+  labels: z
+    .array(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .optional(),
 })
 
 export default resolver.pipe(
@@ -46,6 +53,9 @@ export default resolver.pipe(
         owner: { connect: { id: result[0].id } },
         skills: {
           connect: input.skills,
+        },
+        labels: {
+          connect: input.labels,
         },
       },
     })
