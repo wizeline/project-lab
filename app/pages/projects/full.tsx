@@ -18,7 +18,7 @@ const FullProjectPage: BlitzPage = () => {
         // TODO use a zod schema for form validation
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and
         //         then import and use it here
-        initialValues={{ skills: [] }}
+        initialValues={{ skills: [], labels: [] }}
         schema={FullCreate}
         onSubmit={async (values) => {
           try {

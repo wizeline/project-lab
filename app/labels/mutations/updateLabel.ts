@@ -3,7 +3,7 @@ import db from "db"
 import { z } from "zod"
 
 const UpdateLabel = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
 })
 
@@ -12,7 +12,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const label = await db.label.update({ where: { id }, data })
+    const label = await db.labels.update({ where: { id }, data })
 
     return label
   }

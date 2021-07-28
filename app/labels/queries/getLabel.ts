@@ -4,12 +4,12 @@ import { z } from "zod"
 
 const GetLabel = z.object({
   // This accepts type of undefined, but is required at runtime
-  id: z.number().optional().refine(Boolean, "Required"),
+  id: z.string().optional().refine(Boolean, "Required"),
 })
 
 export default resolver.pipe(resolver.zod(GetLabel), resolver.authorize(), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const label = await db.label.findFirst({ where: { id } })
+  const label = await db.labels.findFirst({ where: { id } })
 
   if (!label) throw new NotFoundError()
 
