@@ -8,7 +8,8 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 ## Environment Variables
 
-Create `.env.local` and `.env.test.local` files in root
+Create `.env.local` and `.env.test.local` files in root, ask in #team-proejctlab
+for the environment values.
 Ensure the `.env.local` file has required environment variables:
 
 ```
