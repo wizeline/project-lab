@@ -16,7 +16,7 @@ function CardBox({ children, title }: IProps) {
         .CardBox {
           background-color: #fff;
           padding: 30px;
-          border-radius: 4px;
+          border-radius: 7px;
           height: 100%;
         }
         .CardBox--title {
