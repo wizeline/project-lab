@@ -4,17 +4,17 @@ import Autocomplete from "@material-ui/core/Autocomplete"
 import TextField from "@material-ui/core/TextField"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Field } from "react-final-form"
-import FieldError from "./FieldError"
 import getSkills from "app/skills/queries/getSkills"
 import debounce from "lodash/debounce"
 
 interface SkillsSelectProps {
   name: string
   label: string
+  helperText?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export function SkillsSelect({ name, label, outerProps }: SkillsSelectProps) {
+export function SkillsSelect({ name, label, helperText, outerProps }: SkillsSelectProps) {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [{ skills }, { isLoading }] = useQuery(getSkills, {
@@ -26,10 +26,11 @@ export function SkillsSelect({ name, label, outerProps }: SkillsSelectProps) {
 
   return (
     <Field name={name}>
-      {({ input, meta: { submitting } }) => (
-        <div {...outerProps}>
-          <label>
-            {label}
+      {({ input, meta: { touched, error, submitError, submitting } }) => {
+        const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+        const isError = touched && normalizedError
+        return (
+          <div {...outerProps}>
             <Autocomplete
               multiple={true}
               sx={{ width: 300 }}
@@ -49,6 +50,9 @@ export function SkillsSelect({ name, label, outerProps }: SkillsSelectProps) {
                 <TextField
                   {...params}
                   label={label}
+                  error={isError}
+                  helperText={isError ? error : helperText}
+                  disabled={submitting}
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
@@ -61,28 +65,26 @@ export function SkillsSelect({ name, label, outerProps }: SkillsSelectProps) {
                 />
               )}
             />
-          </label>
 
-          <FieldError name={name} />
-
-          <style jsx>{`
-            label {
-              display: flex;
-              flex-direction: column;
-              align-items: start;
-              font-size: 1rem;
-            }
-            input {
-              font-size: 1rem;
-              padding: 0.25rem 0.5rem;
-              border-radius: 3px;
-              border: 1px solid purple;
-              appearance: none;
-              margin-top: 0.5rem;
-            }
-          `}</style>
-        </div>
-      )}
+            <style jsx>{`
+              label {
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                font-size: 1rem;
+              }
+              input {
+                font-size: 1rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 3px;
+                border: 1px solid purple;
+                appearance: none;
+                margin-top: 0.5rem;
+              }
+            `}</style>
+          </div>
+        )
+      }}
     </Field>
   )
 }

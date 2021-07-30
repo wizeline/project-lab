@@ -4,17 +4,17 @@ import Autocomplete from "@material-ui/core/Autocomplete"
 import TextField from "@material-ui/core/TextField"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Field } from "react-final-form"
-import FieldError from "./FieldError"
 import getLabels from "app/labels/queries/getLabels"
 import debounce from "lodash/debounce"
 
 interface LabelsSelectProps {
   name: string
   label: string
+  helperText?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export function LabelsSelect({ name, label, outerProps }: LabelsSelectProps) {
+export function LabelsSelect({ name, label, helperText, outerProps }: LabelsSelectProps) {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [{ labels }, { isLoading }] = useQuery(getLabels, {
@@ -26,10 +26,11 @@ export function LabelsSelect({ name, label, outerProps }: LabelsSelectProps) {
 
   return (
     <Field name={name}>
-      {({ input, meta: { submitting } }) => (
-        <div {...outerProps}>
-          <label>
-            {label}
+      {({ input, meta: { touched, error, submitError, submitting } }) => {
+        const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+        const isError = touched && normalizedError
+        return (
+          <div {...outerProps}>
             <Autocomplete
               multiple={true}
               sx={{ width: 300 }}
@@ -48,6 +49,9 @@ export function LabelsSelect({ name, label, outerProps }: LabelsSelectProps) {
                 <TextField
                   {...params}
                   label={label}
+                  error={isError}
+                  helperText={isError ? error : helperText}
+                  disabled={submitting}
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
@@ -60,11 +64,9 @@ export function LabelsSelect({ name, label, outerProps }: LabelsSelectProps) {
                 />
               )}
             />
-          </label>
-
-          <FieldError name={name} />
-        </div>
-      )}
+          </div>
+        )
+      }}
     </Field>
   )
 }
