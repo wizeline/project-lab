@@ -1,17 +1,14 @@
 export const STATUS = [
   {
-    id: 1,
-    text: "",
+    name: "Draft",
     color: "#fe6f18",
   },
   {
-    id: 2,
-    text: "Approved",
+    name: "In Progress",
     color: "#188bff",
   },
   {
-    id: 3,
-    text: "Launched",
+    name: "Archived",
     color: "#7bc96b",
   },
 ]

@@ -5,12 +5,12 @@ interface IProps {
   title: String
   date: String
   description: String
-  status: Number
+  status: String
   votes?: Number | null
 }
 
 function ProposalCard(props: IProps) {
-  const findConfig: any = STATUS.find((e) => e.id === props.status)
+  const findConfig: any = STATUS.find((e) => e.name === props.status)
 
   return (
     <>
@@ -24,7 +24,7 @@ function ProposalCard(props: IProps) {
         </div>
         <div className="ProposalCard--description">{props.description}</div>
         <div className="ProposalCard--status" style={{ backgroundColor: findConfig.color }}>
-          {props.status === 1 ? props.votes : findConfig.text}
+          {props.status === "Draft" ? props.votes : findConfig.name}
         </div>
       </div>
       <style jsx>{`

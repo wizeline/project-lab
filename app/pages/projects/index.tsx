@@ -2,13 +2,17 @@ import { Suspense } from "react"
 import { Head, Link, usePaginatedQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
+import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
-import { popularHomeProposals, newForYouHome, myProposals } from "app/core/utils/mock_data"
+import { newForYouHome } from "app/core/utils/mock_data"
+
 import Header from "app/core/layouts/Header"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 4
+const MY_ITEMS_MAX = 10
 
+//Component to render an unformated list of projects **deprecate code**
 export const ProjectsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
@@ -32,7 +36,6 @@ export const ProjectsList = () => {
           </li>
         ))}
       </ul>
-
       <button disabled={page === 0} onClick={goToPreviousPage}>
         Previous
       </button>
@@ -44,15 +47,37 @@ export const ProjectsList = () => {
 }
 
 const ProjectsPage: BlitzPage = () => {
+  //functions to load and paginate projects in `Popular` CardBox
+  const router = useRouter()
+  const page = Number(router.query.page) || 0
+  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  //function to load projects in `My proposals` CardBox
+  const [{ projects: myProjects }] = usePaginatedQuery(getMyProjects, {
+    orderBy: { id: "asc" },
+    take: MY_ITEMS_MAX,
+  })
+
+  //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
         key={i}
-        title={item.title}
-        date={item.date}
+        title={item.name}
+        date={new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+        }).format(item.createdAt)}
         description={item.description}
         status={item.status}
-        votes={item.votes}
+        votes={1000}
       />
     )
   }
@@ -97,21 +122,23 @@ const ProjectsPage: BlitzPage = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox title="Popular">
-                <div className="homeWrapper__items">
-                  {popularHomeProposals.map(mapRenderProposals)}
-                </div>
+                <div className="homeWrapper__items">{projects.map(mapRenderProposals)}</div>
+                <button disabled={page === 0} onClick={goToPreviousPage}>
+                  Previous{" "}
+                </button>
+                <button disabled={!hasMore} onClick={goToNextPage}>
+                  Next
+                </button>
               </CardBox>
             </div>
             <div className="homeWrapper__information--row">
               <CardBox title="New for you">
-                <div className="homeWrapper__items">
-                  {popularHomeProposals.map(mapRenderProposals)}
-                </div>
+                <div className="homeWrapper__items">{newForYouHome.map(mapRenderProposals)}</div>
               </CardBox>
             </div>
           </div>
           <div className="homeWrapper__proposals">
-            <CardBox title="My proposals">{myProposals.map(mapRenderProposals)}</CardBox>
+            <CardBox title="My proposals">{myProjects.map(mapRenderProposals)}</CardBox>
           </div>
         </div>
       </div>
