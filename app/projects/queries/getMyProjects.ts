@@ -12,12 +12,11 @@ interface GetProjectsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput, { session }: Ctx) => {
-    const result = await db.$queryRaw`SELECT p.id FROM Profiles p
+    const profiles = await db.$queryRaw`SELECT p.id FROM Profiles p
     INNER JOIN User u ON u.email = p.email
     WHERE u.id = ${session.userId}`
-    if (result.length != 1) throw new ProfileNotFoundError()
+    if (profiles.length != 1) throw new ProfileNotFoundError()
 
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: projects,
       hasMore,
@@ -31,7 +30,7 @@ export default resolver.pipe(
         db.projects.findMany({
           ...paginateArgs,
           where: {
-            ownerId: { equals: result[0].id },
+            ownerId: { equals: profiles[0].id },
           },
           orderBy,
         }),

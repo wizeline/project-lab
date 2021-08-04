@@ -1,5 +1,5 @@
 import React from "react"
-import { STATUS } from "../utils/constants"
+import { ProjectStatus, STATUS } from "../utils/constants"
 
 interface IProps {
   title: String
@@ -24,7 +24,7 @@ function ProposalCard(props: IProps) {
         </div>
         <div className="ProposalCard--description">{props.description}</div>
         <div className="ProposalCard--status" style={{ backgroundColor: findConfig.color }}>
-          {props.status === "Draft" ? props.votes : findConfig.name}
+          {props.status === ProjectStatus.Draft ? props.votes : findConfig.name}
         </div>
       </div>
       <style jsx>{`

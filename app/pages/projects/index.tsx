@@ -70,7 +70,7 @@ const ProjectsPage: BlitzPage = () => {
       <ProposalCard
         key={i}
         title={item.name}
-        date={new Intl.DateTimeFormat("en-US", {
+        date={new Intl.DateTimeFormat([], {
           year: "numeric",
           month: "long",
           day: "2-digit",

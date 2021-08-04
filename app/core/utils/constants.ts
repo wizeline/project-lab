@@ -12,3 +12,12 @@ export const STATUS = [
     color: "#7bc96b",
   },
 ]
+
+export enum ProjectStatus {
+  Draft = "Draft",
+  InProgress = "In Progress",
+  Archived = "Archived",
+  OnHold = "On Hold",
+  Discovery = "Discovery",
+  Closed = "Closed",
+}
