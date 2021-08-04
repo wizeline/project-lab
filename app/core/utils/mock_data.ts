@@ -1,30 +1,30 @@
 export const popularHomeProposals = [
   {
     title: "Remote Workshop",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "Draft",
     votes: 435,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 2,
+    status: "Draft",
     votes: null,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "Draft",
     votes: 300,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 3,
+    status: "Draft",
     votes: null,
   },
 ]
@@ -32,30 +32,30 @@ export const popularHomeProposals = [
 export const newForYouHome = [
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "Draft",
     votes: 435,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: new Date("2020-01-04 10:34:23"),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "In Progress",
     votes: 435,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: new Date("2021-03-05 00:00:00"),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "Archived",
     votes: 435,
   },
   {
     title: "Proposal",
-    date: "Nov 12 2020",
+    createdAt: new Date("2021-03-05"),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "In Progress",
     votes: 435,
   },
 ]
@@ -63,9 +63,9 @@ export const newForYouHome = [
 export const myProposals = [
   {
     title: "Proposal 1",
-    date: "Nov 12 2020",
+    createdAt: Date.now(),
     description: "Working remotely still allows for creativity and cross-functional collaboration.",
-    status: 1,
+    status: "Draft",
     votes: 435,
   },
 ]
