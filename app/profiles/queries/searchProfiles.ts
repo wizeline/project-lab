@@ -13,7 +13,7 @@ export default resolver.pipe(resolver.authorize(), async (search: String) => {
   let result
   if (search && search !== "") {
     const prefixSearch = search + "*"
-    const where = `WHERE profiles_idx match ?`
+    const where = "WHERE profiles_idx match ?"
     result = await db.$queryRaw(
       `
       ${select}
