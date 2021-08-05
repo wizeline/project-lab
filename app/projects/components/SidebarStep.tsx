@@ -1,39 +1,41 @@
-import React from 'react'
+import React from "react"
 
 interface IObjectStep {
-  step: Number;
-  icon: string;
-  text: string;
+  step: Number
+  icon: string
+  text: string
 }
 
 interface IActiveStep {
-  steps: Array<IObjectStep>;
-  activeStep: Number;
-  onClick: Function;
+  steps: Array<IObjectStep>
+  activeStep: Number
+  onClick: Function
 }
 
 const SidebarStep = ({ steps, activeStep, onClick }: IActiveStep) => {
   return (
     <>
-      <div className='wrapper'>
+      <div className="wrapper">
         <ul>
-          {steps.map((stepItem) => (
-            <li onClick={() => onClick(stepItem.step)} className={activeStep === stepItem.step ? 'active' : ''}>
+          {steps.map((stepItem, index) => (
+            <li
+              key={index}
+              onClick={() => onClick(stepItem.step)}
+              className={activeStep === stepItem.step ? "active" : ""}
+            >
               <div className="icon">
                 <img src={stepItem.icon} alt="ProjectLab" />
               </div>
-              <div className="text">
-                {stepItem.text}
-              </div>
+              <div className="text">{stepItem.text}</div>
             </li>
           ))}
         </ul>
       </div>
       <style jsx>{`
-        .wrapper {
-          border: 0.5px solid #C7CFD6;
+        .wrapper  {
+          border: 0.5px solid #c7cfd6;
           border-radius: 4px;
-          background-color: #FAFBFB;
+          background-color: #fafbfb;
         }
         ul {
           list-style: none;
@@ -41,7 +43,7 @@ const SidebarStep = ({ steps, activeStep, onClick }: IActiveStep) => {
         }
         li {
           margin: 18px 0px;
-          color: #475F7B;
+          color: #475f7b;
           font-family: Poppins;
           font-size: 15px;
           font-weight: 600;
@@ -63,8 +65,8 @@ const SidebarStep = ({ steps, activeStep, onClick }: IActiveStep) => {
           width: 100%;
         }
         .active {
-          background-color: #EDF3FD;
-          color: #5A8DEE;
+          background-color: #edf3fd;
+          color: #5a8dee;
           font-family: Poppins;
           font-size: 15px;
           letter-spacing: 0;
