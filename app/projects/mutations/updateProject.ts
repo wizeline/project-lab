@@ -16,8 +16,16 @@ export default resolver.pipe(
         labels: {
           set: data.labels,
         },
+        projectMembers: {
+          set: [],
+          create: data.projectMembers,
+        },
       },
-      include: { skills: true, labels: true },
+      include: {
+        skills: true,
+        labels: true,
+        projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
+      },
     })
 
     return project

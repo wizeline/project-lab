@@ -34,6 +34,9 @@ export default resolver.pipe(
         labels: {
           connect: input.labels,
         },
+        projectMembers: {
+          create: input.projectMembers,
+        },
       },
     })
 
