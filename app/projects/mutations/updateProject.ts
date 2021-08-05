@@ -1,36 +1,11 @@
 import { resolver } from "blitz"
 import db from "db"
-import { z } from "zod"
-
-const UpdateProject = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().optional().nullable(),
-  valueStatement: z.string().optional().nullable(),
-  target: z.string().optional().nullable(),
-  demo: z.string().optional().nullable(),
-  repoUrl: z.string().optional().nullable(),
-  skills: z
-    .array(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .optional(),
-  labels: z
-    .array(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .optional(),
-})
+import { FullUpdate } from "app/projects/validations"
 
 export default resolver.pipe(
-  resolver.zod(UpdateProject),
+  resolver.zod(FullUpdate),
   resolver.authorize(),
   async ({ id, ...data }) => {
-    console.log(data)
     const project = await db.projects.update({
       where: { id },
       data: {
