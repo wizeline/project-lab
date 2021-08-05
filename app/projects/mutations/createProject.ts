@@ -1,6 +1,6 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
-import { z } from "zod"
+import { FullCreate } from "app/projects/validations"
 
 export class SessionNotFoundError extends Error {
   name = "SessionNotFoundError"
@@ -12,31 +12,8 @@ export class ProfileNotFoundError extends Error {
   message = "There is no profile for current user."
 }
 
-const CreateProject = z.object({
-  name: z.string(),
-  description: z.string().optional().nullable(),
-  valueStatement: z.string().optional().nullable(),
-  target: z.string().optional().nullable(),
-  demo: z.string().optional().nullable(),
-  repoUrl: z.string().optional().nullable(),
-  skills: z
-    .array(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .optional(),
-  labels: z
-    .array(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .optional(),
-})
-
 export default resolver.pipe(
-  resolver.zod(CreateProject),
+  resolver.zod(FullCreate),
   resolver.authorize(),
   async (input, { session }: Ctx) => {
     // TODO: use userId to get profileId
@@ -56,6 +33,9 @@ export default resolver.pipe(
         },
         labels: {
           connect: input.labels,
+        },
+        projectMembers: {
+          create: input.projectMembers,
         },
       },
     })

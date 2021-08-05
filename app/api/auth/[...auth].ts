@@ -19,7 +19,7 @@ export default passportAuth({
               ? "https://example.com/api/auth/auth0/callback"
               : "http://localhost:3000/api/auth/auth0/callback",
         },
-        async function (_token, _tokenSecret, extraParams, profile, done) {
+        async (_token, _tokenSecret, extraParams, profile, done) => {
           const email = profile.emails && profile.emails[0]?.value
 
           if (!email) {

@@ -20,12 +20,12 @@ async function task() {
   await db.skills.deleteMany({ where: { name: { in: skillsFromWizelineOs } } })
 
   if (!skillsFromWizelineOs || skillsFromWizelineOs.length == 0) {
-    console.info(`No skills found on Wizeline OS with filter criteria`)
+    console.info("No skills found on Wizeline OS with filter criteria")
     return
   }
 
   if (skillsFromWizelineOs.length == 0) {
-    console.info(`No new skills to insert`)
+    console.info("No new skills to insert")
     return
   }
 

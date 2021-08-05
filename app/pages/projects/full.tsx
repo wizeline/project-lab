@@ -10,18 +10,18 @@ import SidebarStep from "app/projects/components/SidebarStep"
 const steps = [
   {
     step: 1,
-    icon: '/bulb.png',
-    text: 'Proposal Title'
+    icon: "/bulb.png",
+    text: "Proposal Title",
   },
   {
     step: 2,
-    icon: '/description.png',
-    text: 'Description'
+    icon: "/description.png",
+    text: "Description",
   },
   {
     step: 3,
-    icon: '/team.png',
-    text: 'The team'
+    icon: "/team.png",
+    text: "The team",
   },
 ]
 
@@ -39,10 +39,11 @@ const FullProjectPage: BlitzPage = () => {
       <>
         <ProjectForm
           submitText="Create Project"
-          // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          initialValues={{ skills: [], labels: [] }}
+          initialValues={{
+            skills: [],
+            labels: [],
+            projectMembers: [],
+          }}
           schema={FullCreate}
           onSubmit={async (values) => {
             try {
@@ -94,23 +95,19 @@ const FullProjectPage: BlitzPage = () => {
   return (
     <>
       <Header title="Create your proposal" />
-      <div className='titleBar'>
+      <div className="titleBar">
         <h1>Create your proposal</h1>
       </div>
-      <div className='wrapper'>
-        <div className='wrapper__back'>
-          <div className='wrapper__back--icon' onClick={goBack} />
-          <div className='wrapper__back--text'>
-            Back to main page
-          </div>
+      <div className="wrapper">
+        <div className="wrapper__back">
+          <div className="wrapper__back--icon" onClick={goBack} />
+          <div className="wrapper__back--text">Back to main page</div>
         </div>
-        <div className='wrapper__content'>
-          <div className='wrapper__content--nav'>
+        <div className="wrapper__content">
+          <div className="wrapper__content--nav">
             <SidebarStep steps={steps} activeStep={step} onClick={onClick} />
           </div>
-          <div className='wrapper__content--form'>
-            {renderSteps(step)}
-          </div>
+          <div className="wrapper__content--form">{renderSteps(step)}</div>
         </div>
       </div>
       <style jsx>{`
@@ -128,7 +125,7 @@ const FullProjectPage: BlitzPage = () => {
           padding: 25px 38px;
         }
         h1 {
-          color: #252A2F;
+          color: #252a2f;
           font-family: Poppins;
           font-size: 20px;
           font-weight: 600;
@@ -160,7 +157,7 @@ const FullProjectPage: BlitzPage = () => {
           cursor: pointer;
         }
         .wrapper__back--text {
-          color: #475F7B;
+          color: #475f7b;
           font-family: Poppins;
           font-size: 18px;
           letter-spacing: 0;
@@ -177,7 +174,7 @@ const FullProjectPage: BlitzPage = () => {
         .wrapper__content--form {
           margin-left: 45px;
           width: 100%;
-          max-width: 540px
+          max-width: 540px;
         }
       `}</style>
     </>

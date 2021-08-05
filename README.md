@@ -39,12 +39,15 @@ Ensure the `seeds.ts` file was updated with your user
     where: { email: "[youremail]]wizeline.com" }, ...
 ```
 
+And finally, to install dependencies and run:
+
 ```
-yarn install
-blitz prisma migrate dev
-blitz db seed
-yarn sync-skills
-blitz dev
+yarn install # dependencies
+blitz prisma migrate reset # create or reset the database schema
+sqlite3 db/db.sqlite < db/search_indexes.sql # load full text indexes
+blitz db seed # populate with test data
+yarn sync-skills # sync skills from Wizeline OS
+blitz dev # run blitz
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
