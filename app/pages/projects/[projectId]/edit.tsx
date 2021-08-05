@@ -26,7 +26,7 @@ export const EditProject = () => {
       </Head>
 
       <div>
-        <h1>Edit Project {project.id}</h1>
+        <h1>Edit Project {project.name}</h1>
         <pre>{JSON.stringify(project)}</pre>
 
         <ProjectForm
