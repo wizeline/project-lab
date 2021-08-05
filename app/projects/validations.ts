@@ -30,15 +30,17 @@ export const FullFormFields = {
       z.object({
         profileId: z.string(),
         role: z.string().nullish(),
-        // https://github.com/colinhacks/zod/discussions/330
         hoursPerWeek: z
+          // TextFields return strings
           .string()
           .nullish()
           .refine((val) => !val || /^\d+$/.test(val), {
             message: "Hours per week must be an integer",
             path: ["projectMembers"],
           })
-          .transform((val) => (val ? parseInt(val) : null)),
+          .transform((val) => (val ? parseInt(val) : null))
+          // to allow numbers returned by prisma
+          .or(z.number()),
         active: z.boolean().nullish(),
       })
     )
