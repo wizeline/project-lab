@@ -6,6 +6,10 @@ export default resolver.pipe(
   resolver.zod(FullUpdate),
   resolver.authorize(),
   async ({ id, ...data }) => {
+    // first delete all project members for project id
+    await db.projectMembers.deleteMany({
+      where: { projectId: id },
+    })
     const project = await db.projects.update({
       where: { id },
       data: {
@@ -17,7 +21,7 @@ export default resolver.pipe(
           set: data.labels,
         },
         projectMembers: {
-          set: [],
+          // create again
           create: data.projectMembers,
         },
       },
