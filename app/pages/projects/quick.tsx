@@ -1,12 +1,14 @@
-import { Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
+import { Link, useRouter, useMutation, useSession, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createProject from "app/projects/mutations/createProject"
 import { Form, FORM_ERROR } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
-import { QuickCreate } from "app/projects/validations"
+import { ProjectMembersField } from "app/core/components/ProjectMembersField"
+import { InitialMembers, QuickCreate } from "app/projects/validations"
 
 const QuickProjectPage: BlitzPage = () => {
   const router = useRouter()
+  const session = useSession()
   const [createProjectMutation] = useMutation(createProject)
 
   return (
@@ -15,10 +17,10 @@ const QuickProjectPage: BlitzPage = () => {
 
       <Form
         submitText="Create Project"
-        // TODO use a zod schema for form validation
-        //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-        //         then import and use it here
-        // initialValues={{}}
+        initialValues={{
+          // add current profile as default member
+          projectMembers: InitialMembers(session.profileId),
+        }}
         schema={QuickCreate}
         onSubmit={async (values) => {
           try {
@@ -43,6 +45,7 @@ const QuickProjectPage: BlitzPage = () => {
           label="Your proposal"
           placeholder="Explain us your proposal"
         />
+        <ProjectMembersField name="projectMembers" label="Add a member" />
       </Form>
 
       <p>

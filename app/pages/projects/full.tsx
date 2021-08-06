@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useRouter, useMutation, BlitzPage, Routes, Router } from "blitz"
+import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
-import { FullCreate } from "app/projects/validations"
+import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
 import SidebarStep from "app/projects/components/SidebarStep"
 
@@ -26,6 +26,7 @@ const steps = [
 ]
 
 const FullProjectPage: BlitzPage = () => {
+  const session = useSession()
   const [step, setStep] = useState(1)
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
@@ -42,7 +43,8 @@ const FullProjectPage: BlitzPage = () => {
           initialValues={{
             skills: [],
             labels: [],
-            projectMembers: [],
+            // add current profile as default member
+            projectMembers: InitialMembers(session.profileId),
           }}
           schema={FullCreate}
           onSubmit={async (values) => {
