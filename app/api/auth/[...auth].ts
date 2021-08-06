@@ -1,6 +1,7 @@
 import { passportAuth } from "blitz"
 import db from "db"
 import { Strategy as Auth0Strategy } from "passport-auth0"
+import { getUserProfile } from "app/auth/mutations/login"
 
 export default passportAuth({
   successRedirectUrl: "/",
@@ -35,9 +36,11 @@ export default passportAuth({
             },
             update: { email },
           })
+          const profileId = await getUserProfile(user.id)
 
           const publicData = {
             userId: user.id,
+            profileId: profileId,
             roles: [user.role],
             source: "auth0",
           }

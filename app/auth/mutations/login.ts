@@ -1,6 +1,5 @@
 import { resolver, SecurePassword, AuthenticationError } from "blitz"
 import db from "db"
-import getUserProfile from "app/auth/queries/getUserProfile"
 import { Login } from "../validations"
 import { Role } from "types"
 
@@ -22,10 +21,19 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
   return rest
 }
 
+export const getUserProfile = async (userId: number) => {
+  const userProfileResult = await db.$queryRaw`SELECT p.id FROM Profiles p
+  INNER JOIN User u ON u.email = p.email
+  WHERE u.id = ${userId}`
+  const profileId: string | null = userProfileResult.length == 1 ? userProfileResult[0].id : null
+
+  return profileId
+}
+
 export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {
   // This throws an error if credentials are invalid
   const user = await authenticateUser(email, password)
-  const profileId = await getUserProfile({ userId: user.id }, ctx)
+  const profileId = await getUserProfile(user.id)
 
   await ctx.session.$create({ userId: user.id, role: user.role as Role, profileId: profileId })
 
