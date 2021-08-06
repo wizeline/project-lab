@@ -12,10 +12,7 @@ interface GetProjectsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput, { session }: Ctx) => {
-    const profiles = await db.$queryRaw`SELECT p.id FROM Profiles p
-    INNER JOIN User u ON u.email = p.email
-    WHERE u.id = ${session.userId}`
-    if (profiles.length != 1) throw new ProfileNotFoundError()
+    if (!session.profileId) throw new ProfileNotFoundError()
 
     const {
       items: projects,
@@ -30,7 +27,7 @@ export default resolver.pipe(
         db.projects.findMany({
           ...paginateArgs,
           where: {
-            ownerId: { equals: profiles[0].id },
+            ownerId: { equals: session.profileId },
           },
           orderBy,
         }),
