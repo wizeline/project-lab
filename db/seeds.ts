@@ -26,17 +26,17 @@ const seed = async () => {
   await db.projectStatus.upsert({
     where: { name: "Draft" },
     update: {},
-    create: { name: "Draft" },
+    create: { name: "Draft", color: "#fe6f18" },
   })
   await db.projectStatus.upsert({
     where: { name: "In Progress" },
     update: {},
-    create: { name: "In Progress" },
+    create: { name: "In Progress", color: "#188bff" },
   })
   await db.projectStatus.upsert({
     where: { name: "Archived" },
     update: {},
-    create: { name: "Archived" },
+    create: { name: "Archived", color: "#7bc96b" },
   })
   await db.projectStatus.upsert({
     where: { name: "On Hold" },

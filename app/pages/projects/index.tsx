@@ -5,7 +5,6 @@ import getProjects from "app/projects/queries/getProjects"
 import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
-import { newForYouHome } from "app/core/utils/mock_data"
 
 import Header from "app/core/layouts/Header"
 
@@ -77,6 +76,7 @@ const ProjectsPage: BlitzPage = () => {
         }).format(item.createdAt)}
         description={item.description}
         status={item.status}
+        color={item.projectStatus.color}
         votes={1000}
       />
     )
@@ -129,11 +129,6 @@ const ProjectsPage: BlitzPage = () => {
                 <button disabled={!hasMore} onClick={goToNextPage}>
                   Next
                 </button>
-              </CardBox>
-            </div>
-            <div className="homeWrapper__information--row">
-              <CardBox title="New for you">
-                <div className="homeWrapper__items">{newForYouHome.map(mapRenderProposals)}</div>
               </CardBox>
             </div>
           </div>

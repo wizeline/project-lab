@@ -12,7 +12,9 @@ interface GetProjectsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput, { session }: Ctx) => {
-    if (!session.profileId) throw new ProfileNotFoundError()
+    if (!session.profileId) return { projects: [], nextPage: null, hasMore: false, count: 0 }
+    // avoid typescript error
+    const profileId = session.profileId ?? "-"
 
     const {
       items: projects,
@@ -27,8 +29,9 @@ export default resolver.pipe(
         db.projects.findMany({
           ...paginateArgs,
           where: {
-            ownerId: { equals: session.profileId },
+            projectMembers: { some: { profileId: { equals: profileId } } },
           },
+          include: { projectStatus: true },
           orderBy,
         }),
     })

@@ -128,6 +128,7 @@ model ProjectMembers {
 
 model ProjectStatus {
   name     String     @id
+  color    String     @default("#1d1d1d")
   projects Projects[]
 }
 

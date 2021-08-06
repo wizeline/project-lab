@@ -1,17 +1,16 @@
 import React from "react"
-import { ProjectStatus, STATUS } from "../utils/constants"
+import { Draft } from "../utils/constants"
 
 interface IProps {
   title: String
   date: String
   description: String
   status: String
+  color: any
   votes?: Number | null
 }
 
 function ProposalCard(props: IProps) {
-  const findConfig: any = STATUS.find((e) => e.name === props.status)
-
   return (
     <>
       <div className="ProposalCard">
@@ -23,8 +22,8 @@ function ProposalCard(props: IProps) {
           </div>
         </div>
         <div className="ProposalCard--description">{props.description}</div>
-        <div className="ProposalCard--status" style={{ backgroundColor: findConfig.color }}>
-          {props.status === ProjectStatus.Draft ? props.votes : findConfig.name}
+        <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
+          {props.status === Draft ? props.votes : props.status}
         </div>
       </div>
       <style jsx>{`
