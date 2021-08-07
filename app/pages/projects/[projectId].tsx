@@ -3,12 +3,23 @@ import { Head, Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Rout
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import deleteProject from "app/projects/mutations/deleteProject"
+import upvoteProject from "app/projects/mutations/upvoteProject"
 
 export const Project = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "string")
   const [deleteProjectMutation] = useMutation(deleteProject)
-  const [project] = useQuery(getProject, { id: projectId })
+  const [project, { refetch }] = useQuery(getProject, { id: projectId })
+  const [upvoteProjectMutation] = useMutation(upvoteProject)
+
+  const handleVote = async (id: string) => {
+    try {
+      await upvoteProjectMutation({ id })
+      refetch()
+    } catch (error) {
+      alert("Error updating votes " + JSON.stringify(error, null, 2))
+    }
+  }
 
   return (
     <>
@@ -36,6 +47,8 @@ export const Project = () => {
         >
           Delete
         </button>
+
+        <button onClick={() => handleVote(project.id)}>UPVOTE {project.votesCount}</button>
       </div>
     </>
   )

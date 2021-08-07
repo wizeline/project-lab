@@ -104,6 +104,7 @@ model Profiles {
   profileSkills  ProfileSkills[]
   projectMembers ProjectMembers[]
   projects       Projects[]
+  votes          Vote[]
 
   @@index([email], name: "profiles_email_idx")
   @@index([jobTitleId], name: "profiles_job_title_id_idx")
@@ -159,10 +160,22 @@ model Projects {
   projectMembers ProjectMembers[]
   skills         Skills[]
   labels         Labels[]
+  votes          Vote[]
+  votesCount     Int              @default(0)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
+}
+
+model Vote {
+  projectId String
+  profileId String
+  project   Projects @relation(fields: [projectId], references: [id])
+  profile   Profiles @relation(fields: [profileId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, profileId])
 }
 
 model Skills {

@@ -11,40 +11,6 @@ import Header from "app/core/layouts/Header"
 const ITEMS_PER_PAGE = 4
 const MY_ITEMS_MAX = 10
 
-//Component to render an unformated list of projects **deprecate code**
-export const ProjectsList = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  return (
-    <div>
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <Link href={Routes.ShowProjectPage({ projectId: project.id })}>
-              <a>{project.name}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
-    </div>
-  )
-}
-
 const ProjectsPage: BlitzPage = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
@@ -67,7 +33,7 @@ const ProjectsPage: BlitzPage = () => {
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
-        key={i}
+        id={item.id}
         title={item.name}
         date={new Intl.DateTimeFormat([], {
           year: "numeric",
@@ -77,7 +43,7 @@ const ProjectsPage: BlitzPage = () => {
         description={item.description}
         status={item.status}
         color={item.projectStatus.color}
-        votes={1000}
+        votesCount={item.votesCount}
       />
     )
   }
@@ -89,19 +55,6 @@ const ProjectsPage: BlitzPage = () => {
   return (
     <>
       <Header title="Projects" />
-      {/*
-          <div>
-            <p>
-              <Link >
-                <a>Create Project</a>
-              </Link>
-            </p>
-
-            <Suspense fallback={<div>Loading...</div>}>
-              <ProjectsList />
-            </Suspense>
-          </div>
-        */}
       <div className="homeWrapper">
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__categories">
@@ -122,7 +75,7 @@ const ProjectsPage: BlitzPage = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox title="Popular">
-                <div className="homeWrapper__items">{projects.map(mapRenderProposals)}</div>
+                <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button disabled={page === 0} onClick={goToPreviousPage}>
                   Previous{" "}
                 </button>
@@ -132,8 +85,10 @@ const ProjectsPage: BlitzPage = () => {
               </CardBox>
             </div>
           </div>
-          <div className="homeWrapper__proposals">
-            <CardBox title="My proposals">{myProjects.map(mapRenderProposals)}</CardBox>
+          <div className="homeWrapper__myProposals">
+            <CardBox title="My proposals">
+              <div className="homeWrapper__myProposals">{myProjects.map(mapRenderProposals)}</div>
+            </CardBox>
           </div>
         </div>
       </div>
@@ -223,14 +178,16 @@ const ProjectsPage: BlitzPage = () => {
         .homeWrapper__information--row:last-child {
           margin-bottom: 0px;
         }
-        .homeWrapper__items {
+        .homeWrapper__popular {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           row-gap: 35px;
           column-gap: 15px;
           margin-bottom: 35px;
         }
-        .homeWrapper__proposals {
+        .homeWrapper__myProposals {
+          display: grid;
+          row-gap: 35px;
           width: 100%;
           max-width: 390px;
           margin-left: 15px;

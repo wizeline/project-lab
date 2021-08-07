@@ -1,40 +1,43 @@
 import React from "react"
+import { Link, Routes } from "blitz"
+import Card from "@material-ui/core/Card"
+import CardContent from "@material-ui/core/CardContent"
+import { CardActionArea } from "@material-ui/core"
 import { Draft } from "../utils/constants"
 
 interface IProps {
+  id: string | number
   title: String
   date: String
   description: String
   status: String
   color: any
-  votes?: Number | null
+  votesCount?: Number | null
 }
 
 function ProposalCard(props: IProps) {
   return (
     <>
-      <div className="ProposalCard">
-        <div className="ProposalCard__head">
-          <div className="ProposalCard__head__icon">AB</div>
-          <div className="ProposalCard__head__description">
-            <div className="ProposalCard__head__description--title">{props.title}</div>
-            <div className="ProposalCard__head__description--date">{props.date}</div>
-          </div>
-        </div>
-        <div className="ProposalCard--description">{props.description}</div>
-        <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
-          {props.status === Draft ? props.votes : props.status}
-        </div>
-      </div>
+      <Card sx={{ minWidth: 180, maxWidth: 280, borderRadius: 5 }}>
+        <CardActionArea>
+          <Link href={Routes.ShowProjectPage({ projectId: props.id })}>
+            <CardContent style={{ backgroundColor: "#e7f2fb" }}>
+              <div className="ProposalCard__head">
+                <div className="ProposalCard__head__icon">AB</div>
+                <div className="ProposalCard__head__description">
+                  <div className="ProposalCard__head__description--title">{props.title}</div>
+                  <div className="ProposalCard__head__description--date">{props.date}</div>
+                </div>
+              </div>
+              <div className="ProposalCard--description">{props.description}</div>
+              <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
+                {props.status === Draft ? props.votesCount : props.status}
+              </div>
+            </CardContent>
+          </Link>
+        </CardActionArea>
+      </Card>
       <style jsx>{`
-        .ProposalCard {
-          background-color: #e7f2fb;
-          padding: 10px 20px;
-          border-radius: 25px;
-          position: relative;
-          max-width: 280px;
-          margin: 0 auto;
-        }
         .ProposalCard__head {
           display: flex;
           align-items: center;
