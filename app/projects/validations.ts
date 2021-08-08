@@ -69,3 +69,7 @@ export const FullUpdate = z.object({
   id: z.string(),
   ...FullFormFields,
 })
+
+export const UpdateVotes = z.object({
+  id: z.string(),
+})
