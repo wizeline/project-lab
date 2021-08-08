@@ -35,14 +35,6 @@ const projectMembers = z
   )
   .optional()
 
-const votes = z
-  .array(
-    z.object({
-      profileId: z.string(),
-    })
-  )
-  .optional()
-
 export const QuickCreate = z.object({
   name: z.string(),
   description: z.string().nullish(),
@@ -80,5 +72,4 @@ export const FullUpdate = z.object({
 
 export const UpdateVotes = z.object({
   id: z.string(),
-  votes,
 })
