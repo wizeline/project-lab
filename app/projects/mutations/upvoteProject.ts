@@ -1,11 +1,7 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { UpdateVotes } from "app/projects/validations"
-
-export class ProfileNotFoundError extends Error {
-  name = "ProfileNotFoundError"
-  message = "There is no profile for current user."
-}
+import { ProfileNotFoundError } from "app/auth/mutations/login"
 
 export default resolver.pipe(
   resolver.zod(UpdateVotes),
