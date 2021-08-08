@@ -31,7 +31,7 @@ export const getUserProfile = async (userId: number): Promise<string> => {
   INNER JOIN User u ON u.email = p.email
   WHERE u.id = ${userId}`
 
-  if (userProfileResult.length == 1) throw new ProfileNotFoundError()
+  if (userProfileResult.length != 1) throw new ProfileNotFoundError()
   else return userProfileResult[0].id
 }
 
