@@ -1,14 +1,20 @@
 import { Suspense } from "react"
-import { Head, Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
-import deleteProject from "app/projects/mutations/deleteProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
+import Header from "app/core/layouts/Header"
+import Card from "@material-ui/core/Card"
+import CardContent from "@material-ui/core/CardContent"
+import Container from "@material-ui/core/Container"
+import Chip from "@material-ui/core/Chip"
+import Stack from "@material-ui/core/Stack"
+import Grid from "@material-ui/core/Grid"
+import Typography from "@material-ui/core/Typography"
 
 export const Project = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "string")
-  const [deleteProjectMutation] = useMutation(deleteProject)
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
 
@@ -23,33 +29,96 @@ export const Project = () => {
 
   return (
     <>
-      <Head>
-        <title>Project {project.id}</title>
-      </Head>
+      <Header title={project.name} />
 
-      <div>
-        <h1>Project {project.id}</h1>
-        <pre>{JSON.stringify(project, null, 2)}</pre>
-
-        <Link href={Routes.EditProjectPage({ projectId: project.id })}>
-          <a>Edit</a>
-        </Link>
-
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteProjectMutation({ id: project.id })
-              router.push(Routes.ProjectsPage())
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
-
-        <button onClick={() => handleVote(project.id)}>UPVOTE {project.votesCount}</button>
+      <div className="wrapper">
+        <Grid container justifyContent="space-between">
+          <Grid item>
+            <h1>{project.name}</h1>
+            <small>
+              <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
+                <a>Edit</a>
+              </Link>
+            </small>
+          </Grid>
+          <Grid item>
+            <button className="primary" onClick={() => handleVote(project.id)}>
+              UPVOTE {project.votesCount}
+            </button>
+          </Grid>
+        </Grid>
+        <div>{project.description}</div>
       </div>
+      <div className="wrapper">
+        <Grid container alignItems="center">
+          <Grid item xs={4}>
+            <big>Status:</big> {project.status}
+          </Grid>
+          <Grid item xs={4}>
+            <big>Category:</big> {"category"}
+          </Grid>
+          <Grid item container xs={4} spacing={1} alignItems="center">
+            <Grid item>
+              <big>Labels:</big>
+            </Grid>
+            <Grid item>
+              {project.labels.map((item, index) => (
+                <div key={index}>{item.name}</div>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      </div>
+      <Container>
+        <Grid container spacing={2} alignItems="stretch">
+          <Grid item xs={8}>
+            <Card variant="outlined">
+              <CardContent>
+                <h2>Description</h2>
+                <div>{project.valueStatement}</div>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={4}>
+            <Stack direction="column" spacing={1}>
+              <Card variant="outlined">
+                <CardContent>
+                  <big>Skills:</big>
+                  <Stack direction="row" spacing={1}>
+                    {project.skills.map((item, index) => (
+                      <Chip key={index} label={item.name} />
+                    ))}
+                  </Stack>
+                </CardContent>
+              </Card>
+              <Card variant="outlined">
+                <CardContent>
+                  <big>Members:</big>
+                  <Stack direction="column">
+                    {project.projectMembers
+                      .sort((item) => (item.active ? 0 : 1))
+                      .map((item, index) => (
+                        <div key={index}>
+                          <Typography color={item.active ? "text.primary" : "text.secondary"}>
+                            <div>
+                              {item.profile?.firstName} {item.profile?.lastName}
+                              {item.hoursPerWeek
+                                ? " - " + item.hoursPerWeek + " Hours per week"
+                                : null}
+                            </div>
+                            <div>
+                              <small>{item.role}</small>
+                            </div>
+                          </Typography>
+                        </div>
+                      ))}
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Stack>
+          </Grid>
+        </Grid>
+      </Container>
     </>
   )
 }
@@ -57,12 +126,6 @@ export const Project = () => {
 const ShowProjectPage: BlitzPage = () => {
   return (
     <div>
-      <p>
-        <Link href={Routes.ProjectsPage()}>
-          <a>Projects</a>
-        </Link>
-      </p>
-
       <Suspense fallback={<div>Loading...</div>}>
         <Project />
       </Suspense>
