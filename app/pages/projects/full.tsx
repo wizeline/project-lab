@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import GoBack from "app/core/layouts/GoBack"
 import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
@@ -90,21 +91,14 @@ const FullProjectPage: BlitzPage = () => {
     }
   }
 
-  const goBack = () => {
-    Router.push(Routes.NewProjectPage())
-  }
-
   return (
     <>
       <Header title="Create your proposal" />
-      <div className="titleBar">
+      <div className="wrapper">
         <h1>Create your proposal</h1>
       </div>
       <div className="wrapper">
-        <div className="wrapper__back">
-          <div className="wrapper__back--icon" onClick={goBack} />
-          <div className="wrapper__back--text">Back to main page</div>
-        </div>
+        <GoBack title="Back to main page" onClick={() => Router.push(Routes.NewProjectPage())} />
         <div className="wrapper__content">
           <div className="wrapper__content--nav">
             <SidebarStep steps={steps} activeStep={step} onClick={onClick} />
@@ -113,59 +107,6 @@ const FullProjectPage: BlitzPage = () => {
         </div>
       </div>
       <style jsx>{`
-        .titleBar {
-          background-color: #fff;
-          border-radius: 7px;
-          display: flex;
-          margin-bottom: 15px;
-          width: 100%;
-          max-width: 951px;
-          margin-top: 67px;
-          margin-left: auto;
-          margin-right: auto;
-          box-sizing: border-box;
-          padding: 25px 38px;
-        }
-        h1 {
-          color: #252a2f;
-          font-family: Poppins;
-          font-size: 20px;
-          font-weight: 600;
-          letter-spacing: 0;
-          line-height: 30px;
-        }
-        .wrapper {
-          width: 100%;
-          max-width: 951px;
-          border-radius: 7px;
-          background-color: #ffffff;
-          margin-top: 15px;
-          margin-left: auto;
-          margin-right: auto;
-          padding: 20px 23px;
-          box-sizing: border-box;
-        }
-        .wrapper__back {
-          margin-left: 12px;
-          display: flex;
-          height: 51px;
-          margin-bottom: 67px;
-        }
-        .wrapper__back--icon {
-          width: 23px;
-          height: 23px;
-          background-size: contain;
-          background-image: url(/arrow-back.png);
-          cursor: pointer;
-        }
-        .wrapper__back--text {
-          color: #475f7b;
-          font-family: Poppins;
-          font-size: 18px;
-          letter-spacing: 0;
-          line-height: 27px;
-          margin-left: 14px;
-        }
         .wrapper__content {
           display: flex;
           flex-direction: row;
