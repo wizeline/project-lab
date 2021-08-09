@@ -38,7 +38,7 @@ export function ProjectMembersField({ name, label, helperText }: ProfilesSelectP
               loading={isLoading}
               options={profiles}
               filterSelectedOptions
-              isOptionEqualToValue={(option, value) => option.name === value.name}
+              isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
               value={input.value}
