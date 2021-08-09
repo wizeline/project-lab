@@ -55,7 +55,7 @@ export const Project = () => {
             <big>Status:</big> {project.status}
           </Grid>
           <Grid item xs={4}>
-            <big>Category:</big> {"category"}
+            <big>Category:</big> {project.categoryName}
           </Grid>
           <Grid item container xs={4} spacing={1} alignItems="center">
             <Grid item>
