@@ -1,4 +1,4 @@
-import { Head, Router, Routes } from "blitz"
+import { Head, Image, Router, Routes } from "blitz"
 import React from "react"
 
 interface IProps {
@@ -19,7 +19,7 @@ function Header({ title }: IProps) {
         <div className="content">
           <div className="logo" onClick={goHome}>
             <div className="logo--img">
-              <img src="/wizeline.png" alt="wizeline" />
+              <Image src="/wizeline.png" alt="wizeline" height={80} width={80} />
             </div>
             <div className="logo--text">Proposal Hunt</div>
           </div>
@@ -52,13 +52,7 @@ function Header({ title }: IProps) {
           cursor: pointer;
         }
         .logo--img {
-          width: 40px;
-          height: 40px;
           margin-right: 7px;
-        }
-        .logo--img img {
-          height: 40px;
-          width: 40px;
         }
         .logo--text {
           height: 32px;
