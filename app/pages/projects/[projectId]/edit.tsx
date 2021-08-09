@@ -1,6 +1,8 @@
 import { Suspense } from "react"
-import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Router, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import GoBack from "app/core/layouts/GoBack"
+import Header from "app/core/layouts/Header"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
@@ -21,14 +23,16 @@ export const EditProject = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit Project {project.id}</title>
-      </Head>
+      <Header title={"Edit " + project.name} />
 
-      <div>
-        <h1>Edit Project {project.name}</h1>
-        <pre>{JSON.stringify(project)}</pre>
-
+      <div className="wrapper">
+        <h1>Edit {project.name}</h1>
+      </div>
+      <div className="wrapper">
+        <GoBack
+          title="Back to project"
+          onClick={() => Router.push(Routes.ShowProjectPage({ projectId: project.id }))}
+        />
         <ProjectForm
           submitText="Update Project"
           // TODO use a zod schema for form validation
