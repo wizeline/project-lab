@@ -27,10 +27,18 @@ const Layout = ({ title, children }: LayoutProps) => {
         h1 {
           color: #252a2f;
           font-family: Poppins;
-          font-size: 20px;
+          font-size: 22px;
           font-weight: 600;
           letter-spacing: 0;
           line-height: 30px;
+        }
+        h2 {
+          color: #252a2f;
+          font-family: Poppins;
+          font-size: 18px;
+          font-weight: 600;
+          letter-spacing: 0;
+          line-height: 26px;
         }
         .wrapper {
           margin: 35px auto;
@@ -57,6 +65,9 @@ const Layout = ({ title, children }: LayoutProps) => {
           width: 160px;
           height: 44px;
           cursor: pointer;
+        }
+        button.primary.warning {
+          background-color: red;
         }
       `}</style>
     </>
