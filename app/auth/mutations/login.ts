@@ -3,6 +3,11 @@ import db from "db"
 import { Login } from "../validations"
 import { Role } from "types"
 
+export class ProfileNotFoundError extends Error {
+  name = "ProfileNotFoundError"
+  message = "There is no profile for current user."
+}
+
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
   const email = rawEmail.toLowerCase().trim()
   const password = rawPassword.trim()
@@ -21,13 +26,13 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
   return rest
 }
 
-export const getUserProfile = async (userId: number) => {
+export const getUserProfile = async (userId: number): Promise<string> => {
   const userProfileResult = await db.$queryRaw`SELECT p.id FROM Profiles p
   INNER JOIN User u ON u.email = p.email
   WHERE u.id = ${userId}`
-  const profileId: string | null = userProfileResult.length == 1 ? userProfileResult[0].id : null
 
-  return profileId
+  if (userProfileResult.length != 1) throw new ProfileNotFoundError()
+  else return userProfileResult[0].id
 }
 
 export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {

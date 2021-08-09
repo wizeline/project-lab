@@ -47,6 +47,13 @@ describe("resetPassword mutation", () => {
       },
       include: { tokens: true },
     })
+    await db.profiles.create({
+      data: {
+        email: user.email,
+        firstName: "User",
+        lastName: "Test",
+      },
+    })
 
     const newPassword = "newPassword"
 

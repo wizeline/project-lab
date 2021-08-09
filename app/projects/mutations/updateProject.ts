@@ -1,11 +1,11 @@
-import { resolver } from "blitz"
+import { resolver, Ctx } from "blitz"
 import db from "db"
 import { FullUpdate } from "app/projects/validations"
 
 export default resolver.pipe(
   resolver.zod(FullUpdate),
   resolver.authorize(),
-  async ({ id, ...data }) => {
+  async ({ id, ...data }, { session }: Ctx) => {
     // first delete all project members for project id
     await db.projectMembers.deleteMany({
       where: { projectId: id },
@@ -29,6 +29,7 @@ export default resolver.pipe(
         skills: true,
         labels: true,
         projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
+        votes: { where: { profileId: session.profileId } },
       },
     })
 
