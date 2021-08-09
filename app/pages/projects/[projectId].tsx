@@ -95,23 +95,21 @@ export const Project = () => {
                 <CardContent>
                   <big>Members:</big>
                   <Stack direction="column">
-                    {project.projectMembers
-                      .sort((item) => (item.active ? 0 : 1))
-                      .map((item, index) => (
-                        <div key={index}>
-                          <Typography color={item.active ? "text.primary" : "text.secondary"}>
-                            <div>
-                              {item.profile?.firstName} {item.profile?.lastName}
-                              {item.hoursPerWeek
-                                ? " - " + item.hoursPerWeek + " Hours per week"
-                                : null}
-                            </div>
-                            <div>
-                              <small>{item.role}</small>
-                            </div>
-                          </Typography>
-                        </div>
-                      ))}
+                    {project.projectMembers.map((item, index) => (
+                      <div key={index}>
+                        <Typography color={item.active ? "text.primary" : "text.secondary"}>
+                          <div>
+                            {item.profile?.firstName} {item.profile?.lastName}
+                            {item.hoursPerWeek
+                              ? " - " + item.hoursPerWeek + " Hours per week"
+                              : null}
+                          </div>
+                          <div>
+                            <small>{item.role}</small>
+                          </div>
+                        </Typography>
+                      </div>
+                    ))}
                   </Stack>
                 </CardContent>
               </Card>
