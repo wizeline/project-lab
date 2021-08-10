@@ -9,8 +9,8 @@ variable "overall_cost_budget_config" {
   type        = object({ limit : number, threshold : number })
   description = "configurations for the overall budget"
   default = {
-    limit     = 200
-    threshold = 100
+    limit     = 120
+    threshold = 80
   }
 }
 
@@ -19,9 +19,14 @@ variable "services_cost_budget_config" {
   description = "configurations for budgets per service"
   default = [
     {
-      service_name = "Amazon Route 53"
-      limit        = 5
-      threshold    = 1
+      service_name = "Amazon Lightsail"
+      limit        = 60
+      threshold    = 30
+    },
+    {
+      service_name = "Amazon CloudFront"
+      limit        = 25
+      threshold    = 15
     },
     {
       service_name = "Amazon Route 53"
