@@ -1,4 +1,4 @@
-variable "lightsail_lb_dns" {
+variable "lightsail_instance_ip_address" {
   type        = string
-  description = "DNS name of load balancer connected to the lightsail instance"
+  description = "Public IP address of lightsail instance"
 }

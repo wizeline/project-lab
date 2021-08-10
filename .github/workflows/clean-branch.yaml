@@ -17,9 +17,6 @@ jobs:
           aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
           aws-region: us-east-1
-      - name: "Delete Load Balancer"
-        run: aws lightsail delete-load-balancer --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb
-        continue-on-error: true
       - name: Destroy lightsail
         uses: dflook/terraform-destroy@v1
         with:

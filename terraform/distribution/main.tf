@@ -20,7 +20,7 @@ provider "aws" {
 }
 
 locals {
-  env_prefix = terraform.workspace == "default"?"default":replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-")
+  env_prefix = terraform.workspace == "default" ? "default" : replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-")
 
   resource_tags = {
     ProjectName = "ProjectLab"
@@ -38,7 +38,7 @@ data "aws_acm_certificate" "certificate" {
 resource "aws_cloudfront_distribution" "distribution" {
   origin {
     origin_id   = local.env_prefix == "default" ? "default" : local.env_prefix
-    domain_name = var.lightsail_lb_dns
+    domain_name = local.env_prefix == "default" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
     custom_origin_config {
       http_port              = 80
       https_port             = 80
@@ -47,11 +47,11 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "default" ? "labs.wizeline.com" : replace("${local.env_prefix}.labs.wizeline.com", "_", "-")]
+  aliases = [local.env_prefix == "default" ? "labs.wizeline.com" : "${local.env_prefix}.labs.wizeline.com"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
-    path_pattern     = "/"
+    path_pattern     = "*"
     target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
@@ -65,19 +65,9 @@ resource "aws_cloudfront_distribution" "distribution" {
     forwarded_values {
       query_string = true
       cookies {
-        forward = "none"
+        forward = "all"
       }
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn = data.aws_acm_certificate.certificate.arn
-    ssl_support_method  = "sni-only"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
+      headers = ["Host","Content-Type","Authorization"]
     }
   }
 
@@ -90,8 +80,10 @@ resource "aws_cloudfront_distribution" "distribution" {
       query_string = false
 
       cookies {
-        forward = "none"
+        forward = "all"
       }
+
+      headers = ["Host","Content-Type","Authorization"]
     }
 
     viewer_protocol_policy = "allow-all"
@@ -99,11 +91,32 @@ resource "aws_cloudfront_distribution" "distribution" {
     default_ttl            = 3600
     max_ttl                = 86400
   }
+
+  viewer_certificate {
+    acm_certificate_arn = data.aws_acm_certificate.certificate.arn
+    ssl_support_method  = "sni-only"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
 }
 
 data "aws_route53_zone" "route53_zone" {
   name         = "labs.wizeline.com"
   private_zone = false
+}
+
+resource "aws_route53_record" "origin_distribution_route53_record" {
+  zone_id         = data.aws_route53_zone.route53_zone.zone_id
+  name            = local.env_prefix == "default" ? "origin" : "${local.env_prefix}-origin"
+  type            = "A"
+  allow_overwrite = true
+  ttl             = 1
+  records         = [var.lightsail_instance_ip_address]
+  depends_on      = [aws_cloudfront_distribution.distribution]
 }
 
 resource "aws_route53_record" "distribution_route53_record" {
