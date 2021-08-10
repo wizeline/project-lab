@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import styled from "@emotion/styled"
 import { TextField, Dialog } from "@material-ui/core"
+import Title from "app/projects/components/Title"
 
 function TheTheam() {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -42,15 +43,6 @@ function TheTheam() {
     </Wrapper>
   )
 }
-
-const Title = styled.div`
-  color: #252a2f;
-  font-family: Poppins;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 30px;
-`
 
 const Button = styled.div`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
