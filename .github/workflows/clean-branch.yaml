@@ -1,0 +1,39 @@
+name: Clean Branch
+on: [delete]
+jobs:
+  deploy-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.get-branch.outputs.branch }}
+      - name: Get Github Branch
+        id: get-branch
+        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g")
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
+          aws-region: us-east-1
+      - name: "Delete Load Balancer"
+        run: aws lightsail delete-load-balancer --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb
+        continue-on-error: true
+      - name: Destroy lightsail
+        uses: dflook/terraform-destroy@v1
+        with:
+          path: "terraform/lightsail/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+        continue-on-error: true
+      - id: get-lightsail-dns
+        name: Get Load Balancer DNS
+        run: echo ::set-output name=DNS_NAME::$(aws lightsail get-load-balancer --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb | jq -r '.loadBalancer.dnsName')
+        continue-on-error: true
+      - name: Destroy Distribution
+        uses: dflook/terraform-destroy@v1
+        with:
+          path: "terraform/distribution/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+          var: lightsail_lb_dns=${{steps.get-lightsail-dns.outputs.DNS_NAME}}
+        continue-on-error: true

@@ -1,0 +1,92 @@
+name: Deploy Rollback
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag which should be deployed"
+        required: true
+        default: ""
+defaults:
+  run:
+    shell: bash
+jobs:
+  deploy-branch:
+    env:
+      NODE_ENV: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.tag }}
+      - name: Get Github Branch
+        id: get-branch
+        run: echo ::set-output name=branch::$(echo "default")
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
+          aws-region: us-east-1
+      - name: Delete Instance
+        run: aws lightsail delete-instance --instance-name project-lab-${{ steps.get-branch.outputs.branch }}
+        continue-on-error: true
+      - name: Terraform Change Workspace Lightsail
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: "terraform/lightsail/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+      - name: Terraform Apply Lightsail
+        uses: dflook/terraform-apply@v1
+        with:
+          path: "terraform/lightsail/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+          auto_approve: true
+      - name: Create Load Balancer
+        run: aws lightsail create-load-balancer --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb --instance-port 80
+        continue-on-error: true
+      - name: Attach Load Balancer
+        run: aws lightsail attach-instances-to-load-balancer --instance-names project-lab-${{ steps.get-branch.outputs.branch }} --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb
+      - id: get-lightsail-username
+        name: Get Lightsail Instance Username
+        run: echo ::set-output name=USERNAME::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.username')
+      - id: get-lightsail-ip-address
+        name: Get Lightsail Instance IP Address
+        run: echo ::set-output name=IP_ADDRESS::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.ipAddress')
+      - name: Remove existing .env file
+        run: rm -rf .env
+      - name: Set env-file File
+        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+      - name: Copy Files To Lightsail Instance
+        uses: wlixcc/SFTP-Deploy-Action@v1.0
+        with:
+          username: ${{steps.get-lightsail-username.outputs.USERNAME}}
+          server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          local_path: "./*"
+          remote_path: "/home/admin"
+          args: "-o ConnectTimeout=60"
+      - name: Configure Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          username: ${{steps.get-lightsail-username.outputs.USERNAME}}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            chmod +x /home/admin/terraform/set-up-lightsail-instance.sh
+            ./terraform/set-up-lightsail-instance.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }} ${{ secrets.SQLITE_DB_PATH }} ${{ secrets.LITESTREAM_S3_BUCKET }} ${{ secrets.LITESTREAM_S3_PATH }} ${{ secrets.SEED_DATA }}
+      - id: get-lightsail-dns
+        name: Get Load Balancer DNS
+        run: echo ::set-output name=DNS_NAME::$(aws lightsail get-load-balancer --load-balancer-name project-lab-${{ steps.get-branch.outputs.branch }}-lb | jq -r '.loadBalancer.dnsName')
+      - name: Terraform Change Workspace Distribution
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: "terraform/distribution/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+      - name: Terraform Apply Distribution
+        uses: dflook/terraform-apply@v1
+        with:
+          path: "terraform/distribution/"
+          workspace: ${{ steps.get-branch.outputs.branch }}
+          auto_approve: true
+          var: lightsail_lb_dns=${{steps.get-lightsail-dns.outputs.DNS_NAME}}
