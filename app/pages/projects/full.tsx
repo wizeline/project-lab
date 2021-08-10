@@ -7,6 +7,7 @@ import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
 import SidebarStep from "app/projects/components/SidebarStep"
+import TheTheam from "app/projects/components/tabs/TheTeam"
 
 const steps = [
   {
@@ -75,7 +76,7 @@ const FullProjectPage: BlitzPage = () => {
   }
 
   const thirdStep = () => {
-    return <div>step 3</div>
+    return <TheTheam />
   }
 
   const renderSteps = (activeStep) => {
