@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   run-tests:
+    timeout-minutes: 30
     env:
       NODE_ENV: test
     runs-on: ubuntu-latest
