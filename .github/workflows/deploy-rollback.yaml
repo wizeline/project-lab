@@ -56,7 +56,7 @@ jobs:
       - name: Remove existing .env file
         run: rm -rf .env
       - name: Set env-file File
-        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+        run: aws secretsmanager get-secret-value --secret-id env-production | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
         with:
