@@ -10,6 +10,7 @@ export default resolver.pipe(
       data: {
         ...input,
         owner: { connect: { id: session.profileId } },
+        category: { connect: { name: input.category?.name } },
         skills: {
           connect: input.skills,
         },

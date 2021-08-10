@@ -14,6 +14,7 @@ export default resolver.pipe(
       where: { id },
       data: {
         ...data,
+        category: { connect: { name: data.category?.name } },
         skills: {
           set: data.skills,
         },
@@ -26,6 +27,7 @@ export default resolver.pipe(
         },
       },
       include: {
+        category: true,
         skills: true,
         labels: true,
         projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
