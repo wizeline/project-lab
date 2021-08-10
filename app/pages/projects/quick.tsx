@@ -32,7 +32,7 @@ const QuickProjectPage: BlitzPage = () => {
       </div>
       <div className="wrapper">
         <GoBack title="Back to main page" onClick={() => router.push(Routes.NewProjectPage())} />
-        <div className="formQuick">
+        <FormQuickWrap>
           <Form
             submitText="Create Project"
             fullWidthButton
@@ -54,28 +54,28 @@ const QuickProjectPage: BlitzPage = () => {
               }
             }}
           >
-            <div className="formQuick--input">
+            <FormQuickInput>
               <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
-            </div>
-            <div className="formQuick--input">
+            </FormQuickInput>
+            <FormQuickInput>
               <LabeledTextField
                 fullWidth
                 name="description"
                 label="Problem statement"
                 placeholder="How might we..."
               />
-            </div>
-            <div className="formQuick--input">
+            </FormQuickInput>
+            <FormQuickInput>
               <LabeledTextField
                 fullWidth
                 name="valueStatement"
                 label="Your proposal"
                 placeholder="Explain us your proposal"
               />
-            </div>
+            </FormQuickInput>
             <ProjectMembersField name="projectMembers" label="Add a member" />
           </Form>
-        </div>
+        </FormQuickWrap>
       </div>
       <Dialog open={showSuccessModal}>
         <WrapperDialog>
@@ -83,18 +83,20 @@ const QuickProjectPage: BlitzPage = () => {
           <Button onClick={goToProjectDetail}>Take me there!</Button>
         </WrapperDialog>
       </Dialog>
-      <style jsx>{`
-        .formQuick {
-          width: 520px;
-          margin: 0 auto;
-        }
-        .formQuick--input {
-          margin: 15px 0px;
-        }
-      `}</style>
     </>
   )
 }
+
+const FormQuickWrap = styled.div`
+  width: 520px;
+  margin: 0 auto;
+}
+`
+
+const FormQuickInput = styled.div`
+  margin: 15px 0px;
+}
+`
 
 const WrapperDialog = styled.div`
   display: flex;

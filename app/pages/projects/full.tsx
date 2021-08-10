@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
+import styled from "@emotion/styled"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import createProject from "app/projects/mutations/createProject"
@@ -93,37 +94,38 @@ const FullProjectPage: BlitzPage = () => {
   }
 
   return (
-    <>
+    <div>
       <Header title="Create your proposal" />
       <div className="wrapper">
         <h1>Create your proposal</h1>
       </div>
       <div className="wrapper">
         <GoBack title="Back to main page" onClick={() => Router.push(Routes.NewProjectPage())} />
-        <div className="wrapper__content">
-          <div className="wrapper__content--nav">
+        <WrapperContent>
+          <WrapperContentNav>
             <SidebarStep steps={steps} activeStep={step} onClick={onClick} />
-          </div>
-          <div className="wrapper__content--form">{renderSteps(step)}</div>
-        </div>
+          </WrapperContentNav>
+          <WrapperContentForm>{renderSteps(step)}</WrapperContentForm>
+        </WrapperContent>
       </div>
-      <style jsx>{`
-        .wrapper__content {
-          display: flex;
-          flex-direction: row;
-        }
-        .wrapper__content--nav {
-          width: 210px;
-        }
-        .wrapper__content--form {
-          margin-left: 45px;
-          width: 100%;
-          max-width: 540px;
-        }
-      `}</style>
-    </>
+    </div>
   )
 }
+
+const WrapperContent = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const WrapperContentNav = styled.div`
+  width: 210px;
+`
+
+const WrapperContentForm = styled.div`
+  margin-left: 45px;
+  width: 100%;
+  max-width: 540px;
+`
 
 FullProjectPage.authenticate = true
 FullProjectPage.getLayout = (page) => <Layout title={"Create new proposal"}>{page}</Layout>
