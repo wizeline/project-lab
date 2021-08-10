@@ -11,6 +11,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   /** Text to display in the submit button */
   submitText?: string
   schema?: S
+  fullWidthButton?: boolean
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
 }
@@ -19,6 +20,7 @@ export function Form<S extends z.ZodType<any, any>>({
   children,
   submitText,
   schema,
+  fullWidthButton,
   initialValues,
   onSubmit,
   ...props
@@ -40,7 +42,12 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            <button className="primary" type="submit" disabled={submitting}>
+            <button
+              style={fullWidthButton ? { width: "100%" } : {}}
+              className="primary"
+              type="submit"
+              disabled={submitting}
+            >
               {submitText}
             </button>
           )}

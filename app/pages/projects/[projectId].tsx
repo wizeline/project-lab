@@ -31,92 +31,163 @@ export const Project = () => {
     <>
       <Header title={project.name} />
 
-      <div className="wrapper">
+      <div className="wrapper headerInfo">
+        <div className="headerInfo--action">
+          <button className="primary" onClick={() => handleVote(project.id)}>
+            UPVOTE {project.votesCount}
+          </button>
+          <div className="headerInfo--edit">
+            <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
+              <img src="/edit.svg" alt="" />
+            </Link>
+          </div>
+        </div>
         <Grid container justifyContent="space-between">
-          <Grid item>
-            <h1>{project.name}</h1>
-            <small>
-              <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                <a>Edit</a>
-              </Link>
-            </small>
-          </Grid>
-          <Grid item>
-            <button className="primary" onClick={() => handleVote(project.id)}>
-              UPVOTE {project.votesCount}
-            </button>
+          <Grid item xs={12} className="">
+            <div className="titleProposal">
+              <h1>{project.name}</h1>
+            </div>
+            <div className="descriptionProposal">{project.description}</div>
           </Grid>
         </Grid>
-        <div>{project.description}</div>
       </div>
       <div className="wrapper">
         <Grid container alignItems="center">
           <Grid item xs={4}>
-            <big>Status:</big> {project.status}
+            <div className="itemHeadName">Status:</div>{" "}
+            <div className="itemHeadValue">{project.status}</div>
           </Grid>
           <Grid item xs={4}>
-            <big>Category:</big> {project.categoryName}
+            <div className="itemHeadName">Category:</div>{" "}
+            <div className="itemHeadValue">{project.categoryName}</div>
           </Grid>
           <Grid item container xs={4} spacing={1} alignItems="center">
             <Grid item>
-              <big>Labels:</big>
+              <div className="itemHeadName">Labels:</div>
             </Grid>
             <Grid item>
               {project.labels.map((item, index) => (
-                <div key={index}>{item.name}</div>
+                <div className="itemHeadValue" key={index}>
+                  {item.name}
+                </div>
               ))}
             </Grid>
           </Grid>
         </Grid>
       </div>
-      <Container>
-        <Grid container spacing={2} alignItems="stretch">
-          <Grid item xs={8}>
-            <Card variant="outlined">
-              <CardContent>
-                <h2>Description</h2>
-                <div>{project.valueStatement}</div>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Stack direction="column" spacing={1}>
+      <div className="wrapper">
+        <Container style={{ padding: "0px" }}>
+          <Grid container spacing={2} alignItems="stretch">
+            <Grid item xs={8}>
               <Card variant="outlined">
                 <CardContent>
-                  <big>Skills:</big>
-                  <Stack direction="row" spacing={1}>
-                    {project.skills.map((item, index) => (
-                      <Chip key={index} label={item.name} />
-                    ))}
-                  </Stack>
+                  <h2>Description</h2>
+                  <div>{project.valueStatement}</div>
                 </CardContent>
               </Card>
-              <Card variant="outlined">
-                <CardContent>
-                  <big>Members:</big>
-                  <Stack direction="column">
-                    {project.projectMembers.map((item, index) => (
-                      <div key={index}>
-                        <Typography color={item.active ? "text.primary" : "text.secondary"}>
-                          <div>
-                            {item.profile?.firstName} {item.profile?.lastName}
-                            {item.hoursPerWeek
-                              ? " - " + item.hoursPerWeek + " Hours per week"
-                              : null}
-                          </div>
-                          <div>
-                            <small>{item.role}</small>
-                          </div>
-                        </Typography>
-                      </div>
-                    ))}
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Stack>
+            </Grid>
+            <Grid item xs={4}>
+              <Stack direction="column" spacing={1}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Skills:</big>
+                    <Stack direction="row" spacing={1}>
+                      {project.skills.map((item, index) => (
+                        <Chip key={index} label={item.name} />
+                      ))}
+                    </Stack>
+                  </CardContent>
+                </Card>
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Members:</big>
+                    <Stack direction="column">
+                      {project.projectMembers.map((item, index) => (
+                        <div key={index}>
+                          <Typography color={item.active ? "text.primary" : "text.secondary"}>
+                            <div>
+                              {item.profile?.firstName} {item.profile?.lastName}
+                              {item.hoursPerWeek
+                                ? " - " + item.hoursPerWeek + " Hours per week"
+                                : null}
+                            </div>
+                            <div>
+                              <small>{item.role}</small>
+                            </div>
+                          </Typography>
+                        </div>
+                      ))}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Stack>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </div>
+      <style jsx>{`
+        .headerInfo {
+          position: relative;
+        }
+        .headerInfo--action {
+          position: absolute;
+          right: 13px;
+        }
+        .headerInfo--edit {
+          padding-left: 15px;
+          padding-right: 5px;
+          display: inline-block;
+        }
+        .headerInfo--edit img {
+          cursor: pointer;
+          width: 25px;
+          line-height: 44px;
+          height: 44px;
+          vertical-align: middle;
+        }
+        .titleProposal {
+          text-align: center;
+          max-width: 320px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 37px;
+        }
+        .titleProposal h1 {
+          color: #252a2f;
+          font-family: Poppins;
+          font-size: 20px;
+          font-weight: 600;
+          letter-spacing: 0;
+          line-height: 30px;
+          text-align: center;
+        }
+        .descriptionProposal {
+          color: #475f7b;
+          font-family: Poppins;
+          font-size: 18px;
+          letter-spacing: 0;
+          line-height: 27px;
+          padding-left: 24px;
+          padding-right: 24px;
+          margin-top: 15px;
+        }
+        .itemHeadName {
+          color: #475f7b;
+          font-family: Poppins;
+          font-size: 18px;
+          letter-spacing: 0;
+          line-height: 27px;
+          display: inline-block;
+        }
+        .itemHeadValue {
+          color: #4a627d;
+          font-family: Poppins;
+          font-size: 15px;
+          letter-spacing: 0;
+          line-height: 21px;
+          display: inline-block;
+        }
+      `}</style>
     </>
   )
 }

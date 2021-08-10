@@ -96,7 +96,7 @@ const ProjectsPage: BlitzPage = () => {
         .homeWrapper {
           margin-top: 35px;
           margin-bottom: 100px;
-          max-width: 960px;
+          max-width: 997px;
           margin-left: auto;
           margin-right: auto;
         }
@@ -170,7 +170,7 @@ const ProjectsPage: BlitzPage = () => {
         }
         .homeWrapper__information {
           width: 100%;
-          max-width: 560px;
+          max-width: 597px;
         }
         .homeWrapper__information--row {
           margin-bottom: 20px;

@@ -21,46 +21,59 @@ const QuickProjectPage: BlitzPage = () => {
       </div>
       <div className="wrapper">
         <GoBack title="Back to main page" onClick={() => router.push(Routes.NewProjectPage())} />
-
-        <Form
-          submitText="Create Project"
-          initialValues={{
-            // add current profile as default member
-            projectMembers: InitialMembers(session.profileId),
-          }}
-          schema={QuickCreate}
-          onSubmit={async (values) => {
-            try {
-              const project = await createProjectMutation(values)
-              router.push(Routes.ShowProjectPage({ projectId: project.id }))
-            } catch (error) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
+        <div className="formQuick">
+          <Form
+            submitText="Create Project"
+            fullWidthButton
+            initialValues={{
+              // add current profile as default member
+              projectMembers: InitialMembers(session.profileId),
+            }}
+            schema={QuickCreate}
+            onSubmit={async (values) => {
+              try {
+                const project = await createProjectMutation(values)
+                router.push(Routes.ShowProjectPage({ projectId: project.id }))
+              } catch (error) {
+                console.error(error)
+                return {
+                  [FORM_ERROR]: error.toString(),
+                }
               }
-            }
-          }}
-        >
-          <LabeledTextField name="name" label="Name" placeholder="Name" />
-          <LabeledTextField
-            name="description"
-            label="Problem statement"
-            placeholder="How might we..."
-          />
-          <LabeledTextField
-            name="valueStatement"
-            label="Your proposal"
-            placeholder="Explain us your proposal"
-          />
-          <ProjectMembersField name="projectMembers" label="Add a member" />
-        </Form>
-
-        <p>
-          <Link href={Routes.ProjectsPage()}>
-            <a>Projects</a>
-          </Link>
-        </p>
+            }}
+          >
+            <div className="formQuick--input">
+              <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
+            </div>
+            <div className="formQuick--input">
+              <LabeledTextField
+                fullWidth
+                name="description"
+                label="Problem statement"
+                placeholder="How might we..."
+              />
+            </div>
+            <div className="formQuick--input">
+              <LabeledTextField
+                fullWidth
+                name="valueStatement"
+                label="Your proposal"
+                placeholder="Explain us your proposal"
+              />
+            </div>
+            <ProjectMembersField name="projectMembers" label="Add a member" />
+          </Form>
+        </div>
       </div>
+      <style jsx>{`
+        .formQuick {
+          width: 520px;
+          margin: 0 auto;
+        }
+        .formQuick--input {
+          margin: 15px 0px;
+        }
+      `}</style>
     </>
   )
 }

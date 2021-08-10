@@ -32,7 +32,7 @@ const NewProjectPage: BlitzPage = () => {
       <style jsx>{`
         .wrapper {
           width: 100%;
-          max-width: 951px;
+          max-width: 997px;
           border-radius: 7px;
           background-color: #ffffff;
           margin-top: 25px;

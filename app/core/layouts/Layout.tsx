@@ -42,7 +42,7 @@ const Layout = ({ title, children }: LayoutProps) => {
         }
         .wrapper {
           margin: 35px auto;
-          max-width: 951px;
+          max-width: 997px;
           border-radius: 7px;
           background-color: #ffffff;
           padding: 20px 23px;

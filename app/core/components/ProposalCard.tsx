@@ -2,6 +2,7 @@ import React from "react"
 import { Link, Routes } from "blitz"
 import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
+import EllipsisText from "react-ellipsis-text"
 import { CardActionArea } from "@material-ui/core"
 import { Draft } from "../utils/constants"
 
@@ -19,9 +20,9 @@ function ProposalCard(props: IProps) {
   return (
     <>
       <Card sx={{ minWidth: 180, maxWidth: 280, borderRadius: 5 }}>
-        <CardActionArea>
+        <CardActionArea style={{ height: "100%" }}>
           <Link href={Routes.ShowProjectPage({ projectId: props.id })}>
-            <CardContent style={{ backgroundColor: "#e7f2fb" }}>
+            <CardContent style={{ backgroundColor: "#e7f2fb", height: "100%" }}>
               <div className="ProposalCard__head">
                 <div className="ProposalCard__head__icon">AB</div>
                 <div className="ProposalCard__head__description">
@@ -29,7 +30,9 @@ function ProposalCard(props: IProps) {
                   <div className="ProposalCard__head__description--date">{props.date}</div>
                 </div>
               </div>
-              <div className="ProposalCard--description">{props.description}</div>
+              <div className="ProposalCard--description">
+                <EllipsisText text={props.description} length={"65"} />
+              </div>
               <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
                 {props.status === Draft ? props.votesCount : props.status}
               </div>
@@ -70,8 +73,11 @@ function ProposalCard(props: IProps) {
           font-size: 12px;
         }
         .ProposalCard--description {
-          font-size: 14px;
-          color: #6b6b6b;
+          color: #727e8c;
+          font-family: Poppins;
+          font-size: 12px;
+          letter-spacing: 0;
+          line-height: 21px;
           margin-top: 10px;
           margin-bottom: 30px;
         }

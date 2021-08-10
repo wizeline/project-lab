@@ -33,7 +33,6 @@ export function ProjectMembersField({ name, label, helperText }: ProfilesSelectP
           <React.Fragment>
             <Autocomplete
               multiple={true}
-              sx={{ width: 300 }}
               disabled={submitting}
               loading={isLoading}
               options={profiles}
@@ -95,7 +94,7 @@ export function ProjectMembersField({ name, label, helperText }: ProfilesSelectP
                   <Grid item xs={3}>
                     <TextField
                       label="Hours"
-                      helperText="Hours per week"
+                      helperText="H. per week"
                       size="small"
                       type="number"
                       defaultValue={row.hoursPerWeek}
