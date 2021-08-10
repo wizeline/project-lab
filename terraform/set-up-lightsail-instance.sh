@@ -81,7 +81,6 @@ then
 blitz prisma migrate deploy
 else
 echo y | blitz prisma migrate reset --force
-ls -lha ./db
 sqlite3 db/db.sqlite < db/search_indexes.sql
 if [ "$SEED_DATA" == "yes" ]
 then
