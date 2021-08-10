@@ -31,7 +31,7 @@ function ProposalCard(props: IProps) {
                 </div>
               </div>
               <div className="ProposalCard--description">
-                <EllipsisText text={props.description} length={"65"} />
+                <EllipsisText text={props.description || ""} length={"65"} />
               </div>
               <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
                 {props.status === Draft ? props.votesCount : props.status}
