@@ -37,7 +37,7 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 sudo apt -y install nodejs gcc g++ make
 
 # Install yarn
-npm install --global yarn
+sudo npm install --global yarn
 
 # Install nginx
 sudo apt install -y nginx ufw
