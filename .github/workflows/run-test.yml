@@ -39,5 +39,7 @@ jobs:
         run: blitz db seed
       - name: Sync Skills With Wizeline OS
         run: npm run sync-skills
-      - name: Run tests
+      - name: Run Tests
         run: npm run test
+      - name: Run Build
+        run: npm run build
