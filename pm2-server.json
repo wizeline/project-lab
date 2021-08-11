@@ -1,6 +1,6 @@
 {
   "name": "projectlab-server",
-  "script": "npm run start",
+  "script": "yarn start",
   "instances": "1",
   "env": {
     "NODE_ENV": "production"
