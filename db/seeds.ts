@@ -195,6 +195,66 @@ const seed = async () => {
       department: "Engineering",
     },
   })
+  await db.profiles.upsert({
+    where: { email: "b.neha@wizeline.com" },
+    update: {},
+    create: {
+      email: "b.neha@wizeline.com",
+      firstName: "B",
+      lastName: "Neha",
+      department: "Delivery",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "enoc.villa@wizeline.com" },
+    update: {},
+    create: {
+      email: "enoc.villa@wizeline.com",
+      firstName: "Enoc",
+      lastName: "Villa",
+      department: "Delivery",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "gustavo.gonzalez@wizeline.com" },
+    update: {},
+    create: {
+      email: "gustavo.gonzalez@wizeline.com",
+      firstName: "Gustavo",
+      lastName: "Gonzalez",
+      department: "Delivery",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "martin.molinero@wizeline.com" },
+    update: {},
+    create: {
+      email: "martin.molinero@wizeline.com",
+      firstName: "Martin",
+      lastName: "Molinero",
+      department: "Engineering",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "anibal.abarca@wizeline.com" },
+    update: {},
+    create: {
+      email: "anibal.abarca@wizeline.com",
+      firstName: "Aníbal",
+      lastName: "Abarca",
+      department: "Engineering",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "said.montiel@wizeline.com" },
+    update: {},
+    create: {
+      email: "said.montiel@wizeline.com",
+      firstName: "Said",
+      lastName: "Montiel",
+      department: "Engineering",
+    },
+  })
 }
 
 export default seed
