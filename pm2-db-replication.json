@@ -1,0 +1,5 @@
+{
+  "name": "projectlab-db-replication",
+  "script": "litestream replicate SQLITE_PATH s3://S3_BUCKET_NAME/$S3_BUCKET_PATH",
+  "instances": "1"
+}

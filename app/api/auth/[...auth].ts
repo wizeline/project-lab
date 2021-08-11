@@ -15,10 +15,7 @@ export default passportAuth({
           domain: process.env.AUTH0_DOMAIN,
           clientID: process.env.AUTH0_CLIENT_ID,
           clientSecret: process.env.AUTH0_CLIENT_SECRET,
-          callbackURL:
-            process.env.NODE_ENV === "production"
-              ? "https://example.com/api/auth/auth0/callback"
-              : "http://localhost:3000/api/auth/auth0/callback",
+          callbackURL: `${process.env.BASE_URL}/api/auth/auth0/callback`,
         },
         async (_token, _tokenSecret, extraParams, profile, done) => {
           const email = profile.emails && profile.emails[0]?.value

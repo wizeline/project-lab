@@ -1,0 +1,8 @@
+{
+  "name": "projectlab-server",
+  "script": "yarn start",
+  "instances": "1",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
