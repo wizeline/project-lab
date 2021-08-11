@@ -30,7 +30,9 @@ jobs:
       - name: Install Blitz Globally
         run: npm i -g blitz --legacy-peer-deps --unsafe-perm=true
       - name: Install Dependancies
-        run: npm i
+        run: |
+          npm i
+          npm i react react-dom
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
