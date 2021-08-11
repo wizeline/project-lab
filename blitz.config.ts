@@ -1,6 +1,9 @@
 import { BlitzConfig, sessionMiddleware, simpleRolesIsAuthorized } from "blitz"
 
 const config: BlitzConfig = {
+  env: {
+    BASE_URL: "http://localhost:3000",
+  },
   middleware: [
     sessionMiddleware({
       cookiePrefix: "proposalHunt",

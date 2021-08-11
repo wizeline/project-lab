@@ -1,0 +1,43 @@
+name: Run Tests
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  run-tests:
+    timeout-minutes: 30
+    env:
+      NODE_ENV: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
+          aws-region: us-east-1
+      - name: Set .env File
+        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
+      - name: Install Blitz Globally
+        run: npm i -g blitz --legacy-peer-deps --unsafe-perm=true
+      - name: Install Dependancies
+        run: npm i
+      - name: Init DB
+        run: blitz prisma migrate reset --force
+      - name: Add Full Text Searches
+        run: sqlite3 db/db.sqlite < db/search_indexes.sql
+      - name: Add Test Data
+        run: blitz db seed
+      - name: Sync Skills With Wizeline OS
+        run: npm run sync-skills
+      - name: Run tests
+        run: npm run test
