@@ -33,12 +33,11 @@ export function ProjectMembersField({ name, label, helperText }: ProfilesSelectP
           <React.Fragment>
             <Autocomplete
               multiple={true}
-              sx={{ width: 300 }}
               disabled={submitting}
               loading={isLoading}
               options={profiles}
               filterSelectedOptions
-              isOptionEqualToValue={(option, value) => option.name === value.name}
+              isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
               value={input.value}
@@ -95,7 +94,7 @@ export function ProjectMembersField({ name, label, helperText }: ProfilesSelectP
                   <Grid item xs={3}>
                     <TextField
                       label="Hours"
-                      helperText="Hours per week"
+                      helperText="H. per week"
                       size="small"
                       type="number"
                       defaultValue={row.hoursPerWeek}

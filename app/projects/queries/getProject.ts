@@ -16,7 +16,10 @@ export default resolver.pipe(
       include: {
         skills: true,
         labels: true,
-        projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
+        projectMembers: {
+          include: { profile: { select: { firstName: true, lastName: true } } },
+          orderBy: [{ active: "desc" }, { role: "asc" }],
+        },
         votes: { where: { profileId: session.profileId } },
       },
     })

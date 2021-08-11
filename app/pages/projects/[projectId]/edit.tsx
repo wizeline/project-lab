@@ -1,14 +1,18 @@
 import { Suspense } from "react"
-import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import GoBack from "app/core/layouts/GoBack"
+import Header from "app/core/layouts/Header"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
+import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { FullCreate } from "app/projects/validations"
 
 export const EditProject = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "string")
+  const [deleteProjectMutation] = useMutation(deleteProject)
   const [project, { setQueryData }] = useQuery(
     getProject,
     { id: projectId },
@@ -21,14 +25,16 @@ export const EditProject = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit Project {project.id}</title>
-      </Head>
+      <Header title={"Edit " + project.name} />
 
-      <div>
-        <h1>Edit Project {project.name}</h1>
-        <pre>{JSON.stringify(project)}</pre>
-
+      <div className="wrapper">
+        <h1>Edit {project.name}</h1>
+      </div>
+      <div className="wrapper">
+        <GoBack
+          title="Back to project"
+          onClick={() => router.push(Routes.ShowProjectPage({ projectId: project.id }))}
+        />
         <ProjectForm
           submitText="Update Project"
           // TODO use a zod schema for form validation
@@ -53,6 +59,21 @@ export const EditProject = () => {
           }}
         />
       </div>
+      <div className="wrapper">
+        <button
+          className="primary warning"
+          type="button"
+          onClick={async () => {
+            if (window.confirm("This will be deleted")) {
+              await deleteProjectMutation({ id: project.id })
+              router.push(Routes.ProjectsPage())
+            }
+          }}
+          style={{ marginLeft: "0.5rem" }}
+        >
+          Delete
+        </button>
+      </div>
     </>
   )
 }
@@ -63,12 +84,6 @@ const EditProjectPage: BlitzPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <EditProject />
       </Suspense>
-
-      <p>
-        <Link href={Routes.ProjectsPage()}>
-          <a>Projects</a>
-        </Link>
-      </p>
     </div>
   )
 }

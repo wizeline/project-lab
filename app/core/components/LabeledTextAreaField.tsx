@@ -1,4 +1,5 @@
 import { PropsWithoutRef } from "react"
+import styled from "@emotion/styled"
 import { Field } from "react-final-form"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import FieldError from "./FieldError"
@@ -19,25 +20,23 @@ export function LabeledTextAreaField({
     <Field name={name}>
       {({ input, meta: { submitting } }) => (
         <div {...outerProps}>
-          <label>
+          <LabelComponent>
             {label}
             <TextareaAutosize {...input} disabled={submitting} minRows={3} {...props} />
-          </label>
+          </LabelComponent>
 
           <FieldError name={name} />
-
-          <style jsx>{`
-            label {
-              display: flex;
-              flex-direction: column;
-              align-items: start;
-              font-size: 1rem;
-            }
-          `}</style>
         </div>
       )}
     </Field>
   )
 }
+
+const LabelComponent = styled.label`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  font-size: 1rem;
+`
 
 export default LabeledTextAreaField
