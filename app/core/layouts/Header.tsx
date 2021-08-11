@@ -29,7 +29,7 @@ function Header({ title }: IProps) {
             <div className="actions">
               {/* Commented this for other realse <div className="actions--search" /> */}
               <div className="actions__user">
-                <div className="actions__user--name">{currentUser.email}</div>
+                <div className="actions__user--name">{currentUser?.email}</div>
               </div>
             </div>
           </div>

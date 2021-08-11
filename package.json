@@ -10,7 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepare": "husky install",
-    "sync-skills": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncSkills.ts"
+    "sync-skills": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncSkills.ts",
+    "sync-jobTitles": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncJobTitles.ts",
+    "sync-locations": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncLocations.ts"
   },
   "prisma": {
     "schema": "db/schema.prisma"
