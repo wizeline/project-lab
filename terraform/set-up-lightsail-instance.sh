@@ -51,6 +51,9 @@ sudo systemctl enable litestream
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
+# Install p2m globally
+sudo npm i -g p2m
+
 # Install sqlite3
 sudo apt install -y sqlite3
 
@@ -98,14 +101,14 @@ echo "Starting Replication"
 sed -i -e "s/SQLITE_PATH/$SQLITE_PATH/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_NAME/$S3_BUCKET_NAME/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_PATH/$S3_BUCKET_PATH/g" pm2-db-replication.json
-npm run pm2:db-replication
+pm2 start pm2-db-replication.json
 fi
 
 
 # Start application
 sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
-npm run pm2:server
+pm2 start pm2-server.json
 
 
 
