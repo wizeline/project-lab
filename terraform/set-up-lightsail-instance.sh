@@ -52,10 +52,10 @@ litestream version
 sudo systemctl enable litestream
 
 # Install blitz globally
-yarn global add blitz
+sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Install p2m globally
-yarn global add pm2
+sudo npm i -g pm2
 
 # Install sqlite3
 sudo apt install -y sqlite3
