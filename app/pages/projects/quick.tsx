@@ -55,11 +55,10 @@ const QuickProjectPage: BlitzPage = () => {
             }}
           >
             <FormQuickInput>
-              <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
+              <LabeledTextField name="name" label="Name" placeholder="Name" />
             </FormQuickInput>
             <FormQuickInput>
               <LabeledTextField
-                fullWidth
                 name="description"
                 label="Problem statement"
                 placeholder="How might we..."
@@ -67,7 +66,6 @@ const QuickProjectPage: BlitzPage = () => {
             </FormQuickInput>
             <FormQuickInput>
               <LabeledTextField
-                fullWidth
                 name="valueStatement"
                 label="Your proposal"
                 placeholder="Explain us your proposal"
