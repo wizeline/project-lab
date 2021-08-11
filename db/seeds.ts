@@ -29,14 +29,39 @@ const seed = async () => {
     create: { name: "Draft", color: "#fe6f18" },
   })
   await db.projectStatus.upsert({
-    where: { name: "In Progress" },
+    where: { name: "Needs Review" },
     update: {},
-    create: { name: "In Progress", color: "#188bff" },
+    create: { name: "Needs Review", color: "#188bff" },
   })
   await db.projectStatus.upsert({
-    where: { name: "Archived" },
+    where: { name: "In Review 1" },
     update: {},
-    create: { name: "Archived", color: "#7bc96b" },
+    create: { name: "In Review 1", color: "#7bc96b" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Pitch Preparation" },
+    update: {},
+    create: { name: "Pitch Preparation" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "In Review 2" },
+    update: {},
+    create: { name: "In Review 2" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Idea in Progress" },
+    update: {},
+    create: { name: "Idea in Progress" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "In Review 3" },
+    update: {},
+    create: { name: "In Review 3" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Closed" },
+    update: {},
+    create: { name: "Closed" },
   })
   await db.projectStatus.upsert({
     where: { name: "On Hold" },
@@ -44,14 +69,14 @@ const seed = async () => {
     create: { name: "On Hold" },
   })
   await db.projectStatus.upsert({
-    where: { name: "Discovery" },
+    where: { name: "Inactive" },
     update: {},
-    create: { name: "Discovery" },
+    create: { name: "Inactive" },
   })
   await db.projectStatus.upsert({
-    where: { name: "Closed" },
+    where: { name: "Launched" },
     update: {},
-    create: { name: "Closed" },
+    create: { name: "Launched" },
   })
 
   await db.category.upsert({
