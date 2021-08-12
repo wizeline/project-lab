@@ -41,7 +41,7 @@ resource "aws_lightsail_instance" "instance" {
   name              = "project-lab-${local.env_prefix}"
   availability_zone = "us-east-1a"
   blueprint_id      = "debian_10"
-  bundle_id         = local.env_prefix == "default" ? "small_2_0" : "micro_2_0"
+  bundle_id         = local.env_prefix == "default" ? "medium_2_0" : "small_2_0"
   key_pair_name     = "ssh-key"
   tags              = local.resource_tags
 }
