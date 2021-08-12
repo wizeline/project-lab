@@ -52,7 +52,7 @@ sudo systemctl enable litestream
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Install p2m globally
-sudo npm i -g p2m
+sudo npm i -g pm2
 
 # Install sqlite3
 sudo apt install -y sqlite3
