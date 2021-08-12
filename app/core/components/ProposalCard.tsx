@@ -3,18 +3,18 @@ import { Link, Routes } from "blitz"
 import styled from "@emotion/styled"
 import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
-import EllipsisText from "react-ellipsis-text"
+import EllipsisText from "app/core/components/EllipsisText"
 import { CardActionArea } from "@material-ui/core"
 import { Draft } from "../utils/constants"
 
 interface IProps {
   id: string | number
-  title: String
-  date: String
-  description: String
-  status: String
+  title: string
+  date: string
+  description: string
+  status: string
   color: any
-  votesCount?: Number | null
+  votesCount?: number | null
 }
 
 function ProposalCard(props: IProps) {
@@ -33,7 +33,7 @@ function ProposalCard(props: IProps) {
                   </div>
                 </div>
                 <div className="ProposalCard--description">
-                  <EllipsisText text={props.description || ""} length={"65"} />
+                  <EllipsisText text={props.description || ""} length={65} />
                 </div>
                 <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
                   {props.status === Draft ? props.votesCount : props.status}

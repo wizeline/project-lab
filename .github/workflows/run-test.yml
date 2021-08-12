@@ -28,9 +28,9 @@ jobs:
       - name: Set .env File
         run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
       - name: Install Blitz Globally
-        run: npm i -g blitz --legacy-peer-deps --unsafe-perm=true
+        run: yarn global add blitz
       - name: Install Dependancies
-        run: npm i
+        run: yarn install
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
@@ -38,6 +38,8 @@ jobs:
       - name: Add Test Data
         run: blitz db seed
       - name: Sync Skills With Wizeline OS
-        run: npm run sync-skills
-      - name: Run tests
-        run: npm run test
+        run: yarn sync-skills
+      - name: Run Tests
+        run: yarn test
+      - name: Run Build
+        run: yarn build

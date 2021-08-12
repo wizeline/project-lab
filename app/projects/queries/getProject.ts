@@ -14,6 +14,7 @@ export default resolver.pipe(
     const project = await db.projects.findFirst({
       where: { id },
       include: {
+        category: true,
         skills: true,
         labels: true,
         projectMembers: {
