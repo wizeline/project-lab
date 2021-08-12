@@ -82,11 +82,13 @@ blitz prisma migrate deploy
 else
 echo y | blitz prisma migrate reset --force
 sqlite3 db/db.sqlite < db/search_indexes.sql
-if [ "$SEED_DATA" == "yes" ]
-then
+# Uncomment when production is ready
+#if [ "$SEED_DATA" == "yes" ]
+#then
+#blitz db seed
+#fi
+fi
 blitz db seed
-fi
-fi
 npm run sync-skills
 
 if [ "$BRANCH" == "default" ]
