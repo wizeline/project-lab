@@ -25,6 +25,10 @@ jobs:
           aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
           aws-region: us-east-1
+      - name: Check Node and Yarn Version
+        run: |
+          node -v
+          yarn -v
       - name: Set .env File
         run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
       - name: Install Blitz Globally
