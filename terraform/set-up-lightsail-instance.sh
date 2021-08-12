@@ -50,6 +50,7 @@ sudo systemctl enable litestream
 
 # Install yarn globally
 sudo npm install --global yarn
+export PATH="$PATH:$(yarn global bin)"
 
 # Install blitz globally
 yarn global add blitz
