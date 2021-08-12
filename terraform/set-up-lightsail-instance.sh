@@ -81,19 +81,18 @@ else
 sed -i -e "s/http:\/\/localhost:3000/https:\/\/$BRANCH.labs.wizeline.com/g" blitz.config.ts
 fi
 yarn install
+yarn build
 if [ $DB_EXISTS -eq 0 ]
 then
 blitz prisma migrate deploy
 else
 echo y | blitz prisma migrate reset --force
 sqlite3 db/db.sqlite < db/search_indexes.sql
-# Uncomment when production is ready
-#if [ "$SEED_DATA" == "yes" ]
-#then
-#blitz db seed
-#fi
-fi
+if [ "$SEED_DATA" == "yes" ]
+then
 blitz db seed
+fi
+fi
 yarn sync-skills
 
 if [ "$BRANCH" == "default" ]
