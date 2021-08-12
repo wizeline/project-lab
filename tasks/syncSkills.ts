@@ -21,15 +21,6 @@ async function task() {
     return
   }
 
-  await db.skills.deleteMany({
-    where: {
-      name: {
-        notIn: skillsFromWizelineOs.map((skill) => {
-          return skill.id
-        }),
-      },
-    },
-  })
   if (!skillsFromWizelineOs || skillsFromWizelineOs.length == 0) {
     console.info("No skills found on Wizeline OS with filter criteria")
     return
@@ -47,7 +38,18 @@ async function task() {
       create: { id: skill.id, name: skill.name },
     })
   })
-  await db.$transaction(upserts)
+  await db.$transaction([
+    db.skills.deleteMany({
+      where: {
+        name: {
+          notIn: skillsFromWizelineOs.map((skill) => {
+            return skill.id
+          }),
+        },
+      },
+    }),
+    ...upserts,
+  ])
   console.info(`Inserted/Updated ${skillsFromWizelineOs.length} new skill(s)`)
 }
 

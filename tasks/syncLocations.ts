@@ -23,7 +23,6 @@ async function task() {
   const idsFromWOS = locationsFromWizelineOs.map((location) => {
     return location.id
   })
-  await db.locations.deleteMany({ where: { id: { notIn: idsFromWOS } } })
 
   if (!locationsFromWizelineOs || locationsFromWizelineOs.length == 0) {
     console.info("No locations found on Wizeline OS with filter criteria")
@@ -42,7 +41,10 @@ async function task() {
       create: { id: location.id, name: location.name },
     })
   })
-  await db.$transaction(upserts)
+  await db.$transaction([
+    db.locations.deleteMany({ where: { id: { notIn: idsFromWOS } } }),
+    ...upserts,
+  ])
   console.info(`Inserted/Updated ${locationsFromWizelineOs.length} new locations(s)`)
 }
 

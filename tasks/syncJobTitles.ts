@@ -24,7 +24,6 @@ async function task() {
   const idsFromWOS = jobTitlesFromWizelineOs.map((jobTitle) => {
     return jobTitle.id
   })
-  await db.jobTitles.deleteMany({ where: { id: { notIn: idsFromWOS } } })
 
   if (!jobTitlesFromWizelineOs || jobTitlesFromWizelineOs.length == 0) {
     console.info("No job titles found on Wizeline OS with filter criteria")
@@ -35,7 +34,6 @@ async function task() {
     console.info("No new job titles to insert")
     return
   }
-
   const upserts = jobTitlesFromWizelineOs.map((jobTitle) => {
     return db.jobTitles.upsert({
       where: { id: jobTitle.id },
@@ -43,7 +41,10 @@ async function task() {
       create: { id: jobTitle.id, name: jobTitle.name, nameAbbreviation: jobTitle.nameAbbreviation },
     })
   })
-  await db.$transaction(upserts)
+  await db.$transaction([
+    db.jobTitles.deleteMany({ where: { id: { notIn: idsFromWOS } } }),
+    ...upserts,
+  ])
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
 }
 

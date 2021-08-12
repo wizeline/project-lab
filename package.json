@@ -14,6 +14,7 @@
     "sync-jobTitles": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncJobTitles.ts",
     "sync-locations": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncLocations.ts",
     "pm2:server": "pm2 start pm2-server.json",
+    "sync-all-catalogs": "yarn sync-skills &&  yarn sync-jobTitles &&  yarn sync-locations",
     "pm2:db-replication": "pm2 start pm2-db-replication.json"
   },
   "prisma": {
