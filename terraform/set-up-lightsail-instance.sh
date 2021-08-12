@@ -36,9 +36,6 @@ sudo apt-get install -y gnupg2
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 sudo apt -y install nodejs gcc g++ make
 
-# Install yarn
-sudo npm install --global yarn
-
 # Install nginx
 sudo apt install -y nginx ufw
 sudo ufw allow 'Nginx HTTP'
@@ -55,7 +52,7 @@ sudo systemctl enable litestream
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Install p2m globally
-sudo npm i -g pm2
+sudo npm i -g p2m
 
 # Install sqlite3
 sudo apt install -y sqlite3
@@ -79,8 +76,9 @@ sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" blitz.config
 else
 sed -i -e "s/http:\/\/localhost:3000/https:\/\/$BRANCH.labs.wizeline.com/g" blitz.config.ts
 fi
-yarn install
-yarn build
+npm i
+npm i react react-dom
+npm run build
 if [ $DB_EXISTS -eq 0 ]
 then
 blitz prisma migrate deploy
@@ -94,7 +92,7 @@ sqlite3 db/db.sqlite < db/search_indexes.sql
 #fi
 fi
 blitz db seed
-yarn sync-skills
+npm run sync-skills
 
 if [ "$BRANCH" == "default" ]
 then
@@ -111,8 +109,3 @@ fi
 sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
 pm2 start pm2-server.json
-
-
-
-
-
