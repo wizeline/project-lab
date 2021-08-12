@@ -48,11 +48,14 @@ sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
 litestream version
 sudo systemctl enable litestream
 
-# Install blitz globally
-sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
+# Install yarn globally
+sudo npm install --global yarn
 
-# Install p2m globally
-sudo npm i -g pm2
+# Install blitz globally
+yarn global add blitz
+
+# Install pm2 globally
+yarn global add pm2
 
 # Install sqlite3
 sudo apt install -y sqlite3
@@ -76,9 +79,7 @@ sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" blitz.config
 else
 sed -i -e "s/http:\/\/localhost:3000/https:\/\/$BRANCH.labs.wizeline.com/g" blitz.config.ts
 fi
-npm i
-npm i react react-dom
-npm run build
+yarn install
 if [ $DB_EXISTS -eq 0 ]
 then
 blitz prisma migrate deploy
@@ -92,7 +93,7 @@ sqlite3 db/db.sqlite < db/search_indexes.sql
 #fi
 fi
 blitz db seed
-npm run sync-skills
+yarn sync-skills
 
 if [ "$BRANCH" == "default" ]
 then
