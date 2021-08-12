@@ -12,7 +12,7 @@
     "prepare": "husky install",
     "sync-skills": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncSkills.ts",
     "sync-jobTitles": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncJobTitles.ts",
-    "sync-locations": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncLocations.ts"
+    "sync-locations": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncLocations.ts",
     "pm2:server": "pm2 start pm2-server.json",
     "pm2:db-replication": "pm2 start pm2-db-replication.json"
   },
