@@ -48,15 +48,8 @@ sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
 litestream version
 sudo systemctl enable litestream
 
-# Install yarn globally
-sudo npm install --global yarn
-export PATH="$PATH:$(yarn global bin)"
-
 # Install blitz globally
-yarn global add blitz
-
-# Install pm2 globally
-yarn global add pm2
+sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Install sqlite3
 sudo apt install -y sqlite3
@@ -80,8 +73,9 @@ sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" blitz.config
 else
 sed -i -e "s/http:\/\/localhost:3000/https:\/\/$BRANCH.labs.wizeline.com/g" blitz.config.ts
 fi
-yarn install
-yarn build
+npm i
+npm i react react-dom
+npm run build
 if [ $DB_EXISTS -eq 0 ]
 then
 blitz prisma migrate deploy
@@ -93,7 +87,7 @@ then
 blitz db seed
 fi
 fi
-yarn sync-skills
+npm run sync-skills
 
 if [ "$BRANCH" == "default" ]
 then
@@ -102,11 +96,11 @@ echo "Starting Replication"
 sed -i -e "s/SQLITE_PATH/$SQLITE_PATH/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_NAME/$S3_BUCKET_NAME/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_PATH/$S3_BUCKET_PATH/g" pm2-db-replication.json
-pm2 start pm2-db-replication.json
+npm run pm2:db-replication
 fi
 
 
 # Start application
 sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
-pm2 start pm2-server.json
+npm run pm2:server
