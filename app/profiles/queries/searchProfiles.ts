@@ -1,5 +1,5 @@
 import { resolver } from "blitz"
-import db, { Prisma } from "db"
+import db from "db"
 
 export default resolver.pipe(resolver.authorize(), async (search: String) => {
   const select = `

@@ -18,7 +18,7 @@ AUTH0_CLIENT_ID=
 AUTH0_DOMAIN=
 AUTH0_CLIENT_SECRET=
 
-## Optional, for sync-skills command
+## Optional, for WizelineOS sync-* commands
 WOS_AUTH_API_URL=
 WOS_AUTH_API_AUDIENCE=
 WOS_AUTH_API_CLIENT_ID=
@@ -46,7 +46,10 @@ yarn install # dependencies
 blitz prisma migrate reset # create or reset the database schema
 sqlite3 db/db.sqlite < db/search_indexes.sql # load full text indexes
 blitz db seed # populate with test data
-yarn sync-skills # sync skills from Wizeline OS
+# sync commands from Wizeline OS, you can also just run `sync-all-catalogs`
+yarn sync-skills
+yarn sync-jobTitles
+yarn sync-locations
 blitz dev # run blitz
 ```
 
