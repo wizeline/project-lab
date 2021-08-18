@@ -63,7 +63,7 @@ resource "aws_lightsail_instance_public_ports" "public_ports" {
 
   port_info {
     protocol  = "tcp"
-    from_port = 5555
-    to_port   = 5555
+    from_port = 8080
+    to_port   = 8080
   }
 }
