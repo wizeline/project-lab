@@ -38,7 +38,9 @@ sudo apt -y install nodejs gcc g++ make
 
 # Install nginx
 sudo apt install -y nginx ufw
-sudo ufw allow 'Nginx HTTP'
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 5555
 echo y | sudo ufw enable
 sudo ufw status
 
@@ -51,6 +53,9 @@ sudo systemctl enable litestream
 # Install yarn
 sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
+
+# Install pm2
+sudo npm install --global pm2
 
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
@@ -102,16 +107,20 @@ echo "Starting Replication"
 sed -i -e "s/SQLITE_PATH/$SQLITE_PATH/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_NAME/$S3_BUCKET_NAME/g" pm2-db-replication.json
 sed -i -e "s/S3_BUCKET_PATH/$S3_BUCKET_PATH/g" pm2-db-replication.json
+pm2 stop projectlab-db-replication
 npm run pm2:db-replication
 fi
 
 # Launch prisma studio on dev env
 if [ "$BRANCH" != "default" ]
 then
+pm2 stop projectlab-prisma-studio
 npm run pm2:prisma-studio
+curl http://localhost:5555
 fi
 
 # Start application
 sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
+pm2 stop projectlab-server
 npm run pm2:server
