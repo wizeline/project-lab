@@ -40,7 +40,7 @@ sudo apt -y install nodejs gcc g++ make
 sudo apt install -y nginx ufw
 sudo ufw allow 22
 sudo ufw allow 80
-sudo ufw allow 5555
+sudo ufw allow 8080
 echo y | sudo ufw enable
 sudo ufw status
 
