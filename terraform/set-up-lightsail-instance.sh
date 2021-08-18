@@ -48,6 +48,10 @@ sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
 litestream version
 sudo systemctl enable litestream
 
+# Install yarn
+sudo npm install --global yarn
+export PATH="$PATH:$(yarn global bin)"
+
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
