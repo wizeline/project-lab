@@ -54,11 +54,11 @@ sudo systemctl enable litestream
 sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
 
+# Install pm2
+sudo npm install --global pm2
+
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
-
-# Install p2m globally
-sudo npm i -g p2m
 
 # Install sqlite3
 sudo apt install -y sqlite3
@@ -98,7 +98,7 @@ sqlite3 db/db.sqlite < db/search_indexes.sql
 #fi
 fi
 blitz db seed
-npm run sync-skills
+npm run sync-all-catalogs
 
 if [ "$BRANCH" == "default" ]
 then
@@ -124,4 +124,3 @@ sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
 pm2 stop projectlab-server
 npm run pm2:server
-

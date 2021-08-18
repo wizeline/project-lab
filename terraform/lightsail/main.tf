@@ -41,7 +41,7 @@ resource "aws_lightsail_instance" "instance" {
   name              = "project-lab-${local.env_prefix}"
   availability_zone = "us-east-1a"
   blueprint_id      = "debian_10"
-  bundle_id         = local.env_prefix == "default" ? "small_2_0" : "micro_2_0"
+  bundle_id         = "small_2_0"
   key_pair_name     = "ssh-key"
   tags              = local.resource_tags
 }
@@ -59,5 +59,11 @@ resource "aws_lightsail_instance_public_ports" "public_ports" {
     protocol  = "tcp"
     from_port = 22
     to_port   = 22
+  }
+
+  port_info {
+    protocol  = "tcp"
+    from_port = 5555
+    to_port   = 5555
   }
 }
