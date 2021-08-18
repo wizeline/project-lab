@@ -108,7 +108,7 @@ fi
 # Launch prisma studio on dev env
 if [ "$BRANCH" != "default" ]
 then
-blitz prisma studio
+npm run pm2:prisma-studio
 fi
 
 # Start application
