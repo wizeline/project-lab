@@ -101,6 +101,11 @@ sed -i -e "s/S3_BUCKET_PATH/$S3_BUCKET_PATH/g" pm2-db-replication.json
 npm run pm2:db-replication
 fi
 
+# Launch prisma studio on dev env
+if [ "$BRANCH" != "default" ]
+then
+blitz prisma studio
+fi
 
 # Start application
 sudo cp -rf ./nginx/config /etc/nginx/sites-enabled/default
