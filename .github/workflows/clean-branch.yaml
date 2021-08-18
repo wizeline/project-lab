@@ -6,8 +6,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.ref }}
       - name: Get Github Branch
         id: get-branch
         run: echo ::set-output name=branch::$(echo ${{ github.event.ref }} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g")
