@@ -6,3 +6,12 @@ server
         proxy_pass http://localhost:3000;
     }
 }
+
+server 
+{
+    listen 8080;
+
+    location / {
+        proxy_pass http://localhost:5555;
+    }
+}

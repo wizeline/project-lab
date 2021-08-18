@@ -1,13 +1,11 @@
 name: Clean Branch
 on: [delete]
 jobs:
-  deploy-branch:
+  clean-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.get-branch.outputs.branch }}
       - name: Get Github Branch
         id: get-branch
         run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g")
