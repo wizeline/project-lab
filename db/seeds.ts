@@ -110,7 +110,7 @@ const seed = async () => {
     update: {},
     create: { name: "Innovation Camp 2021" },
   })
-  await db.profiles.upsert({
+  const george = await db.profiles.upsert({
     where: { email: "george.wachira@wizeline.com" },
     update: {},
     create: {
@@ -160,7 +160,7 @@ const seed = async () => {
       department: "Engineering",
     },
   })
-  await db.profiles.upsert({
+  const ev = await db.profiles.upsert({
     where: { email: "edgar.vazquez@wizeline.com" },
     update: {},
     create: {
@@ -180,7 +180,7 @@ const seed = async () => {
       department: "Engineering",
     },
   })
-  await db.profiles.upsert({
+  const jbc = await db.profiles.upsert({
     where: { email: "joaquin.bravo@wizeline.com" },
     update: {},
     create: {
@@ -190,7 +190,7 @@ const seed = async () => {
       department: "Engineering",
     },
   })
-  await db.profiles.upsert({
+  const tejeda = await db.profiles.upsert({
     where: { email: "luis.tejeda@wizeline.com" },
     update: {},
     create: {
@@ -200,7 +200,7 @@ const seed = async () => {
       department: "Engineering",
     },
   })
-  await db.profiles.upsert({
+  const jp = await db.profiles.upsert({
     where: { email: "joaquin.popoca@wizeline.com" },
     update: {},
     create: {
@@ -220,7 +220,7 @@ const seed = async () => {
       department: "Engineering",
     },
   })
-  await db.profiles.upsert({
+  const b = await db.profiles.upsert({
     where: { email: "b.neha@wizeline.com" },
     update: {},
     create: {
@@ -230,7 +230,7 @@ const seed = async () => {
       department: "Delivery",
     },
   })
-  await db.profiles.upsert({
+  const enoc = await db.profiles.upsert({
     where: { email: "enoc.villa@wizeline.com" },
     update: {},
     create: {
@@ -278,6 +278,154 @@ const seed = async () => {
       firstName: "Said",
       lastName: "Montiel",
       department: "Engineering",
+    },
+  })
+
+  await db.projects.upsert({
+    where: { name: "Proposal Hunt" },
+    update: {},
+    create: {
+      name: "Proposal Hunt",
+      owner: { connect: { id: jp.id } },
+      description: "Visibility of projects",
+      valueStatement: "Socialize them with comments, votes, simple search.",
+      target: "All wizeliners",
+      projectStatus: { connect: { name: "Needs Review" } },
+      searchSkills: "TypeScript, SQLite, React",
+      skills: { connect: [{ name: "TypeScript" }, { name: "SQLite" }, { name: "React" }] },
+      labels: { connect: [{ name: "Innovation Camp 2020" }] },
+      projectMembers: {
+        create: [
+          {
+            profile: { connect: { id: jp.id } },
+            hoursPerWeek: 3,
+            role: "Tech Lead",
+          },
+        ],
+      },
+    },
+  })
+  await db.projects.upsert({
+    where: { name: "Project Lab" },
+    update: {},
+    create: {
+      name: "Project Lab",
+      owner: { connect: { id: jbc.id } },
+      category: { connect: { name: "Value Creator" } },
+      description: "Visibility of initiatives. Follow up of skills and work from Wizeliners",
+      valueStatement: "New WCI board",
+      target: "All wizeliners",
+      projectStatus: { connect: { name: "Needs Review" } },
+      searchSkills: "TypeScript, SQLite, React",
+      skills: { connect: [{ name: "TypeScript" }, { name: "SQLite" }, { name: "React" }] },
+      labels: { connect: [{ name: "Innovation Camp 2020" }, { name: "Innovation Camp 2021" }] },
+      projectMembers: {
+        create: [
+          {
+            profile: { connect: { id: jbc.id } },
+            hoursPerWeek: 3,
+            role: "Frontend",
+          },
+          {
+            profile: { connect: { id: tejeda.id } },
+            hoursPerWeek: 3,
+            role: "Backend",
+          },
+          {
+            profile: { connect: { id: george.id } },
+            hoursPerWeek: 3,
+            role: "SRE",
+          },
+        ],
+      },
+    },
+  })
+  await db.projects.upsert({
+    where: { name: "Wizepace" },
+    update: {},
+    create: {
+      name: "Wizepace",
+      owner: { connect: { id: ev.id } },
+      category: { connect: { name: "Value Creator" } },
+      description:
+        "The global pandemic has changed how we view the workplace and the needs we have. However, the office is still one of many tools that Wizeliners have to facilitate collaboration and social engagement. Acknowledging the previous facts, we need to think of a way to come back to our workplaces",
+      valueStatement: `This solution is called Wizeline + Space = Wizepace. We will implement a solution that:
+      * Gives Wizeliners the ability to: Book a desk and Visit different offices or locations.
+      * Fulfills the expectations of hybrid work: from home and the office.
+      * Helps the Facilities Team to maximize the use of our workspace and comply with health and safety regulations. ",
+      target: "All wizeliners`,
+      projectStatus: { connect: { name: "Needs Review" } },
+      searchSkills: "React, AWS, Ruby",
+      skills: { connect: [{ name: "AWS" }, { name: "Ruby" }, { name: "React" }] },
+      labels: { connect: [{ name: "Innovation Camp 2021" }] },
+      projectMembers: {
+        create: [
+          {
+            profile: { connect: { id: ev.id } },
+            hoursPerWeek: 3,
+            role: "Tech Lead",
+          },
+        ],
+      },
+    },
+  })
+  await db.projects.upsert({
+    where: { name: "WizeRunner" },
+    update: {},
+    create: {
+      name: "WizeRunner",
+      owner: { connect: { id: b.id } },
+      description:
+        "With the current pandemic situation, people are advised not to gather in large numbers for any sporting events such as mass running tournaments. Moreover, many individuals do not necessarily have to compete with others since competing against themselves offers the greatest reward. From those reasons, we came up with the idea to build a system not only for Wizeliners but also for the community so that everyone can stay motivated and boost their competitive spirit through running challenges and virtual races.",
+      valueStatement:
+        "Nowadays, there are a number of systems that allow users to participate in running challenges or participate in virtual races with some limitations. The first drawback is that most of these systems are not free. Users have to pay to be able to participate in virtual races or to be able to join public or private running challenges individually or with a team. The second limitation is that some of the paid systems, such as the ChallengeRunner, have a rather monotonous and boring design and reporting. That may reduce the users' motivation when using the app. Finally, most systems only support one of two functions, either participating in running challenges or participating in virtual races. In other words, to use both of those functions, users have to use and switch between two separate systems which is complex and costly. That motivates us to build a centralized system for Wizeliners to improve physical and mental health through virtual running functions.",
+      target: "All wizeliners",
+      projectStatus: { connect: { name: "Draft" } },
+      searchSkills: "Java, PostgreSQL, React",
+      skills: { connect: [{ name: "Java" }, { name: "PostgreSQL" }, { name: "React" }] },
+      labels: { connect: [{ name: "Innovation Camp 2021" }] },
+      projectMembers: {
+        create: [
+          {
+            profile: { connect: { id: b.id } },
+            hoursPerWeek: 3,
+            role: "Tech Lead",
+          },
+        ],
+      },
+    },
+  })
+  await db.projects.upsert({
+    where: { name: "Sorting Cat / Communities Platform" },
+    update: {},
+    create: {
+      name: "Sorting Cat / Communities Platform",
+      owner: { connect: { id: enoc.id } },
+      description:
+        "We want to create a new platform where wizeliners can see all the existing communities and send a request to form part of the one they like the most. Community Champions can also manage their community information and see all the people within. ",
+      valueStatement: `Communities play an important role in creating a sense of belonging among engineers at Wizeline. With the new portfolio organization, the importance of the communities only grows, as they create an opportunity for wizeliners with similar interests to share experiences,  seek help, and learn new things.
+
+      Before the portfolio re-organization, communities were grouped by discipline and office. As communities become a global entity within Wizeline, we realized there was no unique place for engineers to see the existing communities and have an automated process to get assigned to the community of their choice.
+
+      We wanted to create a new platform for wizeliners to see the full list of available communities and what was the goal and team members and communication channels of each one. We also wanted to give community champions the ability to manage their communities and people who form part of the community.
+
+      During the initial Innovation Camp sessions, where we pitched our idea in order to search for people to join the team, we realized there was a similar initiative for a community platform, which was developed by another team in Guadalajara. They had some work done but because of bandwidth, there was still a lot to get done in order to get the platform to be functional.
+
+      We decided to join efforts and take the work that was already developed and finish the basic functionality so we can deliver this platform faster and gets ready to use in less time. `,
+      target: "All wizeliners",
+      projectStatus: { connect: { name: "Needs Review" } },
+      searchSkills: "Go, MySQL, React",
+      skills: { connect: [{ name: "Go" }, { name: "MySQL" }, { name: "React" }] },
+      labels: { connect: [{ name: "Innovation Camp 2021" }] },
+      projectMembers: {
+        create: [
+          {
+            profile: { connect: { id: enoc.id } },
+            hoursPerWeek: 3,
+            role: "Tech Lead",
+          },
+        ],
+      },
     },
   })
 }
