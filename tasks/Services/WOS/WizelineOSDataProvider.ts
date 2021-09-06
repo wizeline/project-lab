@@ -2,6 +2,49 @@ import axios from "axios"
 
 export default class WizelineOSDataProvider {
   constructor() {}
+
+  catalogs = {
+    skills: {
+      query: `
+      query GetSkills {
+        skills {
+          id
+          name
+        }
+      }
+    `,
+      mapper: (skill: { id: string; name: string }) => {
+        return { ...skill }
+      },
+    },
+    locations: {
+      query: `
+      query GetLocations {
+        locations {
+          id,
+          name
+        }
+      }
+    `,
+      mapper: (locations: { id: string; name: string }) => {
+        return { ...locations }
+      },
+    },
+    jobTitles: {
+      query: `
+      query GetJobTitles {
+        jobTitles {
+          id,
+          name,
+          filteredName
+        }
+      }
+    `,
+      mapper: (jobTitle: { id: string; name: string; filteredName: string }) => {
+        return { ...jobTitle, nameAbbreviation: jobTitle.filteredName }
+      },
+    },
+  }
   async getWizelineOSApiAccessToken(): Promise<string> {
     if (!process.env.WOS_AUTH_API_URL) {
       throw "Wizeline OS Authentication API URL not specified"
@@ -21,75 +64,20 @@ export default class WizelineOSDataProvider {
     return accessToken
   }
 
-  async getJobTitlesFromWizelineOS(): Promise<
-    {
-      id: string
-      name: string
-      nameAbbreviation: string
-    }[]
-  > {
-    const accessToken = await this.getWizelineOSApiAccessToken()
-    if (!process.env.WOS_API_URL) {
-      throw "Wizeline OS API URL not specified"
-    }
-    let {
-      data: {
-        data: { jobTitles = [] },
-      },
-    } = await axios.post(
-      process.env.WOS_API_URL,
-      {
-        query: `
-          query GetJobTitles {
-            jobTitles {
-              id,
-              name,
-              filteredName
-            }
-          }
-        `,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
-    if (!jobTitles || jobTitles.length == 0) {
-      throw "No job titles retrived by Wizeline OS API"
-    }
-
-    return jobTitles.map((jobTitle: { id: string; name: string; filteredName: string }) => {
-      return { ...jobTitle, nameAbbreviation: jobTitle.filteredName }
-    })
+  async getAllFromCatalog(name: string): Promise<any> {
+    return this.getSimpleCatalog(this.catalogs[name].query, name, this.catalogs[name].mapper)
   }
 
-  async getSkillsFromWizelineOS(): Promise<
-    {
-      id: string
-      name: string
-    }[]
-  > {
+  async getSimpleCatalog(query: string, catalog: string, mapper: (a: any) => any): Promise<any> {
     const accessToken = await this.getWizelineOSApiAccessToken()
 
     if (!process.env.WOS_API_URL) {
       throw "Wizeline OS API URL not specified"
     }
-    let {
-      data: {
-        data: { skills = [] },
-      },
-    } = await axios.post(
+    let response = await axios.post(
       process.env.WOS_API_URL,
       {
-        query: `
-          query GetSkills {
-            skills {
-              id
-              name
-            }
-          }
-        `,
+        query: query,
       },
       {
         headers: {
@@ -97,53 +85,87 @@ export default class WizelineOSDataProvider {
         },
       }
     )
-    if (!skills || skills.length == 0) {
-      throw "No skills retrived by Wizeline OS API"
+    let catalogData = response.data.data[catalog]
+    if (!catalogData || catalogData.length == 0) {
+      throw `No ${catalog} retrieved by Wizeline OS API`
     }
-
-    return skills.map((skill: { id: string; name: string }) => {
-      return { ...skill }
-    })
+    return catalogData.map(mapper)
   }
 
-  async getLocationsFromWizelineOS(): Promise<
-    {
-      id: string
-      name: string
-    }[]
-  > {
+  async getProfilesFromWizelineOS(): Promise<any> {
     const accessToken = await this.getWizelineOSApiAccessToken()
-
+    let profilesToReturn = []
     if (!process.env.WOS_API_URL) {
       throw "Wizeline OS API URL not specified"
     }
-    let {
-      data: {
-        data: { locations = [] },
-      },
-    } = await axios.post(
-      process.env.WOS_API_URL,
-      {
-        query: `
-          query GetLocations {
-            locations {
-              id,
-              name
-            }
-          }
-        `,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
+    let counter = 0
+    let totalProfiles = 0
+    let pageSize = 50
+    do {
+      let {
+        data: {
+          data: {
+            profiles: { totalCount, edges = [] },
+          },
         },
+      } = await axios.post(
+        process.env.WOS_API_URL,
+        {
+          query: `
+          query GetProfiles($filters: ProfileFilters, $limit: Int = ${pageSize}) {
+            profiles(first: $limit, after: "${counter}", filters: $filters) {
+              totalCount
+              edges {
+                node {
+                  id
+                  email
+                  firstName
+                  lastName
+                  avatar
+                  jobTitleId
+                  jobTitle
+                  jobLevelTier
+                  department
+                  terminatedAt
+                  locationId
+                  skills {
+                    id
+                    level
+                  }
+                }
+              }
+            }
+          }`,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      if (!edges || edges.length == 0) {
+        throw "No profiles retrieved by Wizeline OS API"
       }
-    )
-    if (!locations || locations.length == 0) {
-      throw "No locations retrived by Wizeline OS API"
-    }
-    return locations.map((locations: { id: string; name: string }) => {
-      return { ...locations }
-    })
+
+      totalProfiles = totalCount
+      counter += edges.length
+      profilesToReturn = profilesToReturn.concat(
+        edges.map((profile: { node: { id: string; skills: any } }) => {
+          let profileSkills = profile.node.skills.map((skill: { id: string; level: string }) => {
+            return {
+              profileId: profile.node.id,
+              skillId: skill.id,
+              proficiency: skill.level,
+            }
+          })
+          let mapped = { ...profile.node, profileSkills: profileSkills }
+          delete mapped.skills
+          return mapped
+        })
+      )
+      console.log(counter)
+      console.log(totalProfiles)
+    } while (counter < totalProfiles)
+    return profilesToReturn
   }
 }
