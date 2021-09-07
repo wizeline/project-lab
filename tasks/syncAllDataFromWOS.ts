@@ -1,24 +1,14 @@
 import { PrismaClient } from "@prisma/client"
-
-import dotenv from "dotenv-flow"
-import dotenvExpand from "dotenv-expand"
-import WizelineOSDataProvider from "./services/WOS/WizelineOSDataProvider"
-import SkillWOSDAO from "./types/SkillWOSDTO"
 import LocationWOSDTO from "./types/LocationWOSDTO"
 import JobTitleWOSDTO from "./types/JobTitleWOSDTO"
 import ProfileWOSDTO from "./types/ProfileWOSDTO"
+import { DataProvider } from "./services/interface/DataProvider"
+import SkillWOSDTO from "./types/SkillWOSDTO"
 
-const myEnv = dotenv.config()
-dotenvExpand(myEnv)
 const db = new PrismaClient()
 
-async function task() {
-  const dataProvider = new WizelineOSDataProvider()
-  await syncCatalogs(dataProvider, db)
-}
-
-async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClient) {
-  let skillsFromWizelineOs: SkillWOSDAO[]
+export default async function syncCatalogs(dataProvider: DataProvider, db: PrismaClient) {
+  let skillsFromWizelineOs: SkillWOSDTO[]
   let locationsFromWizelineOs: LocationWOSDTO[]
   let jobTitlesFromWizelineOs: JobTitleWOSDTO[]
   let profilesFromWizelineOS: ProfileWOSDTO[]
@@ -35,7 +25,8 @@ async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClie
   if (
     skillsFromWizelineOs.length === 0 &&
     locationsFromWizelineOs.length === 0 &&
-    jobTitlesFromWizelineOs.length === 0
+    jobTitlesFromWizelineOs.length === 0 &&
+    profilesFromWizelineOS.length === 0
   ) {
     console.info("No found information in Wizeline OS with filter criteria")
     return
@@ -44,7 +35,7 @@ async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClie
   const skillsUpserts = skillsFromWizelineOs.map((skill) => {
     return db.skills.upsert({
       where: { id: skill.id },
-      update: {},
+      update: { name: skill.name },
       create: { id: skill.id, name: skill.name },
     })
   })
@@ -52,7 +43,7 @@ async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClie
   const jobTitlesUpserts = jobTitlesFromWizelineOs.map((jobTitle) => {
     return db.jobTitles.upsert({
       where: { id: jobTitle.id },
-      update: {},
+      update: { name: jobTitle.name, nameAbbreviation: jobTitle.nameAbbreviation },
       create: { id: jobTitle.id, name: jobTitle.name, nameAbbreviation: jobTitle.nameAbbreviation },
     })
   })
@@ -60,7 +51,7 @@ async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClie
   const locationsUpserts = locationsFromWizelineOs.map((location) => {
     return db.locations.upsert({
       where: { id: location.id },
-      update: {},
+      update: { name: location.name },
       create: { id: location.id, name: location.name },
     })
   })
@@ -154,8 +145,3 @@ async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClie
 
   console.info(`Inserted/Updated ${profilesFromWizelineOS.length} new profiles(s)`)
 }
-
-//close connection
-task().finally(() => {
-  db.$disconnect()
-})

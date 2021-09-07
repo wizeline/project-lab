@@ -1,7 +1,8 @@
 import axios from "axios"
 import ProfileWOSDTO from "tasks/types/ProfileWOSDTO"
+import { DataProvider } from "../interface/DataProvider"
 
-export default class WizelineOSDataProvider {
+export default class WizelineOSDataProvider implements DataProvider {
   WOSAccesToken: string
   constructor() {
     this.WOSAccesToken = ""

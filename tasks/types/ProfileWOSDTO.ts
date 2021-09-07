@@ -8,7 +8,7 @@ export default class ProfileWOSDTO {
   jobTitle: string
   jobLevelTier: string
   department: string
-  terminatedAt: string
+  terminatedAt?: string
   locationId: string
   profileSkills: any
   constructor() {}
