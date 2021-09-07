@@ -98,7 +98,7 @@ sqlite3 db/db.sqlite < db/search_indexes.sql
 #fi
 fi
 blitz db seed
-npm run sync-all-catalogs
+npm run sync-all-from-wos
 
 if [ "$BRANCH" == "default" ]
 then
