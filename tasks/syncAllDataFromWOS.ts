@@ -2,42 +2,26 @@ import { PrismaClient } from "@prisma/client"
 
 import dotenv from "dotenv-flow"
 import dotenvExpand from "dotenv-expand"
-import WizelineOSDataProvider from "./Services/WOS/WizelineOSDataProvider"
+import WizelineOSDataProvider from "./services/WOS/WizelineOSDataProvider"
+import SkillWOSDAO from "./types/SkillWOSDTO"
+import LocationWOSDTO from "./types/LocationWOSDTO"
+import JobTitleWOSDTO from "./types/JobTitleWOSDTO"
+import ProfileWOSDTO from "./types/ProfileWOSDTO"
 
 const myEnv = dotenv.config()
 dotenvExpand(myEnv)
 const db = new PrismaClient()
 
 async function task() {
-  let skillsFromWizelineOs: {
-    id: string
-    name: string
-  }[]
-  let locationsFromWizelineOs: {
-    id: string
-    name: string
-  }[]
-  let jobTitlesFromWizelineOs: {
-    id: string
-    name: string
-    nameAbbreviation: string
-  }[]
-  let profi
-  let profilesFromWizelineOS: {
-    id: string
-    email: string
-    firstName: string
-    lastName: string
-    avatar: string
-    jobTitleId: string
-    jobTitle: string
-    jobLevelTier: string
-    department: string
-    terminatedAt: string
-    locationId: string
-    profileSkills: any
-  }[]
   const dataProvider = new WizelineOSDataProvider()
+  await syncCatalogs(dataProvider, db)
+}
+
+async function syncCatalogs(dataProvider: WizelineOSDataProvider, db: PrismaClient) {
+  let skillsFromWizelineOs: SkillWOSDAO[]
+  let locationsFromWizelineOs: LocationWOSDTO[]
+  let jobTitlesFromWizelineOs: JobTitleWOSDTO[]
+  let profilesFromWizelineOS: ProfileWOSDTO[]
   try {
     skillsFromWizelineOs = await dataProvider.getAllFromCatalog("skills")
     locationsFromWizelineOs = await dataProvider.getAllFromCatalog("locations")
@@ -84,7 +68,21 @@ async function task() {
   const profilesUpsert = profilesFromWizelineOS.map((profile) => {
     return db.profiles.upsert({
       where: { id: profile.id },
-      update: {},
+      update: {
+        id: profile.id,
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        avatarUrl: profile.avatar,
+        // jobTitleId: profile.jobTitleId,
+        jobLevelTier: profile.jobLevelTier,
+        department: profile.department,
+        terminatedAt: profile.terminatedAt,
+        locationId: profile.locationId,
+        profileSkills: {
+          create: profile.profileSkills,
+        },
+      },
       create: {
         id: profile.id,
         email: profile.email,
@@ -157,7 +155,7 @@ async function task() {
   console.info(`Inserted/Updated ${profilesFromWizelineOS.length} new profiles(s)`)
 }
 
-//export default task
+//close connection
 task().finally(() => {
   db.$disconnect()
 })

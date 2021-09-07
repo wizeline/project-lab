@@ -1,7 +1,11 @@
 import axios from "axios"
+import ProfileWOSDTO from "tasks/types/ProfileWOSDTO"
 
 export default class WizelineOSDataProvider {
-  constructor() {}
+  WOSAccesToken: string
+  constructor() {
+    this.WOSAccesToken = ""
+  }
 
   catalogs = {
     skills: {
@@ -49,6 +53,9 @@ export default class WizelineOSDataProvider {
     if (!process.env.WOS_AUTH_API_URL) {
       throw "Wizeline OS Authentication API URL not specified"
     }
+    if (this.WOSAccesToken) {
+      return this.WOSAccesToken
+    }
     let {
       data: { access_token: accessToken = "" },
     } = await axios.post(process.env.WOS_AUTH_API_URL, {
@@ -61,6 +68,7 @@ export default class WizelineOSDataProvider {
       throw "Unable to get access token to request information from Wizeline OS"
     }
 
+    this.WOSAccesToken = accessToken
     return accessToken
   }
 
@@ -92,7 +100,7 @@ export default class WizelineOSDataProvider {
     return catalogData.map(mapper)
   }
 
-  async getProfilesFromWizelineOS(): Promise<any> {
+  async getProfilesFromWizelineOS(): Promise<ProfileWOSDTO[]> {
     const accessToken = await this.getWizelineOSApiAccessToken()
     let profilesToReturn = []
     if (!process.env.WOS_API_URL) {
@@ -155,11 +163,10 @@ export default class WizelineOSDataProvider {
         edges.map((profile: { node: { id: string; skills: any } }) => {
           let profileSkills = profile.node.skills.map(
             (skillRelationship: { level: string; skill: { id: string } }) => {
-              let profSkill = {
+              return {
                 skills: { connect: { id: skillRelationship.skill.id } },
                 proficiency: skillRelationship.level,
               }
-              return profSkill
             }
           )
           let mapped = { ...profile.node, profileSkills: profileSkills }
