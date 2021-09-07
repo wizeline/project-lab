@@ -100,7 +100,7 @@ export default class WizelineOSDataProvider {
     }
     let counter = 0
     let totalProfiles = 0
-    let pageSize = 50
+    let pageSize = 25
     do {
       let {
         data: {
@@ -129,8 +129,10 @@ export default class WizelineOSDataProvider {
                   terminatedAt
                   locationId
                   skills {
-                    id
                     level
+                    skill{
+                      id
+                    }
                   }
                 }
               }
@@ -151,20 +153,20 @@ export default class WizelineOSDataProvider {
       counter += edges.length
       profilesToReturn = profilesToReturn.concat(
         edges.map((profile: { node: { id: string; skills: any } }) => {
-          let profileSkills = profile.node.skills.map((skill: { id: string; level: string }) => {
-            return {
-              profileId: profile.node.id,
-              skillId: skill.id,
-              proficiency: skill.level,
+          let profileSkills = profile.node.skills.map(
+            (skillRelationship: { level: string; skill: { id: string } }) => {
+              let profSkill = {
+                skills: { connect: { id: skillRelationship.skill.id } },
+                proficiency: skillRelationship.level,
+              }
+              return profSkill
             }
-          })
+          )
           let mapped = { ...profile.node, profileSkills: profileSkills }
           delete mapped.skills
           return mapped
         })
       )
-      console.log(counter)
-      console.log(totalProfiles)
     } while (counter < totalProfiles)
     return profilesToReturn
   }

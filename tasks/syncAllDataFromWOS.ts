@@ -22,7 +22,21 @@ async function task() {
     name: string
     nameAbbreviation: string
   }[]
-  let profilesFromWizelineOS: []
+  let profi
+  let profilesFromWizelineOS: {
+    id: string
+    email: string
+    firstName: string
+    lastName: string
+    avatar: string
+    jobTitleId: string
+    jobTitle: string
+    jobLevelTier: string
+    department: string
+    terminatedAt: string
+    locationId: string
+    profileSkills: any
+  }[]
   const dataProvider = new WizelineOSDataProvider()
   try {
     skillsFromWizelineOs = await dataProvider.getAllFromCatalog("skills")
@@ -67,6 +81,28 @@ async function task() {
     })
   })
 
+  const profilesUpsert = profilesFromWizelineOS.map((profile) => {
+    return db.profiles.upsert({
+      where: { id: profile.id },
+      update: {},
+      create: {
+        id: profile.id,
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        avatarUrl: profile.avatar,
+        // jobTitleId: profile.jobTitleId,
+        jobLevelTier: profile.jobLevelTier,
+        department: profile.department,
+        terminatedAt: profile.terminatedAt,
+        locationId: profile.locationId,
+        profileSkills: {
+          create: profile.profileSkills,
+        },
+      },
+    })
+  })
+
   await db.$transaction([
     db.skills.deleteMany({
       where: {
@@ -99,9 +135,26 @@ async function task() {
     ...jobTitlesUpserts,
     ...locationsUpserts,
   ])
+
   console.info(`Inserted/Updated ${skillsFromWizelineOs.length} new skill(s)`)
   console.info(`Inserted/Updated ${locationsFromWizelineOs.length} new locations(s)`)
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
+
+  await db.$transaction([
+    db.profiles.deleteMany({
+      where: {
+        id: {
+          notIn: profilesFromWizelineOS.map((profile) => {
+            return profile.id
+          }),
+        },
+      },
+    }),
+    db.profileSkills.deleteMany({}),
+    ...profilesUpsert,
+  ])
+
+  console.info(`Inserted/Updated ${profilesFromWizelineOS.length} new profiles(s)`)
 }
 
 //export default task
