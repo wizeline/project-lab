@@ -1,4 +1,4 @@
-import { DataProvider } from "tasks/servicesdata/interface/DataProvider"
+import { DataProvider } from "tasks/services/interface/DataProvider"
 import syncCatalogs from "tasks/syncAllDataFromWOS"
 import JobTitleWOSDTO from "tasks/types/JobTitleWOSDTO"
 import LocationWOSDTO from "tasks/types/LocationWOSDTO"
