@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import LocationWOSDTO from "./types/LocationWOSDTO"
 import JobTitleWOSDTO from "./types/JobTitleWOSDTO"
 import ProfileWOSDTO from "./types/ProfileWOSDTO"
-import { DataProvider } from "./services/interface/DataProvider"
+import { DataProvider } from "./servicesdata/interface/DataProvider"
 import SkillWOSDTO from "./types/SkillWOSDTO"
 
 const db = new PrismaClient()

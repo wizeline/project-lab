@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client"
 
 import dotenv from "dotenv-flow"
 import dotenvExpand from "dotenv-expand"
-import WizelineOSDataProvider from "./services/WOS/WizelineOSDataProvider"
+import WizelineOSDataProvider from "./servicesdata/WOS/WizelineOSDataProvider"
 import syncCatalogs from "./syncAllDataFromWOS"
 
 const db = new PrismaClient()
