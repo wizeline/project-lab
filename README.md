@@ -46,10 +46,7 @@ yarn install # dependencies
 blitz prisma migrate reset # create or reset the database schema
 sqlite3 db/db.sqlite < db/search_indexes.sql # load full text indexes
 blitz db seed # populate with test data
-# sync commands from Wizeline OS, you can also just run `sync-all-catalogs`
-yarn sync-skills
-yarn sync-jobTitles
-yarn sync-locations
+# sync commands from Wizeline OS, you can just run `sync-all-from-wos`
 blitz dev # run blitz
 ```
 
