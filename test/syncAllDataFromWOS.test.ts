@@ -5,7 +5,7 @@ import ProfileWOSDTO from "tasks/types/ProfileWOSDTO"
 import SkillWOSDTO from "tasks/types/SkillWOSDTO"
 import db from "db"
 
-const mockDataProviderGetAllFromCatalog = jest.fn((name: string): any => {
+const mockDataProviderGetAllFromCatalog = jest.fn((name: string): Promise<any> => {
   if (name === "skills") {
     let data: SkillWOSDTO[] = [
       {
@@ -13,9 +13,8 @@ const mockDataProviderGetAllFromCatalog = jest.fn((name: string): any => {
         name: "skillName",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
-
   if (name === "locations") {
     let data: LocationWOSDTO[] = [
       {
@@ -23,7 +22,7 @@ const mockDataProviderGetAllFromCatalog = jest.fn((name: string): any => {
         name: "locationName",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
   if (name === "jobTitles") {
     let data: JobTitleWOSDTO[] = [
@@ -33,12 +32,13 @@ const mockDataProviderGetAllFromCatalog = jest.fn((name: string): any => {
         nameAbbreviation: "JobTitleName",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
+  return Promise.reject("Invalid catalog name")
 })
 
 const mockDataProviderGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOSDTO[]> => {
-  return [
+  return Promise.resolve([
     {
       id: "profileId",
       email: "profile@Name",
@@ -55,10 +55,10 @@ const mockDataProviderGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOS
         proficiency: "level",
       },
     },
-  ]
+  ])
 })
 
-const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): any => {
+const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): Promise<any> => {
   if (name === "skills") {
     let data: SkillWOSDTO[] = [
       {
@@ -70,7 +70,7 @@ const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): any => 
         name: "newSkill",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
 
   if (name === "locations") {
@@ -80,7 +80,7 @@ const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): any => 
         name: "locationNameUpdated",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
   if (name === "jobTitles") {
     let data: JobTitleWOSDTO[] = [
@@ -90,12 +90,13 @@ const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): any => 
         nameAbbreviation: "JobTitleNameUpdated",
       },
     ]
-    return data
+    return Promise.resolve(data)
   }
+  return Promise.reject("Invalid catalog name")
 })
 
 const mockDataProviderUpdatedGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOSDTO[]> => {
-  return [
+  return Promise.resolve([
     {
       id: "profileId",
       email: "profile@Name",
@@ -118,7 +119,7 @@ const mockDataProviderUpdatedGetProfilesFromWizelineOS = jest.fn((): Promise<Pro
         },
       ],
     },
-  ]
+  ])
 })
 
 const cleanData = async () => {
