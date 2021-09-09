@@ -39,6 +39,7 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.B = Labels.id
+      ${where}
       GROUP BY p.id
       ORDER BY rank, p.name
       LIMIT ${take} OFFSET ${skip};
@@ -55,7 +56,7 @@ export default resolver.pipe(
     `
 
     const categoryFacets = await db.$queryRaw`
-      SELECT p.categoryName, count(DISTINCT p.id) as count
+      SELECT p.categoryName as name, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id

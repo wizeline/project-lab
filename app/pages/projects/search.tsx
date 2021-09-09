@@ -3,7 +3,6 @@ import styled from "@emotion/styled"
 import { Head, Link, useQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import searchProjects from "app/projects/queries/searchProjects"
-import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 
@@ -16,13 +15,16 @@ const ProjectsPage: BlitzPage = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const [{ projects, hasMore }] = useQuery(searchProjects, {
-    search,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
+    searchProjects,
+    {
+      search,
+      skip: ITEMS_PER_PAGE * page,
+      take: ITEMS_PER_PAGE,
+    }
+  )
+  const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
+  const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
@@ -65,7 +67,32 @@ const ProjectsPage: BlitzPage = () => {
         <div className="homeWrapper--content">
           <div className="homeWrapper__myProposals">
             <CardBox title="Filters">
-              <div className="homeWrapper__myProposals"></div>
+              <div className="homeWrapper__myProposals">
+                <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
+                <ul>
+                  {categoryFacets.map((item) => (
+                    <li key={item.name}>
+                      {item.name} ({item.count})
+                    </li>
+                  ))}
+                </ul>
+                <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
+                <ul>
+                  {skillFacets.map((item) => (
+                    <li key={item.name}>
+                      {item.name} ({item.count})
+                    </li>
+                  ))}
+                </ul>
+                <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
+                <ul>
+                  {labelFacets.map((item) => (
+                    <li key={item.name}>
+                      {item.name} ({item.count})
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </CardBox>
           </div>
           <div className="homeWrapper__information">
