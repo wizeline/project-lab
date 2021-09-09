@@ -2,21 +2,24 @@ import { PrismaClient } from "@prisma/client"
 import LocationWOSDTO from "./types/LocationWOSDTO"
 import JobTitleWOSDTO from "./types/JobTitleWOSDTO"
 import ProfileWOSDTO from "./types/ProfileWOSDTO"
-import { DataProvider } from "./services/interface/DataProvider"
 import SkillWOSDTO from "./types/SkillWOSDTO"
 
 const db = new PrismaClient()
 
-export default async function syncCatalogs(dataProvider: DataProvider, db: PrismaClient) {
+export default async function syncCatalogs(
+  getAllFromCatalog: (name: string) => Promise<any>,
+  getProfilesFromWizelineOS: () => Promise<ProfileWOSDTO[]>,
+  db: PrismaClient
+) {
   let skillsFromWizelineOs: SkillWOSDTO[]
   let locationsFromWizelineOs: LocationWOSDTO[]
   let jobTitlesFromWizelineOs: JobTitleWOSDTO[]
   let profilesFromWizelineOS: ProfileWOSDTO[]
   try {
-    skillsFromWizelineOs = await dataProvider.getAllFromCatalog("skills")
-    locationsFromWizelineOs = await dataProvider.getAllFromCatalog("locations")
-    jobTitlesFromWizelineOs = await dataProvider.getAllFromCatalog("jobTitles")
-    profilesFromWizelineOS = await dataProvider.getProfilesFromWizelineOS()
+    skillsFromWizelineOs = await getAllFromCatalog("skills")
+    locationsFromWizelineOs = await getAllFromCatalog("locations")
+    jobTitlesFromWizelineOs = await getAllFromCatalog("jobTitles")
+    profilesFromWizelineOS = await getProfilesFromWizelineOS()
   } catch (e) {
     console.error(e)
     return

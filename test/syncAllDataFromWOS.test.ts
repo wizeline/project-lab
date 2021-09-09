@@ -1,4 +1,3 @@
-import { DataProvider } from "tasks/services/interface/DataProvider"
 import syncCatalogs from "tasks/syncAllDataFromWOS"
 import JobTitleWOSDTO from "tasks/types/JobTitleWOSDTO"
 import LocationWOSDTO from "tasks/types/LocationWOSDTO"
@@ -6,123 +5,121 @@ import ProfileWOSDTO from "tasks/types/ProfileWOSDTO"
 import SkillWOSDTO from "tasks/types/SkillWOSDTO"
 import db from "db"
 
-const mockDataProvider: DataProvider = {
-  async getAllFromCatalog(name: string): Promise<any> {
-    if (name === "skills") {
-      let data: SkillWOSDTO[] = [
-        {
-          id: "skillId",
-          name: "skillName",
-        },
-      ]
-      return data
-    }
-
-    if (name === "locations") {
-      let data: LocationWOSDTO[] = [
-        {
-          id: "locationId",
-          name: "locationName",
-        },
-      ]
-      return data
-    }
-    if (name === "jobTitles") {
-      let data: JobTitleWOSDTO[] = [
-        {
-          id: "jobTitleId",
-          name: "JobTitleName",
-          nameAbbreviation: "JobTitleName",
-        },
-      ]
-      return data
-    }
-  },
-  async getProfilesFromWizelineOS(): Promise<ProfileWOSDTO[]> {
-    return [
+const mockDataProviderGetAllFromCatalog = jest.fn((name: string): any => {
+  if (name === "skills") {
+    let data: SkillWOSDTO[] = [
       {
-        id: "profileId",
-        email: "profile@Name",
-        firstName: "string",
-        lastName: "string",
-        avatar: "string",
-        jobTitleId: "jobTitleId",
-        jobTitle: "string",
-        jobLevelTier: "string",
-        department: "string",
-        locationId: "locationId",
-        profileSkills: {
+        id: "skillId",
+        name: "skillName",
+      },
+    ]
+    return data
+  }
+
+  if (name === "locations") {
+    let data: LocationWOSDTO[] = [
+      {
+        id: "locationId",
+        name: "locationName",
+      },
+    ]
+    return data
+  }
+  if (name === "jobTitles") {
+    let data: JobTitleWOSDTO[] = [
+      {
+        id: "jobTitleId",
+        name: "JobTitleName",
+        nameAbbreviation: "JobTitleName",
+      },
+    ]
+    return data
+  }
+})
+
+const mockDataProviderGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOSDTO[]> => {
+  return [
+    {
+      id: "profileId",
+      email: "profile@Name",
+      firstName: "string",
+      lastName: "string",
+      avatar: "string",
+      jobTitleId: "jobTitleId",
+      jobTitle: "string",
+      jobLevelTier: "string",
+      department: "string",
+      locationId: "locationId",
+      profileSkills: {
+        skills: { connect: { id: "skillId" } },
+        proficiency: "level",
+      },
+    },
+  ]
+})
+
+const mockDataProviderUpdatedGetAllFromCatalog = jest.fn((name: string): any => {
+  if (name === "skills") {
+    let data: SkillWOSDTO[] = [
+      {
+        id: "skillId",
+        name: "skillNameUpdated",
+      },
+      {
+        id: "skillId2",
+        name: "newSkill",
+      },
+    ]
+    return data
+  }
+
+  if (name === "locations") {
+    let data: LocationWOSDTO[] = [
+      {
+        id: "locationId",
+        name: "locationNameUpdated",
+      },
+    ]
+    return data
+  }
+  if (name === "jobTitles") {
+    let data: JobTitleWOSDTO[] = [
+      {
+        id: "jobTitleId",
+        name: "JobTitleNameUpdated",
+        nameAbbreviation: "JobTitleNameUpdated",
+      },
+    ]
+    return data
+  }
+})
+
+const mockDataProviderUpdatedGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOSDTO[]> => {
+  return [
+    {
+      id: "profileId",
+      email: "profile@Name",
+      firstName: "string",
+      lastName: "string",
+      avatar: "string",
+      jobTitleId: "jobTitleId",
+      jobTitle: "string",
+      jobLevelTier: "string",
+      department: "string",
+      locationId: "locationId",
+      profileSkills: [
+        {
           skills: { connect: { id: "skillId" } },
           proficiency: "level",
         },
-      },
-    ]
-  },
-}
-
-const mockDataProviderUpdated: DataProvider = {
-  async getAllFromCatalog(name: string): Promise<any> {
-    if (name === "skills") {
-      let data: SkillWOSDTO[] = [
         {
-          id: "skillId",
-          name: "skillNameUpdated",
+          skills: { connect: { id: "skillId2" } },
+          proficiency: "level",
         },
-        {
-          id: "skillId2",
-          name: "newSkill",
-        },
-      ]
-      return data
-    }
-
-    if (name === "locations") {
-      let data: LocationWOSDTO[] = [
-        {
-          id: "locationId",
-          name: "locationNameUpdated",
-        },
-      ]
-      return data
-    }
-    if (name === "jobTitles") {
-      let data: JobTitleWOSDTO[] = [
-        {
-          id: "jobTitleId",
-          name: "JobTitleNameUpdated",
-          nameAbbreviation: "JobTitleNameUpdated",
-        },
-      ]
-      return data
-    }
-  },
-  async getProfilesFromWizelineOS(): Promise<ProfileWOSDTO[]> {
-    return [
-      {
-        id: "profileId",
-        email: "profile@Name",
-        firstName: "string",
-        lastName: "string",
-        avatar: "string",
-        jobTitleId: "jobTitleId",
-        jobTitle: "string",
-        jobLevelTier: "string",
-        department: "string",
-        locationId: "locationId",
-        profileSkills: [
-          {
-            skills: { connect: { id: "skillId" } },
-            proficiency: "level",
-          },
-          {
-            skills: { connect: { id: "skillId2" } },
-            proficiency: "level",
-          },
-        ],
-      },
-    ]
-  },
-}
+      ],
+    },
+  ]
+})
 
 const cleanData = async () => {
   await db.profileSkills.deleteMany({})
@@ -146,7 +143,11 @@ afterEach(async () => {
 
 describe("sync All data from WOS", () => {
   test("Create catalogs when empty", async () => {
-    await syncCatalogs(mockDataProvider, db)
+    await syncCatalogs(
+      mockDataProviderGetAllFromCatalog,
+      mockDataProviderGetProfilesFromWizelineOS,
+      db
+    )
     const skills = await db.skills.findMany()
     const jobTitles = await db.jobTitles.findMany()
     const locations = await db.locations.findMany()
@@ -160,7 +161,11 @@ describe("sync All data from WOS", () => {
   })
 
   test("update catalogs", async () => {
-    await syncCatalogs(mockDataProvider, db)
+    await syncCatalogs(
+      mockDataProviderGetAllFromCatalog,
+      mockDataProviderGetProfilesFromWizelineOS,
+      db
+    )
     const skills = await db.skills.findMany()
     const jobTitles = await db.jobTitles.findMany()
     const locations = await db.locations.findMany()
@@ -172,7 +177,11 @@ describe("sync All data from WOS", () => {
     expect(profileSkills.length).toEqual(1)
     expect(profiles.length).toEqual(1)
 
-    await syncCatalogs(mockDataProviderUpdated, db)
+    await syncCatalogs(
+      mockDataProviderUpdatedGetAllFromCatalog,
+      mockDataProviderUpdatedGetProfilesFromWizelineOS,
+      db
+    )
 
     const skillsUpdated = await db.skills.findMany()
     const jobTitlesUpdated = await db.jobTitles.findMany()

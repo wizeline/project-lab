@@ -1,16 +1,11 @@
 import axios from "axios"
 import ProfileWOSDTO from "tasks/types/ProfileWOSDTO"
-import { DataProvider } from "../interface/DataProvider"
 
-export default class WizelineOSDataProvider implements DataProvider {
-  WOSAccesToken: string
-  constructor() {
-    this.WOSAccesToken = ""
-  }
+let WOSAccesToken: string
 
-  catalogs = {
-    skills: {
-      query: `
+const catalogs = {
+  skills: {
+    query: `
       query GetSkills {
         skills {
           id
@@ -18,12 +13,12 @@ export default class WizelineOSDataProvider implements DataProvider {
         }
       }
     `,
-      mapper: (skill: { id: string; name: string }) => {
-        return { ...skill }
-      },
+    mapper: (skill: { id: string; name: string }) => {
+      return { ...skill }
     },
-    locations: {
-      query: `
+  },
+  locations: {
+    query: `
       query GetLocations {
         locations {
           id,
@@ -31,12 +26,12 @@ export default class WizelineOSDataProvider implements DataProvider {
         }
       }
     `,
-      mapper: (locations: { id: string; name: string }) => {
-        return { ...locations }
-      },
+    mapper: (locations: { id: string; name: string }) => {
+      return { ...locations }
     },
-    jobTitles: {
-      query: `
+  },
+  jobTitles: {
+    query: `
       query GetJobTitles {
         jobTitles {
           id,
@@ -45,82 +40,86 @@ export default class WizelineOSDataProvider implements DataProvider {
         }
       }
     `,
-      mapper: (jobTitle: { id: string; name: string; filteredName: string }) => {
-        return { ...jobTitle, nameAbbreviation: jobTitle.filteredName }
-      },
+    mapper: (jobTitle: { id: string; name: string; filteredName: string }) => {
+      return { ...jobTitle, nameAbbreviation: jobTitle.filteredName }
     },
+  },
+}
+const getWizelineOSApiAccessToken = async (): Promise<string> => {
+  if (!process.env.WOS_AUTH_API_URL) {
+    throw "Wizeline OS Authentication API URL not specified"
   }
-  async getWizelineOSApiAccessToken(): Promise<string> {
-    if (!process.env.WOS_AUTH_API_URL) {
-      throw "Wizeline OS Authentication API URL not specified"
+  if (WOSAccesToken) {
+    return WOSAccesToken
+  }
+  let {
+    data: { access_token: accessToken = "" },
+  } = await axios.post(process.env.WOS_AUTH_API_URL, {
+    grant_type: "client_credentials",
+    audience: process.env.WOS_AUTH_API_AUDIENCE,
+    client_id: process.env.WOS_AUTH_API_CLIENT_ID,
+    client_secret: process.env.WOS_AUTH_API_CLIENT_SECRET,
+  })
+  if (!accessToken) {
+    throw "Unable to get access token to request information from Wizeline OS"
+  }
+
+  WOSAccesToken = accessToken
+  return accessToken
+}
+
+const getAllFromCatalog = async (name: string): Promise<any> => {
+  return getSimpleCatalog(catalogs[name].query, name, catalogs[name].mapper)
+}
+
+const getSimpleCatalog = async (
+  query: string,
+  catalog: string,
+  mapper: (a: any) => any
+): Promise<any> => {
+  const accessToken = await getWizelineOSApiAccessToken()
+
+  if (!process.env.WOS_API_URL) {
+    throw "Wizeline OS API URL not specified"
+  }
+  let response = await axios.post(
+    process.env.WOS_API_URL,
+    {
+      query: query,
+    },
+    {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
     }
-    if (this.WOSAccesToken) {
-      return this.WOSAccesToken
-    }
+  )
+  let catalogData = response.data.data[catalog]
+  if (!catalogData || catalogData.length == 0) {
+    throw `No ${catalog} retrieved by Wizeline OS API`
+  }
+  return catalogData.map(mapper)
+}
+
+const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
+  const accessToken = await getWizelineOSApiAccessToken()
+  let profilesToReturn = []
+  if (!process.env.WOS_API_URL) {
+    throw "Wizeline OS API URL not specified"
+  }
+  let counter = 0
+  let totalProfiles = 0
+  let pageSize = 25
+  do {
     let {
-      data: { access_token: accessToken = "" },
-    } = await axios.post(process.env.WOS_AUTH_API_URL, {
-      grant_type: "client_credentials",
-      audience: process.env.WOS_AUTH_API_AUDIENCE,
-      client_id: process.env.WOS_AUTH_API_CLIENT_ID,
-      client_secret: process.env.WOS_AUTH_API_CLIENT_SECRET,
-    })
-    if (!accessToken) {
-      throw "Unable to get access token to request information from Wizeline OS"
-    }
-
-    this.WOSAccesToken = accessToken
-    return accessToken
-  }
-
-  async getAllFromCatalog(name: string): Promise<any> {
-    return this.getSimpleCatalog(this.catalogs[name].query, name, this.catalogs[name].mapper)
-  }
-
-  async getSimpleCatalog(query: string, catalog: string, mapper: (a: any) => any): Promise<any> {
-    const accessToken = await this.getWizelineOSApiAccessToken()
-
-    if (!process.env.WOS_API_URL) {
-      throw "Wizeline OS API URL not specified"
-    }
-    let response = await axios.post(
+      data: {
+        data: {
+          profiles: { totalCount, edges = [] },
+        },
+      },
+    } = await axios.post(
       process.env.WOS_API_URL,
       {
-        query: query,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
-    let catalogData = response.data.data[catalog]
-    if (!catalogData || catalogData.length == 0) {
-      throw `No ${catalog} retrieved by Wizeline OS API`
-    }
-    return catalogData.map(mapper)
-  }
-
-  async getProfilesFromWizelineOS(): Promise<ProfileWOSDTO[]> {
-    const accessToken = await this.getWizelineOSApiAccessToken()
-    let profilesToReturn = []
-    if (!process.env.WOS_API_URL) {
-      throw "Wizeline OS API URL not specified"
-    }
-    let counter = 0
-    let totalProfiles = 0
-    let pageSize = 25
-    do {
-      let {
-        data: {
-          data: {
-            profiles: { totalCount, edges = [] },
-          },
-        },
-      } = await axios.post(
-        process.env.WOS_API_URL,
-        {
-          query: `
+        query: `
           query GetProfiles($filters: ProfileFilters, $limit: Int = ${pageSize}) {
             profiles(first: $limit, after: "${counter}", filters: $filters) {
               totalCount
@@ -147,35 +146,35 @@ export default class WizelineOSDataProvider implements DataProvider {
               }
             }
           }`,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
         },
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      if (!edges || edges.length == 0) {
-        throw "No profiles retrieved by Wizeline OS API"
       }
+    )
+    if (!edges || edges.length == 0) {
+      throw "No profiles retrieved by Wizeline OS API"
+    }
 
-      totalProfiles = totalCount
-      counter += edges.length
-      profilesToReturn = profilesToReturn.concat(
-        edges.map((profile: { node: { id: string; skills: any } }) => {
-          let profileSkills = profile.node.skills.map(
-            (skillRelationship: { level: string; skill: { id: string } }) => {
-              return {
-                skills: { connect: { id: skillRelationship.skill.id } },
-                proficiency: skillRelationship.level,
-              }
+    totalProfiles = totalCount
+    counter += edges.length
+    profilesToReturn = profilesToReturn.concat(
+      edges.map((profile: { node: { id: string; skills: any } }) => {
+        let profileSkills = profile.node.skills.map(
+          (skillRelationship: { level: string; skill: { id: string } }) => {
+            return {
+              skills: { connect: { id: skillRelationship.skill.id } },
+              proficiency: skillRelationship.level,
             }
-          )
-          let mapped = { ...profile.node, profileSkills: profileSkills }
-          delete mapped.skills
-          return mapped
-        })
-      )
-    } while (counter < totalProfiles)
-    return profilesToReturn
-  }
+          }
+        )
+        let mapped = { ...profile.node, profileSkills: profileSkills }
+        delete mapped.skills
+        return mapped
+      })
+    )
+  } while (counter < totalProfiles)
+  return profilesToReturn
 }
+export { getAllFromCatalog, getProfilesFromWizelineOS }
