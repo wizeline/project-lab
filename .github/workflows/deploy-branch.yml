@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Get Github Branch
         id: get-branch
-        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g")
+        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g" | tr '[:upper:]' '[:lower:]')
       - name: Dispatch Deploy
         uses: peter-evans/repository-dispatch@v1
         with:
