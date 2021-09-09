@@ -20,7 +20,7 @@ provider "aws" {
 }
 
 locals {
-  env_prefix = terraform.workspace == "default" ? "default" : replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-")
+  env_prefix = terraform.workspace == "default" ? "default" : lower(replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-"))
 
   resource_tags = {
     ProjectName = "ProjectLab"
