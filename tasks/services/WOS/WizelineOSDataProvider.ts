@@ -41,7 +41,8 @@ const catalogs = {
       }
     `,
     mapper: (jobTitle: { id: string; name: string; filteredName: string }) => {
-      return { ...jobTitle, nameAbbreviation: jobTitle.filteredName }
+      const { filteredName, ...othersJobTitle } = jobTitle
+      return { ...othersJobTitle, nameAbbreviation: jobTitle.filteredName }
     },
   },
 }
@@ -160,7 +161,7 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
     totalProfiles = totalCount
     counter += edges.length
     profilesToReturn = profilesToReturn.concat(
-      edges.map((profile: { node: { id: string; skills: any } }) => {
+      edges.map((profile: { node: { id: string; skills: any; avatar: string } }) => {
         let profileSkills = profile.node.skills.map(
           (skillRelationship: { level: string; skill: { id: string } }) => {
             return {
@@ -169,7 +170,9 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
             }
           }
         )
-        let mapped = { ...profile.node, profileSkills: profileSkills }
+
+        const { avatar, ...othersProfileNode } = profile.node
+        let mapped = { ...othersProfileNode, avatarUrl: avatar, profileSkills }
         delete mapped.skills
         return mapped
       })

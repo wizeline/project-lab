@@ -39,7 +39,7 @@ export default async function syncCatalogs(
     return db.skills.upsert({
       where: { id: skill.id },
       update: { name: skill.name },
-      create: { id: skill.id, name: skill.name },
+      create: { ...skill },
     })
   })
 
@@ -47,7 +47,7 @@ export default async function syncCatalogs(
     return db.jobTitles.upsert({
       where: { id: jobTitle.id },
       update: { name: jobTitle.name, nameAbbreviation: jobTitle.nameAbbreviation },
-      create: { id: jobTitle.id, name: jobTitle.name, nameAbbreviation: jobTitle.nameAbbreviation },
+      create: { ...jobTitle },
     })
   })
 
@@ -55,42 +55,25 @@ export default async function syncCatalogs(
     return db.locations.upsert({
       where: { id: location.id },
       update: { name: location.name },
-      create: { id: location.id, name: location.name },
+      create: { ...location },
     })
   })
 
   const profilesUpsert = profilesFromWizelineOS.map((profile) => {
+    const { jobTitleId, profileSkills, jobTitle, ...otherProps } = profile
     return db.profiles.upsert({
       where: { id: profile.id },
       update: {
-        id: profile.id,
-        email: profile.email,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        avatarUrl: profile.avatar,
-        // jobTitleId: profile.jobTitleId,
-        jobLevelTier: profile.jobLevelTier,
-        department: profile.department,
-        terminatedAt: profile.terminatedAt,
-        locationId: profile.locationId,
         profileSkills: {
-          create: profile.profileSkills,
+          create: profileSkills,
         },
+        ...otherProps,
       },
       create: {
-        id: profile.id,
-        email: profile.email,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        avatarUrl: profile.avatar,
-        // jobTitleId: profile.jobTitleId,
-        jobLevelTier: profile.jobLevelTier,
-        department: profile.department,
-        terminatedAt: profile.terminatedAt,
-        locationId: profile.locationId,
         profileSkills: {
-          create: profile.profileSkills,
+          create: profileSkills,
         },
+        ...otherProps,
       },
     })
   })

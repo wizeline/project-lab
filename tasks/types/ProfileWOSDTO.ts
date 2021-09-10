@@ -3,7 +3,7 @@ export default class ProfileWOSDTO {
   email: string
   firstName: string
   lastName: string
-  avatar: string
+  avatarUrl: string
   jobTitleId: string
   jobTitle: string
   jobLevelTier: string
