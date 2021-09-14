@@ -114,14 +114,6 @@ fi
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
 
-# Enable pm2 service
-if [ ! -f "/etc/systemd/system/pm2.service" ]
-then
-sudo cp ~/projectlab/tmp/systemd/pm2.service /etc/systemd/system/pm2.service
-sudo systemctl daemon-reload
-sudo systemctl enable pm2.service
-fi
-
 # Enable wos-sync service
 if [ ! -f "/etc/systemd/system/wos-sync.service" ]
 then
@@ -148,4 +140,28 @@ sudo chmod +x ~/projectlab/app/scripts/startup.sh
 
 # Start services
 sudo systemctl restart wos-sync.service
-sudo systemctl restart pm2.service
+
+# Change to app directory
+cd ~/projectlab/app
+
+# Start litestream replication
+if [ "$BRANCH" == "default" ]
+then
+pm2 stop db-replication
+npm run pm2:db-replication
+fi
+
+# Launch prisma studio on dev env
+if [ "$BRANCH" != "default" ]
+then
+pm2 stop prisma-studio
+npm run pm2:prisma-studio
+fi
+
+# Start application
+pm2 stop server
+npm run pm2:server
+
+# Enable pm2 service
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
+sudo systemctl enable pm2-admin
