@@ -60,7 +60,7 @@ sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
 
 # Install pm2
-sudo npm install --global pm2
+sudo npm install --global pm2@latest
 
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
@@ -115,7 +115,7 @@ sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
 
 # Enable pm2 service
-if [ -f "/etc/systemd/system/pm2.service" ]
+if [ ! -f "/etc/systemd/system/pm2.service" ]
 then
 cp ~/projectlab/tmp/systemd/pm2.service /etc/systemd/system/pm2.service
 sudo systemctl daemon-reload
@@ -123,7 +123,7 @@ sudo systemctl enable pm2.service
 fi
 
 # Enable wos-sync service
-if [ -f "/etc/systemd/system/wos-sync.service" ]
+if [ ! -f "/etc/systemd/system/wos-sync.service" ]
 then
 cp ~/projectlab/tmp/systemd/wos-sync.service /etc/systemd/system/wos-sync.service
 cp ~/projectlab/tmp/systemd/wos-sync.timer /etc/systemd/system/wos-sync.timer
@@ -138,14 +138,14 @@ rm -rf ~/projectlab/app
 mkdir -p ~/projectlab/app
 
 # Copy files to app folder
-cp -R ~/projectlab/tmp/ ~/projectlab/app
+cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
 # Remove tmp directory
 rm -rf ~/projectlab/tmp/
 
 # Setup start up script
-sudo chmod +x ~/projectlab/tmp/scripts/startup.sh
+sudo chmod +x ~/projectlab/app/scripts/startup.sh
 
 # Start services
-sudo systemctl start wos-sync.service
-sudo systemctl start pm2.service
+sudo systemctl restart wos-sync.service
+sudo systemctl restart pm2.service
