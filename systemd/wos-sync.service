@@ -5,5 +5,5 @@ Description=Run syncing with Wizeline OS
 Type=oneshot
 ExecStart=/bin/bash -c "cd /home/admin/projectlab/app/ && npm run sync-all-from-wos"
 
-[INSTALL]
+[Install]
 WantedBy=multi-user.target

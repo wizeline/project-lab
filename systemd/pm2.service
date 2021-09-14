@@ -5,5 +5,5 @@ Description=Restart PM2 processes
 Type=oneshot
 ExecStart=/bin/bash /home/admin/projectlab/app/scripts/startup.sh
 
-[INSTALL]
+[Install]
 WantedBy=multi-user.target
