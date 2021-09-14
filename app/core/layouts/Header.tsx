@@ -1,17 +1,40 @@
 import React from "react"
-import { Head, Image, Router, Routes } from "blitz"
+import { Head, Image, Router, Routes, useMutation } from "blitz"
 import styled from "@emotion/styled"
+import logout from "app/auth/mutations/logout"
+
 import { useCurrentUser } from "../hooks/useCurrentUser"
+import DropDownButton from "../components/DropDownButton"
+
 interface IProps {
   title: String
+}
+export interface MenuItemArgs {
+  permissions: boolean | undefined
+  text: string
+  testId?: string
+  onClick: (props: unknown) => void
 }
 
 function Header({ title }: IProps) {
   const currentUser = useCurrentUser()
+  const [logoutMutation] = useMutation(logout)
 
   function goHome() {
     Router.push(Routes.ProjectsPage())
   }
+
+  const options: MenuItemArgs[] = [
+    {
+      permissions: true,
+      onClick: async () => {
+        await logoutMutation()
+      },
+      text: "Sign out",
+      testId: "sign-out-button",
+    },
+  ]
+
   return (
     <>
       <Head>
@@ -28,9 +51,11 @@ function Header({ title }: IProps) {
             </div>
             <div className="actions">
               {/* Commented this for other realse <div className="actions--search" /> */}
-              <div className="actions__user">
-                <div className="actions__user--name">{currentUser?.email}</div>
-              </div>
+              <DropDownButton options={options}>
+                <div className="actions__user">
+                  <span className="actions__user--name">{currentUser?.email}</span>
+                </div>
+              </DropDownButton>
             </div>
           </div>
         </header>
@@ -77,6 +102,18 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
   }
+  .actions .actions__user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .actions .actions__user .actions__user--name {
+    color: #475f7b;
+    font-size: 11px;
+    letter-spacing: 0;
+    line-height: 17px;
+  }
   .actions--search {
     width: 24px;
     height: 24px;
@@ -86,12 +123,6 @@ const Wrapper = styled.div`
     background-position: 50%;
     margin-right: 40px;
     cursor: pointer;
-  }
-  .actions__user--name {
-    color: #475f7b;
-    font-size: 11px;
-    letter-spacing: 0;
-    line-height: 17px;
   }
 `
 

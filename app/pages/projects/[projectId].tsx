@@ -1,20 +1,13 @@
 import { Suspense } from "react"
 import styled from "@emotion/styled"
-import { Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
-import Card from "@material-ui/core/Card"
-import CardContent from "@material-ui/core/CardContent"
-import Container from "@material-ui/core/Container"
-import Chip from "@material-ui/core/Chip"
-import Stack from "@material-ui/core/Stack"
-import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
+import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 
 export const Project = () => {
-  const router = useRouter()
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
