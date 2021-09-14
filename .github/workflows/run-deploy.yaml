@@ -68,6 +68,8 @@ jobs:
       - name: Configure Server
         uses: appleboy/ssh-action@master
         with:
+          timeout: 60s
+          command_timeout: 30m
           host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
