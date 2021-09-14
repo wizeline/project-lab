@@ -32,7 +32,7 @@ jobs:
       - name: Install Dependancies
         run: yarn install
       - name: Create DB Folder
-        run: mkdir -p /home/admin/projectlab/db
+        run: sudo mkdir -p /home/admin/projectlab/db
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
