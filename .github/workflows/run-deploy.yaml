@@ -45,6 +45,17 @@ jobs:
         run: rm -rf .env
       - name: Set env-file File
         run: aws secretsmanager get-secret-value --secret-id ${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+      - name: Prepare Server For Build
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          username: ${{steps.get-lightsail-username.outputs.USERNAME}}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf ~/projectlab/tmp
+            mkdir -p ~/projectlab/app
+            mkdir -p ~/projectlab/db
+            mkdir -p ~/projectlab/tmp
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
         with:
@@ -52,7 +63,7 @@ jobs:
           server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           local_path: "./*"
-          remote_path: "/home/admin"
+          remote_path: "/home/admin/projectlab/tmp/"
           args: "-o ConnectTimeout=60"
       - name: Configure Server
         uses: appleboy/ssh-action@master
@@ -61,8 +72,8 @@ jobs:
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            chmod +x /home/admin/terraform/set-up-lightsail-instance.sh
-            ./terraform/set-up-lightsail-instance.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }} ${{ secrets.SQLITE_DB_PATH }} ${{ secrets.LITESTREAM_S3_BUCKET }} ${{ secrets.LITESTREAM_S3_PATH }} ${{ secrets.SEED_DATA }}
+            chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
+            /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }} ${{ secrets.SQLITE_DB_PATH }} ${{ secrets.LITESTREAM_S3_BUCKET }} ${{ secrets.LITESTREAM_S3_PATH }} ${{ secrets.SEED_DATA }}
       - name: Terraform Change Workspace Distribution
         uses: dflook/terraform-new-workspace@v1
         with:

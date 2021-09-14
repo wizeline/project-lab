@@ -1,0 +1,6 @@
+[Unit]
+Description=Run syncing with Wizeline OS
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "cd /home/admin/projectlab/app/ && npm run sync-all-from-wos"
