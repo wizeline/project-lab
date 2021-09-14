@@ -74,6 +74,7 @@ jobs:
           script: |
             chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
             /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }} ${{ secrets.SQLITE_DB_PATH }} ${{ secrets.LITESTREAM_S3_BUCKET }} ${{ secrets.LITESTREAM_S3_PATH }} ${{ secrets.SEED_DATA }}
+            rm -rf ~/projectlab/tmp
       - name: Terraform Change Workspace Distribution
         uses: dflook/terraform-new-workspace@v1
         with:
