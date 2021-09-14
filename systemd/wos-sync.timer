@@ -2,7 +2,7 @@
 Description=Timer for running syncing with Wizeline OS once a week
 
 [Timer]
-OnUnitActiveSec=10s
+OnUnitActiveSec=7d
 OnBootSec=10s
 
 [Install]
