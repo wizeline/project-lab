@@ -98,7 +98,7 @@ then
 blitz prisma migrate deploy
 else
 echo y | blitz prisma migrate reset --force
-sqlite3 db/db.sqlite < db/search_indexes.sql
+sqlite3 ~/projectlab/db/db.sqlite < ~/projectlab/tmp/db/search_indexes.sql
 fi
 blitz db seed
 
@@ -117,7 +117,7 @@ sudo service nginx restart
 # Enable pm2 service
 if [ ! -f "/etc/systemd/system/pm2.service" ]
 then
-cp ~/projectlab/tmp/systemd/pm2.service /etc/systemd/system/pm2.service
+sudo cp ~/projectlab/tmp/systemd/pm2.service /etc/systemd/system/pm2.service
 sudo systemctl daemon-reload
 sudo systemctl enable pm2.service
 fi
@@ -125,8 +125,8 @@ fi
 # Enable wos-sync service
 if [ ! -f "/etc/systemd/system/wos-sync.service" ]
 then
-cp ~/projectlab/tmp/systemd/wos-sync.service /etc/systemd/system/wos-sync.service
-cp ~/projectlab/tmp/systemd/wos-sync.timer /etc/systemd/system/wos-sync.timer
+sudo cp ~/projectlab/tmp/systemd/wos-sync.service /etc/systemd/system/wos-sync.service
+sudo cp ~/projectlab/tmp/systemd/wos-sync.timer /etc/systemd/system/wos-sync.timer
 sudo systemctl daemon-reload
 sudo systemctl enable wos-sync.service
 fi
