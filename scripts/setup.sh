@@ -129,9 +129,6 @@ mkdir -p ~/projectlab/app
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
-# Setup start up script
-sudo chmod +x ~/projectlab/app/scripts/startup.sh
-
 # Start services
 sudo systemctl restart wos-sync.service
 
