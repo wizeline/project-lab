@@ -60,16 +60,13 @@ sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
 
 # Install pm2
-sudo npm install --global pm2@latest
+sudo npm install --global pm2
 
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Install sqlite3
 sudo apt install -y sqlite3
-
-# Update pm2 in memory
-pm2 update
 
 if [ "$BRANCH" == "default" ]
 then
