@@ -132,9 +132,6 @@ mkdir -p ~/projectlab/app
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
-# Remove tmp directory
-rm -rf ~/projectlab/tmp/
-
 # Setup start up script
 sudo chmod +x ~/projectlab/app/scripts/startup.sh
 
