@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Change to app directory
+cd ~/projectlab/app
+
 # Start litestream replication
 if [ "$BRANCH" == "default" ]
 then

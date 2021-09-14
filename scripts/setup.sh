@@ -101,7 +101,6 @@ echo y | blitz prisma migrate reset --force
 sqlite3 ~/projectlab/db/db.sqlite < ~/projectlab/tmp/db/search_indexes.sql
 fi
 blitz db seed
-npm run sync-all-from-wos
 
 # Replace pm2 db-replication.json config with correct values
 if [ "$BRANCH" == "default" ]
