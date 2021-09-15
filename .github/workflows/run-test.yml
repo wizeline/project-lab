@@ -31,6 +31,8 @@ jobs:
         run: yarn global add blitz
       - name: Install Dependancies
         run: yarn install
+      - name: Create DB Folder
+        run: sudo mkdir -p /home/admin/projectlab/db
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
