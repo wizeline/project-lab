@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for running syncing with Wizeline OS daily
+
+[Timer]
+OnUnitActiveSec=1d
+OnBootSec=10s
+
+[Install]
+WantedBy=timers.target

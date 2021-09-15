@@ -1,5 +1,5 @@
 {
-  "name": "projectlab-server",
+  "name": "server",
   "script": "npm start",
   "instances": "1",
   "env": {
