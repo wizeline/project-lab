@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList } from "@material-ui/core"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import styled from "@emotion/styled"
 
 const DropDownButton = ({ children, options }) => {
   const [openActionsUser, setOpenActionsUser] = useState(false)
@@ -36,9 +38,10 @@ const DropDownButton = ({ children, options }) => {
 
   return (
     <div>
-      <div ref={actionsUserRef} onClick={handleToggle}>
+      <DropdownPlaceholderContainer ref={actionsUserRef} onClick={handleToggle}>
         {children}
-      </div>
+        <ExpandMoreIcon fontSize="small" />
+      </DropdownPlaceholderContainer>
       <div>
         <Popper
           open={openActionsUser}
@@ -82,5 +85,11 @@ const DropDownButton = ({ children, options }) => {
     </div>
   )
 }
+
+const DropdownPlaceholderContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+  color: ;
+`
 
 export default DropDownButton
