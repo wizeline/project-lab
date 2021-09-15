@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
-import styled from "@emotion/styled"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import createProject from "app/projects/mutations/createProject"
@@ -9,6 +8,8 @@ import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
 import SidebarStep from "app/projects/components/SidebarStep"
 import TheTheam from "app/projects/components/tabs/TheTeam"
+
+import { WrapperContent, WrapperContentNav, WrapperContentForm } from "./full.styles"
 
 const steps = [
   {
@@ -111,21 +112,6 @@ const FullProjectPage: BlitzPage = () => {
     </div>
   )
 }
-
-const WrapperContent = styled.div`
-  display: flex;
-  flex-direction: row;
-`
-
-const WrapperContentNav = styled.div`
-  width: 210px;
-`
-
-const WrapperContentForm = styled.div`
-  margin-left: 45px;
-  width: 100%;
-  max-width: 540px;
-`
 
 FullProjectPage.authenticate = true
 FullProjectPage.getLayout = (page) => <Layout title={"Create new proposal"}>{page}</Layout>

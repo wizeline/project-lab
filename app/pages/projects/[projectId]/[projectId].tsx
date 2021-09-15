@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import styled from "@emotion/styled"
 import { Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
@@ -12,6 +11,8 @@ import Chip from "@material-ui/core/Chip"
 import Stack from "@material-ui/core/Stack"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+
+import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 
 export const Project = () => {
   const router = useRouter()
@@ -133,71 +134,6 @@ export const Project = () => {
     </>
   )
 }
-
-const HeaderInfo = styled.div`
-  position: relative;
-  .headerInfo--action {
-    position: absolute;
-    right: 13px;
-  }
-  .headerInfo--edit {
-    padding-left: 15px;
-    padding-right: 5px;
-    display: inline-block;
-  }
-  .headerInfo--edit img {
-    cursor: pointer;
-    width: 25px;
-    line-height: 44px;
-    height: 44px;
-    vertical-align: middle;
-  }
-  .titleProposal {
-    text-align: center;
-    max-width: 320px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 37px;
-  }
-  .titleProposal h1 {
-    color: #252a2f;
-    font-family: Poppins;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 30px;
-    text-align: center;
-  }
-  .descriptionProposal {
-    color: #475f7b;
-    font-family: Poppins;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
-    padding-left: 24px;
-    padding-right: 24px;
-    margin-top: 15px;
-  }
-`
-
-const DetailMoreHead = styled.div`
-  .itemHeadName {
-    color: #475f7b;
-    font-family: Poppins;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
-    display: inline-block;
-  }
-  .itemHeadValue {
-    color: #4a627d;
-    font-family: Poppins;
-    font-size: 15px;
-    letter-spacing: 0;
-    line-height: 21px;
-    display: inline-block;
-  }
-`
 
 const ShowProjectPage: BlitzPage = () => {
   return (
