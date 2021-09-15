@@ -1,21 +1,25 @@
 import { useRouter, BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { LoginForm } from "app/auth/components/LoginForm"
+import styled from "@emotion/styled"
 
 const LoginPage: BlitzPage = () => {
-  const router = useRouter()
-
   return (
-    <div>
-      <LoginForm
-        onSuccess={() => {
-          const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
-          router.push(next)
-        }}
-      />
-    </div>
+    <Container>
+      <LoginForm />
+    </Container>
   )
 }
+
+const Container = styled.div`
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(50, 50, 93);
+  overflow-y: auto;
+`
 
 LoginPage.redirectAuthenticatedTo = "/"
 LoginPage.getLayout = (page) => <Layout title="Log In">{page}</Layout>
