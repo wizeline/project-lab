@@ -36,7 +36,7 @@ jobs:
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
-        run: sqlite3 db/db.sqlite < db/search_indexes.sql
+        run: sqlite3 /home/admin/projectlab/db/db.sqlite < db/search_indexes.sql
       - name: Add Test Data
         run: blitz db seed
       - name: Sync Skills With Wizeline OS
