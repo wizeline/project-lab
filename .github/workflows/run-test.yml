@@ -8,6 +8,7 @@ jobs:
     timeout-minutes: 30
     env:
       NODE_ENV: test
+      HOME: /home/admin/projectlab
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,11 +33,11 @@ jobs:
       - name: Install Dependancies
         run: yarn install
       - name: Create DB Folder
-        run: sudo mkdir -p /home/admin/projectlab/db
+        run: sudo mkdir -p ${{ env.HOME }}/db
       - name: Init DB
         run: blitz prisma migrate reset --force
       - name: Add Full Text Searches
-        run: sqlite3 /home/admin/projectlab/db/db.sqlite < db/search_indexes.sql
+        run: sqlite3 ${{ env.HOME }}/db/db.sqlite < db/search_indexes.sql
       - name: Add Test Data
         run: blitz db seed
       - name: Sync Skills With Wizeline OS
