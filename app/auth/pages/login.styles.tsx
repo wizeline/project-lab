@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-export const LoginPageContainer = styled.div`
+const LoginPageContainer = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -9,3 +9,4 @@ export const LoginPageContainer = styled.div`
   background-color: rgb(50, 50, 93);
   overflow-y: auto;
 `
+export default LoginPageContainer
