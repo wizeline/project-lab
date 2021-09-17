@@ -56,6 +56,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Tests
 
 Runs your tests using Jest.
+The used database will be the defined in `.env.test.local` if not then `.env` will be used.
 
 ```
 yarn test
