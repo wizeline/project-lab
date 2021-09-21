@@ -1,6 +1,6 @@
 import { useField } from "react-final-form"
 
-const FieldError = ({ name }) => {
+export const FieldError = ({ name }) => {
   const {
     meta: { touched, error, submitError },
   } = useField(name, { subscription: { touched: true, error: true } })

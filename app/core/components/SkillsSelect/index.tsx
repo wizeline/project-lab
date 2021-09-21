@@ -1,8 +1,6 @@
 import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
-import Autocomplete from "@material-ui/core/Autocomplete"
-import TextField from "@material-ui/core/TextField"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import { CircularProgress, TextField, Autocomplete } from "@material-ui/core"
 import { Field } from "react-final-form"
 import getSkills from "app/skills/queries/getSkills"
 import debounce from "lodash/debounce"
@@ -14,7 +12,7 @@ interface SkillsSelectProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export function SkillsSelect({ name, label, helperText, outerProps }: SkillsSelectProps) {
+export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [{ skills }, { isLoading }] = useQuery(getSkills, {

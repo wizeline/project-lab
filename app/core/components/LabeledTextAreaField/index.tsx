@@ -1,9 +1,9 @@
 import { PropsWithoutRef } from "react"
-import styled from "@emotion/styled"
 import { Field } from "react-final-form"
-import TextareaAutosize from "@material-ui/core/TextareaAutosize"
-import FormHelperText from "@material-ui/core/FormHelperText"
-import FieldError from "./FieldError"
+import { TextareaAutosize, FormHelperText } from "@material-ui/core"
+import FieldError from "../FieldError"
+
+import { LabelComponent } from "./LabeledTextAreaField.styles"
 
 interface LabeledTextAreaFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   name: string
@@ -35,12 +35,5 @@ export function LabeledTextAreaField({
     </Field>
   )
 }
-
-const LabelComponent = styled.label`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  font-size: 1rem;
-`
 
 export default LabeledTextAreaField

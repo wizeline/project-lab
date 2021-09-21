@@ -1,8 +1,6 @@
 import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
-import Autocomplete from "@material-ui/core/Autocomplete"
-import TextField from "@material-ui/core/TextField"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import { Autocomplete, TextField, CircularProgress } from "@material-ui/core"
 import { Field } from "react-final-form"
 import getLabels from "app/labels/queries/getLabels"
 import debounce from "lodash/debounce"
@@ -14,7 +12,7 @@ interface LabelsSelectProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export function LabelsSelect({ name, label, helperText, outerProps }: LabelsSelectProps) {
+export const LabelsSelect = ({ name, label, helperText, outerProps }: LabelsSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [{ labels }, { isLoading }] = useQuery(getLabels, {
