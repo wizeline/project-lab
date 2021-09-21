@@ -1,9 +1,5 @@
 import { useQuery } from "blitz"
-import Select from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import FormHelperText from "@material-ui/core/FormHelperText"
+import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@material-ui/core"
 import { Field } from "react-final-form"
 import getCategories from "app/categories/queries/getCategories"
 import { defaultCategory } from "app/core/utils/constants"
@@ -14,7 +10,7 @@ interface CategorySelectProps {
   helperText?: string
 }
 
-export function CategorySelect({ name, label, helperText }: CategorySelectProps) {
+export const CategorySelect = ({ name, label, helperText }: CategorySelectProps) => {
   const [categories] = useQuery(getCategories, {})
 
   return (

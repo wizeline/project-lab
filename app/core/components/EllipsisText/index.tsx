@@ -8,7 +8,13 @@ interface IProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["span"]>
 }
 
-function EllipsisText({ text, length, tail = "...", tailClassName = "more", outerProps }: IProps) {
+export const EllipsisText = ({
+  text,
+  length,
+  tail = "...",
+  tailClassName = "more",
+  outerProps,
+}: IProps) => {
   if (text.length <= length || length < 0) {
     return <span {...outerProps}>{text}</span>
   } else {

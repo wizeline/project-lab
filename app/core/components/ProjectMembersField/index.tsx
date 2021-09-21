@@ -1,12 +1,14 @@
-import React, { Fragment, PropsWithoutRef, useState } from "react"
+import React, { Fragment, useState } from "react"
 import { useQuery } from "blitz"
-import Autocomplete from "@material-ui/core/Autocomplete"
-import Checkbox from "@material-ui/core/Checkbox"
-import Chip from "@material-ui/core/Chip"
-import CircularProgress from "@material-ui/core/CircularProgress"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Grid from "@material-ui/core/Grid"
-import TextField from "@material-ui/core/TextField"
+import {
+  Autocomplete,
+  Checkbox,
+  Chip,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  TextField,
+} from "@material-ui/core"
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"
@@ -17,7 +19,7 @@ interface ProfilesSelectProps {
   helperText?: string
 }
 
-export function ProjectMembersField({ name, label, helperText }: ProfilesSelectProps) {
+export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [profiles, { isLoading }] = useQuery(getProfiles, searchTerm)

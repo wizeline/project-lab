@@ -99,3 +99,8 @@ export const Wrapper = styled.div`
     margin-left: 15px;
   }
 `
+
+// const Default = { Wrapper: Wrapper }
+// export default Default
+
+export default Wrapper

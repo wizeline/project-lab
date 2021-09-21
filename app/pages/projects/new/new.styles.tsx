@@ -57,3 +57,4 @@ export const Wrapper = styled.div`
     cursor: pointer;
   }
 `
+export default Wrapper

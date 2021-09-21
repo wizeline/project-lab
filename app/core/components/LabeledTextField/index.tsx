@@ -13,14 +13,14 @@ interface LabeledTextFieldProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export function LabeledTextField({
+export const LabeledTextField = ({
   name,
   label,
   type,
   helperText,
   outerProps,
   ...props
-}: LabeledTextFieldProps) {
+}: LabeledTextFieldProps) => {
   return (
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {

@@ -5,19 +5,16 @@ export const FormQuickWrap = styled.div`
   margin: 0 auto;
 }
 `
-
 export const FormQuickInput = styled.div`
   margin: 15px 0px;
 }
 `
-
 export const WrapperDialog = styled.div`
   display: flex;
   padding: 48px 98px 20px;
   flex-direction: column;
 }
 `
-
 export const Button = styled.button`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   border-radius: 4px;
@@ -38,3 +35,4 @@ export const Button = styled.button`
   user-select: none;
   cursor: pointer;
 `
+export default FormQuickWrap
