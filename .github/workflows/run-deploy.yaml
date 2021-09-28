@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.client_payload.ref }}
+          fetch-depth: 0
       - name: Get Github Branch
         id: get-branch
         run: echo ::set-output name=branch::$(echo "${{ github.event.client_payload.branch }}")
