@@ -6,8 +6,6 @@ defaults:
     shell: bash
 jobs:
   deploy-branch:
-    env:
-      NODE_ENV: production
     runs-on: ubuntu-latest
     steps:
       - name: Get Github Branch
@@ -19,4 +17,4 @@ jobs:
           token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
           repository: wizeline/project-lab
           event-type: deploy
-          client-payload: '{"ref": "${{ github.ref }}", "branch": "${{ steps.get-branch.outputs.branch }}" , "secret_name":"env-development" }'
+          client-payload: '{"ref": "${{ github.ref }}", "branch": "${{ steps.get-branch.outputs.branch }}" , "secret_name":"env-development","update_tag":"no" }'

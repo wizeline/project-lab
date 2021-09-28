@@ -89,3 +89,37 @@ jobs:
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
           var: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+      - name: Get Tag
+        if: ${{ github.event.client_payload.update_tag == 'yes' }}
+        id: get-current-tag
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF#refs/*/})
+      - name: Get Previous tag
+        if: ${{ github.event.client_payload.update_tag == 'yes' }}
+        id: get-previous-tag
+        run: |
+          TAG=$(echo ${GITHUB_REF#refs/*/})
+          if [ "$TAG" == "v1.0.0" ]
+          then
+            echo ::set-output name=tag::$(echo "v1.0.0")
+          else
+            echo ::set-output name=tag::$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1`)
+          fi
+      - name: Generate ChangeLog
+        if: ${{ github.event.client_payload.update_tag == 'yes'nre }}
+        id: generate-change-log
+        uses: Bullrich/generate-release-changelog@master
+        env:
+          REPO: ${{ github.repository }}
+        with:
+          from-tag: ${{ steps.get-previous-tag.outputs.tag }}
+          to-tag: ${{ steps.get-current-tag.outputs.tag }}
+          token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
+      - name: Update Tag
+        if: ${{ github.event.client_payload.update_tag == 'yes' }}
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ steps.get-current-tag.outputs.tag }}
+          message: ${{ steps.generate-change-log.outputs.changelog }}
+          force_push_tag: true
+          commitMode: true
+          github_token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
