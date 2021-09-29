@@ -1,0 +1,5 @@
+{
+  "name": "prisma-studio",
+  "script": "blitz prisma studio",
+  "instances": "1"
+}

@@ -1,8 +1,0 @@
-{
-  "name": "projectlab-server",
-  "script": "npm start",
-  "instances": "1",
-  "env": {
-    "NODE_ENV": "production"
-  }
-}

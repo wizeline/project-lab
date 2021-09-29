@@ -10,13 +10,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepare": "husky install",
-    "sync-skills": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncSkills.ts",
-    "sync-jobTitles": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncJobTitles.ts",
-    "sync-locations": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncLocations.ts",
-    "pm2:server": "pm2 start pm2-server.json",
-    "sync-all-catalogs": "yarn sync-skills &&  yarn sync-jobTitles &&  yarn sync-locations",
-    "pm2:db-replication": "pm2 start pm2-db-replication.json",
-    "pm2:prisma-studio": "pm2 start pm2-prisma-studio.json"
+    "sync-all-from-wos": "ts-node --project ./ts-node.tsconfig.json ./tasks/syncAllDataFromWOSTask.ts",
+    "pm2:server": "pm2 start ./pm2/server.json",
+    "pm2:db-replication": "pm2 start ./pm2/db-replication.json",
+    "pm2:prisma-studio": "pm2 start ./pm2/prisma-studio.json"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -34,6 +31,7 @@
     "@emotion/react": "11.4.0",
     "@emotion/styled": "11.3.0",
     "@material-ui/core": "5.0.0-beta.2",
+    "@material-ui/icons": "4.11.2",
     "@prisma/client": "2.25.0",
     "axios": "0.21.1",
     "blitz": "0.38.1",
