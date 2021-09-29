@@ -12,16 +12,51 @@ const seed = async () => {
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
-  // Dummy skills, use only if you are not running `yarn sync-skills`
-  // insert into Skills (id, name) values
-  //   ('Go', 'Go'),
-  //   ('Javascript', 'Javascript'),
-  //   ('Typescript', 'Typescript'),
-  //   ('Java', 'Java'),
-  //   ('React', 'React'),
-  //   ('Python', 'Python'),
-  //   ('Scala', 'Scala'),
-  //   ('GraphQL', 'GraphQL');
+  await db.skills.upsert({
+    where: { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+    update: {},
+    create: { name: "React", id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+  })
+  await db.skills.upsert({
+    where: { id: "4b3d0d73-c3a6-457a-bd81-6b7b2be13373" },
+    update: {},
+    create: { name: "TypeScript", id: "4b3d0d73-c3a6-457a-bd81-6b7b2be13373" },
+  })
+  await db.skills.upsert({
+    where: { id: "b70ca72b-0a56-47f8-af2d-695c79673a68" },
+    update: {},
+    create: { name: "SQLite", id: "b70ca72b-0a56-47f8-af2d-695c79673a68" },
+  })
+  await db.skills.upsert({
+    where: { id: "6c859cfb-942c-40c8-b0b3-37de3e739c29" },
+    update: {},
+    create: { name: "AWS", id: "6c859cfb-942c-40c8-b0b3-37de3e739c29" },
+  })
+  await db.skills.upsert({
+    where: { id: "66fc5f5f-3be4-453f-8978-8cc3334adda1" },
+    update: {},
+    create: { name: "Ruby", id: "66fc5f5f-3be4-453f-8978-8cc3334adda1" },
+  })
+  await db.skills.upsert({
+    where: { id: "f88e6170-9382-4a89-87a4-b820e4b0ac33" },
+    update: {},
+    create: { name: "Java", id: "f88e6170-9382-4a89-87a4-b820e4b0ac33" },
+  })
+  await db.skills.upsert({
+    where: { id: "d7e95b76-6fc0-4e11-9674-61233cbe60ca" },
+    update: {},
+    create: { name: "PostgreSQL", id: "d7e95b76-6fc0-4e11-9674-61233cbe60ca" },
+  })
+  await db.skills.upsert({
+    where: { id: "f6d5b102-6cc4-41a8-8ca0-869aff695485" },
+    update: {},
+    create: { name: "MySQL", id: "f6d5b102-6cc4-41a8-8ca0-869aff695485" },
+  })
+  await db.skills.upsert({
+    where: { id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
+    update: {},
+    create: { name: "Go", id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
+  })
 
   await db.projectStatus.upsert({
     where: { name: "Draft" },
