@@ -4,6 +4,9 @@ import db from "db"
 
 interface SearchProjectsInput {
   search: string | string[]
+  categories: string | string[]
+  skills: string | string[]
+  labels: string | string[]
   skip: number
   take: number
 }
@@ -25,10 +28,19 @@ export class SearchProjectsError extends Error {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ search, skip = 0, take = 50 }: SearchProjectsInput) => {
+  async ({ search, categories, skills, labels, skip = 0, take = 50 }: SearchProjectsInput) => {
     const prefixSearch = search + "*"
     const where =
-      search && search !== "" ? Prisma.sql`WHERE projects_idx match ${prefixSearch}` : Prisma.empty
+      search && search !== ""
+        ? Prisma.sql`WHERE projects_idx match ${prefixSearch}`
+        : categories && categories !== ""
+        ? Prisma.sql`WHERE categoryName = ${categories}`
+        : skills && skills !== ""
+        ? Prisma.sql`WHERE Skills.name = ${skills}`
+        : labels && labels !== ""
+        ? Prisma.sql`WHERE Labels.name = ${labels}`
+        : Prisma.empty
+
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
       SELECT p.id, p.name, p.description, status, votesCount, s.color,
         strftime('%M %d, %y', p.createdAt) as createdAt

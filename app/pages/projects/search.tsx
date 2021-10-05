@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import styled from "@emotion/styled"
 import { Head, Link, useQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
@@ -7,6 +7,7 @@ import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 
 import Header from "app/core/layouts/Header"
+import { Box, TextField } from "@material-ui/core"
 
 const ITEMS_PER_PAGE = 4
 
@@ -14,11 +15,20 @@ const ProjectsPage: BlitzPage = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const [searchValue, setSearchValue] = useState("")
+
   const search = router.query.q || ""
+  const categories = router.query.cat || ""
+  const skills = router.query.sk || ""
+  const labels = router.query.lb || ""
+
   const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
     searchProjects,
     {
       search,
+      categories,
+      skills,
+      labels,
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     }
@@ -43,6 +53,25 @@ const ProjectsPage: BlitzPage = () => {
 
   const goToCreateNewProposal = () => {
     Router.push(Routes.NewProjectPage())
+  }
+
+  const goToSearch = () => {
+    const route = searchValue ? `search?q=${searchValue}` : "search"
+    Router.push(route)
+  }
+
+  const goToSearchWithFilters = (elem, filter) => {
+    const { id } = elem
+
+    const route =
+      filter === "category"
+        ? `search?cat=${id}`
+        : filter === "skill"
+        ? `search?sk=${id}`
+        : filter === "label"
+        ? `search?lb=${id}`
+        : "search"
+    Router.push(route)
   }
 
   return (
@@ -71,7 +100,12 @@ const ProjectsPage: BlitzPage = () => {
                 <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
                 <ul>
                   {categoryFacets.map((item) => (
-                    <li key={item.name}>
+                    <li
+                      key={item.name}
+                      id={item.name}
+                      onClick={(e) => goToSearchWithFilters(e.target, "category")}
+                      className="homeWrapper__myProposals--link"
+                    >
                       {item.name} ({item.count})
                     </li>
                   ))}
@@ -79,7 +113,12 @@ const ProjectsPage: BlitzPage = () => {
                 <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
                 <ul>
                   {skillFacets.map((item) => (
-                    <li key={item.name}>
+                    <li
+                      key={item.name}
+                      id={item.name}
+                      onClick={(e) => goToSearchWithFilters(e.target, "skill")}
+                      className="homeWrapper__myProposals--link"
+                    >
                       {item.name} ({item.count})
                     </li>
                   ))}
@@ -87,7 +126,12 @@ const ProjectsPage: BlitzPage = () => {
                 <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
                 <ul>
                   {labelFacets.map((item) => (
-                    <li key={item.name}>
+                    <li
+                      key={item.name}
+                      id={item.name}
+                      onClick={(e) => goToSearchWithFilters(e.target, "label")}
+                      className="homeWrapper__myProposals--link"
+                    >
                       {item.name} ({item.count})
                     </li>
                   ))}
@@ -98,6 +142,17 @@ const ProjectsPage: BlitzPage = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox title="Popular">
+                <Box component="form" autoComplete="off" noValidate>
+                  <TextField
+                    variant="outlined"
+                    label="Search project"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                  <button type="button" onClick={goToSearch}>
+                    Search
+                  </button>
+                </Box>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button disabled={page === 0} onClick={goToPreviousPage}>
                   Previous{" "}
@@ -211,6 +266,9 @@ const Wrapper = styled.div`
     width: 100%;
     max-width: 250px;
     margin-right: 15px;
+  }
+  .homeWrapper__myProposals--link {
+    cursor: pointer;
   }
 `
 
