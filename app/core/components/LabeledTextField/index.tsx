@@ -10,6 +10,7 @@ interface LabeledTextFieldProps {
   helperText?: string
   placeholder?: string
   fullWidth?: boolean
+  style?: any
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 

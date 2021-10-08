@@ -6,10 +6,10 @@ import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
-import SidebarStep from "app/projects/components/SidebarStep"
-import TheTheam from "app/projects/components/tabs/TheTeam"
+// import SidebarStep from "app/projects/components/SidebarStep"
+import TheTeam from "app/projects/components/tabs/TheTeam"
 
-import { WrapperContent, WrapperContentNav, WrapperContentForm } from "./full.styles"
+// import { WrapperContent, WrapperContentNav, WrapperContentForm } from "./full.styles"
 
 const steps = [
   {
@@ -43,6 +43,7 @@ const FullProjectPage: BlitzPage = () => {
     return (
       <>
         <ProjectForm
+          projectformType="create"
           submitText="Create Project"
           initialValues={{
             skills: [],
@@ -78,7 +79,7 @@ const FullProjectPage: BlitzPage = () => {
   }
 
   const thirdStep = () => {
-    return <TheTheam />
+    return <TheTeam />
   }
 
   const renderSteps = (activeStep) => {
@@ -101,13 +102,18 @@ const FullProjectPage: BlitzPage = () => {
         <h1>Create your proposal</h1>
       </div>
       <div className="wrapper">
-        <GoBack title="Back to main page" onClick={() => Router.push(Routes.NewProjectPage())} />
-        <WrapperContent>
+        <GoBack title="Back to main page" onClick={() => Router.push(Routes.ProjectsPage())} />
+        {/* <WrapperContent style={{display:'none'}}>
           <WrapperContentNav>
             <SidebarStep steps={steps} activeStep={step} onClick={onClick} />
           </WrapperContentNav>
-          <WrapperContentForm>{renderSteps(step)}</WrapperContentForm>
-        </WrapperContent>
+        </WrapperContent> */}
+
+        <div>
+          {/* <WrapperContentForm> */}
+          {renderSteps(step)}
+          {/* </WrapperContentForm> */}
+        </div>
       </div>
     </div>
   )

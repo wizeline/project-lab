@@ -47,9 +47,9 @@ const ProjectsPage: BlitzPage = () => {
       />
     )
   }
-
+  // Direct link to full project page
   const goToCreateNewProposal = () => {
-    Router.push(Routes.NewProjectPage())
+    Router.push(Routes.FullProjectPage())
   }
 
   return (

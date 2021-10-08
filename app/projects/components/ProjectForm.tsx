@@ -1,3 +1,6 @@
+import { useState } from "react"
+import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
+
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextAreaField } from "app/core/components/LabeledTextAreaField"
@@ -6,31 +9,84 @@ import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 
+import {
+  FormQuickWrap,
+  FormQuickInput,
+  WrapperDialog,
+  Button,
+} from "app/pages/projects/quick/quick.styles"
+// import Collapse from '@material-ui/core';
+
 import { z } from "zod"
 export { FORM_ERROR } from "app/core/components/Form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+  const { projectformType } = props
+  const [displayFields, setDisplayFields] = useState(projectformType == "create" ? false : true)
+
+  const handleDisplaySwitch = (e: any) => {
+    console.log(`Change value of ${e.target.checked.toString()}`)
+    setDisplayFields(!displayFields)
+  }
+
   return (
-    <Form<S> {...props}>
-      <LabeledTextField name="name" label="Name" placeholder="Name" />
+    <Form<S> {...props} style={{ padding: "0 2em", margin: "0 auto" }}>
+      <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
       <LabeledTextAreaField
+        style={{
+          width: "96%",
+          fontSize: "1em",
+          padding: "1em",
+          fontFamily: "Roboto,Helvetica,Arial,sans-serif",
+        }}
         name="description"
         label="Problem statement"
         placeholder="How might we..."
       />
       <LabeledTextAreaField
+        style={{
+          width: "96%",
+          fontSize: "1em",
+          padding: "1em",
+          fontFamily: "Roboto,Helvetica,Arial,sans-serif",
+        }}
         name="valueStatement"
         label="Your proposal"
         placeholder="Explain us your proposal"
       />
-      <LabeledTextField
+
+      {projectformType === "create" && (
+        <FormControlLabel
+          value="1"
+          control={<Switch color="primary" onChange={handleDisplaySwitch} />}
+          label="Add more details"
+          labelPlacement="start"
+        />
+      )}
+
+      {/* {displayFields ? <><LabeledTextField
         name="target"
         label="Who is your target user/client"
         placeholder="Millenials"
-      />
-      <CategorySelect name="category" label="Category" />
-      <SkillsSelect name="skills" label="Skills" />
+      /> 
+      <CategorySelect  name="category" label="Category" /> 
+      <SkillsSelect  name="skills" label="Skills" /> 
       <LabelsSelect name="labels" label="Labels" />
+      </> : null} */}
+
+      <Collapse in={displayFields}>
+        <LabeledTextField
+          fullWidth
+          style={{ margin: "1em 0" }}
+          name="target"
+          label="Who is your target user/client"
+          placeholder="Millenials"
+        />
+        <CategorySelect name="category" label="Category" />
+        <SkillsSelect name="skills" label="Skills" />
+        <LabelsSelect name="labels" label="Labels" />
+      </Collapse>
+
       <ProjectMembersField name="projectMembers" label="Add a member" />
     </Form>
   )

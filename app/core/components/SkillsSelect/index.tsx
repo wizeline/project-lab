@@ -31,7 +31,9 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
           <div {...outerProps}>
             <Autocomplete
               multiple={true}
-              sx={{ width: 300 }}
+              // sx={{ width: 300 }}
+              fullWidth
+              style={{ margin: "1em 0" }}
               disabled={submitting}
               loading={isLoading}
               options={skills}
@@ -59,6 +61,7 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
                       </Fragment>
                     ),
                   }}
+                  style={{ width: "100%" }}
                 />
               )}
             />

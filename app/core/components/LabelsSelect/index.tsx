@@ -31,7 +31,9 @@ export const LabelsSelect = ({ name, label, helperText, outerProps }: LabelsSele
           <div {...outerProps}>
             <Autocomplete
               multiple={true}
-              sx={{ width: 300 }}
+              // sx={{ width: 300 }}
+              fullWidth
+              style={{ margin: "1em 0" }}
               disabled={submitting}
               loading={isLoading}
               options={labels}
