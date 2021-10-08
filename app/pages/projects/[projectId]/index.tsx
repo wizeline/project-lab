@@ -13,9 +13,9 @@ export const Project = () => {
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
 
-  const handleVote = async (id: string) => {
+  const handleVote = async (id: string, votes: number) => {
     try {
-      await upvoteProjectMutation({ id })
+      await upvoteProjectMutation({ id, votes })
       refetch()
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
@@ -29,8 +29,8 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button className="primary" onClick={() => handleVote(project.id)}>
-              UPVOTE {project.votesCount}
+            <button className="primary" onClick={() => handleVote(project.id, project.votesCount)}>
+              {project.votesCount > 0 ? "DOWNVOTE" : "UPVOTE"} {project.votesCount}
             </button>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>

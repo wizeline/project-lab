@@ -6,17 +6,20 @@ import { ProfileNotFoundError } from "app/auth/mutations/login"
 export default resolver.pipe(
   resolver.zod(UpdateVotes),
   resolver.authorize(),
-  async ({ id }, { session }: Ctx) => {
+  async ({ id, votes }, { session }: Ctx) => {
     if (!session.profileId) throw new ProfileNotFoundError()
+
+    const sum = votes > 0 ? { decrement: 1 } : { increment: 1 }
+    const votesAction =
+      votes > 0
+        ? { deleteMany: [{ profileId: session.profileId }] }
+        : { create: [{ profileId: session.profileId }] }
 
     const project = await db.projects.update({
       where: { id },
       data: {
-        votesCount: { increment: 1 },
-        votes: {
-          // create again
-          create: [{ profileId: session.profileId }],
-        },
+        votesCount: sum,
+        votes: votesAction,
       },
     })
 

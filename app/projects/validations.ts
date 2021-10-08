@@ -87,4 +87,5 @@ export const FullUpdate = z
 
 export const UpdateVotes = z.object({
   id: z.string(),
+  votes: z.number(),
 })
