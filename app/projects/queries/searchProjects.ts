@@ -1,12 +1,13 @@
 import { resolver } from "blitz"
 import { Prisma } from "@prisma/client"
 import db from "db"
+import { RawValue } from "@prisma/client/runtime"
 
 interface SearchProjectsInput {
   search: string | string[]
-  categories: string | string[]
-  skills: string | string[]
-  labels: string | string[]
+  category: any
+  skill: any
+  label: any
   skip: number
   take: number
 }
@@ -28,18 +29,37 @@ export class SearchProjectsError extends Error {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ search, categories, skills, labels, skip = 0, take = 50 }: SearchProjectsInput) => {
+  async ({ search, category, skill, label, skip = 0, take = 50 }: SearchProjectsInput) => {
     const prefixSearch = search + "*"
-    const where =
-      search && search !== ""
-        ? Prisma.sql`WHERE projects_idx match ${prefixSearch}`
-        : categories && categories !== ""
-        ? Prisma.sql`WHERE categoryName = ${categories}`
-        : skills && skills !== ""
-        ? Prisma.sql`WHERE Skills.name = ${skills}`
-        : labels && labels !== ""
-        ? Prisma.sql`WHERE Labels.name = ${labels}`
-        : Prisma.empty
+    let where = Prisma.empty
+
+    if (search && search !== "") {
+      where = Prisma.sql`${where} WHERE projects_idx match ${prefixSearch}`
+    }
+
+    if (category) {
+      const categories = typeof category === "string" ? [category] : category
+      where =
+        where === Prisma.empty
+          ? Prisma.sql`WHERE categoryName IN (${Prisma.join(categories)})`
+          : Prisma.sql`${where} AND categoryName IN (${Prisma.join(categories)})`
+    }
+
+    if (skill) {
+      const skills = typeof skill === "string" ? [skill] : skill
+      where =
+        where === Prisma.empty
+          ? Prisma.sql`WHERE Skills.name IN (${Prisma.join(skills)})`
+          : Prisma.sql`${where} AND Skills.name IN (${Prisma.join(skills)})`
+    }
+
+    if (label) {
+      const labels = typeof label === "string" ? [label] : label
+      where =
+        where === Prisma.empty
+          ? Prisma.sql`WHERE Labels.name IN (${Prisma.join(labels)})`
+          : Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
+    }
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
       SELECT p.id, p.name, p.description, status, votesCount, s.color,

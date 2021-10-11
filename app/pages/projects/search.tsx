@@ -1,13 +1,29 @@
 import { Suspense, useState } from "react"
 import styled from "@emotion/styled"
-import { Head, Link, useQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
+import { Head, useQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 
 import Header from "app/core/layouts/Header"
-import { Box, TextField } from "@material-ui/core"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  TextField,
+  Link,
+  Chip,
+} from "@material-ui/core"
+import { ExpandMore } from "@material-ui/icons"
+import { array, object } from "zod"
+
+type SearchFilters = {
+  category: string[]
+  skill: string[]
+  label: string[]
+}
 
 const ITEMS_PER_PAGE = 4
 
@@ -15,20 +31,26 @@ const ProjectsPage: BlitzPage = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [searchValue, setSearchValue] = useState("")
 
   const search = router.query.q || ""
-  const categories = router.query.cat || ""
-  const skills = router.query.sk || ""
-  const labels = router.query.lb || ""
+  const { category, skill, label } = router.query
+
+  const [searchValue, setSearchValue] = useState("")
+  const [filterRoute, setFilterRoute] = useState("search?")
+  const [chips, setChips] = useState<string[]>([])
+  const [filters, setFilters] = useState<SearchFilters>({
+    category: [],
+    skill: [],
+    label: [],
+  })
 
   const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
     searchProjects,
     {
       search,
-      categories,
-      skills,
-      labels,
+      category,
+      skill,
+      label,
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     }
@@ -60,18 +82,83 @@ const ProjectsPage: BlitzPage = () => {
     Router.push(route)
   }
 
-  const goToSearchWithFilters = (elem, filter) => {
-    const { id } = elem
+  const goToSearchWithFilters = (event: Event, filter: string) => {
+    event.preventDefault()
 
-    const route =
-      filter === "category"
-        ? `search?cat=${id}`
-        : filter === "skill"
-        ? `search?sk=${id}`
-        : filter === "label"
-        ? `search?lb=${id}`
-        : "search"
+    const searchParam = event.target && event.target["id"]
+    const index = filters[filter].findIndex((item) => searchParam === item)
+    let route = filterRoute
+
+    if (index === -1) {
+      const updatedFilters = [...filters[filter], searchParam]
+      route += route === "search?" ? `${filter}=${searchParam}` : `&${filter}=${searchParam}`
+
+      setFilters({ ...filters, [filter]: updatedFilters })
+      setChips([...chips, searchParam])
+      setFilterRoute(route)
+    }
+
     Router.push(route)
+  }
+
+  const deleteFilter = (filter: string) => {
+    const chipsIndex = chips.findIndex((value) => filter === value)
+    let queryParams: any = router && router.query
+
+    Object.keys(filters).forEach((type) => {
+      const index = filters[type].findIndex((value) => filter === value)
+
+      if (index >= 0) {
+        filters[type].splice(index, 1)
+      }
+    })
+    setFilters({ ...filters })
+
+    if (chipsIndex >= 0) {
+      chips.splice(chipsIndex, 1)
+      setChips([...chips])
+    }
+
+    Object.keys(router.query).forEach((type) => {
+      if (typeof queryParams[type] === "string" && queryParams[type] === filter) {
+        delete queryParams[type]
+      } else if (Array.isArray(queryParams[type])) {
+        const index = queryParams[type].findIndex((value) => filter === value)
+        queryParams[type].splice(index, 1)
+      }
+    })
+
+    Router.push({
+      pathname: "search",
+      query: queryParams,
+    })
+  }
+
+  const makeChips = () => {
+    let chipsComponent = (
+      <>
+        <span></span>
+      </>
+    )
+
+    if (chips.length > 0) {
+      chipsComponent = (
+        <CardBox title="Selected Filters">
+          {chips.map((filter) => (
+            <Chip
+              key={filter}
+              label={filter}
+              size="small"
+              variant="outlined"
+              className="homeWrapper__myProposals--filters"
+              onDelete={() => deleteFilter(filter)}
+            />
+          ))}
+        </CardBox>
+      )
+    }
+
+    return chipsComponent
   }
 
   return (
@@ -95,47 +182,86 @@ const ProjectsPage: BlitzPage = () => {
         </div>
         <div className="homeWrapper--content">
           <div className="homeWrapper__myProposals">
+            {makeChips()}
             <CardBox title="Filters">
               <div className="homeWrapper__myProposals">
-                <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
-                <ul>
-                  {categoryFacets.map((item) => (
-                    <li
-                      key={item.name}
-                      id={item.name}
-                      onClick={(e) => goToSearchWithFilters(e.target, "category")}
-                      className="homeWrapper__myProposals--link"
-                    >
-                      {item.name} ({item.count})
-                    </li>
-                  ))}
-                </ul>
-                <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
-                <ul>
-                  {skillFacets.map((item) => (
-                    <li
-                      key={item.name}
-                      id={item.name}
-                      onClick={(e) => goToSearchWithFilters(e.target, "skill")}
-                      className="homeWrapper__myProposals--link"
-                    >
-                      {item.name} ({item.count})
-                    </li>
-                  ))}
-                </ul>
-                <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
-                <ul>
-                  {labelFacets.map((item) => (
-                    <li
-                      key={item.name}
-                      id={item.name}
-                      onClick={(e) => goToSearchWithFilters(e.target, "label")}
-                      className="homeWrapper__myProposals--link"
-                    >
-                      {item.name} ({item.count})
-                    </li>
-                  ))}
-                </ul>
+                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel1a-controls"
+                    id="panel1a-header"
+                  >
+                    <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="homeWrapper__myProposals--list">
+                      {categoryFacets.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            id={item.name}
+                            underline="none"
+                            href=""
+                            onClick={(e) => goToSearchWithFilters(e, "category")}
+                          >
+                            {item.name} ({item.count})
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel2a-controls"
+                    id="panel2a-header"
+                  >
+                    <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="homeWrapper__myProposals--list">
+                      {skillFacets.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            id={item.name}
+                            underline="none"
+                            href=""
+                            onClick={(e) => goToSearchWithFilters(e, "skill")}
+                          >
+                            {item.name} ({item.count})
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel3a-controls"
+                    id="panel3a-header"
+                  >
+                    <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="homeWrapper__myProposals--list">
+                      {labelFacets.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            id={item.name}
+                            underline="none"
+                            href=""
+                            onClick={(e) => goToSearchWithFilters(e, "label")}
+                          >
+                            {item.name} ({item.count})
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
               </div>
             </CardBox>
           </div>
@@ -262,13 +388,19 @@ const Wrapper = styled.div`
   }
   .homeWrapper__myProposals {
     display: grid;
-    row-gap: 35px;
+    row-gap: 2px;
     width: 100%;
     max-width: 250px;
     margin-right: 15px;
   }
-  .homeWrapper__myProposals--link {
-    cursor: pointer;
+  .homeWrapper__myProposals--filters {
+    margin: 0 4px 2px 0;
+  }
+  .homeWrapper__myProposals--list {
+    list-style-type: none;
+  }
+  .homeWrapper__accordion {
+    box-shadow: none;
   }
 `
 
