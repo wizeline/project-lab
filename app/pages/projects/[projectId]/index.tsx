@@ -15,7 +15,8 @@ export const Project = () => {
 
   const handleVote = async (id: string) => {
     try {
-      await upvoteProjectMutation({ id })
+      const haveIVoted = project.votes.length > 0 ? true : false
+      await upvoteProjectMutation({ id, haveIVoted })
       refetch()
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
@@ -30,7 +31,7 @@ export const Project = () => {
         <HeaderInfo>
           <div className="headerInfo--action">
             <button className="primary" onClick={() => handleVote(project.id)}>
-              UPVOTE {project.votesCount}
+              {project.votes.length > 0 ? "DOWNVOTE" : "UPVOTE"} {project.votes.length}
             </button>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
