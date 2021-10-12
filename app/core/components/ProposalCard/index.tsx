@@ -3,6 +3,7 @@ import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@material-ui/core"
 import EllipsisText from "app/core/components/EllipsisText"
 import { Draft } from "../../utils/constants"
+import Image from "next/image"
 
 import { ProposalCardWrap } from "./ProposalCard.styles"
 
@@ -28,7 +29,11 @@ export const ProposalCard = (props: IProps) => {
               <ProposalCardWrap>
                 <div className="ProposalCard__head">
                   <div className="ProposalCard__head__icon">
-                    {props.picture ? <img src={props.picture} /> : <span>{props.initials}</span>}
+                    {props.picture ? (
+                      <Image src={props.picture} width="60" height="60" />
+                    ) : (
+                      <span>{props.initials}</span>
+                    )}
                   </div>
                   <div className="ProposalCard__head__description">
                     <div className="ProposalCard__head__description--title">{props.title}</div>
