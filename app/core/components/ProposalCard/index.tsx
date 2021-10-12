@@ -9,6 +9,8 @@ import { ProposalCardWrap } from "./ProposalCard.styles"
 interface IProps {
   id: string | number
   title: string
+  picture: string
+  initials: string
   date: string
   description: string
   status: string
@@ -25,7 +27,9 @@ export const ProposalCard = (props: IProps) => {
             <CardContent style={{ backgroundColor: "#e7f2fb", height: "100%" }}>
               <ProposalCardWrap>
                 <div className="ProposalCard__head">
-                  <div className="ProposalCard__head__icon">AB</div>
+                  <div className="ProposalCard__head__icon">
+                    {props.picture ? <img src={props.picture} /> : <span>{props.initials}</span>}
+                  </div>
                   <div className="ProposalCard__head__description">
                     <div className="ProposalCard__head__description--title">{props.title}</div>
                     <div className="ProposalCard__head__description--date">{props.date}</div>
