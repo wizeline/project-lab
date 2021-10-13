@@ -1,6 +1,6 @@
 import { Suspense, useState } from "react"
 import styled from "@emotion/styled"
-import { Head, useQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
+import { Head, useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
@@ -30,13 +30,13 @@ const ITEMS_PER_PAGE = 4
 const ProjectsPage: BlitzPage = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
+  const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
 
   const search = router.query.q || ""
   const { category, skill, label } = router.query
 
   const [searchValue, setSearchValue] = useState("")
-  const [filterRoute, setFilterRoute] = useState("search?")
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     category: [],
@@ -85,25 +85,30 @@ const ProjectsPage: BlitzPage = () => {
   const goToSearchWithFilters = (event: Event, filter: string) => {
     event.preventDefault()
 
+    const queryParams = JSON.parse(JSON.stringify(qParams))
     const searchParam = event.target && event.target["id"]
     const index = filters[filter].findIndex((item) => searchParam === item)
-    let route = filterRoute
 
     if (index === -1) {
       const updatedFilters = [...filters[filter], searchParam]
-      route += route === "search?" ? `${filter}=${searchParam}` : `&${filter}=${searchParam}`
 
       setFilters({ ...filters, [filter]: updatedFilters })
       setChips([...chips, searchParam])
-      setFilterRoute(route)
+
+      queryParams[filter] = !queryParams[filter]
+        ? searchParam
+        : [...queryParams[filter], searchParam]
     }
 
-    Router.push(route)
+    Router.push({
+      pathname: "search",
+      query: queryParams,
+    })
   }
 
   const deleteFilter = (filter: string) => {
     const chipsIndex = chips.findIndex((value) => filter === value)
-    let queryParams: any = router && router.query
+    const queryParams = JSON.parse(JSON.stringify(qParams))
 
     Object.keys(filters).forEach((type) => {
       const index = filters[type].findIndex((value) => filter === value)
@@ -119,7 +124,7 @@ const ProjectsPage: BlitzPage = () => {
       setChips([...chips])
     }
 
-    Object.keys(router.query).forEach((type) => {
+    Object.keys(queryParams).forEach((type) => {
       if (typeof queryParams[type] === "string" && queryParams[type] === filter) {
         delete queryParams[type]
       } else if (Array.isArray(queryParams[type])) {
