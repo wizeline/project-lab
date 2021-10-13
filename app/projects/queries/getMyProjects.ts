@@ -24,7 +24,7 @@ export default resolver.pipe(
           where: {
             projectMembers: { some: { profileId: { equals: session.profileId } } },
           },
-          include: { projectStatus: true },
+          include: { projectStatus: true, owner: true },
           orderBy,
         }),
     })

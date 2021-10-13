@@ -37,6 +37,7 @@
     "blitz": "0.38.1",
     "final-form": "4.20.2",
     "lodash.debounce": "4.0.8",
+    "next-images": "1.8.1",
     "passport-auth0": "1.4.0",
     "pm2": "5.1.0",
     "react": "alpha",
