@@ -6,10 +6,7 @@ import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
-// import SidebarStep from "app/projects/components/SidebarStep"
 import TheTeam from "app/projects/components/tabs/TheTeam"
-
-// import { WrapperContent, WrapperContentNav, WrapperContentForm } from "./full.styles"
 
 const steps = [
   {
@@ -103,17 +100,7 @@ const FullProjectPage: BlitzPage = () => {
       </div>
       <div className="wrapper">
         <GoBack title="Back to main page" onClick={() => Router.push(Routes.ProjectsPage())} />
-        {/* <WrapperContent style={{display:'none'}}>
-          <WrapperContentNav>
-            <SidebarStep steps={steps} activeStep={step} onClick={onClick} />
-          </WrapperContentNav>
-        </WrapperContent> */}
-
-        <div>
-          {/* <WrapperContentForm> */}
-          {renderSteps(step)}
-          {/* </WrapperContentForm> */}
-        </div>
+        <div>{renderSteps(step)}</div>
       </div>
     </div>
   )

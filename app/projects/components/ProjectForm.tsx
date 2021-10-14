@@ -9,14 +9,6 @@ import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 
-import {
-  FormQuickWrap,
-  FormQuickInput,
-  WrapperDialog,
-  Button,
-} from "app/pages/projects/quick/quick.styles"
-// import Collapse from '@material-ui/core';
-
 import { z } from "zod"
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -63,16 +55,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           labelPlacement="start"
         />
       )}
-
-      {/* {displayFields ? <><LabeledTextField
-        name="target"
-        label="Who is your target user/client"
-        placeholder="Millenials"
-      /> 
-      <CategorySelect  name="category" label="Category" /> 
-      <SkillsSelect  name="skills" label="Skills" /> 
-      <LabelsSelect name="labels" label="Labels" />
-      </> : null} */}
 
       <Collapse in={displayFields}>
         <LabeledTextField
