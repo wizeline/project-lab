@@ -31,7 +31,7 @@ export const Project = () => {
         <HeaderInfo>
           <div className="headerInfo--action">
             <button className="primary" onClick={() => handleVote(project.id)}>
-              {project.votes.length > 0 ? "DOWNVOTE" : "UPVOTE"} {project.votes.length}
+              {project.votes.length > 0 ? "DOWNVOTE" : "UPVOTE"} {project.votesCount}
             </button>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
