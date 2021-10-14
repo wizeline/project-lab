@@ -62,11 +62,12 @@ export default resolver.pipe(
     }
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
-      SELECT p.id, p.name, p.description, status, votesCount, s.color,
+      SELECT p.id, p.name, p.description, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
         strftime('%M %d, %y', p.createdAt) as createdAt
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN Profiles pr on pr.id = p.ownerId
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id

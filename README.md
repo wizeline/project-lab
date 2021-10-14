@@ -6,11 +6,9 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 ## Getting Started
 
-## Environment Variables
+### Environment Variables
 
-Create `.env.local` and `.env.test.local` files in root, ask in #team-proejctlab
-for the environment values.
-Ensure the `.env.local` file has required environment variables:
+1. In root, create `.env.local` file with the following:
 
 ```
 DATABASE_URL="file:./db.sqlite"
@@ -26,37 +24,74 @@ WOS_AUTH_API_CLIENT_SECRET=
 WOS_API_URL=
 ```
 
-Ensure the `.env.test.local` file has required environment variables:
+2. In root, create `.env.test.local` file with the following:
 
 ```
 DATABASE_URL="file:./db_test.sqlite"
 ```
 
-Ensure the `seeds.ts` file was updated with your user
+3. Ask in `#team-projectlab` channel on _Slack_
+   for the environment values for `.env.local` and `.env.test.local`.
+
+4. Edit `db/seeds.ts` file and add your user at the very bottom, make sure to replace with your data:
 
 ```
   await db.profiles.upsert({
-    where: { email: "[youremail]]wizeline.com" }, ...
+    where: { email: "[YOUR_USERNAME]@wizeline.com" },
+    update: {},
+    create: {
+      email: "[YOUR_USERNAME]@wizeline.com",
+      firstName: "[YOUR_FIRNAME]",
+      lastName: "[YOUR_LASTNAME]",
+      department: "[YOUR_DEPARTMENT]",
+    },
+  })
 ```
 
-And finally, to install dependencies and run:
+5. Install dependencies:
 
 ```
-yarn install # dependencies
-blitz prisma migrate reset # create or reset the database schema
-sqlite3 db/db.sqlite < db/search_indexes.sql # load full text indexes
-# sync commands from Wizeline OS, you can just run `sync-all-from-wos`
+yarn install
+```
+
+6. Create or reset the database schema:
+
+```
+blitz prisma migrate reset
+```
+
+7. Load full text indexes:
+
+```
+sqlite3 db/db.sqlite < db/search_indexes.sql
+```
+
+8. Populate with test data:
+
+```
+blitz db seed
+```
+
+9. Sync commands from Wizeline OS, you can just run `sync-all-from-wos`:
+
+```
 yarn sync-all-from-wos
-blitz db seed # populate with test data, but after sync because sync deletes profiles
-blitz dev # run blitz
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+10. Run blitz:
+
+```
+blitz dev
+```
+
+Finally, open [http://localhost:3000](http://localhost:3000) in a browser to see the result.
+
+---
 
 ## Tests
 
 Runs your tests using Jest.
-The used database will be the defined in `.env.test.local` if not then `.env` will be used.
+The used database will be the defined in `.env.test.local` otherwise `.env` will be used.
 
 ```
 yarn test

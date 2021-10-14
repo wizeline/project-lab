@@ -18,7 +18,12 @@ export default resolver.pipe(
       take,
       count: () => db.projects.count({ where }),
       query: (paginateArgs) =>
-        db.projects.findMany({ ...paginateArgs, where, include: { projectStatus: true }, orderBy }),
+        db.projects.findMany({
+          ...paginateArgs,
+          where,
+          include: { projectStatus: true, owner: true },
+          orderBy,
+        }),
     })
 
     return {

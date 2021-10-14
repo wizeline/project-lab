@@ -58,12 +58,18 @@ const ProjectsPage: BlitzPage = () => {
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
+  const initials = (firstName, lastName) => {
+    return firstName.substring(0, 1) + lastName.substring(0, 1)
+  }
+
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
         id={item.id}
         title={item.name}
+        picture={item.avatarUrl}
+        initials={initials(item.firstName, item.lastName)}
         date={item.createdAt}
         description={item.description}
         status={item.status}
