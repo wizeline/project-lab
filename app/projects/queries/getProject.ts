@@ -22,6 +22,9 @@ export default resolver.pipe(
           orderBy: [{ active: "desc" }, { role: "asc" }],
         },
         votes: { where: { profileId: session.profileId } },
+        comments: {
+          include: { author: { select: { firstName: true, lastName: true, avatarUrl: true } } },
+        },
       },
     })
 
