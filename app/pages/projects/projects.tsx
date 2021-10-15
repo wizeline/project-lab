@@ -28,12 +28,18 @@ const ProjectsPage: BlitzPage = () => {
     take: MY_ITEMS_MAX,
   })
 
+  const initials = (firstName, lastName) => {
+    return firstName.substring(0, 1) + lastName.substring(0, 1)
+  }
+
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
         id={item.id}
         title={item.name}
+        picture={item.owner.avatarUrl}
+        initials={initials(item.owner.firstName, item.owner.lastName)}
         date={new Intl.DateTimeFormat([], {
           year: "numeric",
           month: "long",

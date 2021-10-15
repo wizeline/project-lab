@@ -5,17 +5,22 @@ export const ProposalCardWrap = styled.div`
     display: flex;
     align-items: center;
   }
-  .ProposalCard__head__icon {
+  .ProposalCard__head__icon span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 60px;
     height: 60px;
     border: 2px solid #234cad;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-weight: bold;
     color: #234cad;
     font-size: 16px;
+  }
+  .ProposalCard__head__icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
   }
   .ProposalCard__head__description {
     margin-left: 20px;
