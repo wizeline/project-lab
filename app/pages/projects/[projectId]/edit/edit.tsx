@@ -51,7 +51,7 @@ export const DeleteButton = (props) => {
         onClick={deleteProposal}
       >
         <h2>Are you sure you want to delete this proposal?</h2>
-        <p>This action cannot be undo.</p>
+        <p>This action cannot be undone.</p>
         <br />
         <TextField
           label={`Type ${props.project.name}`}
