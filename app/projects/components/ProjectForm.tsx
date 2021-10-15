@@ -4,7 +4,6 @@ import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextFieldArea } from "app/core/components/LabeledTextFieldArea"
-import { LabeledTextAreaField } from "app/core/components/LabeledTextAreaField"
 import { CategorySelect } from "app/core/components/CategorySelect"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
@@ -31,29 +30,13 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Problem Statement"
         placeholder="Problem statement"
       />
-      {/* <LabeledTextAreaField
-        style={{
-          width: "96%",
-          fontSize: "1em",
-          padding: "1em",
-          fontFamily: "Roboto,Helvetica,Arial,sans-serif",
-        }}
-        name="description"
-        label="Problem statement"
-        placeholder="How might we..."
-      /> */}
-      <LabeledTextAreaField
-        style={{
-          width: "96%",
-          fontSize: "1em",
-          padding: "1em",
-          fontFamily: "Roboto,Helvetica,Arial,sans-serif",
-        }}
+      <LabeledTextFieldArea
+        style={{ minHeight: "4em" }}
+        fullWidth
         name="valueStatement"
         label="Your proposal"
         placeholder="Explain us your proposal"
       />
-
       {projectformType === "create" && (
         <FormControlLabel
           value="1"
@@ -62,7 +45,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           labelPlacement="start"
         />
       )}
-
       <Collapse in={displayFields}>
         <LabeledTextField
           fullWidth

@@ -31,7 +31,7 @@ export const LabeledTextFieldArea = ({
           <div {...outerProps}>
             <TextField
               multiline
-              rows={4}
+              rows={6}
               {...input}
               label={label}
               error={isError}
