@@ -3,7 +3,7 @@ import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "b
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
-import ModalBox from "app/core/components/ModalBox"
+import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
@@ -41,7 +41,15 @@ export const DeleteButton = (props) => {
         Delete
       </button>
 
-      <ModalBox open={open} handleClose={handleClose} height={243}>
+      <ConfirmationModal
+        open={open}
+        handleClose={handleClose}
+        height={243}
+        label="Delete"
+        className="warning"
+        disabled={deleteBtn}
+        onClick={deleteProposal}
+      >
         <h2>Are you sure you want to delete this proposal?</h2>
         <p>This action cannot be undo.</p>
         <br />
@@ -53,16 +61,7 @@ export const DeleteButton = (props) => {
           onChange={projectName}
         />
         <br />
-        <br />
-        <button
-          type="button"
-          className="primary warning"
-          disabled={deleteBtn}
-          onClick={deleteProposal}
-        >
-          Delete
-        </button>
-      </ModalBox>
+      </ConfirmationModal>
     </>
   )
 }
