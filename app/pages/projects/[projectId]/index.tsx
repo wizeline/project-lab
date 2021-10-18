@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useRef } from "react"
 import { Link, useQuery, useParam, BlitzPage, useMutation, Routes, invalidateQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
@@ -22,15 +22,16 @@ import {
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import { CommentForm } from "app/projects/components/CommentForm"
 import createComment from "app/projects/mutations/createComment"
-import { CreateComment } from "app/projects/validations"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
+  const commentsRef = useRef<any>(null)
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const [createCommentMutation] = useMutation(createComment, {
     onSuccess: async () => {
       await invalidateQuery(getProject)
+      commentsRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "start" })
     },
   })
   const handleVote = async (id: string) => {
@@ -47,6 +48,7 @@ export const Project = () => {
         projectId: project.id,
         body: values.body,
       })
+      values.body = ""
     } catch (error) {
       console.error(error)
     }
@@ -157,7 +159,7 @@ export const Project = () => {
           </Grid>
         </Container>
       </div>
-      <div className="wrapper">
+      <div className="wrapper" ref={commentsRef}>
         <Container>
           <big>Comments</big>
           <Grid>
