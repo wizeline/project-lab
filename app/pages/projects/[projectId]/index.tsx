@@ -103,7 +103,10 @@ export const Project = () => {
                     <Stack direction="column">
                       {project.projectMembers.map((item, index) => (
                         <div key={index}>
-                          <Typography color={item.active ? "text.primary" : "text.secondary"}>
+                          <Typography
+                            component={"div"}
+                            color={item.active ? "text.primary" : "text.secondary"}
+                          >
                             <div>
                               {item.profile?.firstName} {item.profile?.lastName}
                               {item.hoursPerWeek

@@ -37,6 +37,7 @@ const ProjectsPage: BlitzPage = () => {
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
+        key={i}
         id={item.id}
         title={item.name}
         picture={item.owner.avatarUrl}
