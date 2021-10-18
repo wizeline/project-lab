@@ -5,6 +5,7 @@ import Layout from "app/core/layouts/Layout"
 import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
+import { makeInitials } from "app/core/utils/tools"
 
 import Header from "app/core/layouts/Header"
 import {
@@ -58,10 +59,6 @@ const ProjectsPage: BlitzPage = () => {
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
-  const initials = (firstName, lastName) => {
-    return firstName.substring(0, 1) + lastName.substring(0, 1)
-  }
-
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
@@ -69,7 +66,7 @@ const ProjectsPage: BlitzPage = () => {
         id={item.id}
         title={item.name}
         picture={item.avatarUrl}
-        initials={initials(item.firstName, item.lastName)}
+        initials={makeInitials(item.firstName, item.lastName)}
         date={item.createdAt}
         description={item.description}
         status={item.status}

@@ -8,6 +8,7 @@ import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
 import SidebarStep from "app/projects/components/SidebarStep"
 import TheTheam from "app/projects/components/tabs/TheTeam"
+import { SlackNotification } from "integrations/slack"
 
 import { WrapperContent, WrapperContentNav, WrapperContentForm } from "./full.styles"
 
@@ -54,6 +55,7 @@ const FullProjectPage: BlitzPage = () => {
           onSubmit={async (values) => {
             try {
               const project = await createProjectMutation(values)
+              await SlackNotification(project)
               router.push(Routes.ShowProjectPage({ projectId: project.id }))
             } catch (error) {
               console.error(error)

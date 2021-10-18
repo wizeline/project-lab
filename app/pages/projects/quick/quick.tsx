@@ -11,6 +11,8 @@ import { InitialMembers, QuickCreate } from "app/projects/validations"
 import { Dialog } from "@material-ui/core"
 import Title from "app/projects/components/Title"
 
+import { SlackNotification } from "integrations/slack"
+
 import { FormQuickWrap, FormQuickInput, WrapperDialog, Button } from "./quick.styles"
 
 const QuickProjectPage: BlitzPage = () => {
@@ -45,6 +47,7 @@ const QuickProjectPage: BlitzPage = () => {
             onSubmit={async (values) => {
               try {
                 const project = await createProjectMutation(values)
+                await SlackNotification(project)
                 setShowSuccessModal(true)
                 setProjectIdGenerated(project.id)
               } catch (error) {

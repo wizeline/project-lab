@@ -5,6 +5,7 @@ import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
+import { makeInitials } from "app/core/utils/tools"
 
 import { Wrapper } from "./projects.styles"
 
@@ -29,10 +30,6 @@ const ProjectsPage: BlitzPage = () => {
     take: MY_ITEMS_MAX,
   })
 
-  const initials = (firstName, lastName) => {
-    return firstName.substring(0, 1) + lastName.substring(0, 1)
-  }
-
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
@@ -40,7 +37,7 @@ const ProjectsPage: BlitzPage = () => {
         id={item.id}
         title={item.name}
         picture={item.owner.avatarUrl}
-        initials={initials(item.owner.firstName, item.owner.lastName)}
+        initials={makeInitials(item.owner.firstName, item.owner.lastName)}
         date={new Intl.DateTimeFormat([], {
           year: "numeric",
           month: "long",
