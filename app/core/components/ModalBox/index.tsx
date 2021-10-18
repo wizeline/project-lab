@@ -10,16 +10,19 @@ export const BoxContainer = styled.div`
   border-radius: 4px;
 `
 
+export const ModalContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+`
+
 interface IProps {
   children: React.ReactNode
   open: boolean
   handleClose: React.MouseEventHandler
-  height: number
 }
 
 export const ModalBox = ({ children, ...props }: IProps) => {
-  const marginTop = (window.innerHeight - props.height) / 2 + "px"
-
   return (
     <Modal
       open={props.open}
@@ -27,9 +30,11 @@ export const ModalBox = ({ children, ...props }: IProps) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={{ marginTop }}>
-        <BoxContainer>{children}</BoxContainer>
-      </Box>
+      <ModalContainer>
+        <BoxContainer>
+          <Box sx={{ marginTop: "0px" }}>{children}</Box>
+        </BoxContainer>
+      </ModalContainer>
     </Modal>
   )
 }

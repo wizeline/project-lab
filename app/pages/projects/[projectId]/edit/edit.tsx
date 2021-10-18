@@ -44,7 +44,6 @@ export const DeleteButton = (props) => {
       <ConfirmationModal
         open={open}
         handleClose={handleClose}
-        height={243}
         label="Delete"
         className="warning"
         disabled={deleteBtn}

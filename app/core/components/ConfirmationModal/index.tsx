@@ -5,7 +5,6 @@ interface IProps {
   children: React.ReactNode
   open: boolean
   handleClose: React.MouseEventHandler
-  height: number
   label: string
   onClick: React.MouseEventHandler
   disabled: boolean
@@ -14,7 +13,7 @@ interface IProps {
 
 export const ConfirmationModal = ({ children, ...props }: IProps) => {
   return (
-    <ModalBox open={props.open} handleClose={props.handleClose} height={props.height}>
+    <ModalBox open={props.open} handleClose={props.handleClose}>
       {children}
       <br />
       <button
