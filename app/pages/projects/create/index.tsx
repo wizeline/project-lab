@@ -7,6 +7,7 @@ import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
+import { SlackNotification } from "integrations/slack"
 
 export const NewProject = () => {
   const session = useSession()
@@ -33,6 +34,7 @@ export const NewProject = () => {
           onSubmit={async (values) => {
             try {
               const project = await createProjectMutation(values)
+              await SlackNotification(project)
               router.push(Routes.ShowProjectPage({ projectId: project.id }))
             } catch (error) {
               console.error(error)

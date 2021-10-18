@@ -6,6 +6,8 @@ import Loader from "app/core/components/Loader"
 import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
+import { makeInitials } from "app/core/utils/tools"
+
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@material-ui/core"
 import { ExpandMore } from "@material-ui/icons"
@@ -155,10 +157,6 @@ export const Projects = () => {
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
-  const initials = (firstName, lastName) => {
-    return firstName.substring(0, 1) + lastName.substring(0, 1)
-  }
-
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
     return (
@@ -167,7 +165,7 @@ export const Projects = () => {
         id={item.id}
         title={item.name}
         picture={item.avatarUrl}
-        initials={initials(item.firstName, item.lastName)}
+        initials={makeInitials(item.firstName, item.lastName)}
         date={item.createdAt}
         description={item.description}
         status={item.status}
