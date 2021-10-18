@@ -142,7 +142,7 @@ model Category {
 model Projects {
   id             String           @id @default(uuid())
   ownerId        String?
-  name           String
+  name           String           @unique
   logo           String?
   description    String?
   valueStatement String?
@@ -153,6 +153,7 @@ model Projects {
   status         String           @default("Draft")
   categoryName   String           @default("Experiment")
   positions      String?
+  searchSkills   String           @default("")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
   owner          Profiles?        @relation(fields: [ownerId], references: [id])

@@ -136,7 +136,7 @@ export const Project = () => {
                       {project.projectMembers.map((item, index) => (
                         <div key={index}>
                           <Typography
-                            component="span"
+                            component={"div"}
                             color={item.active ? "text.primary" : "text.secondary"}
                           >
                             <div>
