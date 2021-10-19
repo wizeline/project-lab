@@ -70,7 +70,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
             <Grid container spacing={1} style={{ paddingTop: 20 }}>
               {input.value.map((row, index) => (
                 <React.Fragment key={index}>
-                  <Grid item xs={5}>
+                  <Grid item xs={4}>
                     <Chip
                       onDelete={() => {
                         input.onChange(
