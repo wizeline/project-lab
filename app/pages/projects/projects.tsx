@@ -5,7 +5,6 @@ import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
-
 import { Wrapper } from "./projects.styles"
 
 const ITEMS_PER_PAGE = 4
@@ -54,7 +53,7 @@ const ProjectsPage: BlitzPage = () => {
       />
     )
   }
-
+  // Direct link to full project page
   const goToCreateNewProposal = () => {
     Router.push(Routes.NewProjectPage())
   }
