@@ -1,1 +1,5 @@
-export { default } from "./projects"
+import ProjectsPage from "./projects"
+
+const Home = ProjectsPage
+
+export default Home
