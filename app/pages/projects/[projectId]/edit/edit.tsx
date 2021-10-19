@@ -1,13 +1,69 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
+import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { FullCreate } from "app/projects/validations"
+import { TextField } from "@material-ui/core"
+
+export const DeleteButton = (props) => {
+  const [open, setOpen] = useState(false)
+  const [deleteBtn, setDeleteBtn] = useState(true)
+  const [hasError, setHasError] = useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const deleteProposal = async () => {
+    await props.deleteProjectMutation({ id: props.project.id })
+    props.router.push(Routes.ProjectsPage())
+  }
+
+  const projectName = (e) => {
+    const value = e.target.value != props.project.name
+    setDeleteBtn(value)
+    setHasError(value)
+  }
+
+  return (
+    <>
+      <button type="button" className="primary warning" onClick={handleOpen}>
+        Delete
+      </button>
+
+      <ConfirmationModal
+        open={open}
+        handleClose={handleClose}
+        label="Delete"
+        className="warning"
+        disabled={deleteBtn}
+        onClick={deleteProposal}
+      >
+        <h2>Are you sure you want to delete this proposal?</h2>
+        <p>This action cannot be undone.</p>
+        <br />
+        <TextField
+          label={`Type ${props.project.name}`}
+          type="text"
+          error={hasError}
+          style={{ width: "100%" }}
+          onChange={projectName}
+        />
+        <br />
+      </ConfirmationModal>
+    </>
+  )
+}
 
 export const EditProject = () => {
   const router = useRouter()
@@ -60,19 +116,11 @@ export const EditProject = () => {
         />
       </div>
       <div className="wrapper">
-        <button
-          className="primary warning"
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteProjectMutation({ id: project.id })
-              router.push(Routes.ProjectsPage())
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
+        <DeleteButton
+          project={project}
+          deleteProjectMutation={deleteProjectMutation}
+          router={router}
+        />
       </div>
     </>
   )
