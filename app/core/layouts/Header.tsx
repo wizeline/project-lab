@@ -21,7 +21,7 @@ function Header({ title }: IProps) {
   const [logoutMutation] = useMutation(logout)
 
   function goHome() {
-    Router.push(Routes.ProjectsPage())
+    Router.push(Routes.Home())
   }
 
   const options: MenuItemArgs[] = [
