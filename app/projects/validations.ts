@@ -47,6 +47,7 @@ export const FullFormFields = {
   description: z.string(),
   valueStatement: z.string(),
   target: z.string().nullish(),
+  projectStatus: z.object({ name: z.string() }).optional(),
   category: z.object({ name: z.string() }).optional(),
   skills: z
     .array(
