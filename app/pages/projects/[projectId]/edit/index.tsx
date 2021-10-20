@@ -1,4 +1,3 @@
-// export { default } from "./edit"
 import { Suspense, useState } from "react"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
@@ -83,7 +82,6 @@ export const EditProject = () => {
   return (
     <>
       <Header title={"Edit " + project.name} />
-
       <div className="wrapper">
         <h1>Edit {project.name}</h1>
       </div>

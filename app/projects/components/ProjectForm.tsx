@@ -55,13 +55,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           placeholder="Millenials"
         />
         <CategorySelect name="category" label="Category" />
-        {projectformType != "create" && (
-          <ProjectStatusSelect
-            selectedOpt={props.initialValues.status ? props.initialValues.status : "Draft"}
-            name="projectStatus"
-            label="Status"
-          />
-        )}
+        {projectformType != "create" && <ProjectStatusSelect name="projectStatus" label="Status" />}
         <SkillsSelect name="skills" label="Skills" />
         <LabelsSelect name="labels" label="Labels" />
         <ProjectMembersField name="projectMembers" label="Add a member" />

@@ -27,7 +27,7 @@ export const CategorySelect = ({ name, label, helperText }: CategorySelectProps)
               sx={{ width: 300 }}
               label={label}
               disabled={submitting}
-              defaultValue={defaultCategory}
+              value={input.value.name ? input.value.name : defaultCategory}
               onChange={(event) => {
                 const newValue = categories.find((item) => item.name === event.target.value)
                 input.onChange(newValue)
