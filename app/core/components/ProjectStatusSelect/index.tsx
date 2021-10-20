@@ -8,14 +8,22 @@ interface ProjectStatusSelectProps {
   name: string
   label: string
   helperText?: string
+  selectedOpt?: string
 }
 
-export const ProjectStatusSelect = ({ name, label, helperText }: ProjectStatusSelectProps) => {
+export const ProjectStatusSelect = ({
+  name,
+  label,
+  helperText,
+  selectedOpt,
+}: ProjectStatusSelectProps) => {
   const [statuses] = useQuery(getStatuses, {})
 
   return (
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
+        console.log("The input is")
+        console.log(selectedOpt)
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
         return (
@@ -27,7 +35,7 @@ export const ProjectStatusSelect = ({ name, label, helperText }: ProjectStatusSe
               sx={{ width: 300 }}
               label={label}
               disabled={submitting}
-              defaultValue={Draft}
+              defaultValue={selectedOpt}
               onChange={(event) => {
                 const newValue = statuses.find((item) => item.name === event.target.value)
                 input.onChange(newValue)
