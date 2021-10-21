@@ -4,6 +4,7 @@ import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
+import Loader from "app/core/components/Loader"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
@@ -136,7 +137,7 @@ export const Project = () => {
 const ShowProjectPage: BlitzPage = () => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Project />
       </Suspense>
     </div>
