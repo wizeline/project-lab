@@ -5,6 +5,7 @@ import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
+import { LikesBubble } from "app/core/components/LikesBubble/LikesBubble.styles"
 
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 
@@ -30,9 +31,13 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button className="primary" onClick={() => handleVote(project.id)}>
-              {project.votes.length > 0 ? "DOWNVOTE" : "UPVOTE"} {project.votesCount}
+            <button
+              className={project.votes.length > 0 ? "primary unlike" : "primary like"}
+              onClick={() => handleVote(project.id)}
+            >
+              {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
+            <div className="like-bubble">{project.votesCount}</div>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
                 <img src="/edit.svg" alt="" />
