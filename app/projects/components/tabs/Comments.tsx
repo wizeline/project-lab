@@ -24,6 +24,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import CloseIcon from "@material-ui/icons/Close"
 import { CommentActions, WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
+import ConfirmationModal from "app/core/components/ConfirmationModal"
 interface IAuthor {
   id: string
   firstName: string
@@ -52,6 +53,7 @@ const initialComment: IComment = {
 
 export default function Comments(props: IProps) {
   const session = useSession()
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
   const [openEditComment, setOpenEditComment] = useState<boolean>(false)
   const [commentSelected, setCommentSelected] = useState<IComment>(initialComment)
   const [inputCommentEdit, setInputCommentEdit] = useState<string | null>("")
@@ -62,16 +64,19 @@ export default function Comments(props: IProps) {
       await invalidateQuery(getProject)
     },
   })
+
   const [updateCommentMutation] = useMutation(updateComment, {
     onSuccess: async () => {
       await invalidateQuery(getProject)
     },
   })
+
   const [createCommentMutation] = useMutation(createComment, {
     onSuccess: async () => {
       await invalidateQuery(getProject)
     },
   })
+
   const createCommentHandler = async (values) => {
     try {
       const comment = await createCommentMutation({
@@ -85,6 +90,7 @@ export default function Comments(props: IProps) {
       console.error(error)
     }
   }
+
   const editCommentModalHandler = (id: string) => {
     const comment = props.comments && props.comments.find((comment) => comment.id === id)
     if (comment) {
@@ -93,6 +99,7 @@ export default function Comments(props: IProps) {
       setOpenEditComment(true)
     }
   }
+
   const saveEditCommentHandler = async () => {
     const updatedComment = { ...commentSelected }
     delete updatedComment.author
@@ -105,8 +112,29 @@ export default function Comments(props: IProps) {
     }
   }
 
+  const deleteCommentHandle = async () => {
+    setOpenDeleteModal(false)
+    await deleteCommentMutation({ id: commentSelected.id })
+    setAlertMessage("Comment deleted successfully!")
+    setShowAlert(true)
+  }
   return (
     <Container>
+      <ConfirmationModal
+        open={openDeleteModal}
+        handleClose={() => setOpenDeleteModal(false)}
+        label="Delete"
+        className="warning"
+        disabled={false}
+        onClick={async () => {
+          console.log(commentSelected.id)
+          deleteCommentHandle()
+        }}
+      >
+        <h2>Are you sure you want to delete this comment?</h2>
+        <p>This action cannot be undone.</p>
+        <br />
+      </ConfirmationModal>
       <Snackbar open={showAlert}>
         <Alert
           severity="success"
@@ -178,10 +206,9 @@ export default function Comments(props: IProps) {
                             <IconButton
                               edge="end"
                               aria-label="delete"
-                              onClick={async () => {
-                                if (window.confirm("This comment will be deleted")) {
-                                  await deleteCommentMutation({ id: item.id })
-                                }
+                              onClick={() => {
+                                setOpenDeleteModal(true)
+                                setCommentSelected(item)
                               }}
                             >
                               <DeleteIcon />
