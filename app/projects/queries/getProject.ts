@@ -23,6 +23,7 @@ export default resolver.pipe(
         },
         votes: { where: { profileId: session.profileId } },
         comments: {
+          orderBy: [{ createdAt: "desc" }],
           include: { author: { select: { firstName: true, lastName: true, avatarUrl: true } } },
         },
       },

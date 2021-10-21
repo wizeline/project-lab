@@ -1,56 +1,23 @@
-import { Suspense, useRef } from "react"
-import { Link, useQuery, useParam, BlitzPage, useMutation, Routes, invalidateQuery } from "blitz"
+import { Suspense } from "react"
+import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
-import {
-  Card,
-  CardContent,
-  Container,
-  Chip,
-  Stack,
-  Grid,
-  Typography,
-  Avatar,
-  ListItemAvatar,
-  ListItemText,
-  Divider,
-  ListItem,
-  List,
-} from "@material-ui/core"
+import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
-import { CommentForm } from "app/projects/components/CommentForm"
-import createComment from "app/projects/mutations/createComment"
+import Comments from "app/projects/components/tabs/Comments"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
-  const commentsRef = useRef<any>(null)
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
-  const [createCommentMutation] = useMutation(createComment, {
-    onSuccess: async () => {
-      await invalidateQuery(getProject)
-      commentsRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "start" })
-    },
-  })
   const handleVote = async (id: string) => {
     try {
       await upvoteProjectMutation({ id })
       refetch()
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
-    }
-  }
-  const createCommentHandler = async (values) => {
-    try {
-      const comment = await createCommentMutation({
-        projectId: project.id,
-        body: values.body,
-      })
-      values.body = ""
-    } catch (error) {
-      console.error(error)
     }
   }
 
@@ -159,49 +126,8 @@ export const Project = () => {
           </Grid>
         </Container>
       </div>
-      <div className="wrapper" ref={commentsRef}>
-        <Container>
-          <big>Comments</big>
-          <Grid>
-            <Grid>
-              <CommentForm
-                submitText="Add Comment"
-                onSubmit={(values) => createCommentHandler(values)}
-              />
-
-              <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-                {project.comments.map((item, index) => {
-                  return (
-                    <Container key={index}>
-                      <ListItem alignItems="flex-start">
-                        <ListItemAvatar>
-                          <Avatar alt={item.author.firstName} src={item.author.avatarUrl ?? ""} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={item.updatedAt.toDateString()}
-                          secondary={
-                            <>
-                              <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                {`${item.author.firstName} ${item.author.lastName}`}
-                              </Typography>
-                              {` — ${item.body}`}
-                            </>
-                          }
-                        />
-                      </ListItem>
-                      <Divider variant="inset" component="li" />
-                    </Container>
-                  )
-                })}
-              </List>
-            </Grid>
-          </Grid>
-        </Container>
+      <div className="wrapper">
+        <Comments projectId={projectId} comments={project.comments} />
       </div>
     </>
   )
