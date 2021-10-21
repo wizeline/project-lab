@@ -23,14 +23,12 @@ import getProject from "app/projects/queries/getProject"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import CloseIcon from "@material-ui/icons/Close"
-import { WrapperDialog, Button as ButtonQuick } from "app/pages/projects/quick/quick.styles"
-import { CommentActions } from "./Comments.styles"
-
+import { CommentActions, WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
 interface IAuthor {
   id: string
   firstName: string
   lastName: string
-  avatarUrl: string | null
+  avatarUrl?: string
 }
 
 interface IComment {
@@ -42,8 +40,8 @@ interface IComment {
 }
 
 interface IProps {
-  projectId: string
-  comments: IComment[]
+  projectId?: string
+  comments: any
 }
 const initialComment: IComment = {
   id: "",
@@ -76,10 +74,8 @@ export default function Comments(props: IProps) {
   })
   const createCommentHandler = async (values) => {
     try {
-      // values.body.replace(/\n/g, "<br>")
-
       const comment = await createCommentMutation({
-        projectId: props.projectId,
+        projectId: props.projectId!,
         body: values.body,
       })
       values.body = ""
@@ -90,10 +86,10 @@ export default function Comments(props: IProps) {
     }
   }
   const editCommentModalHandler = (id: string) => {
-    const comment = props.comments.find((comment) => comment.id === id)
+    const comment = props.comments && props.comments.find((comment) => comment.id === id)
     if (comment) {
       setInputCommentEdit(comment.body!)
-      setCommentSelected(comment!)
+      setCommentSelected(comment)
       setOpenEditComment(true)
     }
   }
@@ -101,7 +97,6 @@ export default function Comments(props: IProps) {
     const updatedComment = { ...commentSelected }
     delete updatedComment.author
     updatedComment.body = inputCommentEdit!
-    updatedComment.body.replace(/\n/g, "<br>")
     const comment = await updateCommentMutation(updatedComment)
     if (comment) {
       setOpenEditComment(false)
@@ -140,18 +135,34 @@ export default function Comments(props: IProps) {
             onSubmit={(values) => createCommentHandler(values)}
           />
           <Paper sx={{ paddingX: 7, paddingY: 5, marginTop: 2 }}>
-            {props.comments.map((item) => {
-              return (
-                <div key={item.id}>
-                  <Grid container wrap="nowrap" spacing={2}>
-                    <Grid item>
-                      {item.author?.avatarUrl && (
-                        <Avatar alt={"alt"} src={item.author?.avatarUrl} />
-                      )}
-                    </Grid>
-                    <Grid justifyContent="left" item xs zeroMinWidth>
-                      <h4>
-                        {` ${item.author?.firstName} ${item.author?.lastName} `}
+            {props.comments &&
+              props.comments.map((item) => {
+                return (
+                  <div key={item.id}>
+                    <Grid container wrap="nowrap" spacing={2}>
+                      <Grid item>
+                        <Avatar alt={"alt"} src={item.author?.avatarUrl}></Avatar>
+                      </Grid>
+                      <Grid justifyContent="left" item xs zeroMinWidth>
+                        <h4>
+                          {` ${item.author?.firstName} ${item.author?.lastName} `} .
+                          <Typography
+                            component="span"
+                            style={{
+                              marginLeft: 5,
+                              fontSize: 13,
+                              textAlign: "left",
+                              color: "gray",
+                            }}
+                          >
+                            <Moment fromNow>{item.updatedAt}</Moment>
+                          </Typography>
+                        </h4>
+                        <Typography sx={{ fontStyle: "italic", whiteSpace: "pre-line" }}>
+                          {" "}
+                          {item.body}
+                        </Typography>
+
                         {session.profileId === item.authorId && (
                           <CommentActions>
                             <IconButton
@@ -177,52 +188,44 @@ export default function Comments(props: IProps) {
                             </IconButton>
                           </CommentActions>
                         )}
-                      </h4>
-                      <Typography sx={{ fontStyle: "italic", whiteSpace: "pre-line" }}>
-                        {" "}
-                        {item.body}
-                      </Typography>
-                      <Typography style={{ fontSize: 13, textAlign: "left", color: "gray" }}>
-                        <Moment fromNow>{item.updatedAt}</Moment>
-                      </Typography>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
-                </div>
-              )
-            })}
+                    <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
+                  </div>
+                )
+              })}
           </Paper>
         </Grid>
       </Grid>
 
       <Dialog open={openEditComment}>
-        <Container>
-          <WrapperDialog>
-            <Grid item>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Edit your comment
-              </Typography>
-            </Grid>
+        <WrapperDialog>
+          <Grid item>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Edit your comment
+            </Typography>
+          </Grid>
+          <Grid item>
             <TextField
-              sx={{ width: 440 }}
+              sx={{ width: 540 }}
               name="body"
               multiline
               onChange={(e) => setInputCommentEdit(e.target.value)}
               value={inputCommentEdit}
               placeholder="Write a comment"
             />
-            <Grid>
-              <Button
-                onClick={() => {
-                  setOpenEditComment(false)
-                }}
-              >
-                Cancel
-              </Button>
-              <ButtonQuick onClick={saveEditCommentHandler}>Save</ButtonQuick>
-            </Grid>
-          </WrapperDialog>
-        </Container>
+          </Grid>
+          <Grid item sx={{ margin: 3, float: "right" }}>
+            <Button
+              onClick={() => {
+                setOpenEditComment(false)
+              }}
+            >
+              Cancel
+            </Button>
+            <ButtonQuick onClick={saveEditCommentHandler}>Save</ButtonQuick>
+          </Grid>
+        </WrapperDialog>
       </Dialog>
     </Container>
   )
