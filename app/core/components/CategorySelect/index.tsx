@@ -19,9 +19,10 @@ export const CategorySelect = ({ name, label, helperText }: CategorySelectProps)
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
         return (
-          <FormControl id={name} error={isError}>
+          <FormControl fullWidth id={name} error={isError} margin="normal">
             <InputLabel id={name}>{label}</InputLabel>
             <Select
+              style={{ width: "100%" }}
               id={name}
               sx={{ width: 300 }}
               label={label}

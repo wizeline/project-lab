@@ -69,6 +69,10 @@ const Layout = ({ title, children }: LayoutProps) => {
         button.primary.warning {
           background-color: red;
         }
+        button.primary.default {
+          background-color: #f1f1f1;
+          color: #444;
+        }
       `}</style>
     </>
   )

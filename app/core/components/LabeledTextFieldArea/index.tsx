@@ -2,7 +2,7 @@ import { PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
 import TextField from "@material-ui/core/TextField"
 
-interface LabeledTextFieldProps {
+interface LabeledTextFieldAreaProps {
   name: string
   label: string
   /** Field type. Doesn't include radio buttons and checkboxes */
@@ -14,14 +14,14 @@ interface LabeledTextFieldProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
-export const LabeledTextField = ({
+export const LabeledTextFieldArea = ({
   name,
   label,
   type,
   helperText,
   outerProps,
   ...props
-}: LabeledTextFieldProps) => {
+}: LabeledTextFieldAreaProps) => {
   return (
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
@@ -30,6 +30,8 @@ export const LabeledTextField = ({
         return (
           <div {...outerProps}>
             <TextField
+              multiline
+              rows={6}
               {...input}
               label={label}
               error={isError}
@@ -45,4 +47,4 @@ export const LabeledTextField = ({
   )
 }
 
-export default LabeledTextField
+export default LabeledTextFieldArea
