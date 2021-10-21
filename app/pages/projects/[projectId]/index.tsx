@@ -5,7 +5,6 @@ import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
-import { LikesBubble } from "app/core/components/LikesBubble/LikesBubble.styles"
 
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 
