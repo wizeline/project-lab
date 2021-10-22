@@ -4,6 +4,7 @@ import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
+import Loader from "app/core/components/Loader"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
@@ -129,7 +130,7 @@ export const EditProject = () => {
 const EditProjectPage: BlitzPage = () => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <EditProject />
       </Suspense>
     </div>
