@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
-import { z, z } from "zod"
+import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
