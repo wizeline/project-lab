@@ -8,16 +8,25 @@ import { CategorySelect } from "app/core/components/CategorySelect"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
+import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
 import { z } from "zod"
 export { FORM_ERROR } from "app/core/components/Form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-  const { projectformType } = props
+  const { projectformType, initialValues } = props
   const [displayFields, setDisplayFields] = useState(projectformType == "create" ? false : true)
 
   const handleDisplaySwitch = (e: any) => {
     console.log(`Change value of ${e.target.checked.toString()}`)
     setDisplayFields(!displayFields)
+  }
+
+  const getOwner = (initialValues) => {
+    const data = initialValues.owner
+    return {
+      profileId: data.id,
+      name: `${data.firstName} ${data.lastName}`,
+    }
   }
 
   return (
@@ -44,6 +53,9 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Add more details"
           labelPlacement="start"
         />
+      )}
+      {projectformType !== "create" && (
+        <ProjectOwnerField name="owner" label="Owner" owner={getOwner(initialValues)} />
       )}
       <Collapse in={displayFields}>
         <LabeledTextField
