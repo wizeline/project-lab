@@ -16,6 +16,7 @@ export default resolver.pipe(
         ...data,
         category: { connect: { name: data.category?.name } },
         projectStatus: { connect: { name: data.projectStatus?.name } },
+        owner: { connect: { id: data.owner?.id } },
         skills: {
           set: data.skills,
         },
@@ -32,6 +33,7 @@ export default resolver.pipe(
         projectStatus: true,
         skills: true,
         labels: true,
+        owner: true,
         projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
         votes: { where: { profileId: session.profileId } },
       },

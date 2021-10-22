@@ -18,6 +18,7 @@ export default resolver.pipe(
         skills: true,
         labels: true,
         projectStatus: true,
+        owner: true,
         projectMembers: {
           include: { profile: { select: { firstName: true, lastName: true } } },
           orderBy: [{ active: "desc" }, { role: "asc" }],
