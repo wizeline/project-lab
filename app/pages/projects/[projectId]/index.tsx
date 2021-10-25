@@ -4,6 +4,7 @@ import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
+import Loader from "app/core/components/Loader"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
@@ -15,7 +16,8 @@ export const Project = () => {
 
   const handleVote = async (id: string) => {
     try {
-      await upvoteProjectMutation({ id })
+      const haveIVoted = project.votes.length > 0 ? true : false
+      await upvoteProjectMutation({ id, haveIVoted })
       refetch()
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
@@ -29,9 +31,13 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button className="primary" onClick={() => handleVote(project.id)}>
-              UPVOTE {project.votesCount}
+            <button
+              className={project.votes.length > 0 ? "primary unlike" : "primary like"}
+              onClick={() => handleVote(project.id)}
+            >
+              {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
+            <div className="like-bubble">{project.votesCount}</div>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
                 <img src="/edit.svg" alt="" />
@@ -103,7 +109,10 @@ export const Project = () => {
                     <Stack direction="column">
                       {project.projectMembers.map((item, index) => (
                         <div key={index}>
-                          <Typography color={item.active ? "text.primary" : "text.secondary"}>
+                          <Typography
+                            component={"div"}
+                            color={item.active ? "text.primary" : "text.secondary"}
+                          >
                             <div>
                               {item.profile?.firstName} {item.profile?.lastName}
                               {item.hoursPerWeek
@@ -131,7 +140,7 @@ export const Project = () => {
 const ShowProjectPage: BlitzPage = () => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Project />
       </Suspense>
     </div>

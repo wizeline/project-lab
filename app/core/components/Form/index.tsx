@@ -1,5 +1,6 @@
 import { ReactNode, PropsWithoutRef } from "react"
 import { Form as FinalForm, FormProps as FinalFormProps } from "react-final-form"
+import { Grid } from "@material-ui/core"
 import { z } from "zod"
 import { validateZodSchema } from "blitz"
 export { FORM_ERROR } from "final-form"
@@ -10,6 +11,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   children?: ReactNode
   /** Text to display in the submit button */
   submitText?: string
+  projectformType?: string
   schema?: S
   fullWidthButton?: boolean
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
@@ -42,14 +44,16 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            <button
-              style={fullWidthButton ? { width: "100%" } : {}}
-              className="primary"
-              type="submit"
-              disabled={submitting}
-            >
-              {submitText}
-            </button>
+            <Grid container direction="column" alignItems="center" justifyContent="center">
+              <button
+                style={fullWidthButton ? { width: "100%" } : {}}
+                className="primary"
+                type="submit"
+                disabled={submitting}
+              >
+                {submitText}
+              </button>
+            </Grid>
           )}
 
           <style global jsx>{`

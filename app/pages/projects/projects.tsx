@@ -34,6 +34,7 @@ const ProjectsPage: BlitzPage = () => {
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
+        key={i}
         id={item.id}
         title={item.name}
         picture={item.owner.avatarUrl}
@@ -50,7 +51,7 @@ const ProjectsPage: BlitzPage = () => {
       />
     )
   }
-
+  // Direct link to full project page
   const goToCreateNewProposal = () => {
     Router.push(Routes.NewProjectPage())
   }
@@ -79,10 +80,20 @@ const ProjectsPage: BlitzPage = () => {
             <div className="homeWrapper__information--row">
               <CardBox title="Popular">
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
-                <button disabled={page === 0} onClick={goToPreviousPage}>
+                <button
+                  type="button"
+                  disabled={page === 0}
+                  className={page == 0 ? "primary default" : "primary"}
+                  onClick={goToPreviousPage}
+                >
                   Previous{" "}
-                </button>
-                <button disabled={!hasMore} onClick={goToNextPage}>
+                </button>{" "}
+                <button
+                  type="button"
+                  disabled={!hasMore}
+                  className={!hasMore ? "primary default" : "primary"}
+                  onClick={goToNextPage}
+                >
                   Next
                 </button>
               </CardBox>

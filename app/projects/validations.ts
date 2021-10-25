@@ -44,10 +44,11 @@ export const QuickCreate = z.object({
 
 export const FullFormFields = {
   name: z.string(),
-  description: z.string().nullish(),
-  valueStatement: z.string().nullish(),
+  description: z.string(),
+  valueStatement: z.string(),
   target: z.string().nullish(),
   category: z.object({ name: z.string() }).optional(),
+  owner: z.object({ id: z.string() }),
   skills: z
     .array(
       z.object({
@@ -87,4 +88,5 @@ export const FullUpdate = z
 
 export const UpdateVotes = z.object({
   id: z.string(),
+  haveIVoted: z.boolean(),
 })

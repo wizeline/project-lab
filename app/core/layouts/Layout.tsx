@@ -62,12 +62,55 @@ const Layout = ({ title, children }: LayoutProps) => {
           line-height: 29px;
           text-align: center;
           border: none;
-          width: 160px;
+          width: 130px;
           height: 44px;
           cursor: pointer;
         }
+        button.primary.like {
+          background-image: url(/thumbs-up.png);
+          background-repeat: no-repeat;
+          background-position-x: 80%;
+          background-position-y: 12px;
+          background-size: 18px;
+          float: left;
+        }
+
+        button.primary.unlike {
+          background-image: url(/thumbs-down.png);
+          background-repeat: no-repeat;
+          background-position-x: 85%;
+          background-position-y: 15px;
+          background-size: 18px;
+          float: left;
+        }
+
         button.primary.warning {
           background-color: red;
+        }
+
+        .like-bubble {
+          min-width: 20px;
+          padding-left: 15px;
+          padding-right: 15px;
+          height: 22px;
+          background: #fff;
+          color: #000;
+          font-family: "Poppins";
+          font-size: 11px;
+          font-weight: 600;
+          display: inline-block;
+          border-radius: 4px;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          margin-left: 5px;
+          float: left;
+          line-height: 22px;
+          text-align: center;
+          box-shadow: 2px 2px 4px 0px rgb(0 0 0 / 14%);
+        }
+
+        button.primary.default {
+          background-color: #f1f1f1;
+          color: #444;
         }
       `}</style>
     </>
