@@ -44,14 +44,16 @@ export const QuickCreate = z.object({
 
 export const FullFormFields = {
   name: z.string(),
-  description: z.string().nullish(),
-  valueStatement: z.string().nullish(),
+  description: z.string(),
+  valueStatement: z.string(),
   target: z.string().nullish(),
   category: z.object({ name: z.string() }).optional(),
+  owner: z.object({ id: z.string() }),
   skills: z
     .array(
       z.object({
         id: z.string(),
+        name: z.string().optional(),
       })
     )
     .optional(),
@@ -65,11 +67,24 @@ export const FullFormFields = {
   projectMembers,
 }
 
-export const FullCreate = z.object(FullFormFields)
-export const FullUpdate = z.object({
-  id: z.string(),
-  ...FullFormFields,
-})
+const extractSearchSkills = (val) => {
+  val.searchSkills = val.skills?.reduce(
+    (acc, item) => (acc ? `${acc}, ${item.name}` : item.name),
+    ""
+  )
+  val.skills = val.skills?.map((item) => {
+    return { id: item.id }
+  })
+  return val
+}
+
+export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
+export const FullUpdate = z
+  .object({
+    id: z.string(),
+    ...FullFormFields,
+  })
+  .transform(extractSearchSkills)
 
 export const UpdateVotes = z.object({
   id: z.string(),

@@ -107,6 +107,11 @@ const Layout = ({ title, children }: LayoutProps) => {
           text-align: center;
           box-shadow: 2px 2px 4px 0px rgb(0 0 0 / 14%);
         }
+
+        button.primary.default {
+          background-color: #f1f1f1;
+          color: #444;
+        }
       `}</style>
     </>
   )
