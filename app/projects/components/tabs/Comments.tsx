@@ -127,7 +127,6 @@ export default function Comments(props: IProps) {
         className="warning"
         disabled={false}
         onClick={async () => {
-          console.log(commentSelected.id)
           deleteCommentHandle()
         }}
       >
