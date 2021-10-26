@@ -15,7 +15,8 @@ export const Project = () => {
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const handleVote = async (id: string) => {
     try {
-      await upvoteProjectMutation({ id })
+      const haveIVoted = project.votes.length > 0 ? true : false
+      await upvoteProjectMutation({ id, haveIVoted })
       refetch()
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
@@ -29,9 +30,13 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button className="primary" onClick={() => handleVote(project.id)}>
-              UPVOTE {project.votesCount}
+            <button
+              className={project.votes.length > 0 ? "primary unlike" : "primary like"}
+              onClick={() => handleVote(project.id)}
+            >
+              {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
+            <div className="like-bubble">{project.votesCount}</div>
             <div className="headerInfo--edit">
               <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
                 <img src="/edit.svg" alt="" />
