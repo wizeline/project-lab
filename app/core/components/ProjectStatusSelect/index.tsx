@@ -2,7 +2,7 @@ import { useQuery } from "blitz"
 import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@material-ui/core"
 import { Field } from "react-final-form"
 import getStatuses from "app/statuses/queries/getStatuses"
-import { Draft } from "app/core/utils/constants"
+import { defaultStatus } from "app/core/utils/constants"
 
 interface ProjectStatusSelectProps {
   name: string
@@ -27,7 +27,7 @@ export const ProjectStatusSelect = ({ name, label, helperText }: ProjectStatusSe
               sx={{ width: 300 }}
               label={label}
               disabled={submitting}
-              value={input.value.name ? input.value.name : Draft}
+              value={input.value.name ? input.value.name : defaultStatus}
               onChange={(event) => {
                 const newValue = statuses.find((item) => item.name === event.target.value)
                 input.onChange(newValue)
