@@ -2,7 +2,7 @@ import React from "react"
 import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@material-ui/core"
 import EllipsisText from "app/core/components/EllipsisText"
-import { Draft } from "../../utils/constants"
+import { defaultStatus } from "../../utils/constants"
 import Image from "next/image"
 
 import { ProposalCardWrap } from "./ProposalCard.styles"
@@ -44,7 +44,7 @@ export const ProposalCard = (props: IProps) => {
                   <EllipsisText text={props.description || ""} length={65} />
                 </div>
                 <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
-                  {props.status === Draft ? props.votesCount : props.status}
+                  {props.status === defaultStatus ? props.votesCount : props.status}
                 </div>
               </ProposalCardWrap>
             </CardContent>
