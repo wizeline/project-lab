@@ -51,7 +51,7 @@ const initialComment: IComment = {
   authorId: "",
 }
 
-export default function Comments(props: IProps) {
+const Comments = (props: IProps) => {
   const session = useSession()
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
   const [openEditComment, setOpenEditComment] = useState<boolean>(false)
@@ -256,3 +256,4 @@ export default function Comments(props: IProps) {
     </Container>
   )
 }
+export default Comments
