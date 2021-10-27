@@ -2,8 +2,6 @@ import { BlitzApiHandler, useQuery } from "@blitzjs/core"
 import { NextApiRequest, NextApiResponse } from "next"
 import db from "db"
 
-const SLACK_WEBHOOK =
-  "https://hooks.slack.com/services/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"
 const { WebClient } = require("@slack/web-api")
 const TOKEN = "xoxb-2611588638355-2611599839219-fwXj030fUtAAV7U1jN3Ic527"
 
@@ -23,46 +21,6 @@ const handler: BlitzApiHandler = (req, res) => {
       })()
       res.statusCode = 200
       res.end()
-      /*
-            
-            if( req.body.challenge && req.body.token === "Jcrmd62XVVFDUQ8RDoG4aa65"){
-                res.statusCode = 200
-                res.setHeader("Content-Type", "text/plain")
-                res.end(req.body.challenge)
-            }
-            else {
-                //console.log(req.body)
-                if(req.body.event.text.includes("Hello")){  
-                    (async () => {
-                        try {
-                            
-                            const result = await slack.users.info({
-                              user: req.body.event.user
-                            })
-
-                            const msg = result.user 
-                                        ? `Hello, ${result.user.profile.first_name}` 
-                                        : "Hello, friend";
-                            
-                            await slack.chat.postMessage({
-                                text: msg,
-                                channel: req.body.event.channel,
-                            });
-       
-                            console.log(`Successfully sent message ${msg}`);
-                     
-                          }
-                          catch (error) {
-                            return null
-                            console.error(error);
-                          } 
-                        
-                    })()   
-                     res.statusCode = 200
-                     res.end()
-                }
-            }
-            */
     }
   } else {
     res.statusCode = 200
