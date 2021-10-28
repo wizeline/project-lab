@@ -26,7 +26,6 @@ export const Project = () => {
   return (
     <>
       <Header title={project.name} />
-
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
