@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
+import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
@@ -8,8 +9,9 @@ import { CategorySelect } from "app/core/components/CategorySelect"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
+import { ProjectStatusSelect } from "app/core/components/ProjectStatusSelect"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
-import { z } from "zod"
+
 export { FORM_ERROR } from "app/core/components/Form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -66,6 +68,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           placeholder="Millenials"
         />
         <CategorySelect name="category" label="Category" />
+        {projectformType != "create" && <ProjectStatusSelect name="projectStatus" label="Status" />}
         <SkillsSelect name="skills" label="Skills" />
         <LabelsSelect name="labels" label="Labels" />
         <ProjectMembersField name="projectMembers" label="Add a member" />

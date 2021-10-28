@@ -17,6 +17,7 @@ export default resolver.pipe(
         category: true,
         skills: true,
         labels: true,
+        projectStatus: true,
         owner: true,
         projectMembers: {
           include: { profile: { select: { firstName: true, lastName: true } } },

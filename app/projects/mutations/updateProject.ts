@@ -15,6 +15,7 @@ export default resolver.pipe(
       data: {
         ...data,
         category: { connect: { name: data.category?.name } },
+        projectStatus: { connect: { name: data.projectStatus?.name } },
         owner: { connect: { id: data.owner?.id } },
         skills: {
           set: data.skills,
@@ -29,6 +30,7 @@ export default resolver.pipe(
       },
       include: {
         category: true,
+        projectStatus: true,
         skills: true,
         labels: true,
         owner: true,

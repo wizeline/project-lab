@@ -1,2 +1,2 @@
-export const Draft = "Draft"
+export const defaultStatus = "Draft"
 export const defaultCategory = "Experiment"

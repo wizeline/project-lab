@@ -1,17 +1,17 @@
 import { useQuery } from "blitz"
 import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@material-ui/core"
 import { Field } from "react-final-form"
-import getCategories from "app/categories/queries/getCategories"
-import { defaultCategory } from "app/core/utils/constants"
+import getStatuses from "app/statuses/queries/getStatuses"
+import { defaultStatus } from "app/core/utils/constants"
 
-interface CategorySelectProps {
+interface ProjectStatusSelectProps {
   name: string
   label: string
   helperText?: string
 }
 
-export const CategorySelect = ({ name, label, helperText }: CategorySelectProps) => {
-  const [categories] = useQuery(getCategories, {})
+export const ProjectStatusSelect = ({ name, label, helperText }: ProjectStatusSelectProps) => {
+  const [statuses] = useQuery(getStatuses, {})
 
   return (
     <Field name={name}>
@@ -27,13 +27,13 @@ export const CategorySelect = ({ name, label, helperText }: CategorySelectProps)
               sx={{ width: 300 }}
               label={label}
               disabled={submitting}
-              value={input.value.name ? input.value.name : defaultCategory}
+              value={input.value.name ? input.value.name : defaultStatus}
               onChange={(event) => {
-                const newValue = categories.find((item) => item.name === event.target.value)
+                const newValue = statuses.find((item) => item.name === event.target.value)
                 input.onChange(newValue)
               }}
             >
-              {categories.map((item) => (
+              {statuses.map((item) => (
                 <MenuItem key={item.name} value={item.name}>
                   {item.name}
                 </MenuItem>
@@ -47,4 +47,4 @@ export const CategorySelect = ({ name, label, helperText }: CategorySelectProps)
   )
 }
 
-export default CategorySelect
+export default ProjectStatusSelect
