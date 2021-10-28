@@ -3,6 +3,7 @@ import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "b
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
+import Loader from "app/core/components/Loader"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
@@ -128,7 +129,7 @@ export const EditProject = () => {
 const EditProjectPage: BlitzPage = () => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <EditProject />
       </Suspense>
     </div>
