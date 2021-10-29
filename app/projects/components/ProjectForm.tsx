@@ -11,6 +11,7 @@ import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 import { ProjectStatusSelect } from "app/core/components/ProjectStatusSelect"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
+import TextEditor from "app/core/components/TextEditor"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -33,7 +34,10 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
 
   return (
     <Form<S> {...props} style={{ padding: "0 2em", margin: "0 auto" }}>
+      {/* <p>{JSON.stringify(props, null, 4)}</p>
+      <p>{JSON.stringify(initialValues, null, 4)}</p> */}
       <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
+
       <LabeledTextFieldArea
         style={{ minHeight: "4em" }}
         fullWidth
@@ -41,13 +45,22 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Problem Statement"
         placeholder="Problem statement"
       />
-      <LabeledTextFieldArea
+
+      <p>RESPOSIVE COMPONENT BELOW</p>
+      <TextEditor
+        initialValues={initialValues}
+        name="valueStatement"
+        label="Your proposal"
+        placeholder="Explain us your proposal..."
+      ></TextEditor>
+
+      {/* <LabeledTextFieldArea
         style={{ minHeight: "4em" }}
         fullWidth
         name="valueStatement"
         label="Your proposal"
         placeholder="Explain us your proposal"
-      />
+      /> */}
       {projectformType === "create" && (
         <FormControlLabel
           value="1"

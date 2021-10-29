@@ -47,9 +47,9 @@ export const TextEditor = ({
         const isError = touched && normalizedError
         return (
           <>
-            <p>{JSON.stringify(input)}</p>
+            {/* <p>{JSON.stringify(input)}</p>
             <p>{JSON.stringify(props)}</p>
-            <p>{JSON.stringify(outerProps)}</p>
+            <p>{JSON.stringify(outerProps)}</p> */}
             {/* <InputLabel htmlFor={input.name} >{label}</InputLabel> */}
             <Editor
               // {...props}
@@ -57,10 +57,7 @@ export const TextEditor = ({
               onChange={(getValue) => handleEditorChange(getValue, input)}
               onSave={() => console.log("hi")}
             ></Editor>
-            <div
-              {...outerProps}
-              // style={{display: 'none'}}
-            >
+            <div {...outerProps} style={{ display: "none" }}>
               <TextField
                 multiline
                 rows={6}
