@@ -6,6 +6,7 @@ import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
+import Editor from "rich-markdown-editor"
 
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 
@@ -86,7 +87,13 @@ export const Project = () => {
               <Card variant="outlined">
                 <CardContent>
                   <h2>Description</h2>
-                  <div>{project.valueStatement}</div>
+                  <div>
+                    <Editor
+                      readOnly={true}
+                      defaultValue={project.valueStatement ? project.valueStatement : ""}
+                    ></Editor>
+                    {/* {project.valueStatement} */}
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
