@@ -45,8 +45,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Problem Statement"
         placeholder="Problem statement"
       />
-
-      <p>RESPOSIVE COMPONENT BELOW</p>
       <TextEditor
         initialValues={initialValues}
         name="valueStatement"
