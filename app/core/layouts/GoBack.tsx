@@ -30,7 +30,7 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .wrapper__back--text {
-    color: #475f7b;
+    color: #000000;
     font-family: Poppins;
     font-size: 18px;
     letter-spacing: 0;

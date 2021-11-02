@@ -5,6 +5,7 @@ import logout from "app/auth/mutations/logout"
 
 import { useCurrentUser } from "../hooks/useCurrentUser"
 import DropDownButton from "../components/DropDownButton"
+import Search from "../components/Search"
 
 interface IProps {
   title: String
@@ -16,11 +17,11 @@ export interface MenuItemArgs {
   onClick: (props: unknown) => void
 }
 
-function Header({ title }: IProps) {
+const Header = ({ title }: IProps) => {
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
 
-  function goHome() {
+  const goHome = () => {
     Router.push(Routes.Home())
   }
 
@@ -59,6 +60,7 @@ function Header({ title }: IProps) {
             </div>
           </div>
         </header>
+        <Search />
       </Wrapper>
     </>
   )
@@ -109,7 +111,7 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .actions .actions__user .actions__user--name {
-    color: #475f7b;
+    color: #000000;
     font-size: 11px;
     letter-spacing: 0;
     line-height: 17px;

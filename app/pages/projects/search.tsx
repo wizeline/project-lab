@@ -1,23 +1,14 @@
 import { Suspense, useState } from "react"
 import styled from "@emotion/styled"
-import { Head, useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
+import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import Loader from "app/core/components/Loader"
 import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
-
 import Header from "app/core/layouts/Header"
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  TextField,
-  Link,
-  Chip,
-} from "@material-ui/core"
+import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@material-ui/core"
 import { ExpandMore } from "@material-ui/icons"
-import { array, object } from "zod"
 
 type SearchFilters = {
   category: string[]
@@ -27,16 +18,122 @@ type SearchFilters = {
 
 const ITEMS_PER_PAGE = 4
 
-const ProjectsPage: BlitzPage = () => {
+const Wrapper = styled.div`
+  margin-top: 35px;
+  margin-bottom: 100px;
+  max-width: 997px;
+  margin-left: auto;
+  margin-right: auto;
+  .homeWrapper__navbar {
+    background-color: #fff;
+    height: 58px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 21px;
+  }
+  .homeWrapper__navbar__categories {
+    display: flex;
+    align-items: center;
+    margin-left: 36px;
+  }
+  .homeWrapper__navbar__categories--title {
+    color: #000000;
+    font-family: Poppins;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: 27px;
+  }
+  .homeWrapper__navbar__categories--list {
+    margin-left: 18px;
+  }
+  .homeWrapper__navbar__categories--list ul {
+    list-style: none;
+    display: flex;
+  }
+  .homeWrapper__navbar__categories--list ul li {
+    color: #727e8c;
+    font-family: Poppins;
+    font-size: 15px;
+    letter-spacing: 0;
+    line-height: 21px;
+    margin-right: 18px;
+    font-weight: 300;
+  }
+  .homeWrapper__navbar__button {
+    display: flex;
+    align-items: center;
+    margin-right: 49px;
+  }
+  .homeWrapper__navbar__button button {
+    background-image: url(/add.png);
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: 15px 50%;
+    border: none;
+    color: #ffffff;
+    font-family: Poppins;
+    font-size: 15px;
+    font-weight: 600;
+    width: 160px;
+    letter-spacing: 0;
+    line-height: 29px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #ff6f18;
+    padding: 7px 7px 8px 41px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+  }
+
+  .homeWrapper--content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .homeWrapper__navbar {
+  }
+  .homeWrapper__information {
+    width: 100%;
+    max-width: 737px;
+  }
+  .homeWrapper__information--row {
+    margin-bottom: 20px;
+  }
+  .homeWrapper__information--row:last-child {
+    margin-bottom: 0px;
+  }
+  .homeWrapper__popular {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    row-gap: 35px;
+    column-gap: 15px;
+    margin-bottom: 35px;
+  }
+  .homeWrapper__myProposals {
+    display: grid;
+    row-gap: 2px;
+    width: 100%;
+    max-width: 250px;
+    margin-right: 15px;
+  }
+  .homeWrapper__myProposals--filters {
+    margin: 0 4px 2px 0;
+  }
+  .homeWrapper__myProposals--list {
+    list-style-type: none;
+  }
+  .homeWrapper__accordion {
+    box-shadow: none;
+  }
+`
+
+export const Projects = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
-
   const search = router.query.q || ""
   const { category, skill, label } = router.query
-
-  const [searchValue, setSearchValue] = useState("")
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     category: [],
@@ -66,6 +163,7 @@ const ProjectsPage: BlitzPage = () => {
   const mapRenderProposals = (item, i) => {
     return (
       <ProposalCard
+        key={i}
         id={item.id}
         title={item.name}
         picture={item.avatarUrl}
@@ -81,11 +179,6 @@ const ProjectsPage: BlitzPage = () => {
 
   const goToCreateNewProposal = () => {
     Router.push(Routes.NewProjectPage())
-  }
-
-  const goToSearch = () => {
-    const route = searchValue ? `search?q=${searchValue}` : "search"
-    Router.push(route)
   }
 
   const goToSearchWithFilters = (event: Event, filter: string) => {
@@ -279,22 +372,21 @@ const ProjectsPage: BlitzPage = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox title="Popular">
-                <Box component="form" autoComplete="off" noValidate>
-                  <TextField
-                    variant="outlined"
-                    label="Search project"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  <button type="button" onClick={goToSearch}>
-                    Search
-                  </button>
-                </Box>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
-                <button disabled={page === 0} onClick={goToPreviousPage}>
+                <button
+                  type="button"
+                  disabled={page === 0}
+                  className={page == 0 ? "primary default" : "primary"}
+                  onClick={goToPreviousPage}
+                >
                   Previous{" "}
-                </button>
-                <button disabled={!hasMore} onClick={goToNextPage}>
+                </button>{" "}
+                <button
+                  type="button"
+                  disabled={!hasMore}
+                  className={!hasMore ? "primary default" : "primary"}
+                  onClick={goToNextPage}
+                >
                   Next
                 </button>
               </CardBox>
@@ -306,114 +398,15 @@ const ProjectsPage: BlitzPage = () => {
   )
 }
 
-const Wrapper = styled.div`
-  margin-top: 35px;
-  margin-bottom: 100px;
-  max-width: 997px;
-  margin-left: auto;
-  margin-right: auto;
-  .homeWrapper__navbar {
-    background-color: #fff;
-    height: 58px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 21px;
-  }
-  .homeWrapper__navbar__categories {
-    display: flex;
-    align-items: center;
-    margin-left: 36px;
-  }
-  .homeWrapper__navbar__categories--title {
-    color: #475f7b;
-    font-family: Poppins;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
-  }
-  .homeWrapper__navbar__categories--list {
-    margin-left: 18px;
-  }
-  .homeWrapper__navbar__categories--list ul {
-    list-style: none;
-    display: flex;
-  }
-  .homeWrapper__navbar__categories--list ul li {
-    color: #727e8c;
-    font-family: Poppins;
-    font-size: 15px;
-    letter-spacing: 0;
-    line-height: 21px;
-    margin-right: 18px;
-    font-weight: 300;
-  }
-  .homeWrapper__navbar__button {
-    display: flex;
-    align-items: center;
-    margin-right: 49px;
-  }
-  .homeWrapper__navbar__button button {
-    background-image: url(/add.png);
-    background-repeat: no-repeat;
-    background-size: 16px;
-    background-position: 15px 50%;
-    border: none;
-    color: #ffffff;
-    font-family: Poppins;
-    font-size: 15px;
-    font-weight: 600;
-    width: 160px;
-    letter-spacing: 0;
-    line-height: 29px;
-    cursor: pointer;
-    border-radius: 4px;
-    background-color: #ff6f18;
-    padding: 7px 7px 8px 41px;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
-  }
-
-  .homeWrapper--content {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .homeWrapper__navbar {
-  }
-  .homeWrapper__information {
-    width: 100%;
-    max-width: 737px;
-  }
-  .homeWrapper__information--row {
-    margin-bottom: 20px;
-  }
-  .homeWrapper__information--row:last-child {
-    margin-bottom: 0px;
-  }
-  .homeWrapper__popular {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    row-gap: 35px;
-    column-gap: 15px;
-    margin-bottom: 35px;
-  }
-  .homeWrapper__myProposals {
-    display: grid;
-    row-gap: 2px;
-    width: 100%;
-    max-width: 250px;
-    margin-right: 15px;
-  }
-  .homeWrapper__myProposals--filters {
-    margin: 0 4px 2px 0;
-  }
-  .homeWrapper__myProposals--list {
-    list-style-type: none;
-  }
-  .homeWrapper__accordion {
-    box-shadow: none;
-  }
-`
+const ProjectsPage: BlitzPage = () => {
+  return (
+    <div>
+      <Suspense fallback={<Loader />}>
+        <Projects />
+      </Suspense>
+    </div>
+  )
+}
 
 ProjectsPage.authenticate = true
 ProjectsPage.getLayout = (page) => <Layout>{page}</Layout>
