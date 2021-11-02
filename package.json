@@ -44,6 +44,7 @@
     "react-dom": "alpha",
     "react-final-form": "6.5.3",
     "rich-markdown-editor": "11.18.15",
+    "styled-components": "5.3.3",
     "zod": "3.2.0"
   },
   "devDependencies": {
