@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useMutation, invalidateQuery, useSession } from "blitz"
+import { useMutation, invalidateQuery, useSession, useQuery } from "blitz"
 import {
   Container,
   Grid,
@@ -19,7 +19,7 @@ import deleteComment from "app/projects/mutations/deleteComment"
 import updateComment from "app/projects/mutations/updateComment"
 import Moment from "react-moment"
 import createComment from "app/projects/mutations/createComment"
-import getProject from "app/projects/queries/getProject"
+import getComments from "app/projects/queries/getComments"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import CloseIcon from "@material-ui/icons/Close"
@@ -59,21 +59,25 @@ const Comments = (props: IProps) => {
   const [inputCommentEdit, setInputCommentEdit] = useState<string | null>("")
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const [alertMessage, setAlertMessage] = useState<string>("")
+  const projectId = props.projectId
+  const [comments, { setQueryData }] = useQuery(getComments, {
+    projectId: projectId,
+  })
   const [deleteCommentMutation] = useMutation(deleteComment, {
     onSuccess: async () => {
-      await invalidateQuery(getProject)
+      await invalidateQuery(getComments)
     },
   })
 
   const [updateCommentMutation] = useMutation(updateComment, {
     onSuccess: async () => {
-      await invalidateQuery(getProject)
+      await invalidateQuery(getComments)
     },
   })
 
   const [createCommentMutation] = useMutation(createComment, {
     onSuccess: async () => {
-      await invalidateQuery(getProject)
+      await invalidateQuery(getComments)
     },
   })
 
@@ -92,7 +96,7 @@ const Comments = (props: IProps) => {
   }
 
   const editCommentModalHandler = (id: string) => {
-    const comment = props.comments && props.comments.find((comment) => comment.id === id)
+    const comment = comments && comments.find((comment) => comment.id === id)
     if (comment) {
       setInputCommentEdit(comment.body!)
       setCommentSelected(comment)
@@ -162,17 +166,18 @@ const Comments = (props: IProps) => {
             onSubmit={(values) => createCommentHandler(values)}
           />
           <Paper sx={{ paddingX: 7, paddingY: 5, marginTop: 2 }}>
-            {props.comments &&
-              props.comments.map((item) => {
+            {comments &&
+              comments.map((comment) => {
+                console.log(comment)
                 return (
-                  <div key={item.id}>
+                  <div key={comment.id}>
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid item>
-                        <Avatar alt={"alt"} src={item.author?.avatarUrl}></Avatar>
+                        <Avatar alt={"alt"} src={comment.author?.avatarUrl}></Avatar>
                       </Grid>
                       <Grid justifyContent="left" item xs zeroMinWidth>
                         <h4>
-                          {` ${item.author?.firstName} ${item.author?.lastName} `} .
+                          {` ${comment.author?.firstName} ${comment.author?.lastName} `} .
                           <Typography
                             component="span"
                             style={{
@@ -182,21 +187,21 @@ const Comments = (props: IProps) => {
                               color: "gray",
                             }}
                           >
-                            <Moment fromNow>{item.updatedAt}</Moment>
+                            <Moment fromNow>{comment.updatedAt}</Moment>
                           </Typography>
                         </h4>
                         <Typography sx={{ fontStyle: "italic", whiteSpace: "pre-line" }}>
                           {" "}
-                          {item.body}
+                          {comment.body}
                         </Typography>
 
-                        {session.profileId === item.authorId && (
+                        {session.profileId === comment.authorId && (
                           <CommentActions>
                             <IconButton
                               edge="end"
                               aria-label="edit"
                               onClick={() => {
-                                editCommentModalHandler(item.id)
+                                editCommentModalHandler(comment.id)
                               }}
                             >
                               <EditIcon />
@@ -207,7 +212,7 @@ const Comments = (props: IProps) => {
                               aria-label="delete"
                               onClick={() => {
                                 setOpenDeleteModal(true)
-                                setCommentSelected(item)
+                                setCommentSelected(comment)
                               }}
                             >
                               <DeleteIcon />

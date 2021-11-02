@@ -36,9 +36,6 @@ export default resolver.pipe(
         owner: true,
         projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
         votes: { where: { profileId: session.profileId } },
-        comments: {
-          include: { author: { select: { firstName: true, lastName: true, avatarUrl: true } } },
-        },
       },
     })
 
