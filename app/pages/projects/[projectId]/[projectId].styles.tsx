@@ -35,7 +35,7 @@ export const HeaderInfo = styled.div`
     text-align: center;
   }
   .descriptionProposal {
-    color: #475f7b;
+    color: #000000;
     font-family: Poppins;
     font-size: 18px;
     letter-spacing: 0;
@@ -48,7 +48,7 @@ export const HeaderInfo = styled.div`
 
 export const DetailMoreHead = styled.div`
   .itemHeadName {
-    color: #475f7b;
+    color: #000000;
     font-family: Poppins;
     font-size: 18px;
     letter-spacing: 0;
@@ -56,7 +56,7 @@ export const DetailMoreHead = styled.div`
     display: inline-block;
   }
   .itemHeadValue {
-    color: #4a627d;
+    color: #000000;
     font-family: Poppins;
     font-size: 15px;
     letter-spacing: 0;
