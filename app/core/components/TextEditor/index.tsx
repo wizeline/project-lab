@@ -6,6 +6,24 @@ import FormLabel from "@material-ui/core/FormLabel"
 import Editor from "rich-markdown-editor"
 // import styled from "styled-components"
 
+const editorStyleNormal = {
+  border: "1px solid #999",
+  padding: "1em 1em 1em 2em",
+  borderRadius: "4px",
+  borderColor: "rgba(0, 0, 0, 0.23)",
+  // borderColor: '#d32f2f',
+  // borderColor: '#1976d2',
+  // color: #d32f2f; error color
+  // #1976d2 primary
+}
+
+const editorStyleAlert = {
+  border: "1px solid #999",
+  padding: "1em 1em 1em 2em",
+  borderRadius: "4px",
+  borderColor: "#d32f2f",
+}
+
 interface TextEditorProps {
   name: string
   label: string
@@ -29,14 +47,25 @@ export const TextEditor = ({
   ...props
 }: TextEditorProps) => {
   const [inputAreaValue, setInputAreaValue] = useState("")
+  const [editorStyle, setEditorStyle] = useState(editorStyleNormal)
   // const [inputAreaValue, setInputAreaValue] = useState("")
   return (
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
         const handleEditorChange = (value) => {
           console.log(value)
-          setInputAreaValue(value)
+          console.log(error)
+          console.log(isError)
+          console.log(value.length)
           input.onChange(value)
+          if (isError || value == "\\\n") {
+            // input.onChange('')
+            setEditorStyle(editorStyleAlert)
+          } else {
+            // input.onChange(value)
+            setEditorStyle(editorStyleNormal)
+          }
+          setInputAreaValue(value)
         }
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
@@ -49,6 +78,7 @@ export const TextEditor = ({
               // {...props}
               defaultValue={input.value}
               onChange={(getValue) => handleEditorChange(getValue())}
+              style={editorStyle}
             ></Editor>
             <div {...outerProps} style={{ display: "none" }}>
               <TextField
