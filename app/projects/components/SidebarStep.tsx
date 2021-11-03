@@ -46,7 +46,7 @@ const WrapperContent = styled.div`
   }
   li {
     margin: 18px 0px;
-    color: #475f7b;
+    color: #000000;
     font-family: Poppins;
     font-size: 15px;
     font-weight: 600;

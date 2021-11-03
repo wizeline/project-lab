@@ -1,12 +1,14 @@
+import { Suspense } from "react"
 import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
+import Loader from "app/core/components/Loader"
 import createProject from "app/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { InitialMembers, FullCreate } from "app/projects/validations"
 import Header from "app/core/layouts/Header"
 
-const NewProjectPage: BlitzPage = () => {
+export const NewProject = () => {
   const session = useSession()
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
@@ -46,6 +48,16 @@ const NewProjectPage: BlitzPage = () => {
           </Link>
         </p>
       </div>
+    </div>
+  )
+}
+
+const NewProjectPage: BlitzPage = () => {
+  return (
+    <div>
+      <Suspense fallback={<Loader />}>
+        <NewProject />
+      </Suspense>
     </div>
   )
 }
