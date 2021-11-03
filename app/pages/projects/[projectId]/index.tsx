@@ -132,7 +132,7 @@ export const Project = () => {
         </Container>
       </div>
       <div className="wrapper">
-        <Comments projectId={projectId} comments={project.comments} />
+        <Comments projectId={projectId} />
       </div>
     </>
   )
