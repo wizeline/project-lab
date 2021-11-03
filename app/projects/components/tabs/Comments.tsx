@@ -29,7 +29,7 @@ interface IAuthor {
   id: string
   firstName: string
   lastName: string
-  avatarUrl?: string
+  avatarUrl?: string | null
 }
 
 interface IComment {
@@ -42,7 +42,6 @@ interface IComment {
 
 interface IProps {
   projectId?: string
-  comments: any
 }
 const initialComment: IComment = {
   id: "",
@@ -98,6 +97,7 @@ const Comments = (props: IProps) => {
   const editCommentModalHandler = (id: string) => {
     const comment = comments && comments.find((comment) => comment.id === id)
     if (comment) {
+      console.log("COMMENT ", comment)
       setInputCommentEdit(comment.body!)
       setCommentSelected(comment)
       setOpenEditComment(true)

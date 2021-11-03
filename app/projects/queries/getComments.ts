@@ -13,7 +13,9 @@ export default resolver.pipe(
     const comments = await db.comments.findMany({
       where: { projectId: projectId },
       orderBy: [{ createdAt: "desc" }],
-      include: { author: { select: { firstName: true, lastName: true, avatarUrl: true } } },
+      include: {
+        author: { select: { firstName: true, lastName: true, avatarUrl: true, id: true } },
+      },
     })
 
     if (!comments) throw new NotFoundError()
