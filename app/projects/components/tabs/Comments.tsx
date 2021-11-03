@@ -97,7 +97,6 @@ const Comments = (props: IProps) => {
   const editCommentModalHandler = (id: string) => {
     const comment = comments && comments.find((comment) => comment.id === id)
     if (comment) {
-      console.log("COMMENT ", comment)
       setInputCommentEdit(comment.body!)
       setCommentSelected(comment)
       setOpenEditComment(true)
@@ -168,7 +167,6 @@ const Comments = (props: IProps) => {
           <Paper sx={{ paddingX: 7, paddingY: 5, marginTop: 2 }}>
             {comments &&
               comments.map((comment) => {
-                console.log(comment)
                 return (
                   <div key={comment.id}>
                     <Grid container wrap="nowrap" spacing={2}>
