@@ -171,7 +171,7 @@ const Comments = (props: IProps) => {
                   <div key={comment.id}>
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid item>
-                        <Avatar alt={"alt"} src={comment.author?.avatarUrl}></Avatar>
+                        <Avatar alt={"alt"} src={comment.author.avatarUrl ?? ""}></Avatar>
                       </Grid>
                       <Grid justifyContent="left" item xs zeroMinWidth>
                         <h4>
