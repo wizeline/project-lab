@@ -1,12 +1,8 @@
 import { useState, useEffect, PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
-import TextField from "@material-ui/core/TextField"
 import FormLabel from "@material-ui/core/FormLabel"
 import FormHelperText from "@material-ui/core/FormHelperText"
-// import InputLabel from "@material-ui/core/InputLabel"
 import Editor from "rich-markdown-editor"
-// import styled from "styled-components"
-
 const editorStyleNormal = {
   border: "1px solid #999",
   padding: "1em 1em 1em 2em",
@@ -44,63 +40,50 @@ export const TextEditor = ({
   ...props
 }: TextEditorProps) => {
   const [inputAreaValue, setInputAreaValue] = useState("")
-  const [editorValid, setEditorValid] = useState(true)
+  const [editorError, setEditorError] = useState(false)
   const [editorStyle, setEditorStyle] = useState(editorStyleNormal)
-  // const [inputAreaValue, setInputAreaValue] = useState("")
+  const notEmptyEditor = (value) => (value === "\\\n" || !value ? "Required" : undefined)
+
   return (
-    <Field name={name}>
-      {({ input, meta: { touched, error, submitError, submitting } }) => {
+    <Field name={name} validate={notEmptyEditor}>
+      {({ input, meta: { touched, error, submitError } }) => {
         const handleEditorChange = (value) => {
-          console.log(value)
-          console.log(error)
-          console.log(touched)
-          console.log(isError)
-          console.log(value.length)
           input.onChange(value)
-          if (isError || value == "\\\n") {
-            // input.onChange('')
+          if (error || value === "\\\n") {
             setEditorStyle(editorStyleAlert)
-            setEditorValid(false)
+            setEditorError(true)
           } else {
-            // input.onChange(value)
             setEditorStyle(editorStyleNormal)
-            setEditorValid(true)
+            setEditorError(false)
           }
           setInputAreaValue(value)
         }
-        const normalizedError =
-          Array.isArray(error) && !editorValid ? error.join(", ") : error || submitError
+        const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
         return (
           <div>
-            <FormLabel error={isError} required>
+            <FormLabel error={error ? error.length > 0 : false} required>
               {label}
             </FormLabel>
             <Editor
-              // {...props}
               defaultValue={input.value}
-              placeholder={"Press / to see content type options..."}
+              placeholder={'Press "/" to view content type options...'}
               onChange={(getValue) => handleEditorChange(getValue())}
               style={editorStyle}
             ></Editor>
-            <FormHelperText>
-              Press double "return" if you wish to start a new line of text with a different content
-              type. You can use "Markdown" if you like
+            <FormHelperText error={error ? error.length > 0 : false}>
+              {error && error.length > 0 ? (
+                <>
+                  {error}
+                  <br />
+                </>
+              ) : (
+                helperText
+              )}
+              Press "return" twice if you wish to start a new line of text with a different content
+              type. You can use "Markdown" language if you like
             </FormHelperText>
-            <div {...outerProps} style={{ display: "none" }}>
-              <TextField
-                multiline
-                rows={6}
-                {...input}
-                name={input.name}
-                label={label}
-                error={isError}
-                helperText={isError ? error : helperText}
-                type={type}
-                disabled={submitting}
-                // {...props}
-              />
-            </div>
+            <div {...outerProps} style={{ display: "none" }}></div>
           </div>
         )
       }}
