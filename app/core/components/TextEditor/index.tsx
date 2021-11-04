@@ -67,7 +67,7 @@ export const TextEditor = ({
             </FormLabel>
             <Editor
               defaultValue={input.value}
-              placeholder={'Press "/" to view content type options...'}
+              placeholder={"Press '/' to view content type options..."}
               onChange={(getValue) => handleEditorChange(getValue())}
               style={editorStyle}
             ></Editor>
