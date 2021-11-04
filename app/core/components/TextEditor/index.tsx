@@ -2,6 +2,7 @@ import { useState, useEffect, PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
 import TextField from "@material-ui/core/TextField"
 import FormLabel from "@material-ui/core/FormLabel"
+import FormHelperText from "@material-ui/core/FormHelperText"
 // import InputLabel from "@material-ui/core/InputLabel"
 import Editor from "rich-markdown-editor"
 // import styled from "styled-components"
@@ -11,10 +12,6 @@ const editorStyleNormal = {
   padding: "1em 1em 1em 2em",
   borderRadius: "4px",
   borderColor: "rgba(0, 0, 0, 0.23)",
-  // borderColor: '#d32f2f',
-  // borderColor: '#1976d2',
-  // color: #d32f2f; error color
-  // #1976d2 primary
 }
 
 const editorStyleAlert = {
@@ -47,6 +44,7 @@ export const TextEditor = ({
   ...props
 }: TextEditorProps) => {
   const [inputAreaValue, setInputAreaValue] = useState("")
+  const [editorValid, setEditorValid] = useState(true)
   const [editorStyle, setEditorStyle] = useState(editorStyleNormal)
   // const [inputAreaValue, setInputAreaValue] = useState("")
   return (
@@ -55,19 +53,23 @@ export const TextEditor = ({
         const handleEditorChange = (value) => {
           console.log(value)
           console.log(error)
+          console.log(touched)
           console.log(isError)
           console.log(value.length)
           input.onChange(value)
           if (isError || value == "\\\n") {
             // input.onChange('')
             setEditorStyle(editorStyleAlert)
+            setEditorValid(false)
           } else {
             // input.onChange(value)
             setEditorStyle(editorStyleNormal)
+            setEditorValid(true)
           }
           setInputAreaValue(value)
         }
-        const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+        const normalizedError =
+          Array.isArray(error) && !editorValid ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
         return (
           <div>
@@ -77,9 +79,14 @@ export const TextEditor = ({
             <Editor
               // {...props}
               defaultValue={input.value}
+              placeholder={'Press "/" to see content type options...'}
               onChange={(getValue) => handleEditorChange(getValue())}
               style={editorStyle}
             ></Editor>
+            <FormHelperText>
+              Press double "return" if you wish to start a new line of text with a different content
+              type. You can use "Markdown" if you like
+            </FormHelperText>
             <div {...outerProps} style={{ display: "none" }}>
               <TextField
                 multiline
