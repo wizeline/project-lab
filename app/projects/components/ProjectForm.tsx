@@ -34,8 +34,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
 
   return (
     <Form<S> {...props} style={{ padding: "0 2em", margin: "0 auto" }}>
-      {/* <p>{JSON.stringify(props, null, 4)}</p>
-      <p>{JSON.stringify(initialValues, null, 4)}</p> */}
       <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
 
       <LabeledTextFieldArea
@@ -52,13 +50,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         placeholder="Explain us your proposal..."
       ></TextEditor>
 
-      {/* <LabeledTextFieldArea
-        style={{ minHeight: "4em" }}
-        fullWidth
-        name="valueStatement"
-        label="Your proposal"
-        placeholder="Explain us your proposal"
-      /> */}
       {projectformType === "create" && (
         <FormControlLabel
           value="1"
