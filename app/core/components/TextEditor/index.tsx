@@ -39,9 +39,7 @@ export const TextEditor = ({
   initialValues,
   ...props
 }: TextEditorProps) => {
-  const [inputAreaValue, setInputAreaValue] = useState("")
   const [editorError, setEditorError] = useState(false)
-  const [editorStyle, setEditorStyle] = useState(editorStyleNormal)
   const notEmptyEditor = (value) => (value === "\\\n" || !value ? "Required" : undefined)
 
   return (
@@ -49,30 +47,30 @@ export const TextEditor = ({
       {({ input, meta: { touched, error, submitError } }) => {
         const handleEditorChange = (value) => {
           input.onChange(value)
-          if (error || value === "\\\n") {
-            setEditorStyle(editorStyleAlert)
+          if (isError || value === "\\\n") {
             setEditorError(true)
           } else {
-            setEditorStyle(editorStyleNormal)
             setEditorError(false)
           }
-          setInputAreaValue(value)
         }
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
         const isError = touched && normalizedError
         return (
           <div>
-            <FormLabel error={error ? error.length > 0 : false} required>
+            <FormLabel
+              error={(isError || editorError) && error ? error.length > 0 : false}
+              required
+            >
               {label}
             </FormLabel>
             <Editor
               defaultValue={input.value}
               placeholder={"Press '/' to view content type options..."}
               onChange={(getValue) => handleEditorChange(getValue())}
-              style={editorStyle}
+              style={(isError || editorError) && error ? editorStyleAlert : editorStyleNormal}
             ></Editor>
-            <FormHelperText error={error ? error.length > 0 : false}>
-              {error && error.length > 0 ? (
+            <FormHelperText error={(isError || editorError) && error ? error.length > 0 : false}>
+              {isError && error.length > 0 ? (
                 <>
                   {error}
                   <br />
@@ -83,7 +81,6 @@ export const TextEditor = ({
               Press "return" twice if you wish to start a new line of text with a different content
               type. You can use "Markdown" language if you like
             </FormHelperText>
-            <div {...outerProps} style={{ display: "none" }}></div>
           </div>
         )
       }}
