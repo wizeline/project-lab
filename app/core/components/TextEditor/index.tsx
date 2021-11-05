@@ -5,14 +5,16 @@ import FormHelperText from "@material-ui/core/FormHelperText"
 import Editor from "rich-markdown-editor"
 const editorStyleNormal = {
   border: "1px solid #999",
-  padding: "1em 1em 1em 2em",
+  padding: "0 1em 1em 2em",
+  minHeight: "3em",
   borderRadius: "4px",
   borderColor: "rgba(0, 0, 0, 0.23)",
 }
 
 const editorStyleAlert = {
   border: "1px solid #999",
-  padding: "1em 1em 1em 2em",
+  padding: "0 1em 1em 2em",
+  minHeight: "3em",
   borderRadius: "4px",
   borderColor: "#d32f2f",
 }
@@ -29,7 +31,7 @@ interface TextEditorProps {
   initialValues?: any
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
-console.log(Field)
+
 export const TextEditor = ({
   name,
   label,
@@ -65,7 +67,9 @@ export const TextEditor = ({
             </FormLabel>
             <Editor
               defaultValue={input.value}
-              placeholder={"Press '/' to view content type options..."}
+              placeholder={
+                "For formatting your text using HTML markup hit the '/' (slash) character from your keyboard."
+              }
               onChange={(getValue) => handleEditorChange(getValue())}
               style={(isError || editorError) && error ? editorStyleAlert : editorStyleNormal}
             ></Editor>
@@ -78,8 +82,11 @@ export const TextEditor = ({
               ) : (
                 helperText
               )}
-              Press "return" twice if you wish to start a new line of text with a different content
-              type. You can use "Markdown" language if you like
+              For adding a new line break press the "return" key twice from your keyboard. You can
+              also use the 'Markdown Basic Syntax' language inline{" "}
+              <a target="_blank" href="https://www.markdownguide.org/cheat-sheet/" rel="noreferrer">
+                Learn more about it here
+              </a>
             </FormHelperText>
           </div>
         )

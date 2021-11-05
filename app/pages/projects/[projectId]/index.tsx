@@ -92,7 +92,6 @@ export const Project = () => {
                       readOnly={true}
                       defaultValue={project.valueStatement ? project.valueStatement : ""}
                     ></Editor>
-                    {/* {project.valueStatement} */}
                   </div>
                 </CardContent>
               </Card>
