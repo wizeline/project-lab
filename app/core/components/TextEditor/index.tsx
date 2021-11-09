@@ -42,14 +42,21 @@ export const TextEditor = ({
   ...props
 }: TextEditorProps) => {
   const [editorError, setEditorError] = useState(false)
-  const notEmptyEditor = (value) => (value === "\\\n" || !value ? "Required" : undefined)
+  const notEmptyEditor = (value) => (notValidContent(value) ? "Required" : undefined)
+
+  const notValidContent = (content: any) => {
+    if (!content) return false
+    const getContent = content.replace("\\\n", content)
+    const re = /\w/i
+    return re.exec(getContent) ? false : true
+  }
 
   return (
     <Field name={name} validate={notEmptyEditor}>
       {({ input, meta: { touched, error, submitError } }) => {
         const handleEditorChange = (value) => {
           input.onChange(value)
-          if (isError || value === "\\\n") {
+          if (isError || notValidContent(value)) {
             setEditorError(true)
           } else {
             setEditorError(false)
@@ -82,8 +89,8 @@ export const TextEditor = ({
               ) : (
                 helperText
               )}
-              For adding a new line break press the "return" key twice from your keyboard. You can
-              also use the 'Markdown Basic Syntax' language inline{" "}
+              To add a new line break press the " &#9166; " (return) key twice from your keyboard.
+              You can also use the 'Markdown Basic Syntax' language inline{" "}
               <a target="_blank" href="https://www.markdownguide.org/cheat-sheet/" rel="noreferrer">
                 Learn more about it here
               </a>
