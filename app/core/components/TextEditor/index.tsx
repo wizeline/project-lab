@@ -46,9 +46,8 @@ export const TextEditor = ({
 
   const notValidContent = (content: any) => {
     if (!content) return false
-    const getContent = content.replace("\\\n", content)
     const re = /\w/i
-    return re.exec(getContent) ? false : true
+    return re.exec(content) ? false : true
   }
 
   return (
