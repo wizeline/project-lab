@@ -32,7 +32,7 @@ export const LabeledTextField = ({
             <TextField
               {...input}
               label={label}
-              error={isError}
+              error={isError ? isError.length > 0 : false}
               helperText={isError ? error : helperText}
               type={type}
               disabled={submitting}
