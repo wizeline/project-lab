@@ -11,6 +11,7 @@ import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 import { ProjectStatusSelect } from "app/core/components/ProjectStatusSelect"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
+import TextEditor from "app/core/components/TextEditor"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -34,6 +35,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
   return (
     <Form<S> {...props} style={{ padding: "0 2em", margin: "0 auto" }}>
       <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
+
       <LabeledTextFieldArea
         style={{ minHeight: "4em" }}
         fullWidth
@@ -41,13 +43,13 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Problem Statement"
         placeholder="Problem statement"
       />
-      <LabeledTextFieldArea
-        style={{ minHeight: "4em" }}
-        fullWidth
+      <TextEditor
+        initialValues={initialValues}
         name="valueStatement"
         label="Your proposal"
-        placeholder="Explain us your proposal"
-      />
+        placeholder="Explain us your proposal..."
+      ></TextEditor>
+
       {projectformType === "create" && (
         <FormControlLabel
           value="1"
