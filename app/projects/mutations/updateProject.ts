@@ -1,11 +1,14 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
-import { FullUpdate } from "app/projects/validations"
+import { FullUpdate, validateIsTeamMember } from "app/projects/validations"
 
 export default resolver.pipe(
   resolver.zod(FullUpdate),
   resolver.authorize(),
   async ({ id, ...data }, { session }: Ctx) => {
+    //validate if the user have permissions (team member or owner of the project)
+    validateIsTeamMember(session, data)
+
     // first delete all project members for project id
     await db.projectMembers.deleteMany({
       where: { projectId: id },
