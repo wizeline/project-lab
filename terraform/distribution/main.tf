@@ -36,7 +36,7 @@ data "aws_acm_certificate" "certificate" {
 }
 
 data "aws_cloudfront_response_headers_policy" "response_security_policy" {
-  name = "SecurityHeadersPolicy"
+  name = "AllowSecurityHeadersPolicy"
 }
 
 resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
