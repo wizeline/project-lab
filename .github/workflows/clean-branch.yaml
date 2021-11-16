@@ -34,5 +34,5 @@ jobs:
         with:
           path: "terraform/distribution/"
           workspace: ${{ steps.get-branch.outputs.branch }}
-          vars: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          var: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
         continue-on-error: true

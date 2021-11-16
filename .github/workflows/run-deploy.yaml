@@ -95,9 +95,6 @@ jobs:
       - name: Sync Skills With Wizeline OS
         run: yarn sync-all-from-wos
 
-      - name: Run Build
-        run: yarn build
-
       - name: Terraform Change Workspace Lightsail
         uses: dflook/terraform-new-workspace@v1
         with:
@@ -130,12 +127,6 @@ jobs:
             mkdir -p ~/projectlab/app
             mkdir -p ~/projectlab/db
             mkdir -p ~/projectlab/tmp
-
-      - name: Zip Node Modules
-        run: zip -r node_modules.zip node_modules
-
-      - name: Remove Node Modules
-        run: rm -rf node_modules
 
       - name: Move DB
         run: mv ${{ env.DB_PATH }} ./db/db.sqlite
@@ -175,4 +166,4 @@ jobs:
           path: "terraform/distribution/"
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
-          vars: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          var: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
