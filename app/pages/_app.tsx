@@ -10,6 +10,7 @@ import {
 import LoginPage from "app/auth/pages/login"
 import Loader from "app/core/components/Loader"
 import { Suspense } from "react"
+import "app/pages/style.css"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
