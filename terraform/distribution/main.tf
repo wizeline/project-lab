@@ -51,10 +51,11 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
   tags    = local.resource_tags
 
   ordered_cache_behavior {
-    path_pattern     = "*"
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
+    path_pattern               = "*"
+    target_origin_id           = local.env_prefix == "default" ? "default" : local.env_prefix
+    allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods             = ["GET", "HEAD"]
+    response_headers_policy_id = "bffd0ec8-c1f8-4e0c-9237-1ff503193152"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -67,7 +68,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
       cookies {
         forward = "all"
       }
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
   }
 
@@ -83,7 +84,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
         forward = "all"
       }
 
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
 
     viewer_protocol_policy = "allow-all"
@@ -120,10 +121,11 @@ resource "aws_cloudfront_distribution" "distribution" {
   tags    = local.resource_tags
 
   ordered_cache_behavior {
-    path_pattern     = "*"
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
+    path_pattern               = "*"
+    target_origin_id           = local.env_prefix == "default" ? "default" : local.env_prefix
+    allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods             = ["GET", "HEAD"]
+    response_headers_policy_id = "bffd0ec8-c1f8-4e0c-9237-1ff503193152"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -136,7 +138,7 @@ resource "aws_cloudfront_distribution" "distribution" {
       cookies {
         forward = "all"
       }
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
   }
 
@@ -152,7 +154,7 @@ resource "aws_cloudfront_distribution" "distribution" {
         forward = "all"
       }
 
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
 
     viewer_protocol_policy = "allow-all"
@@ -195,12 +197,12 @@ resource "aws_route53_record" "distribution_route53_record" {
   allow_overwrite = true
 
   alias {
-    name = aws_cloudfront_distribution.distribution.domain_name
-    zone_id = aws_cloudfront_distribution.distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.distribution.hosted_zone_id
     evaluate_target_health = true
   }
 
-  depends_on      = [aws_cloudfront_distribution.distribution]
+  depends_on = [aws_cloudfront_distribution.distribution]
 }
 
 resource "aws_route53_record" "distribution_prisma_studio_route53_record" {
@@ -210,10 +212,10 @@ resource "aws_route53_record" "distribution_prisma_studio_route53_record" {
   allow_overwrite = true
 
   alias {
-    name = aws_cloudfront_distribution.distribution_prisma_studio.domain_name
-    zone_id = aws_cloudfront_distribution.distribution_prisma_studio.hosted_zone_id
+    name                   = aws_cloudfront_distribution.distribution_prisma_studio.domain_name
+    zone_id                = aws_cloudfront_distribution.distribution_prisma_studio.hosted_zone_id
     evaluate_target_health = true
   }
 
-  depends_on      = [aws_cloudfront_distribution.distribution_prisma_studio]
+  depends_on = [aws_cloudfront_distribution.distribution_prisma_studio]
 }
