@@ -8,43 +8,118 @@ defaults:
 jobs:
   deploy-branch:
     env:
-      NODE_ENV: production
+      NODE_ENV: "production"
+      DB_FOLDER: "/home/admin/projectlab/db"
+      DB_PATH: "/home/admin/projectlab/db/db.sqlite"
+      ADD_SEED_DATA: "yes"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.client_payload.ref }}
-      - name: Get Github Branch
-        id: get-branch
-        run: echo ::set-output name=branch::$(echo "${{ github.event.client_payload.branch }}")
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY  }}
           aws-region: us-east-1
+
+      - name: Get Github Branch
+        id: get-branch
+        run: echo ::set-output name=branch::$(echo "${{ github.event.client_payload.branch }}")
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Remove existing .env file
+        run: rm -rf .env
+
+      - name: Set env-file File
+        run: aws secretsmanager get-secret-value --secret-id ${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+
+      - name: Install Blitz Globally
+        run: yarn global add blitz
+
+      - name: Install Dependancies
+        run: yarn install
+
+      - name: Create DB Folder
+        run: sudo mkdir -p /home/admin/projectlab/db
+
+      - name: Set Up App Domain
+        run: |
+          if [ "$BRANCH" == "default" ]; then
+            sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ./blitz.config.ts
+          else
+            sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ steps.get-branch.outputs.branch }}.labs.wizeline.com/g" ./blitz.config.ts
+          fi
+
+      - name: Install Litestream
+        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        run: |
+          wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
+          sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
+          litestream version
+
+      - name: Restore Database
+        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        run: litestream restore -o ${{ env.DB_PATH }} "s3://${{ secrets.LITESTREAM_S3_BUCKET }}/${{ secrets.LITESTREAM_S3_PATH }}"
+
+      - name: Set Up Litestream PM2 Config
+        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        run: |
+          sed -i -e "s/SQLITE_PATH/${{ secrets.SQLITE_DB_PATH }}/g" ./pm2/db-replication.json
+          sed -i -e "s/S3_BUCKET_NAME/${{ secrets.LITESTREAM_S3_BUCKET }}/g" ./pm2/db-replication.json
+          sed -i -e "s/S3_BUCKET_PATH/${{ secrets.LITESTREAM_S3_PATH }}/g" ./pm2/db-replication.json
+
+      - name: Init DB
+        run: |
+          if [ -f "${{ env.DB_PATH }}" ]; then
+            blitz prisma migrate deploy
+          else
+            blitz prisma migrate reset --force
+          fi
+
+      - name: Add Full Text Searches
+        run: sqlite3 ${{ env.DB_PATH }} < db/search_indexes.sql
+
+      - name: Add Test Data
+        run: |
+          if [ "${{ env.ADD_SEED_DATA }}" == "yes" ]; then
+            blitz db seed
+          fi
+
+      - name: Sync Skills With Wizeline OS
+        run: yarn sync-all-from-wos
+
+      - name: Run Build
+        run: yarn build
+
       - name: Terraform Change Workspace Lightsail
         uses: dflook/terraform-new-workspace@v1
         with:
           path: "terraform/lightsail/"
           workspace: ${{ steps.get-branch.outputs.branch }}
+
       - name: Terraform Apply Lightsail
         uses: dflook/terraform-apply@v1
         with:
           path: "terraform/lightsail/"
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
+
       - id: get-lightsail-username
         name: Get Lightsail Instance Username
         run: echo ::set-output name=USERNAME::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.username')
+
       - id: get-lightsail-ip-address
         name: Get Lightsail Instance IP Address
         run: echo ::set-output name=IP_ADDRESS::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.ipAddress')
-      - name: Remove existing .env file
-        run: rm -rf .env
-      - name: Set env-file File
-        run: aws secretsmanager get-secret-value --secret-id ${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+
       - name: Prepare Server For Build
         uses: appleboy/ssh-action@master
         with:
@@ -56,6 +131,7 @@ jobs:
             mkdir -p ~/projectlab/app
             mkdir -p ~/projectlab/db
             mkdir -p ~/projectlab/tmp
+
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
         with:
@@ -65,6 +141,17 @@ jobs:
           local_path: "./*"
           remote_path: "/home/admin/projectlab/tmp/"
           args: "-o ConnectTimeout=60"
+
+      - name: Copy DB To Lightsail Instance
+        uses: wlixcc/SFTP-Deploy-Action@v1.0
+        with:
+          username: ${{steps.get-lightsail-username.outputs.USERNAME}}
+          server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          local_path: "${{ env.DB_FOLDER }}"
+          remote_path: "/home/admin/projectlab/db/"
+          args: "-o ConnectTimeout=60"
+
       - name: Configure Server
         uses: appleboy/ssh-action@master
         with:
@@ -75,17 +162,19 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
-            /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }} ${{ secrets.SQLITE_DB_PATH }} ${{ secrets.LITESTREAM_S3_BUCKET }} ${{ secrets.LITESTREAM_S3_PATH }} ${{ secrets.SEED_DATA }}
+            /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.LITESTREAM_AWS_ACCESS_KEY_ID }} ${{ secrets.LITESTREAM_AWS_SECRET_ACCESS_KEY }}
             rm -rf ~/projectlab/tmp
+
       - name: Terraform Change Workspace Distribution
         uses: dflook/terraform-new-workspace@v1
         with:
           path: "terraform/distribution/"
           workspace: ${{ steps.get-branch.outputs.branch }}
+
       - name: Terraform Apply Distribution
         uses: dflook/terraform-apply@v1
         with:
           path: "terraform/distribution/"
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
-          var: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          variables: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
