@@ -134,6 +134,9 @@ jobs:
       - name: Remove Node Modules
         run: rm -rf node_modules
 
+      - name: Move DB
+        run: mv ${{ env.DB_PATH }} ./db/db.sqlite
+
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
         with:
@@ -142,16 +145,6 @@ jobs:
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           local_path: "./*"
           remote_path: "/home/admin/projectlab/tmp/"
-          args: "-o ConnectTimeout=60"
-
-      - name: Copy DB To Lightsail Instance
-        uses: wlixcc/SFTP-Deploy-Action@v1.0
-        with:
-          username: ${{steps.get-lightsail-username.outputs.USERNAME}}
-          server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: "${{ env.DB_PATH }}"
-          remote_path: "/home/admin/projectlab/db/"
           args: "-o ConnectTimeout=60"
 
       - name: Configure Server

@@ -69,6 +69,11 @@ rm -rf ~/projectlab/app
 # Create app folder
 mkdir -p ~/projectlab/app
 
+# Replace old db
+rm -rf ~/projectlab/db
+mkdir -p ~/projectlab/db
+mv ./db ~/projectlab/db/db.sqlite
+
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
