@@ -47,6 +47,9 @@ yarn global add pm2
 # Install blitz globally
 yarn global add blitz
 
+# Install Dependancies
+yarn install
+
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart

@@ -132,6 +132,9 @@ jobs:
             mkdir -p ~/projectlab/db
             mkdir -p ~/projectlab/tmp
 
+      - name: Remove Node Modules
+        run: rm -rf node_modules
+
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
         with:
