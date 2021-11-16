@@ -38,8 +38,8 @@ jobs:
       - name: Remove existing .env file
         run: rm -rf .env
 
-      - name: Set env-file File
-        run: aws secretsmanager get-secret-value --secret-id ${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-file
+      - name: Set .env File
+        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
 
       - name: Install Blitz Globally
         run: yarn global add blitz
