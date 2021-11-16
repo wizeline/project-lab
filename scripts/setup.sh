@@ -42,13 +42,13 @@ sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
 
 # Install pm2
-yarn global add pm2
+sudo npm install --global pm2
 
 # Install blitz globally
-yarn global add blitz
+sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
-# Install Dependancies
-yarn install
+# Unzip Dependancies
+unzip node_modules.zip
 
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default

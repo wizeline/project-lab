@@ -131,6 +131,9 @@ jobs:
             mkdir -p ~/projectlab/db
             mkdir -p ~/projectlab/tmp
 
+      - name: Zip Node Modules
+        run: zip -r node_modules.zip node_modules
+
       - name: Remove Node Modules
         run: rm -rf node_modules
 
@@ -172,4 +175,4 @@ jobs:
           path: "terraform/distribution/"
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
-          variables: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          vars: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
