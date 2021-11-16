@@ -47,6 +47,9 @@ sudo npm install --global pm2
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
+# Set up env
+mv env-tmp .env
+
 # Unzip Dependancies
 yarn install
 blitz build
