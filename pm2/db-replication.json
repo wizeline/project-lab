@@ -1,5 +1,5 @@
 {
   "name": "db-replication",
-  "script": "litestream replicate SQLITE_PATH s3://S3_BUCKET_NAME/$S3_BUCKET_PATH",
+  "script": "litestream replicate /home/admin/projectlab/db/db.sqlite s3://litestream-project-lab-sqlite-backups/backups",
   "instances": "1"
 }
