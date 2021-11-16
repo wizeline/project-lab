@@ -9,7 +9,6 @@ jobs:
   deploy-branch:
     env:
       NODE_ENV: "production"
-      DB_FOLDER: "/home/admin/projectlab/db"
       DB_PATH: "/home/admin/projectlab/db/db.sqlite"
       ADD_SEED_DATA: "yes"
     runs-on: ubuntu-latest
@@ -151,7 +150,7 @@ jobs:
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
           server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: "${{ env.DB_FOLDER }}"
+          local_path: "${{ env.DB_PATH }}"
           remote_path: "/home/admin/projectlab/db/"
           args: "-o ConnectTimeout=60"
 
