@@ -48,6 +48,7 @@ sudo npm install --global pm2
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Unzip Dependancies
+yarn install
 blitz build
 
 # Setup nginx
