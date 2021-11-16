@@ -38,7 +38,7 @@ jobs:
         run: rm -rf .env
 
       - name: Set .env File
-        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
+        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
 
       - name: Install Blitz Globally
         run: yarn global add blitz
@@ -67,13 +67,7 @@ jobs:
       - name: Restore Database
         if: ${{ steps.get-branch.outputs.branch == 'default' }}
         run: litestream restore -o ${{ env.DB_PATH }} "s3://${{ secrets.LITESTREAM_S3_BUCKET }}/${{ secrets.LITESTREAM_S3_PATH }}"
-
-      - name: Set Up Litestream PM2 Config
-        if: ${{ steps.get-branch.outputs.branch == 'default' }}
-        run: |
-          sed -i -e "s/SQLITE_PATH/${{ secrets.SQLITE_DB_PATH }}/g" ./pm2/db-replication.json
-          sed -i -e "s/S3_BUCKET_NAME/${{ secrets.LITESTREAM_S3_BUCKET }}/g" ./pm2/db-replication.json
-          sed -i -e "s/S3_BUCKET_PATH/${{ secrets.LITESTREAM_S3_PATH }}/g" ./pm2/db-replication.json
+        continue-on-error: true
 
       - name: Init DB
         run: |
