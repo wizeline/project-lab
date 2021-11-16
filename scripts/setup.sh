@@ -48,7 +48,8 @@ sudo npm install --global pm2
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
 # Unzip Dependancies
-unzip node_modules.zip
+yarn install
+blitz build
 
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
@@ -72,7 +73,7 @@ mkdir -p ~/projectlab/app
 # Replace old db
 rm -rf ~/projectlab/db
 mkdir -p ~/projectlab/db
-mv ./db ~/projectlab/db/db.sqlite
+mv ./db/db.sqlite ~/projectlab/db/db.sqlite
 
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
