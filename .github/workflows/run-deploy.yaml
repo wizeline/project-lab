@@ -59,18 +59,18 @@ jobs:
           fi
 
       - name: Install Litestream
-        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        if: ${{ steps.get-branch.outputs.branch == 'default' }}
         run: |
           wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
           sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
           litestream version
 
       - name: Restore Database
-        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        if: ${{ steps.get-branch.outputs.branch == 'default' }}
         run: litestream restore -o ${{ env.DB_PATH }} "s3://${{ secrets.LITESTREAM_S3_BUCKET }}/${{ secrets.LITESTREAM_S3_PATH }}"
 
       - name: Set Up Litestream PM2 Config
-        if: ${{ steps.get-branch.outputs.branch === 'default' }}
+        if: ${{ steps.get-branch.outputs.branch == 'default' }}
         run: |
           sed -i -e "s/SQLITE_PATH/${{ secrets.SQLITE_DB_PATH }}/g" ./pm2/db-replication.json
           sed -i -e "s/S3_BUCKET_NAME/${{ secrets.LITESTREAM_S3_BUCKET }}/g" ./pm2/db-replication.json
