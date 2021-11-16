@@ -59,7 +59,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
     target_origin_id           = local.env_prefix == "default" ? "default" : local.env_prefix
     allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods             = ["GET", "HEAD"]
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_security_policy.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.response_security_policy.id
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -129,7 +129,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id           = local.env_prefix == "default" ? "default" : local.env_prefix
     allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods             = ["GET", "HEAD"]
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_security_policy.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.response_security_policy.id
 
     min_ttl                = 0
     default_ttl            = 86400
