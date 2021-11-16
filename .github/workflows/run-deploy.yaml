@@ -38,7 +38,9 @@ jobs:
         run: rm -rf .env
 
       - name: Set .env File
-        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
+        run: |
+          aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
+          cp env-tmp .env
 
       - name: Install Blitz Globally
         run: yarn global add blitz
