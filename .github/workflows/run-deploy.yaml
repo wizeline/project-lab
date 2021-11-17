@@ -53,7 +53,7 @@ jobs:
 
       - name: Set Up App Domain
         run: |
-          if [ "$BRANCH" == "default" ]; then
+          if [ "${{ steps.get-branch.outputs.branch }}" == "production" ]; then
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ./blitz.config.ts
           else
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ steps.get-branch.outputs.branch }}.labs.wizeline.com/g" ./blitz.config.ts
