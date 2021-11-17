@@ -91,3 +91,8 @@ export const UpdateVotes = z.object({
   id: z.string(),
   haveIVoted: z.boolean(),
 })
+
+export const CreateComment = z.object({
+  projectId: z.string(),
+  body: z.string(),
+})

@@ -9,12 +9,12 @@ import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@ma
 import Editor from "rich-markdown-editor"
 
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import Comments from "app/projects/components/tabs/Comments"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
-
   const handleVote = async (id: string) => {
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
@@ -137,6 +137,9 @@ export const Project = () => {
             </Grid>
           </Grid>
         </Container>
+      </div>
+      <div className="wrapper">
+        <Comments projectId={projectId} />
       </div>
     </>
   )
