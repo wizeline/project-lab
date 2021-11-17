@@ -202,13 +202,15 @@ model Labels {
 }
 
 model Comments {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   body      String
   authorId  String
   projectId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
   parentId  String?
-  project   Projects @relation(fields: [projectId], references: [id])
-  author    Profiles @relation(fields: [authorId], references: [id])
+  project   Projects   @relation(fields: [projectId], references: [id])
+  author    Profiles   @relation(fields: [authorId], references: [id])
+  parent    Comments?  @relation("ParentComment", fields: [parentId], references: [id])
+  children  Comments[] @relation("ParentComment")
 }
