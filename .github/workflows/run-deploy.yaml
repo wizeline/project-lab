@@ -39,7 +39,7 @@ jobs:
 
       - name: Set .env File
         run: |
-          aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
+          aws secretsmanager get-secret-value --secret-id env-${{ steps.get-branch.outputs.branch }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
           cp env-tmp .env
 
       - name: Install Blitz Globally
@@ -53,7 +53,7 @@ jobs:
 
       - name: Set Up App Domain
         run: |
-          if [ "$BRANCH" == "default" ]; then
+          if [ "${{ steps.get-branch.outputs.branch }}" == "production" ]; then
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ./blitz.config.ts
           else
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ steps.get-branch.outputs.branch }}.labs.wizeline.com/g" ./blitz.config.ts

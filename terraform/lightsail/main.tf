@@ -20,17 +20,17 @@ provider "aws" {
 }
 
 locals {
-  env_prefix = terraform.workspace == "default"?"default":lower(replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-"))
+  env_prefix = terraform.workspace == "production"?"production":lower(replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-"))
 
   resource_tags = {
     ProjectName = "ProjectLab"
-    Environment = terraform.workspace == "default" ? "production" : terraform.workspace
+    Environment = terraform.workspace == "production" ? "production" : terraform.workspace
     Terraform   = "true"
   }
 }
 
 data "aws_secretsmanager_secret" "env_secret" {
-  name = terraform.workspace == "default" ? "env-production" : "env-development"
+  name = terraform.workspace == "production" ? "env-production" : "env-development"
 }
 
 data "aws_secretsmanager_secret_version" "env_secret_version" {
