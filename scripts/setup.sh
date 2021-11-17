@@ -47,6 +47,9 @@ sudo npm install --global pm2
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
+# Set up env
+mv env-tmp .env
+
 # Unzip Dependancies
 yarn install
 blitz build
@@ -85,14 +88,14 @@ sudo systemctl restart wos-sync.service
 cd ~/projectlab/app
 
 # Start litestream replication
-if [ "$WORKSPACE" == "default" ]
+if [ "$WORKSPACE" == "production" ]
 then
 pm2 stop db-replication
 npm run pm2:db-replication
 fi
 
 # Launch prisma studio on dev env
-if [ "$WORKSPACE" != "default" ]
+if [ "$WORKSPACE" != "production" ]
 then
 pm2 stop prisma-studio
 npm run pm2:prisma-studio
