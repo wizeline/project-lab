@@ -2,7 +2,7 @@ import { useSession } from "blitz"
 import { useState, useEffect } from "react"
 
 export const useSessionUserIsProjectTeamMember = (project) => {
-  const [isProjectTeamMember, setIsProjectTeamMember] = useState(null)
+  const [isProjectTeamMember, setIsProjectTeamMember] = useState(false)
   const session = useSession()
 
   useEffect(() => {

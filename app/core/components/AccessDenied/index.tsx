@@ -11,7 +11,7 @@ export const AccessDenied = () => {
         <Grid item xs={12}>
           <Container maxWidth="sm">
             <Typography variant="h6" component="h5">
-              You don't have permission to view this site.
+              You don't have permission to view this page.
             </Typography>
           </Container>
         </Grid>

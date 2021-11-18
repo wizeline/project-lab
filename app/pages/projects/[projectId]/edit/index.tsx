@@ -89,7 +89,7 @@ export const EditProject = () => {
   const [updateProjectMutation] = useMutation(updateProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
 
-  if (isTeamMember !== null && !isTeamMember) {
+  if (!isTeamMember) {
     return <AccessDenied />
   }
 
