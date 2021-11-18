@@ -39,7 +39,7 @@ const ProjectsPage: BlitzPage = () => {
         key={i}
         id={item.id}
         title={item.name}
-        picture={item.owner.avatarUrl}
+        picture={item.owner?.avatarUrl}
         initials={initials(item.owner.firstName, item.owner.lastName)}
         date={new Intl.DateTimeFormat([], {
           year: "numeric",
