@@ -1,9 +1,11 @@
 import { Suspense, useState } from "react"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
+import AccessDenied from "app/core/components/AccessDenied"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
@@ -26,8 +28,14 @@ export const DeleteButton = (props) => {
   }
 
   const deleteProposal = async () => {
-    await props.deleteProjectMutation({ id: props.project.id })
-    props.router.push(Routes.ProjectsPage())
+    try {
+      await props.deleteProjectMutation({ id: props.project.id })
+      props.router.push(Routes.ProjectsPage())
+    } catch (error) {
+      handleClose()
+      console.log(error)
+      setHasError(true)
+    }
   }
 
   const projectName = (e) => {
@@ -79,6 +87,11 @@ export const EditProject = () => {
     }
   )
   const [updateProjectMutation] = useMutation(updateProject)
+  const isTeamMember = useSessionUserIsProjectTeamMember(project)
+
+  if (!isTeamMember) {
+    return <AccessDenied />
+  }
 
   return (
     <>

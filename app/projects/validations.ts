@@ -92,6 +92,14 @@ export const UpdateVotes = z.object({
   haveIVoted: z.boolean(),
 })
 
+export const validateIsTeamMember = (session, data) => {
+  //validate if the user have permissions (team member or owner of the project)
+  const { profileId } = session
+  const isProjectMember = data.projectMembers.some((p) => p.profileId === profileId)
+  const isProjectOwner = profileId === data.owner?.id
+  if (!isProjectMember && !isProjectOwner)
+    throw new Error("You don't have permission to perform this operation")
+}
 export const CreateComment = z.object({
   projectId: z.string(),
   body: z.string(),

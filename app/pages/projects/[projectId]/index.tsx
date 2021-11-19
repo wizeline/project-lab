@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
@@ -7,7 +8,6 @@ import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 import Editor from "rich-markdown-editor"
-
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
 
@@ -15,6 +15,8 @@ export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
+  const isTeamMember = useSessionUserIsProjectTeamMember(project)
+
   const handleVote = async (id: string) => {
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
@@ -39,9 +41,11 @@ export const Project = () => {
             </button>
             <div className="like-bubble">{project.votesCount}</div>
             <div className="headerInfo--edit">
-              <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                <img src="/edit.svg" alt="" />
-              </Link>
+              {isTeamMember && (
+                <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
+                  <img src="/edit.svg" alt="" />
+                </Link>
+              )}
             </div>
           </div>
           <Grid container justifyContent="space-between">
