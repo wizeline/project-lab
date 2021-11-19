@@ -37,6 +37,7 @@
     "blitz": "0.38.1",
     "final-form": "4.20.2",
     "lodash.debounce": "4.0.8",
+    "moment": "2.29.1",
     "next-images": "1.8.1",
     "passport-auth0": "1.4.0",
     "pm2": "5.1.0",
@@ -44,6 +45,7 @@
     "react": "18.0.0-alpha-e0aa5e205-20211109",
     "react-dom": "18.0.0-alpha-e0aa5e205-20211109",
     "react-final-form": "6.5.3",
+    "react-moment": "1.1.1",
     "rich-markdown-editor": "11.18.15",
     "styled-components": "5.3.3",
     "zod": "3.2.0"

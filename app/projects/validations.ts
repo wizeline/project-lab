@@ -100,3 +100,7 @@ export const validateIsTeamMember = (session, data) => {
   if (!isProjectMember && !isProjectOwner)
     throw new Error("You don't have permission to perform this operation")
 }
+export const CreateComment = z.object({
+  projectId: z.string(),
+  body: z.string(),
+})

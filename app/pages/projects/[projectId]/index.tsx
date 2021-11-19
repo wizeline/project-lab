@@ -9,6 +9,7 @@ import Loader from "app/core/components/Loader"
 import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@material-ui/core"
 import Editor from "rich-markdown-editor"
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import Comments from "app/projects/components/tabs/Comments"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -140,6 +141,9 @@ export const Project = () => {
             </Grid>
           </Grid>
         </Container>
+      </div>
+      <div className="wrapper">
+        <Comments projectId={projectId} />
       </div>
     </>
   )

@@ -106,6 +106,7 @@ model Profiles {
   projectMembers ProjectMembers[]
   projects       Projects[]
   votes          Vote[]
+  comments       Comments[]
 
   @@index([email], name: "profiles_email_idx")
   @@index([jobTitleId], name: "profiles_job_title_id_idx")
@@ -163,6 +164,7 @@ model Projects {
   skills         Skills[]
   labels         Labels[]
   votes          Vote[]
+  comments       Comments[]
   votesCount     Int              @default(0)
 
   @@index([ownerId], name: "projects_owner_id_idx")
@@ -197,4 +199,18 @@ model Labels {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
   projects  Projects[]
+}
+
+model Comments {
+  id        String     @id @default(uuid())
+  body      String
+  authorId  String
+  projectId String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  parentId  String?
+  project   Projects   @relation(fields: [projectId], references: [id])
+  author    Profiles   @relation(fields: [authorId], references: [id])
+  parent    Comments?  @relation("ParentComment", fields: [parentId], references: [id])
+  children  Comments[] @relation("ParentComment")
 }
