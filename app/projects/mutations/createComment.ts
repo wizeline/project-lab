@@ -11,6 +11,7 @@ export default resolver.pipe(
         projectId: input.projectId,
         authorId: session.profileId!,
         body: input.body,
+        parentId: input.parentId,
       },
     })
     return comment

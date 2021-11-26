@@ -1,11 +1,9 @@
 import React, { useState } from "react"
-import { useMutation, invalidateQuery, useSession, useQuery } from "blitz"
+import { useMutation, invalidateQuery } from "blitz"
 import {
   Container,
   Grid,
   Typography,
-  Avatar,
-  Divider,
   IconButton,
   Dialog,
   Button,
@@ -17,51 +15,33 @@ import {
 import { CommentForm } from "app/projects/components/CommentForm"
 import deleteComment from "app/projects/mutations/deleteComment"
 import updateComment from "app/projects/mutations/updateComment"
-import Moment from "react-moment"
 import createComment from "app/projects/mutations/createComment"
 import getComments from "app/projects/queries/getComments"
-import DeleteIcon from "@material-ui/icons/Delete"
-import EditIcon from "@material-ui/icons/Edit"
 import CloseIcon from "@material-ui/icons/Close"
-import { CommentActions, WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
+import { WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
-interface IAuthor {
-  id: string
-  firstName: string
-  lastName: string
-  avatarUrl?: string | null
-}
-
-interface IComment {
-  id: string
-  body: string
-  author?: IAuthor
-  updatedAt: Date
-  authorId: string
-}
-
+import CommentItem from "./CommentItem"
+import { IComment } from "./CommentInterfaces"
+import { useCommentsByProjectId } from "./hooks/useComments"
 interface IProps {
-  projectId?: string
+  projectId: string
 }
 const initialComment: IComment = {
   id: "",
   body: "",
-  updatedAt: new Date(),
-  authorId: "",
+  projectId: "",
 }
 
 const Comments = (props: IProps) => {
-  const session = useSession()
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
   const [openEditComment, setOpenEditComment] = useState<boolean>(false)
   const [commentSelected, setCommentSelected] = useState<IComment>(initialComment)
   const [inputCommentEdit, setInputCommentEdit] = useState<string | null>("")
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const [alertMessage, setAlertMessage] = useState<string>("")
-  const projectId = props.projectId
-  const [comments, { setQueryData }] = useQuery(getComments, {
-    projectId: projectId,
-  })
+
+  const comments = useCommentsByProjectId(props.projectId)
+
   const [deleteCommentMutation] = useMutation(deleteComment, {
     onSuccess: async () => {
       await invalidateQuery(getComments)
@@ -85,6 +65,7 @@ const Comments = (props: IProps) => {
       const comment = await createCommentMutation({
         projectId: props.projectId!,
         body: values.body,
+        parentId: null,
       })
       values.body = ""
       setAlertMessage("Comment saved successfully!")
@@ -95,7 +76,7 @@ const Comments = (props: IProps) => {
   }
 
   const editCommentModalHandler = (id: string) => {
-    const comment = comments && comments.find((comment) => comment.id === id)
+    const comment = comments.find((comment) => comment.id === id)
     if (comment) {
       setInputCommentEdit(comment.body!)
       setCommentSelected(comment)
@@ -106,6 +87,7 @@ const Comments = (props: IProps) => {
   const saveEditCommentHandler = async () => {
     const updatedComment = { ...commentSelected }
     delete updatedComment.author
+    delete updatedComment.children
     updatedComment.body = inputCommentEdit!
     const comment = await updateCommentMutation(updatedComment)
     if (comment) {
@@ -115,7 +97,7 @@ const Comments = (props: IProps) => {
     }
   }
 
-  const deleteCommentHandle = async () => {
+  const deleteCommentHandler = async () => {
     setOpenDeleteModal(false)
     await deleteCommentMutation({ id: commentSelected.id })
     setAlertMessage("Comment deleted successfully!")
@@ -130,7 +112,7 @@ const Comments = (props: IProps) => {
         className="warning"
         disabled={false}
         onClick={async () => {
-          deleteCommentHandle()
+          deleteCommentHandler()
         }}
       >
         <h2>Are you sure you want to delete this comment?</h2>
@@ -167,61 +149,18 @@ const Comments = (props: IProps) => {
           <Paper sx={{ paddingX: 7, paddingY: 5, marginTop: 2 }}>
             {comments &&
               comments.map((comment) => {
-                return (
-                  <div key={comment.id}>
-                    <Grid container wrap="nowrap" spacing={2}>
-                      <Grid item>
-                        <Avatar alt={"alt"} src={comment.author.avatarUrl ?? ""}></Avatar>
-                      </Grid>
-                      <Grid justifyContent="left" item xs zeroMinWidth>
-                        <h4>
-                          {` ${comment.author?.firstName} ${comment.author?.lastName} `} .
-                          <Typography
-                            component="span"
-                            style={{
-                              marginLeft: 5,
-                              fontSize: 13,
-                              textAlign: "left",
-                              color: "gray",
-                            }}
-                          >
-                            <Moment fromNow>{comment.updatedAt}</Moment>
-                          </Typography>
-                        </h4>
-                        <Typography sx={{ fontStyle: "italic", whiteSpace: "pre-line" }}>
-                          {" "}
-                          {comment.body}
-                        </Typography>
-
-                        {session.profileId === comment.authorId && (
-                          <CommentActions>
-                            <IconButton
-                              edge="end"
-                              aria-label="edit"
-                              onClick={() => {
-                                editCommentModalHandler(comment.id)
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() => {
-                                setOpenDeleteModal(true)
-                                setCommentSelected(comment)
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </CommentActions>
-                        )}
-                      </Grid>
-                    </Grid>
-                    <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
-                  </div>
-                )
+                if (!comment.parentId) {
+                  return (
+                    <CommentItem
+                      key={comment.id}
+                      projectId={props.projectId}
+                      setOpenDeleteModal={setOpenDeleteModal}
+                      setCommentSelected={setCommentSelected}
+                      editCommentModalHandler={editCommentModalHandler}
+                      comment={comment}
+                    />
+                  )
+                }
               })}
           </Paper>
         </Grid>
@@ -250,7 +189,8 @@ const Comments = (props: IProps) => {
                 setOpenEditComment(false)
               }}
             >
-              Cancel
+              {" "}
+              Cancel{" "}
             </Button>
             <ButtonQuick onClick={saveEditCommentHandler}>Save</ButtonQuick>
           </Grid>
