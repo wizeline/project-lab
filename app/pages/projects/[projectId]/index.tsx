@@ -143,7 +143,7 @@ export const Project = () => {
         </Container>
       </div>
       <div className="wrapper">
-        <Comments projectId={projectId} />
+        <Comments projectId={projectId!} />
       </div>
     </>
   )
