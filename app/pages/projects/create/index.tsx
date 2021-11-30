@@ -34,7 +34,9 @@ export const NewProject = () => {
           onSubmit={async (values) => {
             try {
               const project = await createProjectMutation(values)
-              await SlackNotification(project)
+              SlackNotification(project)
+                .then(() => console.log("Slack notification sent!"))
+                .catch((e) => console.error("Something went worng!", e.message))
               router.push(Routes.ShowProjectPage({ projectId: project.id }))
             } catch (error) {
               console.error(error)

@@ -3,6 +3,8 @@ import { BlitzConfig, sessionMiddleware, simpleRolesIsAuthorized } from "blitz"
 const config: BlitzConfig = {
   env: {
     BASE_URL: "http://localhost:3000",
+    SLACK_NOTIFICATION_WEBHOOK:
+      "https://hooks.slack.com/services/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",
   },
   middleware: [
     sessionMiddleware({
