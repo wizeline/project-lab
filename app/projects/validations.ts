@@ -49,6 +49,8 @@ export const FullFormFields = {
   target: z.string().nullish(),
   projectStatus: z.object({ name: z.string() }).optional(),
   category: z.object({ name: z.string() }).optional(),
+  repoUrl: z.string().nullish(),
+  slackChannel: z.string().nullish(),
   skills: z
     .array(
       z.object({
