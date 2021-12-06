@@ -5,6 +5,8 @@ import {
   sendProjectCard,
   sendOwnerCard,
   postMessageToSlack,
+  checkUserSession,
+  SendSlackNotification,
 } from "integrations/slack/slackUtils"
 import { getProjectWithName, searchForProjects } from "integrations/slack/dbUtils"
 
@@ -47,7 +49,7 @@ const handleSlackRequest = async (req: NextApiRequest, res: NextApiResponse) => 
     res.setHeader("Content-Type", "text/plain")
   } else {
     //console.log(req.body)
-    if (!checkSlackToken(req)) return
+    if (!checkSlackToken(req) || !checkUserSession(req, res)) return
 
     if (req.body.type === "event_callback") {
       const inputData = req.body.event.text.split(" ")
@@ -130,6 +132,10 @@ const handleSlackRequest = async (req: NextApiRequest, res: NextApiResponse) => 
             .catch((e) => console.error(e))
         }
       }
+    }
+
+    if (req.body.type === "slack_notification") {
+      SendSlackNotification(req.body)
     }
   }
 }

@@ -1,5 +1,14 @@
 import { Suspense } from "react"
-import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
+import {
+  Link,
+  useRouter,
+  useMutation,
+  useSession,
+  BlitzPage,
+  Routes,
+  Router,
+  getAntiCSRFToken,
+} from "blitz"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Loader from "app/core/components/Loader"
@@ -12,6 +21,7 @@ export const NewProject = () => {
   const session = useSession()
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
+  const antiCSRFToken = getAntiCSRFToken()
   return (
     <div>
       <Header title="Create your proposal" />
@@ -33,6 +43,24 @@ export const NewProject = () => {
           onSubmit={async (values) => {
             try {
               const project = await createProjectMutation(values)
+              fetch("/api/slackEvents", {
+                credentials: "include",
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "anti-csrf": antiCSRFToken,
+                },
+                body: JSON.stringify({
+                  type: "slack_notification",
+                  id: project.id,
+                  name: project.name,
+                  description: project.description,
+                  status: project.status,
+                  votes: project.votesCount,
+                }),
+              })
+                .then(() => console.log("Slack notification sent!"))
+                .catch((e) => console.error("Something went worng!", e.message))
               router.push(Routes.ShowProjectPage({ projectId: project.id }))
             } catch (error) {
               console.error(error)
