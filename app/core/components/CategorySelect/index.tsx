@@ -1,5 +1,5 @@
 import { useQuery } from "blitz"
-import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@material-ui/core"
+import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@mui/material"
 import { Field } from "react-final-form"
 import getCategories from "app/categories/queries/getCategories"
 import { defaultCategory } from "app/core/utils/constants"

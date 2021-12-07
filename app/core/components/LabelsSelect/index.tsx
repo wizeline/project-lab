@@ -1,6 +1,6 @@
 import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
-import { Autocomplete, TextField, CircularProgress } from "@material-ui/core"
+import { Autocomplete, TextField, CircularProgress } from "@mui/material"
 import { Field } from "react-final-form"
 import getLabels from "app/labels/queries/getLabels"
 import debounce from "lodash/debounce"

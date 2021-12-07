@@ -13,16 +13,14 @@ import {
   Snackbar,
   Paper,
   TextField,
-} from "@material-ui/core"
+} from "@mui/material"
 import { CommentForm } from "app/projects/components/CommentForm"
 import deleteComment from "app/projects/mutations/deleteComment"
 import updateComment from "app/projects/mutations/updateComment"
 import Moment from "react-moment"
 import createComment from "app/projects/mutations/createComment"
 import getComments from "app/projects/queries/getComments"
-import DeleteIcon from "@material-ui/icons/Delete"
-import EditIcon from "@material-ui/icons/Edit"
-import CloseIcon from "@material-ui/icons/Close"
+import { Delete, Edit, Close } from "@mui/icons-material"
 import { CommentActions, WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 interface IAuthor {
@@ -149,7 +147,7 @@ const Comments = (props: IProps) => {
                 setShowAlert(false)
               }}
             >
-              <CloseIcon fontSize="inherit" />
+              <Close fontSize="inherit" />
             </IconButton>
           }
           sx={{ mb: 2 }}
@@ -202,7 +200,7 @@ const Comments = (props: IProps) => {
                                 editCommentModalHandler(comment.id)
                               }}
                             >
-                              <EditIcon />
+                              <Edit />
                             </IconButton>
 
                             <IconButton
@@ -213,7 +211,7 @@ const Comments = (props: IProps) => {
                                 setCommentSelected(comment)
                               }}
                             >
-                              <DeleteIcon />
+                              <Delete />
                             </IconButton>
                           </CommentActions>
                         )}

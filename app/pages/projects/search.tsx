@@ -7,8 +7,8 @@ import searchProjects from "app/projects/queries/searchProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
-import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@material-ui/core"
-import { ExpandMore } from "@material-ui/icons"
+import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
+import { ExpandMore } from "@mui/icons-material"
 
 type SearchFilters = {
   category: string[]

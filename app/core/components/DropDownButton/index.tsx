@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList } from "@material-ui/core"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import { ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList } from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 import { DropdownPlaceholderContainer } from "./DropDownButton.styles"
 

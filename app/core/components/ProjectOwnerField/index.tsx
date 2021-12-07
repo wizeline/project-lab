@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useQuery } from "blitz"
-import { Autocomplete, TextField } from "@material-ui/core"
+import { Autocomplete, TextField } from "@mui/material"
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 
