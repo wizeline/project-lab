@@ -1,11 +1,8 @@
-import { useState } from "react"
-import { TextField } from "@material-ui/core"
-import createComment from "app/projects/mutations/createComment"
-import { useMutation, invalidateQuery } from "blitz"
-import getComments from "app/projects/queries/getComments"
+import { TextField, Alert, IconButton, Snackbar } from "@material-ui/core"
+import CloseIcon from "@material-ui/icons/Close"
 import { ReplyComponentContent } from "./ReplyComment.style"
 import { ReplyActions, SaveReplyButton, ReplyButton } from "./Comments.styles"
-
+import useReply from "./hooks/useReply"
 interface IProps {
   parentId?: string
   projectId: string
@@ -14,29 +11,35 @@ interface IProps {
 }
 
 const ReplyComment = (props: IProps) => {
-  const [commentInput, setCommentInput] = useState<string>("")
-  const [createCommentMutation] = useMutation(createComment, {
-    onSuccess: async () => {
-      await invalidateQuery(getComments)
-    },
-  })
-
-  const createCommentHandler = async () => {
-    try {
-      const comment = await createCommentMutation({
-        projectId: props.projectId!,
-        body: commentInput,
-        parentId: props.parentId!,
-      })
-      setCommentInput("")
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const [commentInput, setCommentInput, createCommentHandler, showAlert, setShowAlert] = useReply(
+    props.projectId,
+    props.parentId
+  )
 
   return (
     <ReplyComponentContent className={props.isActive && "active"}>
+      <Snackbar open={showAlert}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setShowAlert(false)
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          Reply input is required
+        </Alert>
+      </Snackbar>
       <TextField
+        error={!commentInput}
         onChange={(e) => {
           setCommentInput(e.target.value)
         }}
@@ -45,6 +48,8 @@ const ReplyComment = (props: IProps) => {
         multiline
         placeholder="Write a reply..."
         value={commentInput}
+        required
+        helperText={!commentInput ? "Write a reply" : ""}
       />
       <ReplyActions>
         <ReplyButton onClick={props.cancelReply}>Cancel</ReplyButton>

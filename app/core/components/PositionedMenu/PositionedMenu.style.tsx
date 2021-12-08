@@ -2,8 +2,8 @@ import styled from "styled-components"
 
 export const DropdownMenu = styled.button`
   margin-left: 20px;
-  border-radius: 100%;
-  padding: 10px;
+  border-radius: 50%;
+  padding: 6px;
   border: none;
   &:hover {
     cursor: pointer;
