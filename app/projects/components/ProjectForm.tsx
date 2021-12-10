@@ -69,6 +69,20 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Who is your target user/client"
           placeholder="Millenials"
         />
+        <LabeledTextField
+          fullWidth
+          style={{ margin: "1em 0" }}
+          name="repoUrl"
+          label="Repo URL"
+          placeholder="https://github.com"
+        />
+        <LabeledTextField
+          fullWidth
+          style={{ margin: "1em 0" }}
+          name="slackChannel"
+          label="Slack Channel"
+          placeholder="#project-name"
+        />
         <CategorySelect name="category" label="Category" />
         {projectformType != "create" && <ProjectStatusSelect name="projectStatus" label="Status" />}
         <SkillsSelect name="skills" label="Skills" />
