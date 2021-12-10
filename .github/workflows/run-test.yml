@@ -46,16 +46,16 @@ jobs:
       - name: Add Full Text Searches
         run: sqlite3 /home/admin/projectlab/db/db.sqlite < db/search_indexes.sql
 
+      - name: Run Tests
+        run: yarn test
+        env:
+          NODE_ENV: test
+
       - name: Add Test Data
         run: blitz db seed
 
       - name: Sync Skills With Wizeline OS
         run: yarn sync-all-from-wos
-
-      - name: Run Tests
-        run: yarn test
-        env:
-          NODE_ENV: test
 
       - name: Run Build
         run: yarn build
