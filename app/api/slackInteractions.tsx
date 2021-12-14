@@ -1,12 +1,10 @@
-import { BlitzApiHandler } from "@blitzjs/core"
-import { NextApiRequest, NextApiResponse } from "next"
-import { getSlackUserInfo, postMessageToSlack } from "integrations/slack/slackUtils"
+import { BlitzApiHandler, BlitzApiRequest, BlitzApiResponse } from "@blitzjs/core"
+import { getSlackUserInfo, postMessageToSlack, getBodyFromReq } from "integrations/slack/slackUtils"
 import {
   getWizeUserFromSlack,
   getProjectWithSlackUser,
   handleVote,
 } from "integrations/slack/dbUtils"
-import { TrafficOutlined } from "@material-ui/icons"
 
 const handler: BlitzApiHandler = (req, res) => {
   if (req.method === "POST") {
@@ -34,42 +32,29 @@ const handler: BlitzApiHandler = (req, res) => {
   }
 }
 
-const handleSlackRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(req.body.payload)
-
-  const body = JSON.parse(req.body.payload)
-
-  console.log("Object info: " + body.type)
+const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) => {
+  const body = getBodyFromReq(req)
 
   if (body.type === "block_actions") {
     const slackUser = await getSlackUserInfo(req, true)
 
     if (!slackUser.ok) {
-      postMessageToSlack("Sorry, an error ocurred...", req, body)
-        .then(() => {
-          return
-        })
-        .catch((e) => console.error(e))
+      await postMessageToSlack("Sorry, an error ocurred...", req, body)
+      return
     }
 
     const wizeUser = await getWizeUserFromSlack(req, slackUser)
 
     if (!wizeUser) {
-      postMessageToSlack("Sorry, an error ocurred...", req, body)
-        .then(() => {
-          return
-        })
-        .catch((e) => console.error(e))
+      await postMessageToSlack("Sorry, an error ocurred...", req, body)
+      return
     }
 
     const project = await getProjectWithSlackUser(req, wizeUser)
 
     if (!project) {
-      postMessageToSlack("Sorry, an error ocurred...", req, body)
-        .then(() => {
-          return
-        })
-        .catch((e) => console.error(e))
+      await postMessageToSlack("Sorry, an error ocurred...", req, body)
+      return
     }
 
     const haveIVoted = await handleVote(project, wizeUser, req)

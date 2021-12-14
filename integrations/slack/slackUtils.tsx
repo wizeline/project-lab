@@ -1,7 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
 const { WebClient } = require("@slack/web-api")
-import { AnyObject } from "react-final-form"
-import { AnyZodObject } from "zod"
 import { getSession, BlitzApiRequest, BlitzApiResponse } from "blitz"
 
 const slack = new WebClient(process.env.APP_TOKEN)
@@ -38,7 +35,7 @@ const getProjectCard = (project: any): Array<any> => {
   ]
 }
 
-export const checkSlackToken = (req: NextApiRequest): boolean => {
+export const checkSlackToken = (req: BlitzApiRequest): boolean => {
   // Get token from env
   return req.body.token === process.env.SLACK_TOKEN ? true : false
 }
@@ -49,12 +46,19 @@ export const checkUserSession = async (req: BlitzApiRequest, res: BlitzApiRespon
   return userSession && userSession.userId ? true : false
 }
 
-export const getBodyFromReq = (req: NextApiRequest) => {
+export const getBodyFromReq = (req: BlitzApiRequest) => {
   const body = JSON.parse(req.body.payload)
   return body
 }
 
-export const sendProjectCard = async (req: NextApiRequest, project: AnyObject) => {
+export const sendProjectCard = async (
+  req: BlitzApiRequest,
+  project: any,
+  userName: string | undefined
+) => {
+  // I want the username to appear as @user in Slack
+  const user = typeof userName === "undefined" ? "" : "@" + userName
+
   await slack.chat.postMessage({
     text: "Hi",
     blocks: [
@@ -65,7 +69,11 @@ export const sendProjectCard = async (req: NextApiRequest, project: AnyObject) =
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*${project.name}*\n${project.description}\n\n*Do you want to give the project a 'like'?*`,
+          text:
+            `*${project.name}*\n${project.description}\n\n *Project Owner: * ` +
+            `${project.owner.firstName} ${project.owner.lastName}\n` +
+            `${project.owner.email}\n` +
+            `*${user}*\n\n*Do you want to give the project a 'like'?*`,
         },
       },
       {
@@ -89,7 +97,7 @@ export const sendProjectCard = async (req: NextApiRequest, project: AnyObject) =
   })
 }
 
-export const sendOwnerCard = async (req: NextApiRequest, project: AnyObject) => {
+export const sendOwnerCard = async (req: BlitzApiRequest, project: any) => {
   await slack.chat.postMessage({
     text: "Hi",
     blocks: [
@@ -108,7 +116,7 @@ export const sendOwnerCard = async (req: NextApiRequest, project: AnyObject) => 
   })
 }
 
-export const getSlackUserInfo = async (req: NextApiRequest, parse: boolean) => {
+export const getSlackUserInfo = async (req: BlitzApiRequest, parse: boolean) => {
   const body = parse ? getBodyFromReq(req) : req
   const info = parse ? body.user.id : req.body.event.user
 
@@ -127,7 +135,7 @@ export const getSlackUserInfoFromEmail = async (email: string) => {
   return slackUserInfo
 }
 
-export const postMessageToSlack = async (msg: string, req: NextApiRequest, body?: any) => {
+export const postMessageToSlack = async (msg: string, req: BlitzApiRequest, body?: any) => {
   const channel = typeof body !== "undefined" ? body.channel.id : req.body.event.channel
 
   await slack.chat.postMessage({

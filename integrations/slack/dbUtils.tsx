@@ -1,9 +1,8 @@
 import db from "db"
-import { NextApiRequest } from "next"
-import { AnyObject } from "react-final-form"
+import { BlitzApiRequest } from "@blitzjs/core"
 import { getBodyFromReq } from "./slackUtils"
 
-export const getWizeUserFromSlack = async (req: NextApiRequest, slackUser: any) => {
+export const getWizeUserFromSlack = async (req: BlitzApiRequest, slackUser: any) => {
   const wizeUser = await db.profiles.findFirst({
     where: { email: slackUser.user.profile.email },
     select: { id: true },
@@ -12,7 +11,7 @@ export const getWizeUserFromSlack = async (req: NextApiRequest, slackUser: any) 
   return wizeUser
 }
 
-export const getProjectWithSlackUser: any = async (req: NextApiRequest, wizeUser: any) => {
+export const getProjectWithSlackUser: any = async (req: BlitzApiRequest, wizeUser: any) => {
   const body = getBodyFromReq(req)
   const projectId = body.actions[0].value ? body.actions[0].value : null
 
@@ -53,7 +52,7 @@ export const searchForProjects: any = async (searchString: string) => {
   return projects
 }
 
-export const handleVote = async (project: any, wizeUser: any, req: NextApiRequest) => {
+export const handleVote = async (project: any, wizeUser: any, req: BlitzApiRequest) => {
   const body = getBodyFromReq(req)
   const projectId = body.actions[0].value ? body.actions[0].value : null
 
