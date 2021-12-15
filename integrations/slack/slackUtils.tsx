@@ -56,7 +56,7 @@ export const getBodyFromReq = (req: BlitzApiRequest) => {
 
 export const sendProjectCard = async (req: BlitzApiRequest, project: any, userData: any) => {
   // I want the username to appear as @user in Slack
-  const user = userData.ok === false ? "" : "@" + userData.user.name
+  const user = userData.ok === false ? "" : "*@" + userData.user.name + "*"
 
   await slack.chat.postMessage({
     text: "Hi",
@@ -72,7 +72,7 @@ export const sendProjectCard = async (req: BlitzApiRequest, project: any, userDa
             `*${project.name}*\n${project.description}\n\n *Project Owner: * ` +
             `${project.owner.firstName} ${project.owner.lastName}\n` +
             `${project.owner.email}\n` +
-            `*${user}*\n\n*Do you want to give the project a 'like'?*`,
+            `${user}\n\n*Do you want to give the project a 'like'?*`,
         },
       },
       {
@@ -127,11 +127,19 @@ export const getSlackUserInfo = async (req: BlitzApiRequest, parse: boolean) => 
 }
 
 export const getSlackUserInfoFromEmail = async (email: string) => {
-  const slackUserInfo = await slack.users.lookupByEmail({
-    email: email,
-  })
+  let slackUserInfo = ""
+  try {
+    slackUserInfo = await slack.users.lookupByEmail({
+      email: email,
+    })
 
-  return slackUserInfo
+    return slackUserInfo
+  } catch {
+    return {
+      ok: false,
+      error: "users_not_found",
+    }
+  }
 }
 
 export const postMessageToSlack = async (msg: string, req: BlitzApiRequest, body?: any) => {

@@ -101,7 +101,7 @@ const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) =
             .then((values) => {
               // Adding each one to project cards
               for (let x = 0; x < projects.length; x++)
-                promiseArr.push(sendProjectCard(req, projects[x], values[x].user.name))
+                promiseArr.push(sendProjectCard(req, projects[x], values[x]))
 
               // Again trying to resolve sending to slack
               Promise.all(promiseArr)
