@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal, Box } from "@material-ui/core"
+import { Modal, Box } from "@mui/material"
 import styled from "@emotion/styled"
 
 export const BoxContainer = styled.div`

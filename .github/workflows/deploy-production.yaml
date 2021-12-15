@@ -18,4 +18,4 @@ jobs:
           token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
           repository: wizeline/project-lab
           event-type: deploy
-          client-payload: '{"ref": "${{ github.ref }}", "branch": "default" , "secret_name":"env-production" }'
+          client-payload: '{"ref": "${{ github.ref }}", "branch": "production" , "secret_name":"env-production" }'

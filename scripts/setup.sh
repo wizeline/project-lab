@@ -4,34 +4,16 @@
 cd ~/projectlab/tmp
 
 # Set up variables
-BRANCH=$1
+WORKSPACE=$1
 AWS_ACCESS_KEY_ID=$2
 AWS_SECRET_ACCESS_KEY=$3
-SQLITE_PATH=$4
-S3_BUCKET_NAME=$5
-S3_BUCKET_PATH=$6
-SEED_DATA=$7
-DB_EXISTS=1
-
-if [ $BRANCH != "default" ]
-then
-SEED_DATA="yes"
-fi
 
 # Remember variables
 echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" > ~/.bashrc
 echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> ~/.bashrc
-echo SQLITE_PATH="$SQLITE_PATH" >> ~/.bashrc
-echo S3_BUCKET_NAME="$S3_BUCKET_NAME" >> ~/.bashrc
-echo S3_BUCKET_PATH="$S3_BUCKET_PATH" >> ~/.bashrc
-echo BRANCH="$BRANCH" >> ~/.bashrc
 
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-export SQLITE_PATH=$SQLITE_PATH
-export S3_BUCKET_NAME=$S3_BUCKET_NAME
-export S3_BUCKET_PATH=$S3_BUCKET_PATH
-export BRANCH=$BRANCH
 
 # Run update
 sudo apt -y update
@@ -65,47 +47,12 @@ sudo npm install --global pm2
 # Install blitz globally
 sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
 
-# Install sqlite3
-sudo apt install -y sqlite3
+# Set up env
+mv env-tmp .env
 
-if [ "$BRANCH" == "default" ]
-then
-# Restore DB
-echo "Starting Restoring"
-litestream restore -o "$SQLITE_PATH" "s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH"
-DB_EXISTS=$?
-fi
-
-# Prepare env
-rm -rf .env
-cp env-file .env
-
-# Init App
-if [ "$BRANCH" == "default" ]
-then
-sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ~/projectlab/tmp/blitz.config.ts
-else
-sed -i -e "s/http:\/\/localhost:3000/https:\/\/$BRANCH.labs.wizeline.com/g" ~/projectlab/tmp/blitz.config.ts
-fi
-npm i
-npm i react react-dom
-npm run build
-if [ $DB_EXISTS -eq 0 ]
-then
-blitz prisma migrate deploy
-else
-echo y | blitz prisma migrate reset --force
-sqlite3 ~/projectlab/db/db.sqlite < ~/projectlab/tmp/db/search_indexes.sql
-fi
-blitz db seed
-
-# Replace pm2 db-replication.json config with correct values
-if [ "$BRANCH" == "default" ]
-then
-sed -i -e "s/SQLITE_PATH/$SQLITE_PATH/g" ~/projectlab/tmp/pm2/db-replication.json
-sed -i -e "s/S3_BUCKET_NAME/$S3_BUCKET_NAME/g" ~/projectlab/tmp/pm2/db-replication.json
-sed -i -e "s/S3_BUCKET_PATH/$S3_BUCKET_PATH/g" ~/projectlab/tmp/pm2/db-replication.json
-fi
+# Unzip Dependancies
+yarn install
+blitz build
 
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
@@ -126,6 +73,11 @@ rm -rf ~/projectlab/app
 # Create app folder
 mkdir -p ~/projectlab/app
 
+# Replace old db
+rm -rf ~/projectlab/db
+mkdir -p ~/projectlab/db
+mv ./db/db.sqlite ~/projectlab/db/db.sqlite
+
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
@@ -136,14 +88,14 @@ sudo systemctl restart wos-sync.service
 cd ~/projectlab/app
 
 # Start litestream replication
-if [ "$BRANCH" == "default" ]
+if [ "$WORKSPACE" == "production" ]
 then
 pm2 stop db-replication
 npm run pm2:db-replication
 fi
 
 # Launch prisma studio on dev env
-if [ "$BRANCH" != "default" ]
+if [ "$WORKSPACE" != "production" ]
 then
 pm2 stop prisma-studio
 npm run pm2:prisma-studio

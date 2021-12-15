@@ -1,6 +1,6 @@
 import { PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
-import TextField from "@material-ui/core/TextField"
+import TextField from "@mui/material/TextField"
 
 interface LabeledTextFieldProps {
   name: string
@@ -11,6 +11,7 @@ interface LabeledTextFieldProps {
   placeholder?: string
   fullWidth?: boolean
   style?: any
+  multiline?: boolean
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 

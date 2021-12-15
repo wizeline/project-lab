@@ -1,7 +1,6 @@
 import { useState, useEffect, PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
-import FormLabel from "@material-ui/core/FormLabel"
-import FormHelperText from "@material-ui/core/FormHelperText"
+import { FormLabel, FormHelperText } from "@mui/material"
 import Editor from "rich-markdown-editor"
 const editorStyleNormal = {
   border: "1px solid #999",

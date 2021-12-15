@@ -1,0 +1,12 @@
+-- CreateTable
+CREATE TABLE "Comments" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "body" TEXT NOT NULL,
+    "authorId" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "parentId" TEXT,
+    FOREIGN KEY ("projectId") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("authorId") REFERENCES "Profiles" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

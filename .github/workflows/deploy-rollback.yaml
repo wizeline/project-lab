@@ -21,4 +21,4 @@ jobs:
           token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
           repository: wizeline/project-lab
           event-type: deploy
-          client-payload: '{"ref": "${{ github.event.inputs.tag }}", "branch": "default" , "secret_name":"env-production" }'
+          client-payload: '{"ref": "${{ github.event.inputs.tag }}", "branch": "production" , "secret_name":"env-production" }'

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import styled from "@emotion/styled"
-import { TextField, Dialog } from "@material-ui/core"
+import { TextField, Dialog } from "@mui/material"
 import Title from "app/projects/components/Title"
 
 function TheTheam() {

@@ -20,11 +20,11 @@ provider "aws" {
 }
 
 locals {
-  env_prefix = terraform.workspace == "default" ? "default" : lower(replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-"))
+  env_prefix = terraform.workspace == "production" ? "production" : lower(replace(replace(replace(terraform.workspace, "_", "-"), "/", "-"), " ", "-"))
 
   resource_tags = {
     ProjectName = "ProjectLab"
-    Environment = terraform.workspace == "default" ? "production" : terraform.workspace
+    Environment = terraform.workspace == "production" ? "production" : terraform.workspace
     Terraform   = "true"
   }
 }
@@ -37,8 +37,8 @@ data "aws_acm_certificate" "certificate" {
 
 resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
   origin {
-    origin_id   = local.env_prefix == "default" ? "default" : local.env_prefix
-    domain_name = local.env_prefix == "default" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
+    origin_id   = local.env_prefix == "production" ? "production" : local.env_prefix
+    domain_name = local.env_prefix == "production" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
     custom_origin_config {
       http_port              = 8080
       https_port             = 8080
@@ -47,14 +47,15 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "default" ? "prisma-studio.labs.wizeline.com" : "prisma-studio-${local.env_prefix}.labs.wizeline.com"]
+  aliases = [local.env_prefix == "production" ? "prisma-studio.labs.wizeline.com" : "prisma-studio-${local.env_prefix}.labs.wizeline.com"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
-    path_pattern     = "*"
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
+    path_pattern               = "*"
+    target_origin_id           = local.env_prefix == "production" ? "production" : local.env_prefix
+    allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods             = ["GET", "HEAD"]
+    response_headers_policy_id = "bffd0ec8-c1f8-4e0c-9237-1ff503193152"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -67,14 +68,14 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
       cookies {
         forward = "all"
       }
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
   }
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
+    target_origin_id = local.env_prefix == "production" ? "production" : local.env_prefix
 
     forwarded_values {
       query_string = false
@@ -83,7 +84,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
         forward = "all"
       }
 
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
 
     viewer_protocol_policy = "allow-all"
@@ -106,8 +107,8 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
 
 resource "aws_cloudfront_distribution" "distribution" {
   origin {
-    origin_id   = local.env_prefix == "default" ? "default" : local.env_prefix
-    domain_name = local.env_prefix == "default" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
+    origin_id   = local.env_prefix == "production" ? "production" : local.env_prefix
+    domain_name = local.env_prefix == "production" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
     custom_origin_config {
       http_port              = 80
       https_port             = 80
@@ -116,14 +117,15 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "default" ? "labs.wizeline.com" : "${local.env_prefix}.labs.wizeline.com"]
+  aliases = [local.env_prefix == "production" ? "labs.wizeline.com" : "${local.env_prefix}.labs.wizeline.com"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
-    path_pattern     = "*"
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
+    path_pattern               = "*"
+    target_origin_id           = local.env_prefix == "production" ? "production" : local.env_prefix
+    allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods             = ["GET", "HEAD"]
+    response_headers_policy_id = "bffd0ec8-c1f8-4e0c-9237-1ff503193152"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -136,14 +138,14 @@ resource "aws_cloudfront_distribution" "distribution" {
       cookies {
         forward = "all"
       }
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
   }
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.env_prefix == "default" ? "default" : local.env_prefix
+    target_origin_id = local.env_prefix == "production" ? "production" : local.env_prefix
 
     forwarded_values {
       query_string = false
@@ -152,7 +154,7 @@ resource "aws_cloudfront_distribution" "distribution" {
         forward = "all"
       }
 
-      headers = ["Host","Content-Type","Authorization"]
+      headers = ["Host", "Content-Type", "Authorization"]
     }
 
     viewer_protocol_policy = "allow-all"
@@ -180,7 +182,7 @@ data "aws_route53_zone" "route53_zone" {
 
 resource "aws_route53_record" "origin_distribution_route53_record" {
   zone_id         = data.aws_route53_zone.route53_zone.zone_id
-  name            = local.env_prefix == "default" ? "origin" : "${local.env_prefix}-origin"
+  name            = local.env_prefix == "production" ? "origin" : "${local.env_prefix}-origin"
   type            = "A"
   allow_overwrite = true
   ttl             = 1
@@ -190,30 +192,30 @@ resource "aws_route53_record" "origin_distribution_route53_record" {
 
 resource "aws_route53_record" "distribution_route53_record" {
   zone_id         = data.aws_route53_zone.route53_zone.zone_id
-  name            = local.env_prefix == "default" ? "" : local.env_prefix
+  name            = local.env_prefix == "production" ? "" : local.env_prefix
   type            = "A"
   allow_overwrite = true
 
   alias {
-    name = aws_cloudfront_distribution.distribution.domain_name
-    zone_id = aws_cloudfront_distribution.distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.distribution.hosted_zone_id
     evaluate_target_health = true
   }
 
-  depends_on      = [aws_cloudfront_distribution.distribution]
+  depends_on = [aws_cloudfront_distribution.distribution]
 }
 
 resource "aws_route53_record" "distribution_prisma_studio_route53_record" {
   zone_id         = data.aws_route53_zone.route53_zone.zone_id
-  name            = local.env_prefix == "default" ? "prisma-studio" : "prisma-studio-${local.env_prefix}"
+  name            = local.env_prefix == "production" ? "prisma-studio" : "prisma-studio-${local.env_prefix}"
   type            = "A"
   allow_overwrite = true
 
   alias {
-    name = aws_cloudfront_distribution.distribution_prisma_studio.domain_name
-    zone_id = aws_cloudfront_distribution.distribution_prisma_studio.hosted_zone_id
+    name                   = aws_cloudfront_distribution.distribution_prisma_studio.domain_name
+    zone_id                = aws_cloudfront_distribution.distribution_prisma_studio.hosted_zone_id
     evaluate_target_health = true
   }
 
-  depends_on      = [aws_cloudfront_distribution.distribution_prisma_studio]
+  depends_on = [aws_cloudfront_distribution.distribution_prisma_studio]
 }
