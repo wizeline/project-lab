@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Grid,
   TextField,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"

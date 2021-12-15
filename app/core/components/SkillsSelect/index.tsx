@@ -1,6 +1,6 @@
 import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
-import { CircularProgress, TextField, Autocomplete } from "@material-ui/core"
+import { CircularProgress, TextField, Autocomplete } from "@mui/material"
 import { Field } from "react-final-form"
 import getSkills from "app/skills/queries/getSkills"
 import debounce from "lodash/debounce"

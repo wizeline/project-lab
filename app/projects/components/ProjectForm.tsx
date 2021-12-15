@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
+import { FormControlLabel, Switch, Collapse } from "@mui/material"
 import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"

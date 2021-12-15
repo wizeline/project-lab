@@ -1,6 +1,6 @@
 import { PropsWithoutRef } from "react"
 import { Field } from "react-final-form"
-import { TextareaAutosize, FormHelperText } from "@material-ui/core"
+import { TextareaAutosize, FormHelperText } from "@mui/material"
 import FieldError from "../FieldError"
 
 import { LabelComponent } from "./LabeledTextAreaField.styles"
