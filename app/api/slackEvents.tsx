@@ -12,29 +12,22 @@ import { getProjectWithName, searchForProjects } from "integrations/slack/dbUtil
 const handler: BlitzApiHandler = (req, res) => {
   if (req.method === "POST") {
     //slack code
-    if (!req.body) {
-      res.statusCode = 200
-      res.end()
-    }
-    ;(async () => {
-      try {
-        await handleSlackRequest(req, res)
-      } catch (error) {
-        postMessageToSlack("Sorry, an error ocurred...", req).catch((e) => console.error(e))
-      }
-    })()
+    if (req.body) {
+      ;(async () => {
+        try {
+          await handleSlackRequest(req, res)
+        } catch (error) {
+          postMessageToSlack("Sorry, an error ocurred...", req).catch((e) => console.error(e))
+        }
+      })()
 
-    if (req.body.challenge) {
-      res.end(req.body.challenge)
-    } else {
-      res.statusCode = 200
-      res.end()
-    }
-    // GET
-  } else {
-    res.statusCode = 404
-    res.end()
-  }
+      if (req.body.challenge) {
+        res.end(req.body.challenge)
+      } else res.statusCode = 200
+    } else res.statusCode = 400
+  } else res.statusCode = 404
+
+  res.end()
 }
 
 const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) => {
@@ -50,11 +43,13 @@ const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) =
       sessionIsValid = await checkUserSession(req, res)
     }
 
-    // If call come from Slack, check token
+    // If call comes from Slack, check token
     if (!checkSlackToken(req) || !sessionIsValid) return
 
     if (req.body.type === "event_callback") {
       const inputData = req.body.event.text.split(" ")
+
+      // Looking for "Info name/search [project-name]"
       if (inputData.length < 4) {
         await postMessageToSlack(
           "Incorrect number of arguments. Use: Info name/search [project-name]",
@@ -81,7 +76,7 @@ const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) =
 
           const userData = await getSlackUserInfoFromEmail(project.owner.email)
 
-          sendProjectCard(req, project, userData.user.name)
+          sendProjectCard(req, project, userData)
             .then(() => {
               return
             })

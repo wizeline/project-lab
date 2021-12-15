@@ -47,17 +47,16 @@ export const checkUserSession = async (req: BlitzApiRequest, res: BlitzApiRespon
 }
 
 export const getBodyFromReq = (req: BlitzApiRequest) => {
-  const body = JSON.parse(req.body.payload)
-  return body
+  try {
+    return JSON.parse(req.body.payload)
+  } catch {
+    return null
+  }
 }
 
-export const sendProjectCard = async (
-  req: BlitzApiRequest,
-  project: any,
-  userName: string | undefined
-) => {
+export const sendProjectCard = async (req: BlitzApiRequest, project: any, userData: any) => {
   // I want the username to appear as @user in Slack
-  const user = typeof userName === "undefined" ? "" : "@" + userName
+  const user = userData.ok === false ? "" : "@" + userData.user.name
 
   await slack.chat.postMessage({
     text: "Hi",

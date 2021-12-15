@@ -11,14 +11,16 @@ export const getWizeUserFromSlack = async (req: BlitzApiRequest, slackUser: any)
   return wizeUser
 }
 
-export const getProjectWithSlackUser: any = async (req: BlitzApiRequest, wizeUser: any) => {
+export const getProjectWithSlackUser: any = async (req: BlitzApiRequest, wizeUserID: string) => {
   const body = getBodyFromReq(req)
-  const projectId = body.actions[0].value ? body.actions[0].value : null
+  const projectId = body && body.actions !== "undefined" ? body.actions[0].value : null
+
+  if (!projectId) return null
 
   const project = await db.projects.findFirst({
     where: { id: projectId },
     include: {
-      votes: { where: { profileId: wizeUser.id } },
+      votes: { where: { profileId: wizeUserID } },
     },
   })
 
@@ -52,17 +54,17 @@ export const searchForProjects: any = async (searchString: string) => {
   return projects
 }
 
-export const handleVote = async (project: any, wizeUser: any, req: BlitzApiRequest) => {
+export const handleVote = async (project: any, wizeUserID: string, req: BlitzApiRequest) => {
   const body = getBodyFromReq(req)
-  const projectId = body.actions[0].value ? body.actions[0].value : null
+  const projectId = body && body.actions !== "undefined" ? body.actions[0].value : null
 
   if (!projectId) return null
 
   const haveIVoted = project.votes.length > 0 ? true : false
   const sum = haveIVoted ? { decrement: 1 } : { increment: 1 }
   const votesAction = haveIVoted
-    ? { deleteMany: [{ profileId: wizeUser.id }] }
-    : { create: [{ profileId: wizeUser.id }] }
+    ? { deleteMany: [{ profileId: wizeUserID }] }
+    : { create: [{ profileId: wizeUserID }] }
 
   await db.projects.update({
     where: { id: projectId },
