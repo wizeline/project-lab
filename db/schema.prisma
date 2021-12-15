@@ -150,6 +150,7 @@ model Projects {
   target         String?
   demo           String?
   repoUrl        String?
+  slackChannel   String?
   isApproved     Boolean          @default(false)
   status         String           @default("Draft")
   categoryName   String           @default("Experiment")
@@ -184,7 +185,7 @@ model Vote {
 
 model Skills {
   id            String          @id @default(uuid())
-  name          String          @unique
+  name          String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
   profileSkills ProfileSkills[]
