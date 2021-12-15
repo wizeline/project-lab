@@ -398,7 +398,13 @@ const seed = async () => {
       target: "All wizeliners",
       projectStatus: { connect: { name: "Needs Review" } },
       searchSkills: "TypeScript, SQLite, React",
-      skills: { connect: [{ name: "TypeScript" }, { name: "SQLite" }, { name: "React" }] },
+      skills: {
+        connect: [
+          { id: "4b3d0d73-c3a6-457a-bd81-6b7b2be13373" },
+          { id: "b70ca72b-0a56-47f8-af2d-695c79673a68" },
+          { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+        ],
+      },
       labels: { connect: [{ name: "Innovation Camp 2020" }] },
       projectMembers: {
         create: [
@@ -423,7 +429,13 @@ const seed = async () => {
       target: "All wizeliners",
       projectStatus: { connect: { name: "Needs Review" } },
       searchSkills: "TypeScript, SQLite, React",
-      skills: { connect: [{ name: "TypeScript" }, { name: "SQLite" }, { name: "React" }] },
+      skills: {
+        connect: [
+          { id: "4b3d0d73-c3a6-457a-bd81-6b7b2be13373" },
+          { id: "b70ca72b-0a56-47f8-af2d-695c79673a68" },
+          { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+        ],
+      },
       labels: { connect: [{ name: "Innovation Camp 2020" }, { name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
@@ -468,7 +480,13 @@ const seed = async () => {
       target: "All wizeliners`,
       projectStatus: { connect: { name: "Needs Review" } },
       searchSkills: "React, AWS, Ruby",
-      skills: { connect: [{ name: "AWS" }, { name: "Ruby" }, { name: "React" }] },
+      skills: {
+        connect: [
+          { id: "6c859cfb-942c-40c8-b0b3-37de3e739c29" },
+          { id: "66fc5f5f-3be4-453f-8978-8cc3334adda1" },
+          { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+        ],
+      },
       labels: { connect: [{ name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
@@ -494,7 +512,13 @@ const seed = async () => {
       target: "All wizeliners",
       projectStatus: { connect: { name: "Draft" } },
       searchSkills: "Java, PostgreSQL, React",
-      skills: { connect: [{ name: "Java" }, { name: "PostgreSQL" }, { name: "React" }] },
+      skills: {
+        connect: [
+          { id: "f88e6170-9382-4a89-87a4-b820e4b0ac33" },
+          { id: "d7e95b76-6fc0-4e11-9674-61233cbe60ca" },
+          { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+        ],
+      },
       labels: { connect: [{ name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
@@ -527,7 +551,13 @@ const seed = async () => {
       target: "All wizeliners",
       projectStatus: { connect: { name: "Needs Review" } },
       searchSkills: "Go, MySQL, React",
-      skills: { connect: [{ name: "Go" }, { name: "MySQL" }, { name: "React" }] },
+      skills: {
+        connect: [
+          { id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
+          { id: "f6d5b102-6cc4-41a8-8ca0-869aff695485" },
+          { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
+        ],
+      },
       labels: { connect: [{ name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
