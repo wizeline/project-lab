@@ -12,7 +12,7 @@ import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { FullCreate } from "app/projects/validations"
-import { TextField } from "@material-ui/core"
+import { TextField } from "@mui/material"
 
 export const DeleteButton = (props) => {
   const [open, setOpen] = useState(false)

@@ -1,6 +1,6 @@
 import { useRouter, Routes } from "blitz"
 import GoBack from "app/core/layouts/GoBack"
-import { Typography, Grid, Container } from "@material-ui/core"
+import { Typography, Grid, Container } from "@mui/material"
 
 export const AccessDenied = () => {
   const router = useRouter()

@@ -30,8 +30,8 @@
   "dependencies": {
     "@emotion/react": "11.4.0",
     "@emotion/styled": "11.3.0",
-    "@material-ui/core": "5.0.0-beta.2",
-    "@material-ui/icons": "4.11.2",
+    "@mui/icons-material": "5.2.1",
+    "@mui/material": "5.2.3",
     "@prisma/client": "2.26.0",
     "axios": "0.21.1",
     "blitz": "0.38.1",
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/preview-email": "2.0.0",
-    "@types/react": "17.0.11",
+    "@types/react": "17.0.37",
     "eslint": "7.29.0",
     "husky": "6.0.0",
     "lint-staged": "10.5.4",

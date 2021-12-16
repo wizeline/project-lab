@@ -1,5 +1,6 @@
-import { TextField, Alert, IconButton, Snackbar } from "@material-ui/core"
-import CloseIcon from "@material-ui/icons/Close"
+import { TextField, Alert, IconButton, Snackbar } from "@mui/material"
+import { Close } from "@mui/icons-material"
+
 import { ReplyComponentContent } from "./ReplyComment.style"
 import { ReplyActions, SaveReplyButton, ReplyButton } from "./Comments.styles"
 import useReply from "./hooks/useReply"
@@ -30,7 +31,7 @@ const ReplyComment = (props: IProps) => {
                 setShowAlert(false)
               }}
             >
-              <CloseIcon fontSize="inherit" />
+              <Close fontSize="inherit" />
             </IconButton>
           }
           sx={{ mb: 2 }}

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Menu, MenuItem } from "@material-ui/core"
+import { Menu, MenuItem } from "@mui/material"
 import { DropdownMenu } from "./PositionedMenu.style"
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz"
+import { MoreHoriz } from "@mui/icons-material"
 interface IMenu {
   text: string
   callback?: object
@@ -25,8 +25,7 @@ const PositionedMenu = (props: Iprops) => {
   return (
     <>
       <DropdownMenu onClick={handleClick}>
-        {" "}
-        <MoreHorizIcon />{" "}
+        <MoreHoriz />
       </DropdownMenu>
       <Menu
         id="demo-positioned-menu"

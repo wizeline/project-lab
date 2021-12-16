@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Grid, Avatar } from "@material-ui/core"
+import { Grid, Avatar } from "@mui/material"
 import PositionedMenu from "app/core/components/PositionedMenu"
 import Moment from "react-moment"
 import { useSession } from "blitz"

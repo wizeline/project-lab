@@ -1,5 +1,5 @@
 import { useQuery } from "blitz"
-import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@material-ui/core"
+import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@mui/material"
 import { Field } from "react-final-form"
 import getStatuses from "app/statuses/queries/getStatuses"
 import { defaultStatus } from "app/core/utils/constants"

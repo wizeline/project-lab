@@ -1,6 +1,6 @@
 import React from "react"
 import { Link, Routes } from "blitz"
-import { CardActionArea, CardContent, Card } from "@material-ui/core"
+import { CardActionArea, CardContent, Card } from "@mui/material"
 import EllipsisText from "app/core/components/EllipsisText"
 import { defaultStatus } from "../../utils/constants"
 import Image from "next/image"

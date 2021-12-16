@@ -11,14 +11,16 @@ import {
   Snackbar,
   Paper,
   TextField,
-} from "@material-ui/core"
+} from "@mui/material"
 import { CommentForm } from "app/projects/components/CommentForm"
 import deleteComment from "app/projects/mutations/deleteComment"
 import updateComment from "app/projects/mutations/updateComment"
 import createComment from "app/projects/mutations/createComment"
 import getComments from "app/projects/queries/getComments"
-import CloseIcon from "@material-ui/icons/Close"
+// import Close from "@mui/icons-material"
+import { Close } from "@mui/icons-material"
 import { WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
+
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import CommentItem from "./CommentItem"
 import { IComment } from "./CommentInterfaces"
@@ -131,7 +133,7 @@ const Comments = (props: IProps) => {
                 setShowAlert(false)
               }}
             >
-              <CloseIcon fontSize="inherit" />
+              <Close fontSize="inherit" />
             </IconButton>
           }
           sx={{ mb: 2 }}

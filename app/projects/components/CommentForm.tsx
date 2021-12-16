@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/system"
+import { Box } from "@mui/material"
 import { Form, FormProps } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
 

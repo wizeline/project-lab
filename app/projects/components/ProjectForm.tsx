@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FormControlLabel, Switch, Collapse } from "@material-ui/core"
+import { FormControlLabel, Switch, Collapse } from "@mui/material"
 import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"
@@ -68,6 +68,20 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           name="target"
           label="Who is your target user/client"
           placeholder="Millenials"
+        />
+        <LabeledTextField
+          fullWidth
+          style={{ margin: "1em 0" }}
+          name="repoUrl"
+          label="Repo URL"
+          placeholder="https://github.com"
+        />
+        <LabeledTextField
+          fullWidth
+          style={{ margin: "1em 0" }}
+          name="slackChannel"
+          label="Slack Channel"
+          placeholder="#project-name"
         />
         <CategorySelect name="category" label="Category" />
         {projectformType != "create" && <ProjectStatusSelect name="projectStatus" label="Status" />}

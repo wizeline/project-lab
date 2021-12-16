@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Router, useRouterQuery } from "blitz"
-import { Box, TextField } from "@material-ui/core"
+import { Box, TextField } from "@mui/material"
 import CardBox from "app/core/components/CardBox"
 import styled from "@emotion/styled"
 
