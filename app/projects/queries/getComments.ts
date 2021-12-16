@@ -15,11 +15,15 @@ export default resolver.pipe(
       orderBy: [{ createdAt: "desc" }],
       include: {
         author: { select: { firstName: true, lastName: true, avatarUrl: true, id: true } },
+        children: {
+          include: {
+            author: { select: { firstName: true, lastName: true, avatarUrl: true, id: true } },
+          },
+        },
       },
     })
 
     if (!comments) throw new NotFoundError()
-
     return comments
   }
 )
