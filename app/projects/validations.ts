@@ -105,4 +105,5 @@ export const validateIsTeamMember = (session, data) => {
 export const CreateComment = z.object({
   projectId: z.string(),
   body: z.string(),
+  parentId: z.string().or(z.null()),
 })
