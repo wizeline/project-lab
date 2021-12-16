@@ -398,7 +398,7 @@ export const Projects = () => {
   )
 }
 
-const ProjectsPage: BlitzPage = () => {
+const SearchProjectsPage: BlitzPage = () => {
   return (
     <div>
       <Suspense fallback={<Loader />}>
@@ -408,7 +408,7 @@ const ProjectsPage: BlitzPage = () => {
   )
 }
 
-ProjectsPage.authenticate = true
-ProjectsPage.getLayout = (page) => <Layout>{page}</Layout>
+SearchProjectsPage.authenticate = true
+SearchProjectsPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default ProjectsPage
+export default SearchProjectsPage

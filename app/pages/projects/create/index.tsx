@@ -42,11 +42,6 @@ export const NewProject = () => {
             }
           }}
         />
-        <p>
-          <Link href={Routes.ProjectsPage()}>
-            <a>Projects</a>
-          </Link>
-        </p>
       </div>
     </div>
   )

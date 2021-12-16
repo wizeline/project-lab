@@ -34,11 +34,17 @@ var __toModule = (module2) => {
 // blitz.config.ts
 var import_blitz = __toModule(require("blitz"))
 var config = {
+  env: {
+    BASE_URL: "http://localhost:3000",
+  },
   middleware: [
     (0, import_blitz.sessionMiddleware)({
       cookiePrefix: "proposalHunt",
       isAuthorized: import_blitz.simpleRolesIsAuthorized,
     }),
   ],
+  images: {
+    domains: ["lh3.googleusercontent.com", "avatars.slack-edge.com", "s3.us-west-1.amazonaws.com"],
+  },
 }
 module.exports = config
