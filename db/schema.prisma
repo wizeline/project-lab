@@ -122,7 +122,7 @@ model ProjectMembers {
   role         String?
   active       Boolean   @default(true)
   profile      Profiles? @relation(fields: [profileId], references: [id])
-  project      Projects? @relation(fields: [projectId], references: [id])
+  project      Projects? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")
   @@index([profileId], name: "project_members_profile_id_idx")
@@ -210,8 +210,8 @@ model Comments {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
   parentId  String?
-  project   Projects   @relation(fields: [projectId], references: [id])
-  author    Profiles   @relation(fields: [authorId], references: [id])
-  parent    Comments?  @relation("ParentComment", fields: [parentId], references: [id])
+  project   Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author    Profiles   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parent    Comments?  @relation("ParentComment", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   children  Comments[] @relation("ParentComment")
 }
