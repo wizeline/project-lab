@@ -100,8 +100,8 @@ model Profiles {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
   terminatedAt   DateTime?
-  jobTitles      JobTitles?       @relation(fields: [jobTitleId], references: [id])
-  locations      Locations?       @relation(fields: [locationId], references: [id])
+  jobTitles      JobTitles?       @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locations      Locations?       @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   profileSkills  ProfileSkills[]
   projectMembers ProjectMembers[]
   projects       Projects[]
