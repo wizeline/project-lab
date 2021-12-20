@@ -8,6 +8,7 @@ import {
   getSlackUserInfoFromEmail,
 } from "integrations/slack/slackUtils"
 import { getProjectWithName, searchForProjects } from "integrations/slack/dbUtils"
+import { configOptions } from "final-form"
 
 const handler: BlitzApiHandler = (req, res) => {
   if (req.method === "POST") {
@@ -41,10 +42,11 @@ const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) =
     // When call comes from web app
     if (headers["anti-csrf"]) {
       sessionIsValid = await checkUserSession(req, res)
+      if (!sessionIsValid) return
+    } else {
+      // If call comes from Slack, check token
+      if (!checkSlackToken(req)) return
     }
-
-    // If call comes from Slack, check token
-    if (!checkSlackToken(req) || !sessionIsValid) return
 
     if (req.body.type === "event_callback") {
       const inputData = req.body.event.text.split(" ")
@@ -120,7 +122,12 @@ const handleSlackRequest = async (req: BlitzApiRequest, res: BlitzApiResponse) =
 
     if (req.body.type === "slack_notification") {
       const isSession = await checkUserSession(req, res)
-      if (isSession) SendSlackNotification(req.body)
+      if (isSession)
+        SendSlackNotification(req.body)
+          .then(() => {
+            return
+          })
+          .catch((e) => console.error(e))
     }
   }
 }
