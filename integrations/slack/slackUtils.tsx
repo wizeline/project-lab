@@ -42,7 +42,6 @@ export const checkSlackToken = (req: BlitzApiRequest): boolean => {
 
 export const checkUserSession = async (req: BlitzApiRequest, res: BlitzApiResponse) => {
   const userSession = await getSession(req, res)
-  console.log("Checking session..." + userSession)
   return userSession && userSession.userId ? true : false
 }
 
@@ -152,7 +151,6 @@ export const postMessageToSlack = async (msg: string, req: BlitzApiRequest, body
 }
 
 export const SendSlackNotification = async (project: any) => {
-  console.log("Channel in SendSlackNotification: " + slack_channel)
   await slack.chat.postMessage({
     text: "A new proposal was created",
     blocks: getProjectCard(project),
