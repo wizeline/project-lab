@@ -149,6 +149,7 @@ const seed = async () => {
     where: { email: "george.wachira@wizeline.com" },
     update: {},
     create: {
+      id: "3ca763d5-9b77-41a0-8e42-cb29004bece2",
       email: "george.wachira@wizeline.com",
       firstName: "George",
       lastName: "Wachira",
@@ -199,6 +200,7 @@ const seed = async () => {
     where: { email: "edgar.vazquez@wizeline.com" },
     update: {},
     create: {
+      id: "8925828c-6a5d-4569-9947-87f44f755613",
       email: "edgar.vazquez@wizeline.com",
       firstName: "Edgar",
       lastName: "Vazquez",
@@ -229,6 +231,7 @@ const seed = async () => {
     where: { email: "luis.tejeda@wizeline.com" },
     update: {},
     create: {
+      id: "8b3551cf-ddc9-40e9-91f3-f04358093cc6",
       email: "luis.tejeda@wizeline.com",
       firstName: "Luis",
       lastName: "Tejeda",
@@ -239,6 +242,7 @@ const seed = async () => {
     where: { email: "joaquin.popoca@wizeline.com" },
     update: {},
     create: {
+      id: "afe37bfb-a385-4ed8-9c5d-a45aa2902c02",
       email: "joaquin.popoca@wizeline.com",
       firstName: "Joaquin",
       lastName: "Popoca",
@@ -381,6 +385,7 @@ const seed = async () => {
     where: { email: "hector.ramirez@wizeline.com" },
     update: {},
     create: {
+      id: "c9d8a683-3cea-4e6e-98a9-6cfa197a83e7",
       email: "hector.ramirez@wizeline.com",
       firstName: "Hector",
       lastName: "Ramirez",
