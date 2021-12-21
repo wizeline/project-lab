@@ -121,7 +121,7 @@ model ProjectMembers {
   hoursPerWeek Int?
   role         String?
   active       Boolean   @default(true)
-  profile      Profiles? @relation(fields: [profileId], references: [id])
+  profile      Profiles? @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   project      Projects? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")

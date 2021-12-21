@@ -40,7 +40,7 @@ const ProjectsPage: BlitzPage = () => {
         id={item.id}
         title={item.name}
         picture={item.owner?.avatarUrl}
-        initials={initials(item.owner.firstName, item.owner.lastName)}
+        initials={item.owner ? initials(item.owner.firstName, item.owner.lastName) : "--"}
         date={new Intl.DateTimeFormat([], {
           year: "numeric",
           month: "long",

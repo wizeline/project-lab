@@ -30,7 +30,7 @@ export const ProposalCard = (props: IProps) => {
                 <div className="ProposalCard__head">
                   <div className="ProposalCard__head__icon">
                     {props.picture ? (
-                      <Image src={props.picture} width="60" height="60" />
+                      <Image alt={props.initials} src={props.picture} width="60" height="60" />
                     ) : (
                       <span>{props.initials}</span>
                     )}
