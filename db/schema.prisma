@@ -158,9 +158,9 @@ model Projects {
   searchSkills   String           @default("")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
-  owner          Profiles?        @relation(fields: [ownerId], references: [id])
-  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name])
-  category       Category         @relation(fields: [categoryName], references: [name])
+  owner          Profiles?        @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  category       Category         @relation(fields: [categoryName], references: [name], onDelete: Cascade, onUpdate: Cascade)
   projectMembers ProjectMembers[]
   skills         Skills[]
   labels         Labels[]
@@ -177,7 +177,7 @@ model Vote {
   projectId String
   profileId String
   project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  profile   Profiles @relation(fields: [profileId], references: [id])
+  profile   Profiles @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([projectId, profileId])
