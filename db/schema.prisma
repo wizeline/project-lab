@@ -79,7 +79,7 @@ model ProfileSkills {
   skillId     String
   proficiency String?
   profiles    Profiles @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  skills      Skills   @relation(fields: [skillId], references: [id])
+  skills      Skills   @relation(fields: [skillId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([profileId], name: "profile_skills_profile_id_idx")
   @@index([skillId], name: "profile_skills_skill_id_idx")
