@@ -125,7 +125,15 @@ export default async function syncCatalogs(
         },
       },
     }),
-    db.profileSkills.deleteMany({}),
+    db.profileSkills.deleteMany({
+      where: {
+        profileId: {
+          notIn: profilesFromWizelineOS.map((profile) => {
+            return profile.id
+          }),
+        },
+      },
+    }),
     ...profilesUpsert,
   ])
 
