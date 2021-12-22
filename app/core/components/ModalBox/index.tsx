@@ -20,7 +20,7 @@ interface IProps {
   children: React.ReactNode
   open: boolean
   handleClose: React.MouseEventHandler
-  boxStyle: React.CSSProperties
+  boxStyle?: React.CSSProperties
 }
 
 export const ModalBox = ({ children, boxStyle, ...props }: IProps) => {
