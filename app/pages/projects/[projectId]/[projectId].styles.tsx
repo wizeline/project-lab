@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { Button } from "@mui/material"
 
 export const HeaderInfo = styled.div`
   position: relative;
@@ -64,4 +65,14 @@ export const DetailMoreHead = styled.div`
     display: inline-block;
   }
 `
+
+export const OrangeColoredButton = styled(Button)`
+  background-color: #ff6f18;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #e56315;
+  }
+`
+
 export default HeaderInfo

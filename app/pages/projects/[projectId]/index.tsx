@@ -6,10 +6,11 @@ import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
-import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@mui/material"
+import { Card, CardContent, Container, Chip, Stack, Grid, Typography, Button } from "@mui/material"
 import Editor from "rich-markdown-editor"
-import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
+import ModalBox from "app/core/components/ModalBox"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -25,6 +26,10 @@ export const Project = () => {
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
     }
+  }
+
+  function handleJoinProject() {
+    console.log("join project")
   }
 
   return (
@@ -137,6 +142,24 @@ export const Project = () => {
                     </Stack>
                   </CardContent>
                 </Card>
+                <Card>
+                  <CardContent>
+                    <big>Help Wanted:</big>
+                    <Stack direction="column">
+                      <div>
+                        <Typography component={"div"} color="text.primary">
+                          <div>placeholder</div>
+                          <div>
+                            <small>placeholder</small>
+                          </div>
+                        </Typography>
+                      </div>
+                    </Stack>
+                  </CardContent>
+                </Card>
+                <OrangeColoredButton onClick={handleJoinProject} variant="contained">
+                  Join Project
+                </OrangeColoredButton>
               </Stack>
             </Grid>
           </Grid>
@@ -145,6 +168,15 @@ export const Project = () => {
       <div className="wrapper">
         <Comments projectId={projectId!} />
       </div>
+      {/* <ModalBox open boxStyle={{
+        minWidth: 800
+      }}>
+        <div style={{
+          minHeight: 500,
+        }}>
+          <p>hello</p>
+        </div>
+      </ModalBox> */}
     </>
   )
 }

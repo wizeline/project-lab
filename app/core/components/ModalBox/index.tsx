@@ -20,9 +20,10 @@ interface IProps {
   children: React.ReactNode
   open: boolean
   handleClose: React.MouseEventHandler
+  boxStyle: React.CSSProperties
 }
 
-export const ModalBox = ({ children, ...props }: IProps) => {
+export const ModalBox = ({ children, boxStyle, ...props }: IProps) => {
   return (
     <Modal
       open={props.open}
@@ -31,7 +32,7 @@ export const ModalBox = ({ children, ...props }: IProps) => {
       aria-describedby="modal-modal-description"
     >
       <ModalContainer>
-        <BoxContainer>
+        <BoxContainer style={boxStyle}>
           <Box sx={{ marginTop: "0px" }}>{children}</Box>
         </BoxContainer>
       </ModalContainer>
