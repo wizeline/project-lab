@@ -99,6 +99,33 @@ yarn test
 
 Blitz comes with a test setup using [Jest](https://jestjs.io/) and [react-testing-library](https://testing-library.com/).
 
+## Update BlitzJS
+
+BlitzJS is updated constantly so in order to get the latest features we need to mantain the package in its `LTS` version. These are the steps to upgarde BlitzJS in the project:
+
+1. Update the global BlitzJS package through yarn:
+
+```
+yarn global add blitz
+```
+
+2. Navigate to the parent directory of the project, for example if the project is located at `~/dev/projects/project-lab` you have to navigate to `~/dev/projects`.
+
+3. Once you are located in the parent directory, run the following command:
+
+```
+blitz new project-lab
+```
+
+4. A prompt will be launched with a series of options, you should skip the generation of the following files:
+
+   - Database generation
+   - package.json
+   - Authentication
+   - README.md
+
+5. Finally, follow the **Getting started** instructions from **step 5** to make sure everything is working.
+
 ## Commands
 
 Blitz comes with a powerful CLI that is designed to make development easy and fast. You can install it with `npm i -g blitz`

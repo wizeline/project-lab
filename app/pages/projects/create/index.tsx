@@ -19,7 +19,7 @@ export const NewProject = () => {
         <h1>Create your proposal</h1>
       </div>
       <div className="wrapper">
-        <GoBack title="Back to main page" onClick={() => Router.push(Routes.ProjectsPage())} />
+        <GoBack title="Back to main page" onClick={() => Router.push(Routes.Home())} />
         <ProjectForm
           projectformType="create"
           submitText="Create Project"

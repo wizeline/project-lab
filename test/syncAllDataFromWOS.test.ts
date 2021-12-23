@@ -193,7 +193,7 @@ describe("sync All data from WOS", () => {
     expect(jobTitlesUpdated[0]?.name).toEqual("JobTitleNameUpdated")
     expect(locationsUpdated[0]?.name).toEqual("locationNameUpdated")
     expect(profilesUpdated.length).toEqual(1)
-    expect(profileSkillsUpdated.length).toEqual(2)
+    expect(profileSkillsUpdated.length).toEqual(3)
   })
 })
 

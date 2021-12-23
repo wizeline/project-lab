@@ -32,7 +32,6 @@ export const Project = () => {
     <>
       <Header title={project.name} />
       <div className="wrapper">
-        <GoBack title="Back to main page" onClick={() => Router.push(Routes.ProjectsPage())} />
         <HeaderInfo>
           <div className="headerInfo--action">
             <button
@@ -145,7 +144,7 @@ export const Project = () => {
         </Container>
       </div>
       <div className="wrapper">
-        <Comments projectId={projectId} />
+        <Comments projectId={projectId!} />
       </div>
     </>
   )
