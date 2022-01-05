@@ -1,23 +1,29 @@
 import { useState } from "react"
+import { useQuery } from "blitz"
 import { FormControlLabel, Switch, Collapse } from "@mui/material"
 import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextFieldArea } from "app/core/components/LabeledTextFieldArea"
-import { CategorySelect } from "app/core/components/CategorySelect"
+import { InputSelect } from "app/core/components/InputSelect"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
-import { ProjectStatusSelect } from "app/core/components/ProjectStatusSelect"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
 import TextEditor from "app/core/components/TextEditor"
+
+import getCategories from "app/categories/queries/getCategories"
+import getStatuses from "app/statuses/queries/getStatuses"
+import { defaultCategory, defaultStatus } from "app/core/utils/constants"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectformType, initialValues } = props
   const [displayFields, setDisplayFields] = useState(projectformType == "create" ? false : true)
+  const [categories] = useQuery(getCategories, {})
+  const [statuses] = useQuery(getStatuses, {})
 
   const handleDisplaySwitch = (e: any) => {
     console.log(`Change value of ${e.target.checked.toString()}`)
@@ -26,6 +32,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
 
   const getOwner = (initialValues) => {
     const data = initialValues.owner
+
     return {
       profileId: data.id,
       name: `${data.firstName} ${data.lastName}`,
@@ -83,8 +90,20 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Slack Channel"
           placeholder="#project-name"
         />
-        <CategorySelect name="category" label="Category" />
-        {projectformType != "create" && <ProjectStatusSelect name="projectStatus" label="Status" />}
+        <InputSelect
+          valuesList={categories}
+          defaultValue={defaultCategory}
+          name="category"
+          label="Category"
+        />
+        {projectformType != "create" && (
+          <InputSelect
+            valuesList={statuses}
+            defaultValue={defaultStatus}
+            name="projectStatus"
+            label="Status"
+          />
+        )}
         <SkillsSelect name="skills" label="Skills" />
         <LabelsSelect name="labels" label="Labels" />
         <ProjectMembersField name="projectMembers" label="Add a member" />
