@@ -1,4 +1,4 @@
-import { BlitzApiHandler, BlitzApiRequest, BlitzApiResponse } from "@blitzjs/core"
+import { BlitzApiHandler, BlitzApiRequest, BlitzApiResponse } from "blitz"
 import {
   checkSlackToken,
   sendProjectCard,

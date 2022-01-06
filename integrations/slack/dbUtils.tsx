@@ -1,5 +1,5 @@
 import db from "db"
-import { BlitzApiRequest } from "@blitzjs/core"
+import { BlitzApiRequest } from "blitz"
 import { getBodyFromReq } from "./slackUtils"
 
 export const getWizeUserFromSlack = async (req: BlitzApiRequest, slackUser: any) => {
