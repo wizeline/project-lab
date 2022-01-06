@@ -1,6 +1,7 @@
 import { Suspense } from "react"
-import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Link, useQuery, useParam, BlitzPage, useMutation, Routes, Router } from "blitz"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
+import GoBack from "app/core/layouts/GoBack"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"

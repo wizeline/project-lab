@@ -82,14 +82,14 @@ jobs:
       - name: Add Full Text Searches
         run: sqlite3 ${{ env.DB_PATH }} < db/search_indexes.sql
 
+      - name: Sync Skills With Wizeline OS
+        run: yarn sync-all-from-wos
+
       - name: Add Test Data
         run: |
           if [ "${{ env.ADD_SEED_DATA }}" == "yes" ]; then
             blitz db seed
           fi
-
-      - name: Sync Skills With Wizeline OS
-        run: yarn sync-all-from-wos
 
       - name: Terraform Change Workspace Lightsail
         uses: dflook/terraform-new-workspace@v1
