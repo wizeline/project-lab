@@ -1,7 +1,6 @@
-import { Suspense } from "react"
-import { Link, useQuery, useParam, BlitzPage, useMutation, Routes, Router } from "blitz"
+import { Suspense, useState } from "react"
+import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
-import GoBack from "app/core/layouts/GoBack"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
@@ -11,13 +10,14 @@ import { Card, CardContent, Container, Chip, Stack, Grid, Typography, Button } f
 import Editor from "rich-markdown-editor"
 import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
-import ModalBox from "app/core/components/ModalBox"
+import JoinProjectModal from "app/projects/components/joinProjectModal"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
+  const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
 
   const handleVote = async (id: string) => {
     try {
@@ -30,7 +30,11 @@ export const Project = () => {
   }
 
   function handleJoinProject() {
-    console.log("join project")
+    setShowJoinModal(true)
+  }
+
+  function handleCloseModal() {
+    setShowJoinModal(false)
   }
 
   return (
@@ -169,15 +173,7 @@ export const Project = () => {
       <div className="wrapper">
         <Comments projectId={projectId!} />
       </div>
-      {/* <ModalBox open boxStyle={{
-        minWidth: 800
-      }}>
-        <div style={{
-          minHeight: 500,
-        }}>
-          <p>hello</p>
-        </div>
-      </ModalBox> */}
+      <JoinProjectModal open={showJoinModal} handleCloseModal={handleCloseModal} />
     </>
   )
 }

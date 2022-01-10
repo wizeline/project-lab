@@ -32,7 +32,7 @@ export const ModalBox = ({ children, boxStyle, ...props }: IProps) => {
       aria-describedby="modal-modal-description"
     >
       <ModalContainer>
-        <BoxContainer style={boxStyle}>
+        <BoxContainer style={boxStyle} {...props}>
           <Box sx={{ marginTop: "0px" }}>{children}</Box>
         </BoxContainer>
       </ModalContainer>
