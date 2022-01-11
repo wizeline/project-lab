@@ -1,7 +1,7 @@
 import React from "react"
+import { Routes, useRouter } from "blitz"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
 import CareerPathComponent from "app/projects/components/joinProjectSucess/careerPathComponent"
 import { OrangeColoredButton } from "../[projectId].styles"
 
@@ -59,6 +59,9 @@ const path = [
 ]
 
 function JoinSuccess() {
+  const router = useRouter()
+  const goBack = () => router.back()
+
   return (
     <Box
       sx={{
@@ -99,7 +102,9 @@ function JoinSuccess() {
           You have successfully joined Wize Runner
         </Typography>
         <CareerPathComponent path={path} />
-        <OrangeColoredButton variant="contained">Continue</OrangeColoredButton>
+        <OrangeColoredButton onClick={goBack} variant="contained">
+          Continue
+        </OrangeColoredButton>
       </Box>
     </Box>
   )

@@ -26,12 +26,7 @@ const JoinProjectModal = (props: IProps) => {
   const router = useRouter()
 
   return (
-    <ModalResponsive
-      open={props.open}
-      handleClose={(a) => {
-        console.log(a)
-      }}
-    >
+    <ModalResponsive open={props.open} handleClose={() => {}}>
       <Form
         {...props}
         onSubmit={async (values) => {
