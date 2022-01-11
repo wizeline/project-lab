@@ -173,7 +173,11 @@ export const Project = () => {
       <div className="wrapper">
         <Comments projectId={projectId!} />
       </div>
-      <JoinProjectModal open={showJoinModal} handleCloseModal={handleCloseModal} />
+      <JoinProjectModal
+        projectId={projectId}
+        open={showJoinModal}
+        handleCloseModal={handleCloseModal}
+      />
     </>
   )
 }

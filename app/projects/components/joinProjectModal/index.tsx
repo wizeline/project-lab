@@ -13,14 +13,17 @@ import {
   CommitmentDivContainer,
   OrangeColoredButton,
 } from "./joinProjectModal.styles"
+import { Routes, useRouter } from "blitz"
 
 interface IProps {
   open: boolean
   handleCloseModal: Function
+  projectId: any
 }
 
 const JoinProjectModal = (props: IProps) => {
   const handleCloseModal = () => props.handleCloseModal()
+  const router = useRouter()
 
   return (
     <ModalResponsive
@@ -34,6 +37,8 @@ const JoinProjectModal = (props: IProps) => {
         onSubmit={async (values) => {
           try {
             props.handleCloseModal()
+
+            router.push(Routes.JoinSuccess({ projectId: props.projectId }))
             console.log(values)
           } catch (error) {
             console.error(error)
