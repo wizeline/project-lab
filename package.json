@@ -32,6 +32,7 @@
     "@emotion/styled": "11.3.0",
     "@mui/icons-material": "5.2.1",
     "@mui/material": "5.2.3",
+    "@mui/x-data-grid": "5.2.2",
     "@prisma/client": "2.26.0",
     "axios": "0.21.1",
     "blitz": "0.44.4",
