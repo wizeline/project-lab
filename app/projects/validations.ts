@@ -107,3 +107,9 @@ export const CreateComment = z.object({
   body: z.string(),
   parentId: z.string().or(z.null()),
 })
+
+export const CreateProjectMember = z.object({
+  projectId: z.any(),
+  hoursPerWeek: z.number(),
+  role: z.string(),
+})

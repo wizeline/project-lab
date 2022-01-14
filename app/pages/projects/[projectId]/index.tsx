@@ -162,9 +162,11 @@ export const Project = () => {
                     </Stack>
                   </CardContent>
                 </Card>
-                <OrangeColoredButton onClick={handleJoinProject} variant="contained">
-                  Join Project
-                </OrangeColoredButton>
+                {!isTeamMember && (
+                  <OrangeColoredButton onClick={handleJoinProject} variant="contained">
+                    Join Project
+                  </OrangeColoredButton>
+                )}
               </Stack>
             </Grid>
           </Grid>
@@ -174,7 +176,7 @@ export const Project = () => {
         <Comments projectId={projectId!} />
       </div>
       <JoinProjectModal
-        projectId={projectId}
+        projectId={projectId!}
         open={showJoinModal}
         handleCloseModal={handleCloseModal}
       />
