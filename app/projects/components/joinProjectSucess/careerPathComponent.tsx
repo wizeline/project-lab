@@ -3,23 +3,51 @@ import Card from "@mui/material/Card"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { ArrowDownIcon, CardHeaderComponent } from "./joinProjectSuccess.styles"
+import styled from "@emotion/styled";
+import Checkbox from "@mui/material/Checkbox";
 
 interface IPathItem {
   current: boolean
   title: string
-  criteria: string
   criteriaDescription: string
-  tasks: string
-  taskItems: Array<string>
-  mission: string
+  taskItems: Array<any>
   missionDescription: string
 }
 
 interface ICareerPathComponentProps {
-  path?: Array<IPathItem>
+  path?: Array<IPathItem>;
+  viewMode?: boolean;
 }
 
-function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
+const HorizontalDiv = styled.div`
+  flex-direction: row;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+interface ITaskItemProps {
+  editable?: boolean;
+  title?: string;
+  description?: string;
+  completed?: boolean;
+}
+
+function TaskItem({ editable, title, description, completed}: ITaskItemProps) {
+  return (
+    <HorizontalDiv>
+      {editable && (
+        <Checkbox checked={completed} disabled={!editable}  />
+      )}
+      <p>
+        {title}
+      </p>
+    </HorizontalDiv>
+  )
+}
+
+function CareerPathComponent({ path = [], viewMode = true }: ICareerPathComponentProps) {
   return (
     <>
       <Box
@@ -59,23 +87,23 @@ function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
             <ArrowDownIcon current={pathItem.current} />
             <div
               style={{
-                paddingLeft: "20px",
-                paddingRight: "20px",
+                paddingLeft: "5px",
+                paddingRight: "5px",
                 flexGrow: 1,
                 justifyContent: "flex-start",
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <b style={{ marginTop: "20px" }}>{pathItem.criteria}</b>
+              <b>Criteria:</b>
               <p>{pathItem.criteriaDescription}</p>
 
-              <b style={{ marginTop: "10px" }}>{pathItem.tasks}</b>
+              <b>Tasks:</b>
               {pathItem.taskItems.map((taskItem, index) => (
-                <p key={index}>{taskItem}</p>
+                <TaskItem editable={viewMode} {...taskItem} key={index} />
               ))}
 
-              <b style={{ marginTop: "10px" }}>{pathItem.mission}</b>
+              <b>Mission:</b>
               <p>{pathItem.missionDescription}</p>
             </div>
           </Card>

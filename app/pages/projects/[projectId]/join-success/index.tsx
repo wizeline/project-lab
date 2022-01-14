@@ -8,43 +8,118 @@ import { OrangeColoredButton } from "../[projectId].styles"
 const path = [
   {
     current: true,
-    title: "Stage 1",
-    criteria: "Criteria",
-    criteriaDescription: "Criteria description",
-    tasks: "Tasks",
-    taskItems: ["item 1"],
-    mission: "Mission",
-    missionDescription: "Mission description",
+    title: "Stage Name 1",
+    criteriaDescription: "criteria description 1",
+    taskItems: [{
+      editable: true,
+      title: "Task 1",
+      description: "Description for task 1",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 2",
+      description: "Description for task 2",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 3",
+      description: "Description for task 3",
+      completed: false
+    }
+    ],
+    missionDescription: "mission description 1",
   },
   {
     current: false,
-    title: "Stage 2",
-    criteria: "Criteria",
-    criteriaDescription: "Criteria description",
-    tasks: "Tasks",
-    taskItems: ["item 1"],
-    mission: "Mission",
-    missionDescription: "Mission description",
+    title: "Stage Name 2",
+    criteriaDescription: "criteria description 2",
+    taskItems: [{
+      editable: true,
+      title: "Task 1",
+      description: "Description for task 1",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 2",
+      description: "Description for task 2",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 3",
+      description: "Description for task 3",
+      completed: false
+    }
+    ],
+    missionDescription: "mission description 2",
   },
   {
     current: false,
-    title: "Stage 3",
-    criteria: "Criteria",
-    criteriaDescription: "Criteria description",
-    tasks: "Tasks",
-    taskItems: ["item 1"],
-    mission: "Mission",
-    missionDescription: "Mission description",
+    title: "Stage Name 3",
+    criteriaDescription: "criteria description 3",
+    taskItems: [{
+      editable: true,
+      title: "Task 1",
+      description: "Description for task 1",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 2",
+      description: "Description for task 2",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 3",
+      description: "Description for task 3",
+      completed: false
+    }
+    ],
+    missionDescription: "mission description 3",
   },
   {
     current: false,
-    title: "Stage 4",
-    criteria: "Criteria",
-    criteriaDescription: "Criteria description",
-    tasks: "Tasks",
-    taskItems: ["item 1"],
-    mission: "Mission",
-    missionDescription: "Mission description",
+    title: "Stage Name 4",
+    criteriaDescription: "criteria description 4",
+    taskItems: [{
+      editable: true,
+      title: "Task 1",
+      description: "Description for task 1",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 2",
+      description: "Description for task 2",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 3",
+      description: "Description for task 3",
+      completed: false
+    }
+    ],
+    missionDescription: "mission description 4",
+  },
+  {
+    current: false,
+    title: "Stage Name 5",
+    criteriaDescription: "criteria description 5",
+    taskItems: [{
+      editable: true,
+      title: "Task 1",
+      description: "Description for task 1",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 2",
+      description: "Description for task 2",
+      completed: true
+    }, {
+      editable: true,
+      title: "Task 3",
+      description: "Description for task 3",
+      completed: false
+    }
+    ],
+    missionDescription: "mission description 5",
   },
 ]
 
@@ -97,7 +172,7 @@ function JoinSuccess(props) {
         >
           You have successfully joined the project
         </Typography>
-        <CareerPathComponent path={path} />
+        <CareerPathComponent path={path} viewMode={false} />
         <OrangeColoredButton onClick={goBack} variant="contained">
           Continue
         </OrangeColoredButton>
