@@ -1,16 +1,17 @@
 import { Suspense, useState } from "react"
+import Editor from "rich-markdown-editor"
 import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@mui/material"
+
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
-import { Card, CardContent, Container, Chip, Stack, Grid, Typography, Button } from "@mui/material"
-import Editor from "rich-markdown-editor"
-import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
+import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -153,9 +154,9 @@ export const Project = () => {
                     <Stack direction="column">
                       <div>
                         <Typography component={"div"} color="text.primary">
-                          <div>placeholder</div>
+                          <div>React Js</div>
                           <div>
-                            <small>placeholder</small>
+                            <small>(Any level)</small>
                           </div>
                         </Typography>
                       </div>
