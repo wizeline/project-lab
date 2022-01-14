@@ -123,9 +123,15 @@ const path = [
   },
 ]
 
-function JoinSuccess() {
+interface IProps {
+  projectId: any
+}
+
+function JoinSuccess(props) {
   const router = useRouter()
   const goBack = () => router.back()
+  console.log("a", props)
+  console.log(props.projectId)
 
   return (
     <Box
@@ -158,13 +164,13 @@ function JoinSuccess() {
           Congratulations!
         </Typography>
         <Typography
-          variant="h6"
+          variant="h5"
           sx={{
             marginBottom: "20px",
             fontWeight: "bold",
           }}
         >
-          You have successfully joined Wize Runner
+          You have successfully joined the project
         </Typography>
         <CareerPathComponent path={path} viewMode={false} />
         <OrangeColoredButton onClick={goBack} variant="contained">

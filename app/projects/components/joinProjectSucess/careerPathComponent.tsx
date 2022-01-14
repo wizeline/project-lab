@@ -56,6 +56,8 @@ function CareerPathComponent({ path = [], viewMode = true }: ICareerPathComponen
           flexGrow: 1,
           display: "flex",
           flexDirection: "row",
+          marginTop: "10px",
+          marginBottom: "10px",
         }}
       >
         {path.map((pathItem, index) => (
@@ -107,7 +109,7 @@ function CareerPathComponent({ path = [], viewMode = true }: ICareerPathComponen
           </Card>
         ))}
       </Box>
-      <Typography variant="h4" sx={{ marginTop: "30px" }}>
+      <Typography variant="h5" sx={{ marginTop: "30px", marginBottom: "30px" }}>
         {`There are ${path.length} stages in your contributor path`}
       </Typography>
     </>

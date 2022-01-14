@@ -2,7 +2,7 @@ import React from "react"
 import InputSelect from "app/core/components/InputSelect"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { skills, availabilityValues } from "app/core/utils/constants"
+import { availabilityValues } from "app/core/utils/constants"
 import { Close as CloseIcon } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 
@@ -55,7 +55,12 @@ const JoinProjectModal = (props: IProps) => {
             />
 
             <p className="question">What role will you be taking?</p>
-            <InputSelect valuesList={skills} name="skills" label="Skills" margin="none" />
+            <LabeledTextField
+              name="role"
+              fullWidth
+              label="Role"
+              outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
+            />
 
             <p className="question">How many hours will you invest in this project?</p>
             <InputSelect
@@ -67,10 +72,7 @@ const JoinProjectModal = (props: IProps) => {
           </FormDivContainer>
 
           <CommitmentDivContainer>
-            <IconButton
-              onClick={handleCloseModal}
-              style={{ color: "#ff6f18", alignSelf: "flex-end" }}
-            >
+            <IconButton onClick={handleCloseModal} style={{ alignSelf: "flex-end" }}>
               <CloseIcon />
             </IconButton>
 
