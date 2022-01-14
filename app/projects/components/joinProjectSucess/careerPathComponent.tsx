@@ -28,6 +28,8 @@ function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
           flexGrow: 1,
           display: "flex",
           flexDirection: "row",
+          marginTop: "10px",
+          marginBottom: "10px",
         }}
       >
         {path.map((pathItem, index) => (
@@ -65,21 +67,21 @@ function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
                 flexDirection: "column",
               }}
             >
-              <b>{pathItem.criteria}</b>
+              <b style={{ marginTop: "20px" }}>{pathItem.criteria}</b>
               <p>{pathItem.criteriaDescription}</p>
 
-              <b>{pathItem.tasks}</b>
+              <b style={{ marginTop: "10px" }}>{pathItem.tasks}</b>
               {pathItem.taskItems.map((taskItem, index) => (
                 <p key={index}>{taskItem}</p>
               ))}
 
-              <b>{pathItem.mission}</b>
+              <b style={{ marginTop: "10px" }}>{pathItem.mission}</b>
               <p>{pathItem.missionDescription}</p>
             </div>
           </Card>
         ))}
       </Box>
-      <Typography variant="h4" sx={{ marginTop: "30px" }}>
+      <Typography variant="h5" sx={{ marginTop: "30px", marginBottom: "30px" }}>
         {`There are ${path.length} stages in your contributor path`}
       </Typography>
     </>

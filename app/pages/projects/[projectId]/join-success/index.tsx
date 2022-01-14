@@ -8,59 +8,55 @@ import { OrangeColoredButton } from "../[projectId].styles"
 const path = [
   {
     current: true,
-    title: "placeholder",
-    criteria: "placeholder criteria",
-    criteriaDescription: "criteria description",
-    tasks: "placeholder tasks",
+    title: "Stage 1",
+    criteria: "Criteria",
+    criteriaDescription: "Criteria description",
+    tasks: "Tasks",
     taskItems: ["item 1"],
-    mission: "Placeholder mission",
-    missionDescription: "mission description",
+    mission: "Mission",
+    missionDescription: "Mission description",
   },
   {
     current: false,
-    title: "placeholder",
-    criteria: "placeholder criteria",
-    criteriaDescription: "criteria description",
-    tasks: "placeholder tasks",
+    title: "Stage 2",
+    criteria: "Criteria",
+    criteriaDescription: "Criteria description",
+    tasks: "Tasks",
     taskItems: ["item 1"],
-    mission: "Placeholder mission",
-    missionDescription: "mission description",
+    mission: "Mission",
+    missionDescription: "Mission description",
   },
   {
     current: false,
-    title: "placeholder",
-    criteria: "placeholder criteria",
-    criteriaDescription: "criteria description",
-    tasks: "placeholder tasks",
+    title: "Stage 3",
+    criteria: "Criteria",
+    criteriaDescription: "Criteria description",
+    tasks: "Tasks",
     taskItems: ["item 1"],
-    mission: "Placeholder mission",
-    missionDescription: "mission description",
+    mission: "Mission",
+    missionDescription: "Mission description",
   },
   {
     current: false,
-    title: "placeholder",
-    criteria: "placeholder criteria",
-    criteriaDescription: "criteria description",
-    tasks: "placeholder tasks",
+    title: "Stage 4",
+    criteria: "Criteria",
+    criteriaDescription: "Criteria description",
+    tasks: "Tasks",
     taskItems: ["item 1"],
-    mission: "Placeholder mission",
-    missionDescription: "mission description",
-  },
-  {
-    current: false,
-    title: "placeholder",
-    criteria: "placeholder criteria",
-    criteriaDescription: "criteria description",
-    tasks: "placeholder tasks",
-    taskItems: ["item 1"],
-    mission: "Placeholder mission",
-    missionDescription: "mission description",
+    mission: "Mission",
+    missionDescription: "Mission description",
   },
 ]
 
-function JoinSuccess() {
+interface IProps {
+  projectId: any
+}
+
+function JoinSuccess(props) {
   const router = useRouter()
   const goBack = () => router.back()
+  console.log("a", props)
+  console.log(props.projectId)
 
   return (
     <Box
@@ -93,13 +89,13 @@ function JoinSuccess() {
           Congratulations!
         </Typography>
         <Typography
-          variant="h6"
+          variant="h5"
           sx={{
             marginBottom: "20px",
             fontWeight: "bold",
           }}
         >
-          You have successfully joined Wize Runner
+          You have successfully joined the project
         </Typography>
         <CareerPathComponent path={path} />
         <OrangeColoredButton onClick={goBack} variant="contained">
