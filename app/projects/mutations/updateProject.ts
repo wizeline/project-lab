@@ -37,6 +37,11 @@ export default resolver.pipe(
         skills: true,
         labels: true,
         owner: true,
+        stages: {
+          include: {
+            projectTasks: true,
+          },
+        },
         projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
         votes: { where: { profileId: session.profileId } },
       },
