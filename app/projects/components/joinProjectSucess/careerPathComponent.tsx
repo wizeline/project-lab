@@ -3,23 +3,47 @@ import Card from "@mui/material/Card"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { ArrowDownIcon, CardHeaderComponent } from "./joinProjectSuccess.styles"
+import styled from "@emotion/styled"
+import Checkbox from "@mui/material/Checkbox"
 
 interface IPathItem {
   current: boolean
   title: string
-  criteria: string
   criteriaDescription: string
-  tasks: string
-  taskItems: Array<string>
-  mission: string
+  taskItems: Array<any>
   missionDescription: string
 }
 
 interface ICareerPathComponentProps {
   path?: Array<IPathItem>
+  viewMode?: boolean
 }
 
-function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
+const HorizontalDiv = styled.div`
+  flex-direction: row;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`
+
+interface ITaskItemProps {
+  editable?: boolean
+  title?: string
+  description?: string
+  completed?: boolean
+}
+
+function TaskItem({ editable, title, description, completed }: ITaskItemProps) {
+  return (
+    <HorizontalDiv>
+      {editable && <Checkbox checked={completed} disabled={!editable} />}
+      <p>{title}</p>
+    </HorizontalDiv>
+  )
+}
+
+function CareerPathComponent({ path = [], viewMode = true }: ICareerPathComponentProps) {
   return (
     <>
       <Box
@@ -28,6 +52,8 @@ function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
           flexGrow: 1,
           display: "flex",
           flexDirection: "row",
+          marginTop: "10px",
+          marginBottom: "10px",
         }}
       >
         {path.map((pathItem, index) => (
@@ -57,29 +83,29 @@ function CareerPathComponent({ path = [] }: ICareerPathComponentProps) {
             <ArrowDownIcon current={pathItem.current} />
             <div
               style={{
-                paddingLeft: "20px",
-                paddingRight: "20px",
+                paddingLeft: "5px",
+                paddingRight: "5px",
                 flexGrow: 1,
                 justifyContent: "flex-start",
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <b>{pathItem.criteria}</b>
+              <b>Criteria:</b>
               <p>{pathItem.criteriaDescription}</p>
 
-              <b>{pathItem.tasks}</b>
+              <b>Tasks:</b>
               {pathItem.taskItems.map((taskItem, index) => (
-                <p key={index}>{taskItem}</p>
+                <TaskItem editable={viewMode} {...taskItem} key={index} />
               ))}
 
-              <b>{pathItem.mission}</b>
+              <b>Mission:</b>
               <p>{pathItem.missionDescription}</p>
             </div>
           </Card>
         ))}
       </Box>
-      <Typography variant="h4" sx={{ marginTop: "30px" }}>
+      <Typography variant="h5" sx={{ marginTop: "30px", marginBottom: "30px" }}>
         {`There are ${path.length} stages in your contributor path`}
       </Typography>
     </>

@@ -2,10 +2,10 @@ import React from "react"
 import InputSelect from "app/core/components/InputSelect"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { skills, availabilityValues } from "app/core/utils/constants"
+import { availabilityValues } from "app/core/utils/constants"
 import { Close as CloseIcon } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
-
+import useProjectMembers from "app/projects/hooks/useProjectMembers"
 import {
   Grid,
   ModalResponsive,
@@ -13,18 +13,19 @@ import {
   CommitmentDivContainer,
   OrangeColoredButton,
 } from "./joinProjectModal.styles"
-import { Routes, useRouter } from "blitz"
+import { Routes, useRouter, useSession } from "blitz"
 
 interface IProps {
   open: boolean
   handleCloseModal: Function
-  projectId: any
+  projectId: string
 }
 
 const JoinProjectModal = (props: IProps) => {
+  const session = useSession()
   const handleCloseModal = () => props.handleCloseModal()
   const router = useRouter()
-
+  const { createProjectMemberHandler } = useProjectMembers()
   return (
     <ModalResponsive open={props.open} handleClose={() => {}}>
       <Form
@@ -32,6 +33,11 @@ const JoinProjectModal = (props: IProps) => {
         onSubmit={async (values) => {
           try {
             props.handleCloseModal()
+            createProjectMemberHandler({
+              projectId: props.projectId,
+              role: values.skills.name,
+              hoursPerWeek: values.availability.value!,
+            })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
             console.log(values)
@@ -55,7 +61,12 @@ const JoinProjectModal = (props: IProps) => {
             />
 
             <p className="question">What role will you be taking?</p>
-            <InputSelect valuesList={skills} name="skills" label="Skills" margin="none" />
+            <LabeledTextField
+              name="role"
+              fullWidth
+              label="Role"
+              outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
+            />
 
             <p className="question">How many hours will you invest in this project?</p>
             <InputSelect
@@ -67,10 +78,7 @@ const JoinProjectModal = (props: IProps) => {
           </FormDivContainer>
 
           <CommitmentDivContainer>
-            <IconButton
-              onClick={handleCloseModal}
-              style={{ color: "#ff6f18", alignSelf: "flex-end" }}
-            >
+            <IconButton onClick={handleCloseModal} style={{ alignSelf: "flex-end" }}>
               <CloseIcon />
             </IconButton>
 
