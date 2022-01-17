@@ -23,6 +23,12 @@ export default resolver.pipe(
           include: { profile: { select: { firstName: true, lastName: true } } },
           orderBy: [{ active: "desc" }, { role: "asc" }],
         },
+        stages: {
+          include: {
+            projectTasks: true,
+          },
+          orderBy: [{ position: "asc" }],
+        },
         votes: { where: { profileId: session.profileId } },
       },
     })

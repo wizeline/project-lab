@@ -107,3 +107,8 @@ export const CreateComment = z.object({
   body: z.string(),
   parentId: z.string().or(z.null()),
 })
+
+export const createContributorPath = z.object({
+  taskId: z.string(),
+  projectMemberId: z.string(),
+})

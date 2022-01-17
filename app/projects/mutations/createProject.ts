@@ -1,7 +1,7 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { FullCreate } from "app/projects/validations"
-import { defaultCategory, defaultStatus } from "app/core/utils/constants"
+import { defaultCategory, defaultStatus, contributorPath } from "app/core/utils/constants"
 
 export default resolver.pipe(
   resolver.zod(FullCreate),
@@ -24,6 +24,32 @@ export default resolver.pipe(
         },
       },
     })
+
+    for (let i = 0; i < contributorPath?.length; i++) {
+      const data = {
+        name: contributorPath[i]?.name || "Failed",
+        criteria: contributorPath[i]?.criteria || "Failed",
+        mission: contributorPath[i]?.mission || "Failed",
+      }
+      const tasks = contributorPath[i]?.tasks || []
+      const position = i + 1
+      let projectTasks: any = []
+
+      for (let j = 0; j < tasks.length; j++) {
+        projectTasks.push({ description: tasks[j]?.name })
+      }
+
+      await db.projectStages.create({
+        data: {
+          ...data,
+          project: { connect: { id: project.id } },
+          position: position,
+          projectTasks: {
+            create: projectTasks,
+          },
+        },
+      })
+    }
 
     return project
   }
