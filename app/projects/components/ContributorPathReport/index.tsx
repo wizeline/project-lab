@@ -5,8 +5,7 @@ import CheckSharpIcon from "@mui/icons-material/CheckSharp"
 import ClearSharpIcon from "@mui/icons-material/ClearSharp"
 
 interface IProps {
-  children: React.ReactNode
-  project: object
+  project: any
   projectId: string
 }
 
@@ -33,8 +32,8 @@ export const IncompleteIcon = styled.span`
   }
 `
 
-export const ContributorPathReport = ({ children, ...props }: IProps) => {
-  const [projectMembers] = useQuery(getProjectMembers, { id: props.projectId })
+export const ContributorPathReport = ({ project, projectId }: IProps) => {
+  const [projectMembers] = useQuery(getProjectMembers, { id: projectId })
 
   return (
     <>
@@ -46,7 +45,7 @@ export const ContributorPathReport = ({ children, ...props }: IProps) => {
             <th>Name</th>
             <th>Email</th>
             <th>Department</th>
-            {props.project.stages?.map((stage, i) => (
+            {project.stages?.map((stage, i) => (
               <th key={i}>{stage.name}</th>
             ))}
           </tr>
@@ -79,7 +78,7 @@ export const ContributorPathReport = ({ children, ...props }: IProps) => {
                 </td>
                 <td>{member.profile?.email}</td>
                 <td>{member.profile?.department}</td>
-                {props.project.stages?.map((stage, s) => (
+                {project.stages?.map((stage, s) => (
                   <td key={s}>
                     <ul>
                       {stage.projectTasks.map((task, t) => {

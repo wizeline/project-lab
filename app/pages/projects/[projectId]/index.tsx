@@ -175,7 +175,7 @@ export const Project = () => {
         </Container>
       </div>
       <div className="wrapper">
-        <ContributorPathReport project={project} projectId={projectId} />
+        <ContributorPathReport project={project} projectId={project.id} />
       </div>
       <div className="wrapper">
         <Comments projectId={projectId!} />
