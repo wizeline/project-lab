@@ -17,8 +17,15 @@ export const InitialMembers = (profileId) => {
 const projectMembers = z
   .array(
     z.object({
+      id: z.string().optional(),
       profileId: z.string(),
       role: z.string().nullish(),
+      profile: z
+        .object({
+          firstName: z.string(),
+          lastName: z.string(),
+        })
+        .optional(),
       hoursPerWeek: z
         // TextFields return strings
         .string()
@@ -85,6 +92,7 @@ export const FullUpdate = z
   .object({
     id: z.string(),
     owner: z.object({ id: z.string() }),
+    existedMembers: z.array(z.string()),
     ...FullFormFields,
   })
   .transform(extractSearchSkills)

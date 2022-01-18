@@ -11,6 +11,7 @@ import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
+import ContributorPathReport from "app/projects/components/ContributorPathReport"
 import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
 
 export const Project = () => {
@@ -172,6 +173,9 @@ export const Project = () => {
             </Grid>
           </Grid>
         </Container>
+      </div>
+      <div className="wrapper">
+        <ContributorPathReport project={project} projectId={projectId} />
       </div>
       <div className="wrapper">
         <Comments projectId={projectId!} />

@@ -100,3 +100,31 @@ button.primary.default {
   background-color: #f1f1f1;
   color: #444;
 }
+
+table.table-project-members {
+  background-color: #fff;
+  border: solid 1px #999;
+  border-collapse: collapse;
+}
+
+table.table-project-members th {
+  text-align: left;
+  background-color: #999;
+  color: #fff;
+}
+
+table.table-project-members th,
+table.table-project-members td {
+  padding: 8px;
+  border: solid 1px #ccc;
+  vertical-align: top;
+}
+
+table.table-project-members td:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table.table-project-members td ul li {
+  list-style: none;
+  margin-bottom: 8px;
+}

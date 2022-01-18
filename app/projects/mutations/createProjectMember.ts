@@ -8,8 +8,8 @@ export default resolver.pipe(
   async (input, { session }: Ctx) => {
     const project = await db.projectMembers.create({
       data: {
-        projectId: input.projectId,
-        profileId: session.profileId,
+        project: { connect: { id: input.projectId } },
+        profile: { connect: { id: session.profileId } },
         hoursPerWeek: input.hoursPerWeek,
         role: input.role,
       },

@@ -8,6 +8,7 @@ import Loader from "app/core/components/Loader"
 import AccessDenied from "app/core/components/AccessDenied"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
+import getProjectMembers from "app/projects/queries/getProjectMembers"
 import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
@@ -86,6 +87,12 @@ export const EditProject = () => {
       staleTime: Infinity,
     }
   )
+
+  const [projectMembers] = useQuery(getProjectMembers, { id: project.id })
+  const existedMembers = projectMembers.map((member) => {
+    return member.id
+  })
+
   const [updateProjectMutation] = useMutation(updateProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
 
@@ -112,6 +119,8 @@ export const EditProject = () => {
           schema={FullCreate}
           initialValues={project}
           onSubmit={async (values) => {
+            values.existedMembers = existedMembers
+
             try {
               const updated = await updateProjectMutation({
                 id: project.id,
