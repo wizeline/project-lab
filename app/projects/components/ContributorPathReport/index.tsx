@@ -1,6 +1,4 @@
 import React from "react"
-import { useQuery } from "blitz"
-import getProjectMembers from "app/projects/queries/getProjectMembers"
 import CheckSharpIcon from "@mui/icons-material/CheckSharp"
 import ClearSharpIcon from "@mui/icons-material/ClearSharp"
 import CheckBoxSharpIcon from "@mui/icons-material/CheckBoxSharp"
@@ -11,7 +9,6 @@ import styled from "@emotion/styled"
 
 interface IProps {
   project: any
-  projectId: string
 }
 
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -66,9 +63,7 @@ export const IncompleteIcon = styled.span`
   }
 `
 
-export const ContributorPathReport = ({ project, projectId }: IProps) => {
-  const [projectMembers] = useQuery(getProjectMembers, { id: projectId })
-
+export const ContributorPathReport = ({ project }: IProps) => {
   return (
     <>
       <big>Contributors</big>
@@ -93,7 +88,7 @@ export const ContributorPathReport = ({ project, projectId }: IProps) => {
           </tr>
         </thead>
         <tbody>
-          {projectMembers.map((member, m) => {
+          {project.projectMembers.map((member, m) => {
             const contributorPath: any = member.contributorPath.map((cp) => {
               return cp.projectTaskId
             })

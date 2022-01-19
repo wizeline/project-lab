@@ -72,7 +72,12 @@ export default resolver.pipe(
             projectTasks: true,
           },
         },
-        projectMembers: { include: { profile: { select: { firstName: true, lastName: true } } } },
+        projectMembers: {
+          include: {
+            profile: { select: { firstName: true, lastName: true, email: true } },
+            contributorPath: true,
+          },
+        },
         votes: { where: { profileId: session.profileId } },
       },
     })

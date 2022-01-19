@@ -1,7 +1,17 @@
 import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
-import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@mui/material"
+import {
+  Card,
+  CardContent,
+  Container,
+  Chip,
+  Stack,
+  Grid,
+  Typography,
+  Box,
+  TextField,
+} from "@mui/material"
 
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
@@ -116,6 +126,39 @@ export const Project = () => {
               <Stack direction="column" spacing={1}>
                 <Card variant="outlined">
                   <CardContent>
+                    <big>Slack Channel:</big>
+                    <Stack direction="row" spacing={1}>
+                      {project.slackChannel}
+                    </Stack>
+                  </CardContent>
+                </Card>
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Repo URL:</big>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& .MuiTextField-root": { width: "100%" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="foo"
+                        defaultValue={project.repoUrl}
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+                <Card variant="outlined">
+                  <CardContent>
                     <big>Skills:</big>
                     <Stack direction="row" spacing={1}>
                       {project.skills.map((item, index) => (
@@ -175,7 +218,7 @@ export const Project = () => {
         </Container>
       </div>
       <div className="wrapper">
-        <ContributorPathReport project={project} projectId={project.id} />
+        <ContributorPathReport project={project} />
       </div>
       <div className="wrapper">
         <Comments projectId={projectId!} />
