@@ -51,15 +51,31 @@ export const ProposalCardWrap = styled.div`
     margin-top: 10px;
     margin-bottom: 30px;
   }
-  .ProposalCard__status {
-    /* width: 90%;
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
+  .ProposalCard__skills {
+    width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center; */
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+  .ProposalCard__skills--title {
+    margin: 0 5px;
+    background-color: #234cad;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 11px;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+  }
+  hr {
+    height: 1px;
+    width: 100%;
+    background-color: #234cad;
+    margin-bottom: 5px;
+  }
+  .ProposalCard__status {
     width: 100%;
     bottom: 5px;
     right: 0px;
@@ -71,25 +87,16 @@ export const ProposalCardWrap = styled.div`
     & > div {
       width: 100%;
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       align-items: center;
     }
   }
   .ProposalCard__status--display {
-    /* margin: 0 10px;
-    width: 100px;
-    height: 25px;
-    border-radius: 4px;
-    bottom: 10px;
-    right: 20px;
-    color: #fff;
-    text-align: center;
-    font-size: 12px;
-    line-height: 25px; */
-
     height: 25px;
     color: #234cad;
     font-size: 12px;
+    font-weight: 700;
     line-height: 25px;
   }
   .ProposalCard__status--like {
@@ -98,36 +105,10 @@ export const ProposalCardWrap = styled.div`
     justify-content: center;
     color: #234cad;
     font-size: 14px;
+    margin-right: 10px;
 
     & span {
       margin-left: 3px;
-    }
-  }
-
-  hr {
-    height: 1px;
-    width: 100%;
-    background-color: #234cad;
-    margin-bottom: 5px;
-  }
-
-  .ProposalCard__skills {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .ProposalCard__skills--title {
-    margin: 0 5px;
-    background-color: #234cad;
-    color: #fff;
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 11px;
-
-    &:first-of-type {
-      margin-left: 0;
     }
   }
 `
