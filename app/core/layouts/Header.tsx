@@ -24,6 +24,9 @@ const Header = ({ title }: IProps) => {
   const goHome = () => {
     Router.push(Routes.Home())
   }
+  const goManager = () => {
+    Router.push("/manager")
+  }
 
   const options: MenuItemArgs[] = [
     {
@@ -33,6 +36,14 @@ const Header = ({ title }: IProps) => {
       },
       text: "Sign out",
       testId: "sign-out-button",
+    },
+    {
+      permissions: true,
+      onClick: async () => {
+        goManager()
+      },
+      text: "Manager",
+      testId: "go-to-admin",
     },
   ]
 
