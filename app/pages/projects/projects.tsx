@@ -50,6 +50,7 @@ const ProjectsPage: BlitzPage = () => {
         status={item.status}
         color={item.projectStatus.color}
         votesCount={item.votesCount}
+        skills={item.skills}
       />
     )
   }

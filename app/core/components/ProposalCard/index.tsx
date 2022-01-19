@@ -2,6 +2,7 @@ import React from "react"
 import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@mui/material"
 import EllipsisText from "app/core/components/EllipsisText"
+import ThumbUpIcon from "@mui/icons-material/ThumbUp"
 import { defaultStatus } from "../../utils/constants"
 import Image from "next/image"
 
@@ -17,6 +18,7 @@ interface IProps {
   status: string
   color: any
   votesCount?: number | null
+  skills?: { name: string }[]
 }
 
 export const ProposalCard = (props: IProps) => {
@@ -30,7 +32,7 @@ export const ProposalCard = (props: IProps) => {
                 <div className="ProposalCard__head">
                   <div className="ProposalCard__head__icon">
                     {props.picture ? (
-                      <Image src={props.picture} width="60" height="60" />
+                      <Image src={props.picture} width="60" height="60" alt="Project" />
                     ) : (
                       <span>{props.initials}</span>
                     )}
@@ -43,8 +45,26 @@ export const ProposalCard = (props: IProps) => {
                 <div className="ProposalCard--description">
                   <EllipsisText text={props.description || ""} length={65} />
                 </div>
-                <div className="ProposalCard--status" style={{ backgroundColor: props.color }}>
-                  {props.status === defaultStatus ? props.votesCount : props.status}
+                <div className="ProposalCard__skills">
+                  {props.skills &&
+                    props.skills.map((skill) => (
+                      <p key={skill.name} className="ProposalCard__skills--title">
+                        {skill.name}
+                      </p>
+                    ))}
+                </div>
+                <div className="ProposalCard__status">
+                  <hr />
+
+                  <div>
+                    <p className="ProposalCard__status--display">{props.status}</p>
+                    <div className="ProposalCard__status--like">
+                      <p>{props.votesCount} </p>
+                      <span>
+                        <ThumbUpIcon sx={{ color: "#234cad", fontSize: 15 }} />
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </ProposalCardWrap>
             </CardContent>
