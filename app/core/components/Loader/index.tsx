@@ -9,7 +9,7 @@ export const Screen = styled.div`
   height: 100%;
   align-items: center;
 
-  img {
+  .rod {
     animation: mymove 0.6s infinite linear;
   }
 
@@ -33,7 +33,15 @@ export const Loader = () => {
   return (
     <Screen>
       <ScreenBox>
-        <Image src="/wizeline.png" className="rod" alt="wizeline" height={80} width={80} />
+        <Image
+          src="/wizeline.png"
+          className="rod"
+          alt="wizeline"
+          height={103}
+          width={103}
+          layout="fixed"
+          objectFit="contain"
+        />
         <div>Please standby ...</div>
       </ScreenBox>
     </Screen>
