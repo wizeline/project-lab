@@ -55,19 +55,17 @@ export const ProposalCardWrap = styled.div`
     width: 100%;
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
     margin-bottom: 10px;
   }
   .ProposalCard__skills--title {
-    margin: 0 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
     background-color: #234cad;
     color: #fff;
     padding: 5px 10px;
     font-size: 12px;
     border-radius: 11px;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
   }
   hr {
     height: 1px;
