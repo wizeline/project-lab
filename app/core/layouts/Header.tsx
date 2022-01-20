@@ -50,17 +50,19 @@ const Header = ({ title }: IProps) => {
               </div>
               <div className="logo--text">Proposal Hunt</div>
             </div>
-            <div className="actions">
-              {/* Commented this for other realse <div className="actions--search" /> */}
-              <DropDownButton options={options}>
-                <div className="actions__user">
-                  <span className="actions__user--name">{currentUser?.email}</span>
-                </div>
-              </DropDownButton>
+            <div className="actions--container">
+              <Search />
+              <div className="actions">
+                {/* Commented this for other realse <div className="actions--search" /> */}
+                <DropDownButton options={options}>
+                  <div className="actions__user">
+                    <span className="actions__user--name">{currentUser?.email}</span>
+                  </div>
+                </DropDownButton>
+              </div>
             </div>
           </div>
         </header>
-        <Search />
       </Wrapper>
     </>
   )
@@ -112,7 +114,7 @@ const Wrapper = styled.div`
   }
   .actions .actions__user .actions__user--name {
     color: #000000;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0;
     line-height: 17px;
   }
@@ -125,6 +127,11 @@ const Wrapper = styled.div`
     background-position: 50%;
     margin-right: 40px;
     cursor: pointer;
+  }
+  .actions--container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
 `
 
