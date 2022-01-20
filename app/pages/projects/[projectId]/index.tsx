@@ -41,11 +41,11 @@ export const Project = () => {
             >
               {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
-            <div className="like-bubble">{project.votesCount}</div>
+            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <Image src="/edit.svg" alt="" width="20" height="20" />
+                  <Image src="/edit.svg" alt="" width="20" height="30" />
                 </Link>
               )}
             </div>
