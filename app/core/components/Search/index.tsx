@@ -22,8 +22,11 @@ export const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     margin-top: 15px;
+<<<<<<< HEAD
     cursor: pointer;
     color: #252a2f;
+=======
+>>>>>>> 875d9ea (Move search to top nav and add styles)
   }
 `
 
