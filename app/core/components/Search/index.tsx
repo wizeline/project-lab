@@ -22,6 +22,8 @@ export const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     margin-top: 15px;
+    cursor: pointer;
+    color: #252a2f;
   }
 `
 
@@ -41,6 +43,12 @@ export const Search = () => {
     Router.push(projectsSearch)
   }
 
+  const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      goToSearch()
+    }
+  }
+
   return (
     <Wrapper>
       <Box
@@ -57,6 +65,9 @@ export const Search = () => {
             "& .MuiInput-root": { marginTop: "10px" },
             "& .MuiInputLabel-root": { fontSize: "13px" },
             "& .MuiInput-input": { fontSize: "13px" },
+          }}
+          onKeyPress={(e) => {
+            handleEnterKeyPress(e)
           }}
         />
         <div onClick={goToSearch} className="search__icon">
