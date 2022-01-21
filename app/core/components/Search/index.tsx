@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Router, useRouterQuery } from "blitz"
-import { Box, TextField } from "@mui/material"
+import { Box, InputAdornment, TextField } from "@mui/material"
 import CardBox from "app/core/components/CardBox"
 import styled from "@emotion/styled"
 import SearchIcon from "@mui/icons-material/Search"
@@ -53,11 +53,16 @@ export const Search = () => {
     <Wrapper>
       <Box
         component="div"
-        sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center", height: "40px" }}
+        sx={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          height: "40px",
+        }}
       >
-        {/* <TextField
+        <TextField
           variant="standard"
-          label="Project Name"
+          label="Search Project Name"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           sx={{
@@ -69,13 +74,20 @@ export const Search = () => {
           onKeyPress={(e) => {
             handleEnterKeyPress(e)
           }}
-        /> */}
-        <TextField
-          label="Project Name"
+          // InputProps={{
+          //   startAdornment: (
+          //     <InputAdornment position="start">
+          //       <SearchIcon />
+          //     </InputAdornment>
+          //   ),
+          // }}
+        />
+        {/* <TextField
+          label="Search Project Name"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           sx={{
-            width: "110px",
+            width: "150px",
             height: "30px",
             "& .MuiInput-root": { marginTop: "10px" },
             "& .MuiInputLabel-root": { fontSize: "12px", lineHeight: "13px", top: "-5px" },
@@ -86,7 +98,14 @@ export const Search = () => {
           onKeyPress={(e) => {
             handleEnterKeyPress(e)
           }}
-        />
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        /> */}
         <div onClick={goToSearch} className="search__icon">
           <SearchIcon />
         </div>
