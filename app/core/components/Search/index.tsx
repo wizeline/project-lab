@@ -53,9 +53,9 @@ export const Search = () => {
     <Wrapper>
       <Box
         component="div"
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "40px" }}
+        sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center", height: "40px" }}
       >
-        <TextField
+        {/* <TextField
           variant="standard"
           label="Project Name"
           value={searchValue}
@@ -65,6 +65,23 @@ export const Search = () => {
             "& .MuiInput-root": { marginTop: "10px" },
             "& .MuiInputLabel-root": { fontSize: "13px" },
             "& .MuiInput-input": { fontSize: "13px" },
+          }}
+          onKeyPress={(e) => {
+            handleEnterKeyPress(e)
+          }}
+        /> */}
+        <TextField
+          label="Project Name"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          sx={{
+            width: "110px",
+            height: "30px",
+            "& .MuiInput-root": { marginTop: "10px" },
+            "& .MuiInputLabel-root": { fontSize: "12px", lineHeight: "13px", top: "-5px" },
+            "& .MuiInputLabel-shrink": { top: "0" },
+            "& .MuiOutlinedInput-input": { fontSize: "13px" },
+            "& .MuiOutlinedInput-root": { height: "30px" },
           }}
           onKeyPress={(e) => {
             handleEnterKeyPress(e)
