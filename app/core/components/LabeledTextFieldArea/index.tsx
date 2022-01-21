@@ -30,9 +30,10 @@ export const LabeledTextFieldArea = ({
         return (
           <div {...outerProps}>
             <TextField
-              multiline
+              id={name}
               rows={6}
               {...input}
+              name={name}
               label={label}
               error={isError ? isError.length > 0 : false}
               helperText={isError ? error : helperText}
