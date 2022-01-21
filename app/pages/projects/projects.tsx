@@ -1,4 +1,6 @@
 import { usePaginatedQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
+import { useState, useEffect } from "react"
+import { MenuItem, TextField } from "@mui/material"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
 import getMyProjects from "app/projects/queries/getMyProjects"
@@ -12,10 +14,12 @@ const MY_ITEMS_MAX = 10
 
 const ProjectsPage: BlitzPage = () => {
   //functions to load and paginate projects in `Popular` CardBox
+  const [sortBy, setSortBy] = useState("")
+  const [sortQuery, setSortQuery] = useState({ field: "id", order: "asc" })
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    orderBy: { id: "asc" },
+  let [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+    orderBy: { [sortQuery.field]: sortQuery.order },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -31,6 +35,31 @@ const ProjectsPage: BlitzPage = () => {
   const initials = (firstName, lastName) => {
     return firstName.substring(0, 1) + lastName.substring(0, 1)
   }
+
+  //sorting options and logic
+  const sortOptions = [
+    {
+      label: "Most recent",
+      value: "mostRecent",
+    },
+    {
+      label: "Most voted",
+      value: "mostVoted",
+    },
+  ]
+
+  const handleSortByChange = (e) => {
+    setSortBy(e.target.value)
+  }
+
+  useEffect(() => {
+    if (sortBy === "mostRecent") {
+      setSortQuery({ field: "createdAt", order: "desc" })
+    }
+    if (sortBy === "mostVoted") {
+      setSortQuery({ field: "votesCount", order: "desc" })
+    }
+  }, [sortBy])
 
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
@@ -73,6 +102,22 @@ const ProjectsPage: BlitzPage = () => {
               </ul>
             </div>
           </div>
+          <TextField
+            select
+            label="Sort By"
+            value={sortBy}
+            onChange={handleSortByChange}
+            sx={{
+              width: "120px",
+            }}
+            InputProps={{ style: { fontSize: "12px" } }}
+          >
+            {sortOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
           <div className="homeWrapper__navbar__button">
             <button onClick={goToCreateNewProposal}>New proposal</button>
           </div>
