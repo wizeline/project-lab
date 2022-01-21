@@ -1,9 +1,9 @@
-import React, { useState } from "react"
+import React from "react"
 import { Grid, Avatar } from "@mui/material"
 import PositionedMenu from "app/core/components/PositionedMenu"
 import Moment from "react-moment"
 import { useSession } from "blitz"
-import { CommentBody, CommentTime, ReplyButton } from "./Comments.styles"
+import { CommentBody, CommentTime } from "./Comments.styles"
 import ReplyComment from "./ReplyComment"
 import { IComment } from "./CommentInterfaces"
 
@@ -19,7 +19,6 @@ const CommentItem = (props: IProps) => {
   const session = useSession()
   const { projectId, comment, editCommentModalHandler, setOpenDeleteModal, setCommentSelected } =
     props
-  const [commentActive, setCommentActive] = useState<boolean>(false)
 
   const menuItems = [
     {
@@ -36,8 +35,7 @@ const CommentItem = (props: IProps) => {
       text: "Delete",
     },
   ]
-  const cancelReply = () => setCommentActive(false)
-  const activeReply = () => setCommentActive(true)
+
   return (
     <>
       <Grid container wrap="nowrap" spacing={2}>
@@ -56,8 +54,6 @@ const CommentItem = (props: IProps) => {
             {comment.body}
             {session.profileId === comment.authorId && <PositionedMenu menuItems={menuItems} />}
           </CommentBody>
-          {!comment.parentId && <ReplyButton onClick={activeReply}> Reply </ReplyButton>}
-
           {comment.children &&
             comment.children.map((commentChild) => {
               return (
@@ -71,14 +67,7 @@ const CommentItem = (props: IProps) => {
                 />
               )
             })}
-          {!comment.parentId && (
-            <ReplyComment
-              cancelReply={cancelReply}
-              isActive={commentActive}
-              projectId={projectId}
-              parentId={comment.id}
-            />
-          )}
+          {!comment.parentId && <ReplyComment projectId={projectId} parentId={comment.id} />}
         </Grid>
       </Grid>
     </>
