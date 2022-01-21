@@ -12,35 +12,11 @@ export const Wrapper = styled.div`
     border-radius: 4px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 21px;
   }
-  .homeWrapper__navbar__categories {
-    display: flex;
-    align-items: center;
-    margin-left: 36px;
-  }
-  .homeWrapper__navbar__categories--title {
-    color: #000000;
-    font-family: Poppins;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
-  }
-  .homeWrapper__navbar__categories--list {
-    margin-left: 18px;
-  }
-  .homeWrapper__navbar__categories--list ul {
-    list-style: none;
-    display: flex;
-  }
-  .homeWrapper__navbar__categories--list ul li {
-    color: #727e8c;
-    font-family: Poppins;
-    font-size: 15px;
-    letter-spacing: 0;
-    line-height: 21px;
-    margin-right: 18px;
-    font-weight: 300;
+  .homeWrapper__navbar__sort {
+    margin-left: 49px;
   }
   .homeWrapper__navbar__button {
     display: flex;

@@ -1,6 +1,5 @@
 import { usePaginatedQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
-import { useState, useEffect } from "react"
-import { MenuItem, TextField } from "@mui/material"
+import { useState } from "react"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
 import getMyProjects from "app/projects/queries/getMyProjects"
@@ -8,14 +7,14 @@ import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Wrapper } from "./projects.styles"
+import { SortInput } from "app/core/components/SortInput"
 
 const ITEMS_PER_PAGE = 4
 const MY_ITEMS_MAX = 10
 
 const ProjectsPage: BlitzPage = () => {
-  //functions to load and paginate projects in `Popular` CardBox
-  const [sortBy, setSortBy] = useState("")
   const [sortQuery, setSortQuery] = useState({ field: "id", order: "asc" })
+  //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const page = Number(router.query.page) || 0
   let [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
@@ -35,31 +34,6 @@ const ProjectsPage: BlitzPage = () => {
   const initials = (firstName, lastName) => {
     return firstName.substring(0, 1) + lastName.substring(0, 1)
   }
-
-  //sorting options and logic
-  const sortOptions = [
-    {
-      label: "Most recent",
-      value: "mostRecent",
-    },
-    {
-      label: "Most voted",
-      value: "mostVoted",
-    },
-  ]
-
-  const handleSortByChange = (e) => {
-    setSortBy(e.target.value)
-  }
-
-  useEffect(() => {
-    if (sortBy === "mostRecent") {
-      setSortQuery({ field: "createdAt", order: "desc" })
-    }
-    if (sortBy === "mostVoted") {
-      setSortQuery({ field: "votesCount", order: "desc" })
-    }
-  }, [sortBy])
 
   //function to render projects in a Proposals CardBox
   const mapRenderProposals = (item, i) => {
@@ -92,32 +66,9 @@ const ProjectsPage: BlitzPage = () => {
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
-          <div className="homeWrapper__navbar__categories">
-            <div className="homeWrapper__navbar__categories--title">Categories:</div>
-            <div className="homeWrapper__navbar__categories--list">
-              <ul>
-                <li>People Ops</li>
-                <li>Engineering</li>
-                <li>Ux</li>
-              </ul>
-            </div>
+          <div className="homeWrapper__navbar__sort">
+            <SortInput setSortQuery={setSortQuery} />
           </div>
-          <TextField
-            select
-            label="Sort By"
-            value={sortBy}
-            onChange={handleSortByChange}
-            sx={{
-              width: "120px",
-            }}
-            InputProps={{ style: { fontSize: "12px" } }}
-          >
-            {sortOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
           <div className="homeWrapper__navbar__button">
             <button onClick={goToCreateNewProposal}>New proposal</button>
           </div>
