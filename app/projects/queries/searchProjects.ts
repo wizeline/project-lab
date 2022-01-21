@@ -10,6 +10,7 @@ interface SearchProjectsInput {
   label: any
   skip: number
   take: number
+  orderBy: { field: string; order: string }
 }
 
 interface SearchProjectsOutput {
@@ -29,7 +30,7 @@ export class SearchProjectsError extends Error {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ search, category, skill, label, skip = 0, take = 50 }: SearchProjectsInput) => {
+  async ({ search, category, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput) => {
     const prefixSearch = search + "*"
     let where = Prisma.empty
 
@@ -61,7 +62,20 @@ export default resolver.pipe(
           : Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
     }
 
-    const projects = await db.$queryRaw<SearchProjectsOutput[]>`
+    // order by string for sorting
+    const orderByText = `p.${orderBy.field} ${orderBy.order}`
+
+    // convert where into string for the projects query
+    let whereString = where.sql
+    let strIdx = 0
+    while (whereString.match(/[?]/)) {
+      if (where.values[strIdx])
+        whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
+      strIdx++
+    }
+
+    const projects = await db.$queryRaw<SearchProjectsOutput[]>(
+      `
       SELECT p.id, p.name, p.description, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
         strftime('%M %d, %y', p.createdAt) as createdAt
       FROM Projects p
@@ -72,11 +86,13 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.B = Labels.id
-      ${where}
+      ${whereString}
       GROUP BY p.id
-      ORDER BY rank, p.name
+      ORDER BY ${orderByText}
       LIMIT ${take} OFFSET ${skip};
     `
+    )
+
     const countResult = await db.$queryRaw`
       SELECT count(DISTINCT p.id) as count
       FROM Projects p

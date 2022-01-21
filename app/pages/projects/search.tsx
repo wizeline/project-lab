@@ -9,6 +9,7 @@ import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
 import { ExpandMore } from "@mui/icons-material"
+import { SortInput } from "app/core/components/SortInput"
 
 type SearchFilters = {
   category: string[]
@@ -30,35 +31,11 @@ const Wrapper = styled.div`
     border-radius: 4px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 21px;
   }
-  .homeWrapper__navbar__categories {
-    display: flex;
-    align-items: center;
-    margin-left: 36px;
-  }
-  .homeWrapper__navbar__categories--title {
-    color: #000000;
-    font-family: Poppins;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
-  }
-  .homeWrapper__navbar__categories--list {
-    margin-left: 18px;
-  }
-  .homeWrapper__navbar__categories--list ul {
-    list-style: none;
-    display: flex;
-  }
-  .homeWrapper__navbar__categories--list ul li {
-    color: #727e8c;
-    font-family: Poppins;
-    font-size: 15px;
-    letter-spacing: 0;
-    line-height: 21px;
-    margin-right: 18px;
-    font-weight: 300;
+  .homeWrapper__navbar__sort {
+    margin-left: 49px;
   }
   .homeWrapper__navbar__button {
     display: flex;
@@ -141,6 +118,9 @@ export const Projects = () => {
     label: [],
   })
 
+  //sorting variables
+  const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
+
   const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
     searchProjects,
     {
@@ -148,10 +128,12 @@ export const Projects = () => {
       category,
       skill,
       label,
+      orderBy: { ...sortQuery },
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     }
   )
+
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
@@ -270,15 +252,8 @@ export const Projects = () => {
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
-          <div className="homeWrapper__navbar__categories">
-            <div className="homeWrapper__navbar__categories--title">Categories:</div>
-            <div className="homeWrapper__navbar__categories--list">
-              <ul>
-                <li>People Ops</li>
-                <li>Engineering</li>
-                <li>Ux</li>
-              </ul>
-            </div>
+          <div className="homeWrapper__navbar__sort">
+            <SortInput setSortQuery={setSortQuery} />
           </div>
           <div className="homeWrapper__navbar__button">
             <button onClick={goToCreateNewProposal}>New proposal</button>
