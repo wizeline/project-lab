@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 export const Button = styled.button`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   border-radius: 4px;
-  background-color: #ff6f18;
+  background-color: #e94d44;
   color: #ffffff;
   font-family: Poppins;
   font-size: 15px;
