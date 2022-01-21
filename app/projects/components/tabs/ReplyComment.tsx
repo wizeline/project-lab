@@ -2,13 +2,11 @@ import { TextField, Alert, IconButton, Snackbar } from "@mui/material"
 import { Close } from "@mui/icons-material"
 
 import { ReplyComponentContent } from "./ReplyComment.style"
-import { ReplyActions, SaveReplyButton, ReplyButton } from "./Comments.styles"
+import { ReplyActions, SaveReplyButton } from "./Comments.styles"
 import useReply from "./hooks/useReply"
 interface IProps {
   parentId?: string
   projectId: string
-  isActive: boolean
-  cancelReply: any
 }
 
 const ReplyComment = (props: IProps) => {
@@ -18,7 +16,7 @@ const ReplyComment = (props: IProps) => {
   )
 
   return (
-    <ReplyComponentContent className={props.isActive && "active"}>
+    <ReplyComponentContent className="active">
       <Snackbar open={showAlert}>
         <Alert
           severity="error"
@@ -40,21 +38,17 @@ const ReplyComment = (props: IProps) => {
         </Alert>
       </Snackbar>
       <TextField
-        error={!commentInput}
         onChange={(e) => {
           setCommentInput(e.target.value)
         }}
         sx={{ width: 540 }}
-        name="body"
-        multiline
+        name={`reply_${props.parentId}`}
         placeholder="Write a reply..."
         value={commentInput}
         required
-        helperText={!commentInput ? "Write a reply" : ""}
       />
       <ReplyActions>
-        <ReplyButton onClick={props.cancelReply}>Cancel</ReplyButton>
-        <SaveReplyButton onClick={() => createCommentHandler()}> Save </SaveReplyButton>
+        <SaveReplyButton onClick={() => createCommentHandler()}> Submit</SaveReplyButton>
       </ReplyActions>
     </ReplyComponentContent>
   )

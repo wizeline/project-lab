@@ -66,10 +66,10 @@ const Comments = (props: IProps) => {
     try {
       const comment = await createCommentMutation({
         projectId: props.projectId!,
-        body: values.body,
+        body: values.comment,
         parentId: null,
       })
-      values.body = ""
+      values.comment = ""
       setAlertMessage("Comment saved successfully!")
       setShowAlert(true)
     } catch (error) {
@@ -167,7 +167,6 @@ const Comments = (props: IProps) => {
           </Paper>
         </Grid>
       </Grid>
-
       <Dialog open={openEditComment}>
         <WrapperDialog>
           <Grid item>
@@ -178,8 +177,8 @@ const Comments = (props: IProps) => {
           <Grid item>
             <TextField
               sx={{ width: 540 }}
-              name="body"
-              multiline
+              id="update_comment"
+              name="update_comment"
               onChange={(e) => setInputCommentEdit(e.target.value)}
               value={inputCommentEdit}
               placeholder="Write a comment"
