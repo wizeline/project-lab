@@ -109,13 +109,13 @@ export const Search = () => {
         <div onClick={goToSearch} className="search__icon">
           <SearchIcon />
         </div>
-        {routerQuery.q ? (
+        {/* {routerQuery.q ? (
           <button type="button" className="primary search default" onClick={clearSearch}>
             Clear
           </button>
         ) : (
           ""
-        )}
+        )} */}
       </Box>
     </Wrapper>
   )
