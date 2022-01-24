@@ -124,49 +124,61 @@ export const Project = () => {
             </Grid>
             <Grid item xs={4}>
               <Stack direction="column" spacing={1}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Slack Channel:</big>
-                    <Stack direction="row" spacing={1}>
-                      {project.slackChannel}
-                    </Stack>
-                  </CardContent>
-                </Card>
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Repo URL:</big>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& .MuiTextField-root": { width: "100%" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="foo"
-                        defaultValue={project.repoUrl}
-                        variant="outlined"
-                        InputProps={{
-                          readOnly: true,
-                        }}
+                {project.slackChannel ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Slack Channel:</big>
+                      <Stack direction="row" spacing={1}>
+                        {project.slackChannel}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  ""
+                )}
+                {project.repoUrl ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Repo URL:</big>
+                      <Box
+                        component="form"
                         sx={{
-                          width: "100%",
+                          "& .MuiTextField-root": { width: "100%" },
                         }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Skills:</big>
-                    <Stack direction="row" spacing={1}>
-                      {project.skills.map((item, index) => (
-                        <Chip key={index} label={item.name} />
-                      ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
+                        noValidate
+                        autoComplete="off"
+                      >
+                        <TextField
+                          id="foo"
+                          defaultValue={project.repoUrl}
+                          variant="outlined"
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          sx={{
+                            width: "100%",
+                          }}
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  ""
+                )}
+                {project.skills.length > 0 ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Skills:</big>
+                      <Stack direction="row" spacing={1}>
+                        {project.skills.map((item, index) => (
+                          <Chip key={index} label={item.name} />
+                        ))}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  ""
+                )}
                 <Card variant="outlined">
                   <CardContent>
                     <big>Members:</big>
@@ -178,6 +190,9 @@ export const Project = () => {
                             color={item.active ? "text.primary" : "text.secondary"}
                           >
                             <div>
+                              <span
+                                className={item.active ? "status active" : "status unactive"}
+                              ></span>
                               {item.profile?.firstName} {item.profile?.lastName}
                               {item.hoursPerWeek
                                 ? " - " + item.hoursPerWeek + " Hours per week"
@@ -189,21 +204,6 @@ export const Project = () => {
                           </Typography>
                         </div>
                       ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent>
-                    <big>Help Wanted:</big>
-                    <Stack direction="column">
-                      <div>
-                        <Typography component={"div"} color="text.primary">
-                          <div>React Js</div>
-                          <div>
-                            <small>(Any level)</small>
-                          </div>
-                        </Typography>
-                      </div>
                     </Stack>
                   </CardContent>
                 </Card>
