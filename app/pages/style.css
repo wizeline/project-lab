@@ -132,3 +132,18 @@ table.table-project-members td ul li {
   list-style: none;
   margin-right: 2px;
 }
+
+span.status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border: solid 2px #ccc;
+  margin-right: 5px;
+  border-radius: 100%;
+}
+
+span.status.active {
+  background-color: #27e527;
+  border: solid 2px #27e527;
+}
