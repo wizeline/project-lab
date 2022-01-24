@@ -30,12 +30,30 @@ const Wrapper = styled.div`
     height: 58px;
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 21px;
   }
   .homeWrapper__navbar__sort {
+    display: flex;
     margin-left: 49px;
+  }
+  .homeWrapper__navbar__tabs {
+    display: flex;
+    margin-left: 49px;
+  }
+  .homeWrapper__navbar__tabs--title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 10px;
+    cursor: pointer;
+
+    :hover {
+      color: #e94d44;
+    }
+  }
+  .homeWrapper__navbar__tabs--title--selected {
+    color: #e94d44;
   }
   .homeWrapper__navbar__button {
     display: flex;
@@ -124,18 +142,15 @@ export const Projects = () => {
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
 
-  const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
-    searchProjects,
-    {
-      search,
-      category,
-      skill,
-      label,
-      orderBy: { ...sortQuery },
-      skip: ITEMS_PER_PAGE * page,
-      take: ITEMS_PER_PAGE,
-    }
-  )
+  let [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(searchProjects, {
+    search,
+    category,
+    skill,
+    label,
+    orderBy: { ...sortQuery },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
@@ -184,7 +199,7 @@ export const Projects = () => {
     }
 
     Router.push({
-      pathname: "search",
+      pathname: "/projects/search",
       query: queryParams,
     })
   }
@@ -217,7 +232,7 @@ export const Projects = () => {
     })
 
     Router.push({
-      pathname: "search",
+      pathname: "/projects/search",
       query: queryParams,
     })
   }
@@ -249,6 +264,24 @@ export const Projects = () => {
     return chipsComponent
   }
 
+  //Tabs selection logic
+  const [tab, setTab] = useState({
+    popular: "homeWrapper__navbar__tabs--title--selected",
+    myProposals: "",
+  })
+
+  const handleTabChange = (newValue: string) => {
+    newValue === "popular"
+      ? setTab({ popular: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
+      : setTab({ popular: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
+
+    handleTabChangeSearch(newValue)
+  }
+
+  const handleTabChangeSearch = (newValue: string) => {
+    // search =
+  }
+
   return (
     <div>
       <Header title="Projects" />
@@ -256,6 +289,20 @@ export const Projects = () => {
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__sort">
             <SortInput setSortQuery={setSortQuery} />
+          </div>
+          <div className="homeWrapper__navbar__tabs">
+            <div
+              className={`homeWrapper__navbar__tabs--title ${tab.popular}`}
+              onClick={() => handleTabChange("popular")}
+            >
+              Popular
+            </div>
+            <div
+              className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
+              onClick={() => handleTabChange("myProposals")}
+            >
+              My proposals
+            </div>
           </div>
         </div>
         <div className="homeWrapper--content">
