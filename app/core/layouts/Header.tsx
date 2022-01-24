@@ -6,6 +6,7 @@ import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "../hooks/useCurrentUser"
 import DropDownButton from "../components/DropDownButton"
 import Search from "../components/Search"
+import { NewProposalButton } from "../components/NewProposalButton"
 
 interface IProps {
   title: String
@@ -52,6 +53,9 @@ const Header = ({ title }: IProps) => {
             </div>
             <div className="actions--container">
               <Search />
+              <div className="actions--container__button">
+                <NewProposalButton />
+              </div>
               <div className="actions">
                 {/* Commented this for other realse <div className="actions--search" /> */}
                 <DropDownButton options={options}>
@@ -132,6 +136,9 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+  }
+  .actions--container__button {
+    margin-right: 20px;
   }
 `
 

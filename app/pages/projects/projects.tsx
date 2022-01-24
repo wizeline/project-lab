@@ -64,10 +64,6 @@ const ProjectsPage: BlitzPage = () => {
       />
     )
   }
-  // Direct link to full project page
-  const goToCreateNewProposal = () => {
-    Router.push(Routes.NewProjectPage())
-  }
 
   return (
     <div>
@@ -76,9 +72,6 @@ const ProjectsPage: BlitzPage = () => {
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__sort">
             <SortInput setSortQuery={setSortQuery} />
-          </div>
-          <div className="homeWrapper__navbar__button">
-            <button onClick={goToCreateNewProposal}>New proposal</button>
           </div>
         </div>
         <div className="homeWrapper--content">

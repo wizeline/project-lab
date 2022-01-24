@@ -66,10 +66,10 @@ export const Search = () => {
             width: "150px",
             height: "30px",
             "& .MuiInput-root": { marginTop: "10px" },
-            "& .MuiInputLabel-root": { fontSize: "12px", lineHeight: "13px", top: "-5px" },
+            "& .MuiInputLabel-root": { fontSize: "15px", lineHeight: "13px", top: "-5px" },
             "& .MuiInputLabel-shrink": { top: "0" },
             "& .MuiOutlinedInput-input": { fontSize: "13px" },
-            "& .MuiOutlinedInput-root": { height: "30px" },
+            "& .MuiOutlinedInput-root": { height: "35px" },
           }}
           onKeyPress={(e) => {
             handleEnterKeyPress(e)

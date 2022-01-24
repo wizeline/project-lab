@@ -165,10 +165,6 @@ export const Projects = () => {
     )
   }
 
-  const goToCreateNewProposal = () => {
-    Router.push(Routes.NewProjectPage())
-  }
-
   const goToSearchWithFilters = (event: Event, filter: string) => {
     event.preventDefault()
 
@@ -260,9 +256,6 @@ export const Projects = () => {
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__sort">
             <SortInput setSortQuery={setSortQuery} />
-          </div>
-          <div className="homeWrapper__navbar__button">
-            <button onClick={goToCreateNewProposal}>New proposal</button>
           </div>
         </div>
         <div className="homeWrapper--content">
