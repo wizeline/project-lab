@@ -129,6 +129,7 @@ export default resolver.pipe(
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.B = Labels.id
       ${where}
+      AND p.categoryName IS NOT NULL
       GROUP BY categoryName
       ORDER BY count DESC
       LIMIT 10
@@ -142,10 +143,14 @@ export default resolver.pipe(
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.B = Labels.id
       ${where}
+      AND Skills.name IS NOT NULL
+      AND Skills.id IS NOT NULL
       GROUP BY Skills.name
       ORDER BY count DESC
       LIMIT 10
     `
+
+    console.log(skillFacets)
     const labelFacets = await db.$queryRaw`
       SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
       FROM Projects p
@@ -155,6 +160,8 @@ export default resolver.pipe(
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
       ${where}
+      AND Labels.name IS NOT NULL
+      AND Labels.id IS NOT NULL
       GROUP BY Labels.name
       ORDER BY count DESC
       LIMIT 10
