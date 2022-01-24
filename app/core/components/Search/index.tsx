@@ -38,10 +38,10 @@ export const Search = () => {
     Router.push(route)
   }
 
-  const clearSearch = () => {
-    setSearchValue("")
-    Router.push(projectsSearch)
-  }
+  // const clearSearch = () => {
+  //   setSearchValue("")
+  //   Router.push(projectsSearch)
+  // }
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
@@ -61,28 +61,6 @@ export const Search = () => {
         }}
       >
         <TextField
-          variant="standard"
-          label="Search Project Name"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          sx={{
-            width: "100px",
-            "& .MuiInput-root": { marginTop: "10px" },
-            "& .MuiInputLabel-root": { fontSize: "13px" },
-            "& .MuiInput-input": { fontSize: "13px" },
-          }}
-          onKeyPress={(e) => {
-            handleEnterKeyPress(e)
-          }}
-          // InputProps={{
-          //   startAdornment: (
-          //     <InputAdornment position="start">
-          //       <SearchIcon />
-          //     </InputAdornment>
-          //   ),
-          // }}
-        />
-        {/* <TextField
           label="Search Project Name"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
@@ -105,10 +83,7 @@ export const Search = () => {
               </InputAdornment>
             ),
           }}
-        /> */}
-        <div onClick={goToSearch} className="search__icon">
-          <SearchIcon />
-        </div>
+        />
         {/* {routerQuery.q ? (
           <button type="button" className="primary search default" onClick={clearSearch}>
             Clear
