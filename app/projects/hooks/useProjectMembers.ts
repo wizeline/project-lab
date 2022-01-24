@@ -15,7 +15,6 @@ const useProjectMembers = () => {
   }
   const createProjectMemberHandler = async (object: IProjectMember) => {
     const cpm = await createProjectMemberMutation(object)
-    console.log("project member ", cpm)
   }
   return { createProjectMemberHandler }
 }

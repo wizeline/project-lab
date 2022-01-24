@@ -6,7 +6,7 @@ export default resolver.pipe(
   resolver.zod(CreateProjectMember),
   resolver.authorize(),
   async (input, { session }: Ctx) => {
-    const project = await db.projectMembers.create({
+    const projectMember = await db.projectMembers.create({
       data: {
         project: { connect: { id: input.projectId } },
         profile: { connect: { id: session.profileId } },
@@ -14,6 +14,6 @@ export default resolver.pipe(
         role: input.role,
       },
     })
-    return project
+    return projectMember
   }
 )

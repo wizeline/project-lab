@@ -117,7 +117,7 @@ export const CreateComment = z.object({
 })
 
 export const CreateContributorPath = z.object({
-  taskId: z.string(),
+  projectTaskId: z.string(),
   projectMemberId: z.string(),
 })
 

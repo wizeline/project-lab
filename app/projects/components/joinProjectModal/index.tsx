@@ -35,12 +35,11 @@ const JoinProjectModal = (props: IProps) => {
             props.handleCloseModal()
             createProjectMemberHandler({
               projectId: props.projectId,
-              role: values.skills.name,
+              role: values.role,
               hoursPerWeek: values.availability.value!,
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
-            console.log(values)
           } catch (error) {
             console.error(error)
           }

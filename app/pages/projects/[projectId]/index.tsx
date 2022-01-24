@@ -23,14 +23,13 @@ import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
 import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
-
+import Stages from "app/projects/components/Stages"
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
-
   const handleVote = async (id: string) => {
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
@@ -106,6 +105,11 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
+      {isTeamMember && (
+        <div className="wrapper">
+          <Stages path={project.stages} viewMode={true} project={project} />
+        </div>
+      )}
       <div className="wrapper">
         <Container style={{ padding: "0px" }}>
           <Grid container spacing={2} alignItems="stretch">
