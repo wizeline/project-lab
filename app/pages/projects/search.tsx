@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import styled from "@emotion/styled"
 import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
@@ -270,16 +270,40 @@ export const Projects = () => {
     myProposals: "",
   })
 
-  const handleTabChange = (newValue: string) => {
-    newValue === "popular"
+  useEffect(() => {
+    if (router.query.q === "myProposals") {
+      setTab({
+        popular: "",
+        myProposals: "homeWrapper__navbar__tabs--title--selected",
+      })
+    } else {
+      setTab({
+        popular: "homeWrapper__navbar__tabs--title--selected",
+        myProposals: "",
+      })
+    }
+  }, [router.query.q])
+
+  const handleTabChange = (selectedTab: string) => {
+    selectedTab === "popular"
       ? setTab({ popular: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
       : setTab({ popular: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
 
-    handleTabChangeSearch(newValue)
+    handleTabChangeSearch(selectedTab)
   }
 
-  const handleTabChangeSearch = (newValue: string) => {
-    // search =
+  const handleTabChangeSearch = (selectedTab: string) => {
+    selectedTab === "popular"
+      ? router.push({ pathname: "/projects/search", query: "" })
+      : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
+
+    setFilters({
+      category: [],
+      skill: [],
+      label: [],
+    })
+
+    setChips([])
   }
 
   return (
@@ -395,7 +419,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title="Popular">
+              <CardBox title={tab.popular ? "Popular" : "My Proposals"}>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button
                   type="button"

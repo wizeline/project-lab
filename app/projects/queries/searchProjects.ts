@@ -1,4 +1,4 @@
-import { resolver } from "blitz"
+import { resolver, Ctx } from "blitz"
 import { Prisma } from "@prisma/client"
 import db from "db"
 import { RawValue } from "@prisma/client/runtime"
@@ -32,12 +32,17 @@ export class SearchProjectsError extends Error {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ search, category, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput) => {
+  async (
+    { search, category, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput,
+    { session }: Ctx
+  ) => {
     const prefixSearch = search + "*"
     let where = Prisma.empty
 
     if (search && search !== "") {
-      where = Prisma.sql`${where} WHERE projects_idx match ${prefixSearch}`
+      search !== "myProposals"
+        ? (where = Prisma.sql`${where} WHERE projects_idx match ${prefixSearch}`)
+        : (where = Prisma.sql`${where} WHERE ownerId == ${session.profileId}`)
     }
 
     if (category) {

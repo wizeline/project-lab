@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
 
 export const Search = () => {
   const routerQuery = useRouterQuery()
-  const searchQuery = routerQuery.q ?? ""
+  const searchQuery = routerQuery.q !== "myProposals" && routerQuery.q ? routerQuery.q : ""
   const [searchValue, setSearchValue] = useState(searchQuery)
   const projectsSearch = "/projects/search"
 
