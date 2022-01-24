@@ -1,5 +1,6 @@
 import { usePaginatedQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
 import { useState } from "react"
+import { Prisma } from "db"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
 import getMyProjects from "app/projects/queries/getMyProjects"
@@ -13,12 +14,18 @@ const ITEMS_PER_PAGE = 4
 const MY_ITEMS_MAX = 10
 
 const ProjectsPage: BlitzPage = () => {
-  const [sortQuery, setSortQuery] = useState({ field: "id", order: "asc" })
+  const [sortQuery, setSortQuery] = useState<{ field: string; order: Prisma.SortOrder }>({
+    field: "id",
+    order: "asc",
+  })
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const page = Number(router.query.page) || 0
   let [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    orderBy: { [sortQuery.field]: sortQuery.order },
+    orderBy:
+      sortQuery.field === "projectMembers"
+        ? { projectMembers: { _count: sortQuery.order } }
+        : { [sortQuery.field]: sortQuery.order },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })

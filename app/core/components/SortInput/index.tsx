@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { MenuItem, TextField } from "@mui/material"
+import { Prisma } from "db"
 
 interface iProps {
-  setSortQuery: (query: { field: string; order: string }) => void
+  setSortQuery: (query: { field: string; order: Prisma.SortOrder }) => void
 }
 
 export const SortInput = ({ setSortQuery }: iProps) => {
@@ -18,6 +19,14 @@ export const SortInput = ({ setSortQuery }: iProps) => {
       label: "Most voted",
       value: "mostVoted",
     },
+    {
+      label: "Project Members",
+      value: "projectMembers",
+    },
+    {
+      label: "Last Updated",
+      value: "lastUpdated",
+    },
   ]
 
   const handleSortByChange = (e) => {
@@ -30,6 +39,12 @@ export const SortInput = ({ setSortQuery }: iProps) => {
     }
     if (sortBy === "mostVoted") {
       setSortQuery({ field: "votesCount", order: "desc" })
+    }
+    if (sortBy === "projectMembers") {
+      setSortQuery({ field: sortBy, order: "desc" })
+    }
+    if (sortBy === "lastUpdated") {
+      setSortQuery({ field: "updatedAt", order: "desc" })
     }
   }, [sortBy, setSortQuery])
 

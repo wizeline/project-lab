@@ -17,10 +17,12 @@ interface SearchProjectsOutput {
   id: string
   name: string
   createdAt: string
+  updatedAt: string
   description: string
   status: string
   color: string
   votesCount: string
+  projectMembers: string
 }
 
 export class SearchProjectsError extends Error {
@@ -63,7 +65,9 @@ export default resolver.pipe(
     }
 
     // order by string for sorting
-    const orderByText = `p.${orderBy.field} ${orderBy.order}`
+    const orderByText = `${orderBy.field === "projectMembers" ? "" : "p."}${orderBy.field} ${
+      orderBy.order
+    }`
 
     // convert where into string for the projects query
     let whereString = where.sql
@@ -77,11 +81,14 @@ export default resolver.pipe(
     const projects = await db.$queryRaw<SearchProjectsOutput[]>(
       `
       SELECT p.id, p.name, p.description, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
-        strftime('%M %d, %y', p.createdAt) as createdAt
+        strftime('%M %d, %y', p.createdAt) as createdAt,
+        strftime('%M %d, %y', p.updatedAt) as updatedAt,
+      COUNT(DISTINCT pm.profileId) as projectMembers
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
       INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
