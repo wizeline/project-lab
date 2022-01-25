@@ -58,9 +58,11 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
         {path.map((pathItem, index) => {
           const { projectTasks } = pathItem
           const projectTaskIds = projectTasks.map((projectTask) => projectTask.id)
-          const finishSomeTask = projectTeamMember.contributorPath.some((CP: any) =>
-            projectTaskIds.includes(CP.projectTaskId)
-          )
+          const finishSomeTask =
+            projectTeamMember?.contributorPath &&
+            projectTeamMember.contributorPath.some((CP: any) =>
+              projectTaskIds.includes(CP.projectTaskId)
+            )
 
           return (
             <Card
@@ -105,7 +107,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 <b>Tasks:</b>
                 {pathItem.projectTasks.map((taskItem, index) => {
                   const contributorPath =
-                    projectTeamMember &&
+                    projectTeamMember?.contributorPath &&
                     projectTeamMember.contributorPath.find(
                       (contributorPath) =>
                         contributorPath.projectTaskId === taskItem.id &&
