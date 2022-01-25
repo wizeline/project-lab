@@ -39,7 +39,7 @@ jobs:
 
       - name: Set .env File
         run: |
-          aws secretsmanager get-secret-value --secret-id env-${{ steps.get-branch.outputs.branch }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
+          aws secretsmanager get-secret-value --secret-id env-${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
           cp env-tmp .env
 
       - name: Install Blitz Globally
