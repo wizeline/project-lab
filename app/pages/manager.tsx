@@ -2,12 +2,12 @@ import { usePaginatedQuery, useRouter, Router, BlitzPage, Routes, useQuery } fro
 import Layout from "app/core/layouts/Layout"
 import Header from "app/core/layouts/Header"
 import CardBox from "app/core/components/CardBox"
-import { Wrapper } from "../projects/projects.styles"
+import { Wrapper } from "./projects/projects.styles"
 import LabelsSelect from "app/core/components/LabelsSelect"
 import getLabels from "app/labels/queries/getLabels"
 import { Form, FormProps } from "app/core/components/Form"
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid"
-import projects from "../projects"
+import projects from "./projects"
 import { ListItem } from "@mui/material"
 
 // Delete when cleaning up
@@ -16,11 +16,6 @@ import { ListItem } from "@mui/material"
 //   { id: 2, col1: "Summer2022", col2: "Delete" },
 //   { id: 3, col1: "Summer2020", col2: "Delete" },
 // ]
-
-const columns: GridColDef[] = [
-  { field: "col1", headerName: "Name", width: 150 },
-  { field: "col2", headerName: "Edition", width: 150 },
-]
 
 const LABELS_PER_PAGE = 10
 
@@ -40,6 +35,11 @@ const ManagerPage: BlitzPage = () => {
     col1: item.name,
     col2: "delete",
   }))
+
+  const columns: GridColDef[] = [
+    { field: "col1", headerName: "Name", width: 150 },
+    { field: "col2", headerName: "Edition", width: 150 },
+  ]
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
@@ -68,6 +68,7 @@ const ManagerPage: BlitzPage = () => {
   )
 }
 ManagerPage.authenticate = true
+ManagerPage.suppressFirstRenderFlicker = true
 ManagerPage.getLayout = (page) => <Layout title="Parameters">{page}</Layout>
 
 export default ManagerPage

@@ -25,7 +25,7 @@ const Header = ({ title }: IProps) => {
     Router.push(Routes.Home())
   }
   const goManager = () => {
-    Router.push("/manager")
+    Router.push(Routes.ManagerPage())
   }
 
   const options: MenuItemArgs[] = [
