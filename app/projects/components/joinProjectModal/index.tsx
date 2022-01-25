@@ -1,8 +1,6 @@
 import React from "react"
-import InputSelect from "app/core/components/InputSelect"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { availabilityValues } from "app/core/utils/constants"
 import { Close as CloseIcon } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 import useProjectMembers from "app/projects/hooks/useProjectMembers"
