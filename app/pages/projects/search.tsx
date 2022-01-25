@@ -266,34 +266,34 @@ export const Projects = () => {
 
   //Tabs selection logic
   const [tab, setTab] = useState({
-    popular: "homeWrapper__navbar__tabs--title--selected",
+    allResults: "homeWrapper__navbar__tabs--title--selected",
     myProposals: "",
   })
 
   useEffect(() => {
     if (router.query.q === "myProposals") {
       setTab({
-        popular: "",
+        allResults: "",
         myProposals: "homeWrapper__navbar__tabs--title--selected",
       })
     } else {
       setTab({
-        popular: "homeWrapper__navbar__tabs--title--selected",
+        allResults: "homeWrapper__navbar__tabs--title--selected",
         myProposals: "",
       })
     }
   }, [router.query.q])
 
   const handleTabChange = (selectedTab: string) => {
-    selectedTab === "popular"
-      ? setTab({ popular: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
-      : setTab({ popular: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
+    selectedTab === "allResults"
+      ? setTab({ allResults: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
+      : setTab({ allResults: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
 
     handleTabChangeSearch(selectedTab)
   }
 
   const handleTabChangeSearch = (selectedTab: string) => {
-    selectedTab === "popular"
+    selectedTab === "allResults"
       ? router.push({ pathname: "/projects/search", query: "" })
       : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
 
@@ -316,10 +316,10 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__navbar__tabs">
             <div
-              className={`homeWrapper__navbar__tabs--title ${tab.popular}`}
-              onClick={() => handleTabChange("popular")}
+              className={`homeWrapper__navbar__tabs--title ${tab.allResults}`}
+              onClick={() => handleTabChange("allResults")}
             >
-              Popular
+              All Results
             </div>
             <div
               className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
@@ -419,7 +419,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.popular ? "Popular" : "My Proposals"}>
+              <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button
                   type="button"

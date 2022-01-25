@@ -150,7 +150,6 @@ export default resolver.pipe(
       LIMIT 10
     `
 
-    console.log(skillFacets)
     const labelFacets = await db.$queryRaw`
       SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
       FROM Projects p
