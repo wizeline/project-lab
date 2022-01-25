@@ -176,6 +176,9 @@ export const Projects = () => {
         status={item.status}
         color={item.color}
         votesCount={item.votesCount}
+        skills={
+          item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
+        }
       />
     )
   }

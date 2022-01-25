@@ -52,6 +52,7 @@ export const ProposalCardWrap = styled.div`
     margin-bottom: 30px;
   }
   .ProposalCard__skills {
+    min-height: 29px;
     width: 100%;
     display: flex;
     justify-content: flex-start;
