@@ -89,14 +89,8 @@ export const ContributorPathReport = ({ project }: IProps) => {
         </thead>
         <tbody>
           {project.projectMembers.map((member, m) => {
-            const contributorPath: any = member.contributorPath.map((cp) => {
-              return cp.projectTaskId
-            })
+            const projectTaskIds: any = member.contributorPath.map((cp) => cp.projectTaskId)
 
-            let contributorTaskDate = {}
-            member.contributorPath.map((cp) => {
-              contributorTaskDate[cp.projectTaskId] = cp.createdAt.toDateString()
-            })
             return (
               <tr key={m}>
                 <td align="center">
@@ -127,28 +121,21 @@ export const ContributorPathReport = ({ project }: IProps) => {
                 {project.stages?.map((stage, s) => (
                   <td key={s}>
                     <ul>
-                      {stage.projectTasks.map((task, t) => {
-                        const isComplete = contributorPath.indexOf(task.id) != -1
-                        return (
-                          <li key={t}>
+                      {stage.projectTasks.map((task, t) => (
+                        <li key={t}>
+                          {projectTaskIds.includes(task.id) ? (
+                            <CompleteIcon>
+                              <CheckBoxSharpIcon />
+                            </CompleteIcon>
+                          ) : (
                             <>
-                              {isComplete ? (
-                                <>
-                                  <CompleteIcon>
-                                    <CheckBoxSharpIcon />
-                                  </CompleteIcon>
-                                </>
-                              ) : (
-                                <>
-                                  <IncompleteIcon>
-                                    <CheckBoxOutlineBlankSharpIcon />
-                                  </IncompleteIcon>{" "}
-                                </>
-                              )}
+                              <IncompleteIcon>
+                                <CheckBoxOutlineBlankSharpIcon />
+                              </IncompleteIcon>{" "}
                             </>
-                          </li>
-                        )
-                      })}
+                          )}
+                        </li>
+                      ))}
                     </ul>
                   </td>
                 ))}

@@ -36,7 +36,7 @@ const JoinProjectModal = (props: IProps) => {
             createProjectMemberHandler({
               projectId: props.projectId,
               role: values.role,
-              hoursPerWeek: values.availability.value!,
+              hoursPerWeek: parseInt(values.availability),
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
@@ -49,16 +49,6 @@ const JoinProjectModal = (props: IProps) => {
           <FormDivContainer>
             <h1>Join Project</h1>
 
-            <p className="question">What do you want to join?</p>
-            <LabeledTextField
-              name="body"
-              multiline
-              fullWidth
-              rows={5}
-              label="Why are you interested in this project?"
-              outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
-            />
-
             <p className="question">What role will you be taking?</p>
             <LabeledTextField
               name="role"
@@ -68,11 +58,11 @@ const JoinProjectModal = (props: IProps) => {
             />
 
             <p className="question">How many hours will you invest in this project?</p>
-            <InputSelect
-              valuesList={availabilityValues}
+            <LabeledTextField
               name="availability"
-              label="Availability"
-              margin="none"
+              fullWidth
+              label="Hours per Week"
+              outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
             />
           </FormDivContainer>
 

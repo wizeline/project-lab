@@ -185,7 +185,7 @@ export const Project = () => {
                 )}
                 <Card variant="outlined">
                   <CardContent>
-                    <big>Members:</big>
+                    <big>Contributors:</big>
                     <Stack direction="column">
                       {project.projectMembers.map((item, index) => (
                         <div key={index}>

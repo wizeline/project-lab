@@ -38,7 +38,7 @@ export default resolver.pipe(
 
     // Delete members who are no longer active
     for (let j = 0; j < data.existedMembers?.length; j++) {
-      if (activeMembers.indexOf(data.existedMembers[j]) == -1) {
+      if (!activeMembers.includes(data.existedMembers[j])) {
         await db.projectMembers.deleteMany({ where: { id: data.existedMembers[j] } })
       }
     }

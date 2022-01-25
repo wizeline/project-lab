@@ -89,9 +89,7 @@ export const EditProject = () => {
   )
 
   const [projectMembers] = useQuery(getProjectMembers, { id: project.id })
-  const existedMembers = projectMembers.map((member) => {
-    return member.id
-  })
+  const existedMembers = projectMembers.map((member) => member.id)
 
   const [updateProjectMutation] = useMutation(updateProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
