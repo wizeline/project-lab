@@ -11,6 +11,7 @@ import {
   Typography,
   Box,
   TextField,
+  Button,
 } from "@mui/material"
 
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
@@ -22,7 +23,7 @@ import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
-import { HeaderInfo, DetailMoreHead, OrangeColoredButton } from "./[projectId].styles"
+import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -212,9 +213,9 @@ export const Project = () => {
                   </CardContent>
                 </Card>
                 {!isTeamMember && (
-                  <OrangeColoredButton onClick={handleJoinProject} variant="contained">
+                  <Button className="primary large" onClick={handleJoinProject}>
                     Join Project
-                  </OrangeColoredButton>
+                  </Button>
                 )}
               </Stack>
             </Grid>

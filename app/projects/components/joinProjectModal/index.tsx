@@ -1,17 +1,12 @@
 import React from "react"
+import { z } from "zod"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { Close as CloseIcon } from "@mui/icons-material"
-import { IconButton } from "@mui/material"
+import ModalBox from "app/core/components/ModalBox"
+import { Button } from "@mui/material"
 import useProjectMembers from "app/projects/hooks/useProjectMembers"
-import {
-  Grid,
-  ModalResponsive,
-  FormDivContainer,
-  CommitmentDivContainer,
-  OrangeColoredButton,
-} from "./joinProjectModal.styles"
-import { Routes, useRouter, useSession } from "blitz"
+import { Grid, FormDivContainer, CommitmentDivContainer } from "./joinProjectModal.styles"
+import { Routes, useRouter } from "blitz"
 
 interface IProps {
   open: boolean
@@ -19,22 +14,30 @@ interface IProps {
   projectId: string
 }
 
+export const JoinFields = z.object({
+  role: z.string(),
+  hoursPerWeek: z.number(),
+})
+
 const JoinProjectModal = (props: IProps) => {
-  const session = useSession()
-  const handleCloseModal = () => props.handleCloseModal()
   const router = useRouter()
   const { createProjectMemberHandler } = useProjectMembers()
   return (
-    <ModalResponsive open={props.open} handleClose={() => {}}>
+    <ModalBox
+      open={props.open}
+      close={props.handleCloseModal}
+      handleClose={() => {}}
+      boxStyle={{ width: "800px" }}
+    >
       <Form
-        {...props}
+        schema={JoinFields}
         onSubmit={async (values) => {
           try {
             props.handleCloseModal()
             createProjectMemberHandler({
               projectId: props.projectId,
               role: values.role,
-              hoursPerWeek: parseInt(values.availability),
+              hoursPerWeek: values.hoursPerWeek,
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
@@ -47,7 +50,7 @@ const JoinProjectModal = (props: IProps) => {
           <FormDivContainer>
             <h1>Join Project</h1>
 
-            <p className="question">What role will you be taking?</p>
+            <p className="question">What role will you be playing?</p>
             <LabeledTextField
               name="role"
               fullWidth
@@ -55,9 +58,9 @@ const JoinProjectModal = (props: IProps) => {
               outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
             />
 
-            <p className="question">How many hours will you invest in this project?</p>
+            <p className="question">What's your availability?</p>
             <LabeledTextField
-              name="availability"
+              name="hoursPerWeek"
               fullWidth
               label="Hours per Week"
               outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
@@ -65,10 +68,6 @@ const JoinProjectModal = (props: IProps) => {
           </FormDivContainer>
 
           <CommitmentDivContainer>
-            <IconButton onClick={handleCloseModal} style={{ alignSelf: "flex-end" }}>
-              <CloseIcon />
-            </IconButton>
-
             <p className="title">Commitment is very important to us</p>
             <div className="paragraph">
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci possimus animi
@@ -81,13 +80,13 @@ const JoinProjectModal = (props: IProps) => {
               deserunt neque. Harum ipsam ipsa deserunt nisi beatae eveniet!
             </div>
 
-            <OrangeColoredButton type="submit" variant="contained">
+            <Button type="submit" className="primary large">
               Join Project
-            </OrangeColoredButton>
+            </Button>
           </CommitmentDivContainer>
         </Grid>
       </Form>
-    </ModalResponsive>
+    </ModalBox>
   )
 }
 

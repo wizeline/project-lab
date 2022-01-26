@@ -54,6 +54,7 @@ export const DeleteButton = (props) => {
       <ConfirmationModal
         open={open}
         handleClose={handleClose}
+        close={() => handleClose()}
         label="Delete"
         className="warning"
         disabled={deleteBtn}

@@ -1,10 +1,12 @@
 import React from "react"
 import ModalBox from "../../components/ModalBox"
+import { Button } from "@mui/material"
 
 interface IProps {
   children: React.ReactNode
   open: boolean
   handleClose: React.MouseEventHandler
+  close: Function
   label: string
   onClick: React.MouseEventHandler
   disabled: boolean
@@ -13,21 +15,20 @@ interface IProps {
 
 export const ConfirmationModal = ({ children, ...props }: IProps) => {
   return (
-    <ModalBox open={props.open} handleClose={props.handleClose}>
+    <ModalBox open={props.open} close={props.close} handleClose={props.handleClose}>
       {children}
       <br />
-      <button
-        type="button"
+      <Button
         className={`primary ${props.className}`}
         disabled={props.disabled}
         onClick={props.onClick}
       >
         {props.label}
-      </button>
+      </Button>
       &nbsp;
-      <button type="button" className="primary default" onClick={props.handleClose}>
+      <Button className="primary default" onClick={props.handleClose}>
         Cancel
-      </button>
+      </Button>
     </ModalBox>
   )
 }

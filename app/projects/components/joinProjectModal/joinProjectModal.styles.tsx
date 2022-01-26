@@ -1,6 +1,4 @@
 import styled from "@emotion/styled"
-import { Button } from "@mui/material"
-import ModalBox from "app/core/components/ModalBox"
 
 export const Grid = styled.div`
   display: grid;
@@ -44,23 +42,5 @@ export const CommitmentDivContainer = styled.div`
     flex: 1;
     overflow: scroll;
     max-height: 400px;
-  }
-`
-
-export const ModalResponsive = styled(ModalBox)`
-  width: 800px;
-
-  @media screen and (max-width: 850px) {
-    width: 90%;
-  }
-`
-
-export const OrangeColoredButton = styled(Button)`
-  margin-top: 1.5rem;
-  background-color: #ff6f18;
-  font-weight: bold;
-
-  &:hover {
-    background-color: #e56315;
   }
 `

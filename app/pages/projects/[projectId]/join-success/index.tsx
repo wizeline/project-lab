@@ -1,18 +1,15 @@
 import React from "react"
 import { useRouter } from "blitz"
-import Box from "@mui/material/Box"
+import { Box, Button } from "@mui/material"
 import Typography from "@mui/material/Typography"
-import { OrangeColoredButton } from "../[projectId].styles"
 
 interface IProps {
   projectId: any
 }
 
-function JoinSuccess(props) {
+const JoinSuccess = (props: IProps) => {
   const router = useRouter()
   const goBack = () => router.back()
-  console.log("a", props)
-  console.log(props.projectId)
 
   return (
     <Box
@@ -53,9 +50,9 @@ function JoinSuccess(props) {
         >
           You have successfully joined the project
         </Typography>
-        <OrangeColoredButton onClick={goBack} variant="contained">
+        <Button className="primary" onClick={goBack} variant="contained">
           Continue
-        </OrangeColoredButton>
+        </Button>
       </Box>
     </Box>
   )

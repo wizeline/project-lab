@@ -6,9 +6,9 @@ export const InitialMembers = (profileId) => {
         {
           profileId,
           name: "You ;-)",
-          role: "",
+          role: "Owner",
           active: true,
-          hoursPerWeek: null,
+          hoursPerWeek: 40,
         },
       ]
     : []
