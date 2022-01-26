@@ -1,7 +1,6 @@
 import { resolver, Ctx } from "blitz"
 import { Prisma } from "@prisma/client"
 import db from "db"
-import { RawValue } from "@prisma/client/runtime"
 
 interface SearchProjectsInput {
   search: string | string[]
@@ -89,9 +88,14 @@ export default resolver.pipe(
       SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
 =======
       SELECT p.id, p.name, p.description, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
+<<<<<<< HEAD
 >>>>>>> 36051a3 (Add sorting by updated at and project members)
         strftime('%M %d, %y', p.createdAt) as createdAt,
         strftime('%M %d, %y', p.updatedAt) as updatedAt,
+=======
+        p.createdAt,
+        p.updatedAt,
+>>>>>>> e18612b (Fix date issues in search cards and solve grid issues in filters)
       COUNT(DISTINCT pm.profileId) as projectMembers
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id

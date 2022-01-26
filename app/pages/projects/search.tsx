@@ -17,6 +17,14 @@ type SearchFilters = {
   label: string[]
 }
 
+type queryItems = {
+  page?: number
+  q?: string
+  category?: string
+  skill?: string
+  label?: string
+}
+
 const ITEMS_PER_PAGE = 4
 
 const Wrapper = styled.div`
@@ -35,12 +43,11 @@ const Wrapper = styled.div`
     margin-bottom: 21px;
   }
   .homeWrapper__navbar__sort {
-    display: flex;
-    margin-left: 49px;
+    margin-bottom: 20px;
   }
   .homeWrapper__navbar__tabs {
     display: flex;
-    margin-left: 49px;
+    margin-left: 20px;
   }
   .homeWrapper__navbar__tabs--title {
     font-size: 18px;
@@ -105,7 +112,7 @@ const Wrapper = styled.div`
     margin-bottom: 35px;
   }
   .homeWrapper__myProposals {
-    display: grid;
+    /* display: grid; */
     row-gap: 2px;
     width: 100%;
     max-width: 250px;
@@ -131,13 +138,17 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { category, skill, label } = router.query
+  const { category, skill, label }: queryItems = router.query
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
-    category: [],
-    skill: [],
-    label: [],
+    category: category ? [category] : [],
+    skill: skill ? [skill] : [],
+    label: label ? [label] : [],
   })
+
+  useEffect(() => {
+    setChips(Object.values(filters).flat())
+  }, [filters])
 
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
@@ -168,7 +179,11 @@ export const Projects = () => {
         title={item.name}
         picture={item.avatarUrl}
         initials={initials(item.firstName, item.lastName)}
-        date={item.createdAt}
+        date={new Intl.DateTimeFormat([], {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+        }).format(new Date(item.createdAt))}
         description={item.description}
         status={item.status}
         color={item.color}
@@ -282,7 +297,12 @@ export const Projects = () => {
         myProposals: "",
       })
     }
-  }, [router.query.q])
+    setFilters({
+      category: category ? [category] : [],
+      skill: skill ? [skill] : [],
+      label: label ? [label] : [],
+    })
+  }, [router.query.q, category, skill, label])
 
   const handleTabChange = (selectedTab: string) => {
     selectedTab === "allResults"
@@ -296,14 +316,6 @@ export const Projects = () => {
     selectedTab === "allResults"
       ? router.push({ pathname: "/projects/search", query: "" })
       : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
-
-    setFilters({
-      category: [],
-      skill: [],
-      label: [],
-    })
-
-    setChips([])
   }
 
   return (
@@ -311,9 +323,6 @@ export const Projects = () => {
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
-          <div className="homeWrapper__navbar__sort">
-            <SortInput setSortQuery={setSortQuery} />
-          </div>
           <div className="homeWrapper__navbar__tabs">
             <div
               className={`homeWrapper__navbar__tabs--title ${tab.allResults}`}
@@ -420,6 +429,9 @@ export const Projects = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
+                <div className="homeWrapper__navbar__sort">
+                  <SortInput setSortQuery={setSortQuery} />
+                </div>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button
                   type="button"

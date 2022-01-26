@@ -4,7 +4,6 @@ export const CardBoxStyle = styled.div`
   background-color: #fff;
   padding: 30px;
   border-radius: 7px;
-  height: 100%;
   .CardBox--title {
     color: #252a2f;
     font-size: 22px;
