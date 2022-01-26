@@ -311,6 +311,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "category")}
                           >
                             {item.name} ({item.count})
@@ -337,6 +338,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "skill")}
                           >
                             {item.name} ({item.count})
@@ -363,6 +365,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "label")}
                           >
                             {item.name} ({item.count})
