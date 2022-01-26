@@ -27,7 +27,7 @@ export const ProposalCard = (props: IProps) => {
       <Card sx={{ minWidth: 180, maxWidth: 280, borderRadius: 5 }}>
         <CardActionArea style={{ height: "100%" }}>
           <Link href={Routes.ShowProjectPage({ projectId: props.id })}>
-            <CardContent style={{ backgroundColor: "#e7f2fb", height: "100%" }}>
+            <CardContent style={{ backgroundColor: "#FFF", height: "100%" }}>
               <ProposalCardWrap>
                 <div className="ProposalCard__head">
                   <div className="ProposalCard__head__icon">
@@ -61,7 +61,7 @@ export const ProposalCard = (props: IProps) => {
                     <div className="ProposalCard__status--like">
                       <p>{props.votesCount} </p>
                       <span>
-                        <ThumbUpIcon sx={{ color: "#234cad", fontSize: 15 }} />
+                        <ThumbUpIcon sx={{ color: "#AF2E33", fontSize: 15 }} />
                       </span>
                     </div>
                   </div>
