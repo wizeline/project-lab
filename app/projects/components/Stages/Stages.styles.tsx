@@ -32,7 +32,7 @@ interface ICardHeaderProps {
 export const CardHeaderComponent = styled.div<ICardHeaderProps>`
   width: 100%;
   height: 100px;
-  background-color: ${(props) => (props.current ? "#F62C3A" : "#9FA0A3")};
+  background-color: ${(props) => (props.current ? "#e94d46" : "#9fa0a3")};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -44,5 +44,5 @@ export const ArrowDownIcon = styled.div<ICardHeaderProps>`
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
 
-  border-top: 10px solid ${(props) => (props.current ? "#F62C3A" : "#9FA0A3")};
+  border-top: 10px solid ${(props) => (props.current ? "#E94D46" : "#9FA0A3")};
 `

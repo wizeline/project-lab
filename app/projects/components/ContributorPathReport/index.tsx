@@ -24,8 +24,10 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
 }))
 
 export const EmailAt = styled.span`
+  cursor: pointer;
+
   svg path {
-    fill: #ff6f18;
+    fill: #e94d44;
   }
 `
 
@@ -36,7 +38,7 @@ export const TaskNumber = styled.span`
   height: 20px;
   display: inline-block;
   margin: 0 2px;
-  color: #ff6f18;
+  color: #e94d44;
   border-radius: 100%;
   font-size: 12px;
   cursor: pointer;
@@ -53,7 +55,7 @@ export const CompleteDate = styled.span`
 
 export const CompleteIcon = styled.span`
   svg path {
-    fill: #ff6f18;
+    fill: #e94d44;
   }
 `
 
