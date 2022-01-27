@@ -16,7 +16,9 @@ interface IProps {
 
 export const JoinFields = z.object({
   role: z.string(),
-  hoursPerWeek: z.string(),
+  hoursPerWeek: z.string().refine((val) => !val || /^\d+$/.test(val), {
+    message: "Value must be an integer",
+  }),
 })
 
 const JoinProjectModal = (props: IProps) => {
