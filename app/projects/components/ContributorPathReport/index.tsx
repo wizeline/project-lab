@@ -73,7 +73,7 @@ export const ContributorPathReport = ({ project }: IProps) => {
             <th>Active</th>
             <th>Name</th>
             <th align="center">Email</th>
-            <th>Department</th>
+            <th>Role</th>
             {project.stages?.map((stage, i) => (
               <th key={i}>
                 {stage.name}
@@ -117,7 +117,7 @@ export const ContributorPathReport = ({ project }: IProps) => {
                     </EmailAt>
                   </HtmlTooltip>
                 </td>
-                <td>{member.profile?.department}</td>
+                <td>{member.role}</td>
                 {project.stages?.map((stage, s) => (
                   <td key={s}>
                     <ul>
