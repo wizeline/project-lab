@@ -50,6 +50,7 @@ const ProjectsPage: BlitzPage = () => {
         status={item.status}
         color={item.projectStatus.color}
         votesCount={item.votesCount}
+        skills={item.skills}
       />
     )
   }
@@ -85,7 +86,7 @@ const ProjectsPage: BlitzPage = () => {
                 <button
                   type="button"
                   disabled={page === 0}
-                  className={page == 0 ? "primary default" : "primary"}
+                  className={page == 0 ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToPreviousPage}
                 >
                   Previous{" "}
@@ -93,7 +94,7 @@ const ProjectsPage: BlitzPage = () => {
                 <button
                   type="button"
                   disabled={!hasMore}
-                  className={!hasMore ? "primary default" : "primary"}
+                  className={!hasMore ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToNextPage}
                 >
                   Next

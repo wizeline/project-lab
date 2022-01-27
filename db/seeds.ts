@@ -387,6 +387,16 @@ const seed = async () => {
       department: "Engineering",
     },
   })
+  const jquiroz = await db.profiles.upsert({
+    where: { email: "juan.quiroz@wizeline.com" },
+    update: {},
+    create: {
+      email: "juan.quiroz@wizeline.com",
+      firstName: "Juan",
+      lastName: "Quiroz",
+      department: "Engineering",
+    },
+  })
   await db.projects.upsert({
     where: { name: "Proposal Hunt" },
     update: {},
@@ -459,6 +469,11 @@ const seed = async () => {
             profile: { connect: { id: george.id } },
             hoursPerWeek: 3,
             role: "SRE",
+          },
+          {
+            profile: { connect: { id: jquiroz.id } },
+            hoursPerWeek: 3,
+            role: "Frontend",
           },
         ],
       },
