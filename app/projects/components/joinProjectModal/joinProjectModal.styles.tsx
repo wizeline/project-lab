@@ -34,7 +34,7 @@ export const CommitmentDivContainer = styled.div`
 
   .title {
     margin: 1rem 0 1.5rem 0;
-    color: #ff6f18;
+    color: #e94d44;
     font-weight: bold;
   }
 

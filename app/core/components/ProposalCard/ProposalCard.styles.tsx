@@ -62,7 +62,7 @@ export const ProposalCardWrap = styled.div`
   .ProposalCard__skills--title {
     margin-right: 5px;
     margin-bottom: 5px;
-    background-color: #af2e33;
+    background-color: #e94d44;
     color: #fff;
     padding: 5px 10px;
     font-size: 12px;
