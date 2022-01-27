@@ -129,7 +129,7 @@ export const Project = () => {
             </Grid>
             <Grid item xs={4}>
               <Stack direction="column" spacing={1}>
-                {project.slackChannel ? (
+                {project.slackChannel && (
                   <Card variant="outlined">
                     <CardContent>
                       <big>Slack Channel:</big>
@@ -138,10 +138,8 @@ export const Project = () => {
                       </Stack>
                     </CardContent>
                   </Card>
-                ) : (
-                  ""
                 )}
-                {project.repoUrl ? (
+                {project.repoUrl && (
                   <Card variant="outlined">
                     <CardContent>
                       <big>Repo URL:</big>
@@ -167,10 +165,8 @@ export const Project = () => {
                       </Box>
                     </CardContent>
                   </Card>
-                ) : (
-                  ""
                 )}
-                {project.skills.length > 0 ? (
+                {project.skills.length > 0 && (
                   <Card variant="outlined">
                     <CardContent>
                       <big>Skills:</big>
@@ -181,8 +177,6 @@ export const Project = () => {
                       </Stack>
                     </CardContent>
                   </Card>
-                ) : (
-                  ""
                 )}
                 <Card variant="outlined">
                   <CardContent>

@@ -16,7 +16,7 @@ interface IProps {
 
 export const JoinFields = z.object({
   role: z.string(),
-  hoursPerWeek: z.number(),
+  hoursPerWeek: z.string(),
 })
 
 const JoinProjectModal = (props: IProps) => {
@@ -37,7 +37,7 @@ const JoinProjectModal = (props: IProps) => {
             createProjectMemberHandler({
               projectId: props.projectId,
               role: values.role,
-              hoursPerWeek: values.hoursPerWeek,
+              hoursPerWeek: parseInt(values.hoursPerWeek),
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
