@@ -72,7 +72,7 @@ sqlite3 db/db.sqlite < db/search_indexes.sql
 blitz db seed
 ```
 
-9. Sync commands from Wizeline OS, you can just run `sync-all-from-wos`:
+9. Sync profiles and skills from Wizeline OS, this is optional and it takes a couple of minutes, the seeding contains sample data that can be enough to run locally:
 
 ```
 yarn sync-all-from-wos
