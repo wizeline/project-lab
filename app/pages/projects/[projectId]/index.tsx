@@ -25,6 +25,8 @@ import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
+import Image from "next/image"
+
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
@@ -61,11 +63,11 @@ export const Project = () => {
             >
               {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
-            <div className="like-bubble">{project.votesCount}</div>
+            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <img src="/edit.svg" alt="" />
+                  <Image src="/edit.svg" alt="" width="20" height="30" />
                 </Link>
               )}
             </div>
