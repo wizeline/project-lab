@@ -12,6 +12,7 @@ interface LabeledTextFieldProps {
   fullWidth?: boolean
   style?: any
   multiline?: boolean
+  rows?: number
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 

@@ -1,0 +1,33 @@
+-- CreateTable
+CREATE TABLE "ProjectStages" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "criteria" TEXT NOT NULL,
+    "mission" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "position" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("projectId") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ProjectTasks" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "description" TEXT NOT NULL,
+    "projectStageId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("projectStageId") REFERENCES "ProjectStages" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ContributorPath" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "projectTaskId" TEXT NOT NULL,
+    "projectMemberId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("projectMemberId") REFERENCES "ProjectMembers" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("projectTaskId") REFERENCES "ProjectTasks" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
