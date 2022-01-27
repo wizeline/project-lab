@@ -80,7 +80,7 @@ const Wrapper = styled.div`
     line-height: 29px;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #ff6f18;
+    background-color: #e94d44;
     padding: 7px 7px 8px 41px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   }
@@ -311,6 +311,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "category")}
                           >
                             {item.name} ({item.count})
@@ -337,6 +338,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "skill")}
                           >
                             {item.name} ({item.count})
@@ -363,6 +365,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "label")}
                           >
                             {item.name} ({item.count})
