@@ -80,7 +80,7 @@ export default resolver.pipe(
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>(
       `
-      SELECT p.id, p.name, p.description, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
+      SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
         strftime('%M %d, %y', p.createdAt) as createdAt,
         strftime('%M %d, %y', p.updatedAt) as updatedAt,
       COUNT(DISTINCT pm.profileId) as projectMembers

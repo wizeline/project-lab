@@ -102,6 +102,9 @@ const Wrapper = styled.div`
   .homeWrapper__accordion {
     box-shadow: none;
   }
+  .pageButton {
+    margin-right: 10px;
+  }
 `
 
 export const Projects = () => {
@@ -155,6 +158,9 @@ export const Projects = () => {
         status={item.status}
         color={item.color}
         votesCount={item.votesCount}
+        skills={
+          item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
+        }
       />
     )
   }
@@ -351,7 +357,7 @@ export const Projects = () => {
                 <button
                   type="button"
                   disabled={page === 0}
-                  className={page == 0 ? "primary default" : "primary"}
+                  className={page == 0 ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToPreviousPage}
                 >
                   Previous{" "}
@@ -359,7 +365,7 @@ export const Projects = () => {
                 <button
                   type="button"
                   disabled={!hasMore}
-                  className={!hasMore ? "primary default" : "primary"}
+                  className={!hasMore ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToNextPage}
                 >
                   Next

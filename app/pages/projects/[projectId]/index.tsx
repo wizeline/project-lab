@@ -11,6 +11,7 @@ import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@mu
 import Editor from "rich-markdown-editor"
 import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
+import Image from "next/image"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -40,11 +41,11 @@ export const Project = () => {
             >
               {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
-            <div className="like-bubble">{project.votesCount}</div>
+            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <img src="/edit.svg" alt="" />
+                  <Image src="/edit.svg" alt="" width="20" height="30" />
                 </Link>
               )}
             </div>
@@ -106,9 +107,13 @@ export const Project = () => {
                 <Card variant="outlined">
                   <CardContent>
                     <big>Skills:</big>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" justifyContent="flex-start" sx={{ flexWrap: "wrap" }}>
                       {project.skills.map((item, index) => (
-                        <Chip key={index} label={item.name} />
+                        <Chip
+                          key={index}
+                          label={item.name}
+                          sx={{ marginBottom: 1, marginRight: 1 }}
+                        />
                       ))}
                     </Stack>
                   </CardContent>

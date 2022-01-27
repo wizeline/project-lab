@@ -470,6 +470,11 @@ const seed = async () => {
             hoursPerWeek: 3,
             role: "SRE",
           },
+          {
+            profile: { connect: { id: jquiroz.id } },
+            hoursPerWeek: 3,
+            role: "Frontend",
+          },
         ],
       },
     },
