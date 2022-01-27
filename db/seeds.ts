@@ -1,5 +1,5 @@
 import db from "./index"
-import { execSync } from "child_process"
+import { contributorPath } from "app/core/utils/constants"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -12,6 +12,31 @@ const seed = async () => {
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
+  let projectStages: any = []
+
+  for (let i = 0; i < contributorPath?.length; i++) {
+    const data = {
+      name: contributorPath[i]?.name || "Failed",
+      criteria: contributorPath[i]?.criteria || "Failed",
+      mission: contributorPath[i]?.mission || "Failed",
+    }
+    const tasks = contributorPath[i]?.tasks || []
+    const position = i + 1
+    let projectTasks: any = []
+
+    for (let j = 0; j < tasks.length; j++) {
+      projectTasks.push({ description: tasks[j]?.name })
+    }
+
+    projectStages.push({
+      ...data,
+      position: position,
+      projectTasks: {
+        create: projectTasks,
+      },
+    })
+  }
+
   await db.skills.upsert({
     where: { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
     update: {},
@@ -387,6 +412,26 @@ const seed = async () => {
       department: "Engineering",
     },
   })
+  const rSosa = await db.profiles.upsert({
+    where: { email: "rodrigo.sosa@wizeline.com" },
+    update: {},
+    create: {
+      email: "rodrigo.sosa@wizeline.com",
+      firstName: "Rodrigo",
+      lastName: "Sosa",
+      department: "Engineering",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "diana.lopez@wizeline.com" },
+    update: {},
+    create: {
+      email: "diana.lopez@wizeline.com",
+      firstName: "Diana",
+      lastName: "Lopez",
+      department: "Engineering",
+    },
+  })
   const jquiroz = await db.profiles.upsert({
     where: { email: "juan.quiroz@wizeline.com" },
     update: {},
@@ -424,6 +469,9 @@ const seed = async () => {
             role: "Tech Lead",
           },
         ],
+      },
+      stages: {
+        create: projectStages,
       },
     },
   })
@@ -477,6 +525,9 @@ const seed = async () => {
           },
         ],
       },
+      stages: {
+        create: projectStages,
+      },
     },
   })
   await db.projects.upsert({
@@ -512,6 +563,9 @@ const seed = async () => {
           },
         ],
       },
+      stages: {
+        create: projectStages,
+      },
     },
   })
   await db.projects.upsert({
@@ -543,6 +597,9 @@ const seed = async () => {
             role: "Tech Lead",
           },
         ],
+      },
+      stages: {
+        create: projectStages,
       },
     },
   })
@@ -582,6 +639,9 @@ const seed = async () => {
             role: "Tech Lead",
           },
         ],
+      },
+      stages: {
+        create: projectStages,
       },
     },
   })

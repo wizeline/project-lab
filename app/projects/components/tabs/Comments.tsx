@@ -110,6 +110,7 @@ const Comments = (props: IProps) => {
       <ConfirmationModal
         open={openDeleteModal}
         handleClose={() => setOpenDeleteModal(false)}
+        close={() => setOpenDeleteModal(false)}
         label="Delete"
         className="warning"
         disabled={false}

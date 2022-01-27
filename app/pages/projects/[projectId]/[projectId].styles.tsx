@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { Button } from "@mui/material"
 
 export const HeaderInfo = styled.div`
   position: relative;
@@ -70,4 +71,5 @@ export const DetailMoreHead = styled.div`
     display: inline-block;
   }
 `
+
 export default HeaderInfo

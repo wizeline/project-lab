@@ -20,8 +20,17 @@ export default resolver.pipe(
         projectStatus: true,
         owner: true,
         projectMembers: {
-          include: { profile: { select: { firstName: true, lastName: true } } },
+          include: {
+            profile: { select: { firstName: true, lastName: true, email: true } },
+            contributorPath: true,
+          },
           orderBy: [{ active: "desc" }, { role: "asc" }],
+        },
+        stages: {
+          include: {
+            projectTasks: true,
+          },
+          orderBy: [{ position: "asc" }],
         },
         votes: { where: { profileId: session.profileId } },
       },
