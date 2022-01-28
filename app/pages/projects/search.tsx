@@ -112,7 +112,6 @@ const Wrapper = styled.div`
     margin-bottom: 35px;
   }
   .homeWrapper__myProposals {
-    /* display: grid; */
     row-gap: 2px;
     width: 100%;
     max-width: 250px;

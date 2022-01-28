@@ -57,7 +57,6 @@ const Header = ({ title }: IProps) => {
                 <NewProposalButton />
               </div>
               <div className="actions">
-                {/* Commented this for other realse <div className="actions--search" /> */}
                 <DropDownButton options={options}>
                   <div className="actions__user">
                     <span className="actions__user--name">{currentUser?.email}</span>

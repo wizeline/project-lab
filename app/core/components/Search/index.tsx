@@ -35,11 +35,6 @@ export const Search = () => {
     Router.push(route)
   }
 
-  // const clearSearch = () => {
-  //   setSearchValue("")
-  //   Router.push(projectsSearch)
-  // }
-
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       goToSearch()
@@ -81,13 +76,6 @@ export const Search = () => {
             ),
           }}
         />
-        {/* {routerQuery.q ? (
-          <button type="button" className="primary search default" onClick={clearSearch}>
-            Clear
-          </button>
-        ) : (
-          ""
-        )} */}
       </Box>
     </Wrapper>
   )
