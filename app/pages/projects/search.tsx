@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import styled from "@emotion/styled"
 import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
@@ -9,11 +9,20 @@ import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
 import { ExpandMore } from "@mui/icons-material"
+import { SortInput } from "app/core/components/SortInput"
 
 type SearchFilters = {
   category: string[]
   skill: string[]
   label: string[]
+}
+
+type queryItems = {
+  page?: number
+  q?: string
+  category?: string
+  skill?: string
+  label?: string
 }
 
 const ITEMS_PER_PAGE = 4
@@ -29,36 +38,29 @@ const Wrapper = styled.div`
     height: 58px;
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    align-items: center;
     margin-bottom: 21px;
   }
-  .homeWrapper__navbar__categories {
-    display: flex;
-    align-items: center;
-    margin-left: 36px;
+  .homeWrapper__navbar__sort {
+    margin-bottom: 20px;
   }
-  .homeWrapper__navbar__categories--title {
-    color: #000000;
-    font-family: Poppins;
+  .homeWrapper__navbar__tabs {
+    display: flex;
+    margin-left: 20px;
+  }
+  .homeWrapper__navbar__tabs--title {
     font-size: 18px;
-    letter-spacing: 0;
-    line-height: 27px;
+    font-weight: 600;
+    margin: 0 10px;
+    cursor: pointer;
+
+    :hover {
+      color: #e94d44;
+    }
   }
-  .homeWrapper__navbar__categories--list {
-    margin-left: 18px;
-  }
-  .homeWrapper__navbar__categories--list ul {
-    list-style: none;
-    display: flex;
-  }
-  .homeWrapper__navbar__categories--list ul li {
-    color: #727e8c;
-    font-family: Poppins;
-    font-size: 15px;
-    letter-spacing: 0;
-    line-height: 21px;
-    margin-right: 18px;
-    font-weight: 300;
+  .homeWrapper__navbar__tabs--title--selected {
+    color: #e94d44;
   }
   .homeWrapper__navbar__button {
     display: flex;
@@ -110,7 +112,6 @@ const Wrapper = styled.div`
     margin-bottom: 35px;
   }
   .homeWrapper__myProposals {
-    display: grid;
     row-gap: 2px;
     width: 100%;
     max-width: 250px;
@@ -136,25 +137,31 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { category, skill, label } = router.query
+  const { category, skill, label }: queryItems = router.query
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
-    category: [],
-    skill: [],
-    label: [],
+    category: category ? [category] : [],
+    skill: skill ? [skill] : [],
+    label: label ? [label] : [],
   })
 
-  const [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(
-    searchProjects,
-    {
-      search,
-      category,
-      skill,
-      label,
-      skip: ITEMS_PER_PAGE * page,
-      take: ITEMS_PER_PAGE,
-    }
-  )
+  useEffect(() => {
+    setChips(Object.values(filters).flat())
+  }, [filters])
+
+  //sorting variables
+  const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
+
+  let [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(searchProjects, {
+    search,
+    category,
+    skill,
+    label,
+    orderBy: { ...sortQuery },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+
   const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
   const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
 
@@ -171,7 +178,11 @@ export const Projects = () => {
         title={item.name}
         picture={item.avatarUrl}
         initials={initials(item.firstName, item.lastName)}
-        date={item.createdAt}
+        date={new Intl.DateTimeFormat([], {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+        }).format(new Date(item.createdAt))}
         description={item.description}
         status={item.status}
         color={item.color}
@@ -181,10 +192,6 @@ export const Projects = () => {
         }
       />
     )
-  }
-
-  const goToCreateNewProposal = () => {
-    Router.push(Routes.NewProjectPage())
   }
 
   const goToSearchWithFilters = (event: Event, filter: string) => {
@@ -206,7 +213,7 @@ export const Projects = () => {
     }
 
     Router.push({
-      pathname: "search",
+      pathname: "/projects/search",
       query: queryParams,
     })
   }
@@ -239,7 +246,7 @@ export const Projects = () => {
     })
 
     Router.push({
-      pathname: "search",
+      pathname: "/projects/search",
       query: queryParams,
     })
   }
@@ -271,23 +278,63 @@ export const Projects = () => {
     return chipsComponent
   }
 
+  //Tabs selection logic
+  const [tab, setTab] = useState({
+    allResults: "homeWrapper__navbar__tabs--title--selected",
+    myProposals: "",
+  })
+
+  useEffect(() => {
+    if (router.query.q === "myProposals") {
+      setTab({
+        allResults: "",
+        myProposals: "homeWrapper__navbar__tabs--title--selected",
+      })
+    } else {
+      setTab({
+        allResults: "homeWrapper__navbar__tabs--title--selected",
+        myProposals: "",
+      })
+    }
+    setFilters({
+      category: category ? [category] : [],
+      skill: skill ? [skill] : [],
+      label: label ? [label] : [],
+    })
+  }, [router.query.q, category, skill, label])
+
+  const handleTabChange = (selectedTab: string) => {
+    selectedTab === "allResults"
+      ? setTab({ allResults: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
+      : setTab({ allResults: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
+
+    handleTabChangeSearch(selectedTab)
+  }
+
+  const handleTabChangeSearch = (selectedTab: string) => {
+    selectedTab === "allResults"
+      ? router.push({ pathname: "/projects/search", query: "" })
+      : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
+  }
+
   return (
     <div>
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
-          <div className="homeWrapper__navbar__categories">
-            <div className="homeWrapper__navbar__categories--title">Categories:</div>
-            <div className="homeWrapper__navbar__categories--list">
-              <ul>
-                <li>People Ops</li>
-                <li>Engineering</li>
-                <li>Ux</li>
-              </ul>
+          <div className="homeWrapper__navbar__tabs">
+            <div
+              className={`homeWrapper__navbar__tabs--title ${tab.allResults}`}
+              onClick={() => handleTabChange("allResults")}
+            >
+              All Results
             </div>
-          </div>
-          <div className="homeWrapper__navbar__button">
-            <button onClick={goToCreateNewProposal}>New proposal</button>
+            <div
+              className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
+              onClick={() => handleTabChange("myProposals")}
+            >
+              My proposals
+            </div>
           </div>
         </div>
         <div className="homeWrapper--content">
@@ -380,7 +427,10 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title="Popular">
+              <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
+                <div className="homeWrapper__navbar__sort">
+                  <SortInput setSortQuery={setSortQuery} />
+                </div>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <button
                   type="button"

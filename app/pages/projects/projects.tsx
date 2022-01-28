@@ -1,4 +1,6 @@
 import { usePaginatedQuery, useRouter, Router, BlitzPage, Routes } from "blitz"
+import { useState } from "react"
+import { Prisma } from "db"
 import Layout from "app/core/layouts/Layout"
 import getProjects from "app/projects/queries/getProjects"
 import getMyProjects from "app/projects/queries/getMyProjects"
@@ -6,16 +8,24 @@ import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Wrapper } from "./projects.styles"
+import { SortInput } from "app/core/components/SortInput"
 
 const ITEMS_PER_PAGE = 4
 const MY_ITEMS_MAX = 10
 
 const ProjectsPage: BlitzPage = () => {
+  const [sortQuery, setSortQuery] = useState<{ field: string; order: Prisma.SortOrder }>({
+    field: "id",
+    order: "asc",
+  })
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    orderBy: { id: "asc" },
+  let [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+    orderBy:
+      sortQuery.field === "projectMembers"
+        ? { projectMembers: { _count: sortQuery.order } }
+        : { [sortQuery.field]: sortQuery.order },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -54,28 +64,14 @@ const ProjectsPage: BlitzPage = () => {
       />
     )
   }
-  // Direct link to full project page
-  const goToCreateNewProposal = () => {
-    Router.push(Routes.NewProjectPage())
-  }
 
   return (
     <div>
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
-          <div className="homeWrapper__navbar__categories">
-            <div className="homeWrapper__navbar__categories--title">Categories:</div>
-            <div className="homeWrapper__navbar__categories--list">
-              <ul>
-                <li>People Ops</li>
-                <li>Engineering</li>
-                <li>Ux</li>
-              </ul>
-            </div>
-          </div>
-          <div className="homeWrapper__navbar__button">
-            <button onClick={goToCreateNewProposal}>New proposal</button>
+          <div className="homeWrapper__navbar__sort">
+            <SortInput setSortQuery={setSortQuery} />
           </div>
         </div>
         <div className="homeWrapper--content">

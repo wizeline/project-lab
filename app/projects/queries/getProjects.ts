@@ -21,7 +21,7 @@ export default resolver.pipe(
         db.projects.findMany({
           ...paginateArgs,
           where,
-          include: { projectStatus: true, owner: true, skills: true },
+          include: { projectStatus: true, owner: true, skills: true, projectMembers: true },
           orderBy,
         }),
     })
