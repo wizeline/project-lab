@@ -80,7 +80,7 @@ const Wrapper = styled.div`
     line-height: 29px;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #ff6f18;
+    background-color: #e94d44;
     padding: 7px 7px 8px 41px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   }
@@ -124,6 +124,9 @@ const Wrapper = styled.div`
   }
   .homeWrapper__accordion {
     box-shadow: none;
+  }
+  .pageButton {
+    margin-right: 10px;
   }
 `
 
@@ -173,6 +176,9 @@ export const Projects = () => {
         status={item.status}
         color={item.color}
         votesCount={item.votesCount}
+        skills={
+          item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
+        }
       />
     )
   }
@@ -305,6 +311,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "category")}
                           >
                             {item.name} ({item.count})
@@ -331,6 +338,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "skill")}
                           >
                             {item.name} ({item.count})
@@ -357,6 +365,7 @@ export const Projects = () => {
                             id={item.name}
                             underline="none"
                             href=""
+                            color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "label")}
                           >
                             {item.name} ({item.count})
@@ -376,7 +385,7 @@ export const Projects = () => {
                 <button
                   type="button"
                   disabled={page === 0}
-                  className={page == 0 ? "primary default" : "primary"}
+                  className={page == 0 ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToPreviousPage}
                 >
                   Previous{" "}
@@ -384,7 +393,7 @@ export const Projects = () => {
                 <button
                   type="button"
                   disabled={!hasMore}
-                  className={!hasMore ? "primary default" : "primary"}
+                  className={!hasMore ? "primary default pageButton" : "primary pageButton"}
                   onClick={goToNextPage}
                 >
                   Next

@@ -106,7 +106,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         )}
         <SkillsSelect name="skills" label="Skills" />
         <LabelsSelect name="labels" label="Labels" />
-        <ProjectMembersField name="projectMembers" label="Add a member" />
+        <ProjectMembersField name="projectMembers" label="Add a contributor" />
       </Collapse>
     </Form>
   )

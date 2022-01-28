@@ -1,15 +1,22 @@
 import styled from "@emotion/styled"
+import { Button } from "@mui/material"
 
 export const HeaderInfo = styled.div`
   position: relative;
   .headerInfo--action {
     position: absolute;
     right: 13px;
+    height: 44px;
   }
   .headerInfo--edit {
     padding-left: 15px;
     padding-right: 5px;
     display: inline-block;
+  }
+  .navbar--like {
+    height: 100%;
+    line-height: 44px;
+    font-size: 14px;
   }
   .headerInfo--edit img {
     cursor: pointer;
@@ -64,4 +71,5 @@ export const DetailMoreHead = styled.div`
     display: inline-block;
   }
 `
+
 export default HeaderInfo

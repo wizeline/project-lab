@@ -1,23 +1,38 @@
-import { Suspense } from "react"
-import { Link, useQuery, useParam, BlitzPage, useMutation, Routes, Router } from "blitz"
+import { Suspense, useState } from "react"
+import Editor from "rich-markdown-editor"
+import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import {
+  Card,
+  CardContent,
+  Container,
+  Chip,
+  Stack,
+  Grid,
+  Typography,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material"
+
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
-import GoBack from "app/core/layouts/GoBack"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
-import { Card, CardContent, Container, Chip, Stack, Grid, Typography } from "@mui/material"
-import Editor from "rich-markdown-editor"
-import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
 import Comments from "app/projects/components/tabs/Comments"
+import JoinProjectModal from "app/projects/components/joinProjectModal"
+import ContributorPathReport from "app/projects/components/ContributorPathReport"
+import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import Stages from "app/projects/components/Stages"
+import Image from "next/image"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
-
+  const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
   const handleVote = async (id: string) => {
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
@@ -26,6 +41,14 @@ export const Project = () => {
     } catch (error) {
       alert("Error updating votes " + JSON.stringify(error, null, 2))
     }
+  }
+
+  function handleJoinProject() {
+    setShowJoinModal(true)
+  }
+
+  function handleCloseModal() {
+    setShowJoinModal(false)
   }
 
   return (
@@ -40,11 +63,11 @@ export const Project = () => {
             >
               {project.votes.length > 0 ? "Unlike" : "Like"}
             </button>
-            <div className="like-bubble">{project.votesCount}</div>
+            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <img src="/edit.svg" alt="" />
+                  <Image src="/edit.svg" alt="" width="20" height="30" />
                 </Link>
               )}
             </div>
@@ -85,6 +108,11 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
+      {isTeamMember && (
+        <div className="wrapper">
+          <Stages path={project.stages} viewMode={true} project={project} />
+        </div>
+      )}
       <div className="wrapper">
         <Container style={{ padding: "0px" }}>
           <Grid container spacing={2} alignItems="stretch">
@@ -103,19 +131,58 @@ export const Project = () => {
             </Grid>
             <Grid item xs={4}>
               <Stack direction="column" spacing={1}>
+                {project.slackChannel && (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Slack Channel:</big>
+                      <Stack direction="row" spacing={1}>
+                        {project.slackChannel}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                )}
+                {project.repoUrl && (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Repo URL:</big>
+                      <Box
+                        component="form"
+                        sx={{
+                          "& .MuiTextField-root": { width: "100%" },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                      >
+                        <TextField
+                          id="foo"
+                          defaultValue={project.repoUrl}
+                          variant="outlined"
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          sx={{
+                            width: "100%",
+                          }}
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                )}
+                {project.skills.length > 0 && (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <big>Skills:</big>
+                      <Stack direction="row" spacing={1}>
+                        {project.skills.map((item, index) => (
+                          <Chip key={index} label={item.name} />
+                        ))}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                )}
                 <Card variant="outlined">
                   <CardContent>
-                    <big>Skills:</big>
-                    <Stack direction="row" spacing={1}>
-                      {project.skills.map((item, index) => (
-                        <Chip key={index} label={item.name} />
-                      ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Members:</big>
+                    <big>Contributors:</big>
                     <Stack direction="column">
                       {project.projectMembers.map((item, index) => (
                         <div key={index}>
@@ -124,6 +191,9 @@ export const Project = () => {
                             color={item.active ? "text.primary" : "text.secondary"}
                           >
                             <div>
+                              <span
+                                className={item.active ? "status active" : "status unactive"}
+                              ></span>
                               {item.profile?.firstName} {item.profile?.lastName}
                               {item.hoursPerWeek
                                 ? " - " + item.hoursPerWeek + " Hours per week"
@@ -138,14 +208,27 @@ export const Project = () => {
                     </Stack>
                   </CardContent>
                 </Card>
+                {!isTeamMember && (
+                  <Button className="primary large" onClick={handleJoinProject}>
+                    Join Project
+                  </Button>
+                )}
               </Stack>
             </Grid>
           </Grid>
         </Container>
       </div>
       <div className="wrapper">
+        <ContributorPathReport project={project} />
+      </div>
+      <div className="wrapper">
         <Comments projectId={projectId!} />
       </div>
+      <JoinProjectModal
+        projectId={projectId!}
+        open={showJoinModal}
+        handleCloseModal={handleCloseModal}
+      />
     </>
   )
 }

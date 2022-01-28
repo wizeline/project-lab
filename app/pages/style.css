@@ -33,10 +33,11 @@ h2 {
 .wrapper + .wrapper {
   margin-top: -10px;
 }
-button.primary {
+button.primary,
+button.primary:hover {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   border-radius: 4px;
-  background-color: #ff6f18;
+  background-color: #e94d44;
   color: #ffffff;
   font-family: Poppins;
   font-size: 15px;
@@ -69,6 +70,15 @@ button.primary.unlike {
 
 button.primary.warning {
   background-color: red;
+  color: #fff;
+}
+
+button.primary.warning:disabled {
+  opacity: 0.5;
+}
+
+button[disabled].primary.warning:hover {
+  cursor: not-allowed !important;
 }
 
 .like-bubble {
@@ -99,4 +109,55 @@ button.primary.search {
 button.primary.default {
   background-color: #f1f1f1;
   color: #444;
+}
+
+button.primary.large {
+  width: 100%;
+}
+
+table.table-project-members {
+  background-color: #fff;
+  border: solid 1px #999;
+  border-collapse: collapse;
+}
+
+table.table-project-members th {
+  text-align: left;
+  background-color: #999;
+  color: #fff;
+}
+
+table.table-project-members th,
+table.table-project-members td {
+  padding: 8px;
+  border: solid 1px #ccc;
+  vertical-align: top;
+}
+
+table.table-project-members td:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table.table-project-members td ul {
+  display: flex;
+}
+
+table.table-project-members td ul li {
+  list-style: none;
+  margin-right: 2px;
+}
+
+span.status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border: solid 2px #ccc;
+  margin-right: 5px;
+  border-radius: 100%;
+}
+
+span.status.active {
+  background-color: #27e527;
+  border: solid 2px #27e527;
 }

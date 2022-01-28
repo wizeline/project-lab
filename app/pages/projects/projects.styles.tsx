@@ -62,7 +62,7 @@ export const Wrapper = styled.div`
     line-height: 29px;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #ff6f18;
+    background-color: #e94d44;
     padding: 7px 7px 8px 41px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   }
@@ -97,6 +97,9 @@ export const Wrapper = styled.div`
     width: 100%;
     max-width: 390px;
     margin-left: 15px;
+  }
+  .pageButton {
+    margin-right: 10px;
   }
 `
 

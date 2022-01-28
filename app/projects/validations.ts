@@ -6,9 +6,9 @@ export const InitialMembers = (profileId) => {
         {
           profileId,
           name: "You ;-)",
-          role: "",
+          role: "Owner",
           active: true,
-          hoursPerWeek: null,
+          hoursPerWeek: 40,
         },
       ]
     : []
@@ -17,8 +17,15 @@ export const InitialMembers = (profileId) => {
 const projectMembers = z
   .array(
     z.object({
+      id: z.string().optional(),
       profileId: z.string(),
       role: z.string().nullish(),
+      profile: z
+        .object({
+          firstName: z.string(),
+          lastName: z.string(),
+        })
+        .optional(),
       hoursPerWeek: z
         // TextFields return strings
         .string()
@@ -85,6 +92,7 @@ export const FullUpdate = z
   .object({
     id: z.string(),
     owner: z.object({ id: z.string() }),
+    existedMembers: z.array(z.string()),
     ...FullFormFields,
   })
   .transform(extractSearchSkills)
@@ -106,4 +114,15 @@ export const CreateComment = z.object({
   projectId: z.string(),
   body: z.string(),
   parentId: z.string().or(z.null()),
+})
+
+export const CreateContributorPath = z.object({
+  projectTaskId: z.string(),
+  projectMemberId: z.string(),
+})
+
+export const CreateProjectMember = z.object({
+  projectId: z.any(),
+  hoursPerWeek: z.number(),
+  role: z.string(),
 })

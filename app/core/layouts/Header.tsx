@@ -57,9 +57,9 @@ const Header = ({ title }: IProps) => {
           <div className="content">
             <div className="logo" onClick={goHome}>
               <div className="logo--img">
-                <Image src="/wizeline.png" alt="wizeline" height={80} width={80} />
+                <Image src="/wizeline.png" alt="wizeline" height={70} width={103} />
               </div>
-              <div className="logo--text">Proposal Hunt</div>
+              <div className="logo--text">Project Lab</div>
             </div>
             <div className="actions">
               {/* Commented this for other realse <div className="actions--search" /> */}

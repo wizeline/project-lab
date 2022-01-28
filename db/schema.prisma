@@ -115,14 +115,15 @@ model Profiles {
 }
 
 model ProjectMembers {
-  id           String    @id @default(uuid())
-  projectId    String
-  profileId    String
-  hoursPerWeek Int?
-  role         String?
-  active       Boolean   @default(true)
-  profile      Profiles? @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  project      Projects? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id              String            @id @default(uuid())
+  projectId       String
+  profileId       String
+  hoursPerWeek    Int?
+  role            String?
+  active          Boolean           @default(true)
+  profile         Profiles?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  project         Projects?         @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contributorPath ContributorPath[]
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")
   @@index([profileId], name: "project_members_profile_id_idx")
@@ -166,6 +167,7 @@ model Projects {
   labels         Labels[]
   votes          Vote[]
   comments       Comments[]
+  stages         ProjectStages[]
   votesCount     Int              @default(0)
 
   @@index([ownerId], name: "projects_owner_id_idx")
@@ -214,4 +216,37 @@ model Comments {
   author    Profiles   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   parent    Comments?  @relation("ParentComment", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   children  Comments[] @relation("ParentComment")
+}
+
+model ProjectStages {
+  id           String         @id @default(uuid())
+  name         String
+  criteria     String
+  mission      String
+  projectId    String
+  position     Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  project      Projects?      @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectTasks ProjectTasks[]
+}
+
+model ProjectTasks {
+  id              String            @id @default(uuid())
+  description     String
+  projectStageId  String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  projectStage    ProjectStages?    @relation(fields: [projectStageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contributorPath ContributorPath[]
+}
+
+model ContributorPath {
+  id              String         @id @default(uuid())
+  projectTaskId   String
+  projectMemberId String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
+  projectMember   ProjectMembers @relation(fields: [projectMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectTask     ProjectTasks   @relation(fields: [projectTaskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
