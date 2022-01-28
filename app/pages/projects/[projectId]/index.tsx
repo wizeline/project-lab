@@ -23,9 +23,9 @@ import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
-import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import { HeaderInfo, DetailMoreHead, Like, LikeBox, EditButton } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
-import Image from "next/image"
+import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -57,17 +57,12 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button
-              className={project.votes.length > 0 ? "primary unlike" : "primary like"}
-              onClick={() => handleVote(project.id)}
-            >
-              {project.votes.length > 0 ? "Unlike" : "Like"}
-            </button>
-            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <Image src="/edit.svg" alt="" width="20" height="30" />
+                  <EditButton>
+                    <EditSharp />
+                  </EditButton>
                 </Link>
               )}
             </div>
@@ -119,6 +114,26 @@ export const Project = () => {
             <Grid item xs={8}>
               <Card variant="outlined">
                 <CardContent>
+                  <LikeBox>
+                    <Like>
+                      <div className="like-bubble">
+                        <span>{project.votesCount}</span>
+                      </div>
+                      <Button className="primary" onClick={() => handleVote(project.id)}>
+                        {project.votes.length > 0 ? (
+                          <>
+                            {"Unlike"}&nbsp;
+                            <ThumbDownSharp />
+                          </>
+                        ) : (
+                          <>
+                            {"Like"}&nbsp;
+                            <ThumbUpSharp />
+                          </>
+                        )}
+                      </Button>
+                    </Like>
+                  </LikeBox>
                   <h2>Description</h2>
                   <div>
                     <Editor
@@ -180,34 +195,6 @@ export const Project = () => {
                     </CardContent>
                   </Card>
                 )}
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Contributors:</big>
-                    <Stack direction="column">
-                      {project.projectMembers.map((item, index) => (
-                        <div key={index}>
-                          <Typography
-                            component={"div"}
-                            color={item.active ? "text.primary" : "text.secondary"}
-                          >
-                            <div>
-                              <span
-                                className={item.active ? "status active" : "status unactive"}
-                              ></span>
-                              {item.profile?.firstName} {item.profile?.lastName}
-                              {item.hoursPerWeek
-                                ? " - " + item.hoursPerWeek + " Hours per week"
-                                : null}
-                            </div>
-                            <div>
-                              <small>{item.role}</small>
-                            </div>
-                          </Typography>
-                        </div>
-                      ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
                 {!isTeamMember && (
                   <Button className="primary large" onClick={handleJoinProject}>
                     Join Project
