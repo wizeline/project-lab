@@ -35,12 +35,12 @@ export default resolver.pipe(
     { search, category, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput,
     { session }: Ctx
   ) => {
-    const prefixSearch = search + "*"
+    const prefixSearch = "%" + search + "%"
     let where = Prisma.empty
 
     if (search && search !== "") {
       search !== "myProposals"
-        ? (where = Prisma.sql`${where} WHERE projects_idx match ${prefixSearch}`)
+        ? (where = Prisma.sql`${where} WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
         : (where = Prisma.sql`${where} WHERE ownerId == ${session.profileId}`)
     }
 
