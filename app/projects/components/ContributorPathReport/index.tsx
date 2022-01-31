@@ -87,9 +87,9 @@ export const ContributorPathReport = ({ project }: IProps) => {
               <th key={i}>
                 {stage.name}
                 <br />
-                {stage.projectTasks.map((task, t) => (
-                  <HtmlTooltip key={t} title={<React.Fragment>{task.description}</React.Fragment>}>
-                    <TipBubble>{t + 1}</TipBubble>
+                {stage.projectTasks.map((task, taskIndex) => (
+                  <HtmlTooltip key={taskIndex} title={task.description}>
+                    <TipBubble>{taskIndex + 1}</TipBubble>
                   </HtmlTooltip>
                 ))}
               </th>
@@ -97,11 +97,11 @@ export const ContributorPathReport = ({ project }: IProps) => {
           </tr>
         </thead>
         <tbody>
-          {project.projectMembers.map((member, m) => {
+          {project.projectMembers.map((member, memberIndex) => {
             const projectTaskIds: any = member.contributorPath.map((cp) => cp.projectTaskId)
 
             return (
-              <tr key={m}>
+              <tr key={memberIndex}>
                 <td align="center">
                   {member.active ? (
                     <CompleteIcon>
@@ -118,7 +118,7 @@ export const ContributorPathReport = ({ project }: IProps) => {
                 </td>
                 <td align="center">
                   <HtmlTooltip
-                    key={m}
+                    key={memberIndex}
                     title={<React.Fragment>{member.profile?.email}</React.Fragment>}
                   >
                     <EmailAt>
@@ -131,8 +131,8 @@ export const ContributorPathReport = ({ project }: IProps) => {
                 {project.stages?.map((stage, s) => (
                   <td key={s}>
                     <ul>
-                      {stage.projectTasks.map((task, t) => (
-                        <li key={t}>
+                      {stage.projectTasks.map((task, taskIndex) => (
+                        <li key={taskIndex}>
                           {projectTaskIds.includes(task.id) ? (
                             <CompleteIcon>
                               <CheckBoxSharpIcon />

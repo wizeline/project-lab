@@ -43,11 +43,11 @@ export const Project = () => {
     }
   }
 
-  function handleJoinProject() {
+  const handleJoinProject = () => {
     setShowJoinModal(true)
   }
 
-  function handleCloseModal() {
+  const handleCloseModal = () => {
     setShowJoinModal(false)
   }
 
