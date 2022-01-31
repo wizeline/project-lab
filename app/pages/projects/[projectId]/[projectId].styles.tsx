@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { Button } from "@mui/material"
 
 export const HeaderInfo = styled.div`
   position: relative;
@@ -70,6 +69,20 @@ export const DetailMoreHead = styled.div`
     line-height: 21px;
     display: inline-block;
   }
+`
+
+export const Like = styled.div`
+  display: flex;
+  align-items: stretch;
+`
+
+export const LikeBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
+
+export const EditButton = styled.div`
+  cursor: pointer;
 `
 
 export default HeaderInfo
