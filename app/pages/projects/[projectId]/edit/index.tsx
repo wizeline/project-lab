@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, SyntheticEvent, useState } from "react"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
@@ -6,75 +6,17 @@ import GoBack from "app/core/layouts/GoBack"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
 import AccessDenied from "app/core/components/AccessDenied"
-import ConfirmationModal from "app/core/components/ConfirmationModal"
 import getProject from "app/projects/queries/getProject"
 import getProjectMembers from "app/projects/queries/getProjectMembers"
 import updateProject from "app/projects/mutations/updateProject"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
-import { FullCreate } from "app/projects/validations"
-import { TextField } from "@mui/material"
+import { FullCreate, ContributorPath } from "app/projects/validations"
 
-export const DeleteButton = (props) => {
-  const [open, setOpen] = useState(false)
-  const [deleteBtn, setDeleteBtn] = useState(true)
-  const [hasError, setHasError] = useState(false)
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const deleteProposal = async () => {
-    try {
-      await props.deleteProjectMutation({ id: props.project.id })
-      props.router.push(Routes.ProjectsPage())
-    } catch (error) {
-      handleClose()
-      console.log(error)
-      setHasError(true)
-    }
-  }
-
-  const projectName = (e) => {
-    const value = e.target.value != props.project.name
-    setDeleteBtn(value)
-    setHasError(value)
-  }
-
-  return (
-    <>
-      <button type="button" className="primary warning" onClick={handleOpen}>
-        Delete
-      </button>
-
-      <ConfirmationModal
-        open={open}
-        handleClose={handleClose}
-        close={() => handleClose()}
-        label="Delete"
-        className="warning"
-        disabled={deleteBtn}
-        onClick={deleteProposal}
-      >
-        <h2>Are you sure you want to delete this proposal?</h2>
-        <p>This action cannot be undone.</p>
-        <br />
-        <TextField
-          label={`Type ${props.project.name}`}
-          type="text"
-          error={hasError}
-          style={{ width: "100%" }}
-          onChange={projectName}
-        />
-        <br />
-      </ConfirmationModal>
-    </>
-  )
-}
+import { Box, Tab, Tabs } from "@mui/material"
+import DeleteButton from "app/projects/components/DeleteButton.component"
+import TabPanel from "app/projects/components/TabPanel.component"
+import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
 
 export const EditProject = () => {
   const router = useRouter()
@@ -89,6 +31,9 @@ export const EditProject = () => {
     }
   )
 
+  const [tabIndex, setTabIndex] = useState(1)
+  const handleTabChange = (event: SyntheticEvent, tabNumber: number) => setTabIndex(tabNumber)
+
   const [projectMembers] = useQuery(getProjectMembers, { id: project.id })
   const existedMembers = projectMembers.map((member) => member.id)
 
@@ -99,43 +44,86 @@ export const EditProject = () => {
     return <AccessDenied />
   }
 
+  async function handleSubmitProjectDetails(values) {
+    values.existedMembers = existedMembers
+
+    try {
+      const updated = await updateProjectMutation({
+        id: project.id,
+        ...values,
+      })
+      await setQueryData(updated)
+      router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+    } catch (error) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  async function handleSubmitContributorPath(values) {
+    values.existedMembers = existedMembers
+
+    try {
+      const updated = await updateProjectMutation({
+        id: project.id,
+        ...values,
+      })
+      await setQueryData(updated)
+      router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+    } catch (error) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
     <>
       <Header title={"Edit " + project.name} />
+
       <div className="wrapper">
         <h1>Edit {project.name}</h1>
       </div>
+
       <div className="wrapper">
         <GoBack
           title="Back to project"
           onClick={() => router.push(Routes.ShowProjectPage({ projectId: project.id }))}
         />
-        <ProjectForm
-          submitText="Update Project"
-          // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          schema={FullCreate}
-          initialValues={project}
-          onSubmit={async (values) => {
-            values.existedMembers = existedMembers
 
-            try {
-              const updated = await updateProjectMutation({
-                id: project.id,
-                ...values,
-              })
-              await setQueryData(updated)
-              router.push(Routes.ShowProjectPage({ projectId: updated.id }))
-            } catch (error) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
-            }
-          }}
-        />
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Edit project">
+            <Tab label="Project Details" />
+            <Tab label="Contributors Path" />
+          </Tabs>
+        </Box>
+
+        <TabPanel value={tabIndex} index={0}>
+          <br />
+          <ProjectForm
+            submitText="Update Project"
+            // TODO use a zod schema for form validation
+            //  - Tip: extract mutation's schema into a shared `validations.ts` file and
+            //         then import and use it here
+            schema={FullCreate}
+            initialValues={project}
+            onSubmit={handleSubmitProjectDetails}
+          />
+        </TabPanel>
+        <TabPanel value={tabIndex} index={1}>
+          <br />
+          <ProjectContributorsPathForm
+            submitText="Update Stages"
+            schema={ContributorPath}
+            initialValues={project.stages}
+            onSubmit={handleSubmitProjectDetails}
+          />
+        </TabPanel>
       </div>
+
       <div className="wrapper">
         <DeleteButton
           project={project}

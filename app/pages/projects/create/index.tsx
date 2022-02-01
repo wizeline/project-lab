@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Link, useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
+import { useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
 import Loader from "app/core/components/Loader"
@@ -12,6 +12,26 @@ export const NewProject = () => {
   const session = useSession()
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
+
+  const INIT_VAUES_PROJECTFORM = {
+    skills: [],
+    labels: [],
+    // add current profile as default member
+    projectMembers: InitialMembers(session.profileId),
+  }
+
+  const projectFormOnSubmit = async (values) => {
+    try {
+      const project = await createProjectMutation(values)
+      router.push(Routes.ShowProjectPage({ projectId: project.id }))
+    } catch (error) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
     <div>
       <Header title="Create your proposal" />
@@ -23,24 +43,9 @@ export const NewProject = () => {
         <ProjectForm
           projectformType="create"
           submitText="Create Project"
-          initialValues={{
-            skills: [],
-            labels: [],
-            // add current profile as default member
-            projectMembers: InitialMembers(session.profileId),
-          }}
+          initialValues={INIT_VAUES_PROJECTFORM}
           schema={FullCreate}
-          onSubmit={async (values) => {
-            try {
-              const project = await createProjectMutation(values)
-              router.push(Routes.ShowProjectPage({ projectId: project.id }))
-            } catch (error) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
-            }
-          }}
+          onSubmit={projectFormOnSubmit}
         />
       </div>
     </div>

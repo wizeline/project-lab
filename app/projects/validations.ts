@@ -88,6 +88,17 @@ const extractSearchSkills = (val) => {
 }
 
 export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
+
+const ContributorPathFormFields = {
+  name: z.string(),
+  criteria: z.string(),
+  mission: z.string(),
+  position: z.number(),
+  projectTasks: z.array(z.object({ description: z.string() })),
+}
+
+export const ContributorPath = z.array(z.object(ContributorPathFormFields)).nonempty()
+
 export const FullUpdate = z
   .object({
     id: z.string(),

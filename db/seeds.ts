@@ -645,6 +645,16 @@ const seed = async () => {
       },
     },
   })
+  await db.profiles.upsert({
+    where: { email: "luis.lasso@wizeline.com" },
+    update: {},
+    create: {
+      email: "luis.lasso@wizeline.com",
+      firstName: "Luis",
+      lastName: "Lasso",
+      department: "Engineering",
+    },
+  })
 }
 
 export default seed
