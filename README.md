@@ -48,7 +48,7 @@ DATABASE_URL="file:./db_test.sqlite"
   })
 ```
 
-5. Set the project's node version with NVM. If you don't have NVM installed read the [documentation](https://github.com/nvm-sh/nvm):
+5. (Only dev environment) Set the project's node version with NVM. If you don't have NVM installed read the [documentation](https://github.com/nvm-sh/nvm):
 
 ```
 nvm use
