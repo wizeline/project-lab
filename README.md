@@ -48,40 +48,46 @@ DATABASE_URL="file:./db_test.sqlite"
   })
 ```
 
-5. Install dependencies:
+5. Set the project's node version with NVM. If you don't have NVM installed read the [documentation](https://github.com/nvm-sh/nvm):
+
+```
+nvm use
+```
+
+6. Install dependencies:
 
 ```
 yarn install
 ```
 
-6. Create or reset the database schema:
+7. Create or reset the database schema:
 
 ```
-blitz prisma migrate reset
+npx blitz prisma migrate reset
 ```
 
-7. Load full text indexes:
+8. Load full text indexes:
 
 ```
 sqlite3 db/db.sqlite < db/search_indexes.sql
 ```
 
-8. Populate with test data:
+9. Populate with test data:
 
 ```
-blitz db seed
+npx blitz db seed
 ```
 
-9. Sync profiles and skills from Wizeline OS, this is optional and it takes a couple of minutes, the seeding contains sample data that can be enough to run locally:
+10. Sync profiles and skills from Wizeline OS, this is optional and it takes a couple of minutes, the seeding contains sample data that can be enough to run locally:
 
 ```
 yarn sync-all-from-wos
 ```
 
-10. Run blitz:
+11. Run blitz:
 
 ```
-blitz dev
+npx blitz dev
 ```
 
 Finally, open [http://localhost:3000](http://localhost:3000) in a browser to see the result.
