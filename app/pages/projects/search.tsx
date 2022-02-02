@@ -318,7 +318,7 @@ export const Projects = () => {
   }
 
   return (
-    <div>
+    <>
       <Header title="Projects" />
       <Wrapper className="homeWrapper">
         <div className="homeWrapper__navbar">
@@ -453,17 +453,17 @@ export const Projects = () => {
           </div>
         </div>
       </Wrapper>
-    </div>
+    </>
   )
 }
 
 const SearchProjectsPage: BlitzPage = () => {
   return (
-    <div>
+    <>
       <Suspense fallback={<Loader />}>
         <Projects />
       </Suspense>
-    </div>
+    </>
   )
 }
 
