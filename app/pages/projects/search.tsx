@@ -10,6 +10,7 @@ import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
 import { ExpandMore } from "@mui/icons-material"
 import { SortInput } from "app/core/components/SortInput"
+import { MobileFilter } from "app/core/components/MobileFilter"
 
 type SearchFilters = {
   category: string[]
@@ -43,6 +44,8 @@ const Wrapper = styled.div`
     margin-bottom: 21px;
   }
   .homeWrapper__navbar__sort {
+    display: flex;
+    align-items: flex-start;
     margin-bottom: 20px;
   }
   .homeWrapper__navbar__tabs {
@@ -92,24 +95,26 @@ const Wrapper = styled.div`
     justify-content: space-between;
     width: 100%;
   }
-  .homeWrapper__navbar {
-  }
+
   .homeWrapper__information {
     width: 100%;
     max-width: 737px;
   }
   .homeWrapper__information--row {
     margin-bottom: 20px;
+    width: 100%;
   }
   .homeWrapper__information--row:last-child {
     margin-bottom: 0px;
   }
   .homeWrapper__popular {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
     row-gap: 35px;
     column-gap: 15px;
     margin-bottom: 35px;
+    align-items: center;
+    justify-items: center;
   }
   .homeWrapper__myProposals {
     row-gap: 2px;
@@ -128,6 +133,54 @@ const Wrapper = styled.div`
   }
   .pageButton {
     margin-right: 10px;
+  }
+
+  .homeWrapper__pagination-buttons {
+    display: flex;
+  }
+
+  .homeWrapper__mobile-filters {
+    display: none;
+  }
+
+  @media (max-width: 968px) {
+    margin-top: 10px;
+
+    .homeWrapper__navbar {
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .homeWrapper__navbar__tabs {
+      margin-left: 0px;
+    }
+
+    .homeWrapper__myProposals {
+      display: none;
+    }
+    .homeWrapper__popular {
+    }
+    .homeWrapper__navbar__sort {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .homeWrapper__pagination-buttons {
+      justify-content: center;
+    }
+
+    .homeWrapper__mobile-filters {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .homeWrapper__information {
+      max-width: 100%;
+    }
   }
 `
 
@@ -196,7 +249,6 @@ export const Projects = () => {
 
   const goToSearchWithFilters = (event: Event, filter: string) => {
     event.preventDefault()
-
     const queryParams = JSON.parse(JSON.stringify(qParams))
     const searchParam = event.target && event.target["id"]
     const index = filters[filter].findIndex((item) => searchParam === item)
@@ -427,27 +479,49 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
+              <CardBox centerText title={tab.allResults ? "All Results" : "My Proposals"}>
+                <div className="homeWrapper__mobile-filters">
+                  <MobileFilter
+                    label="category"
+                    setFilterQuery={goToSearchWithFilters}
+                    filterOptions={categoryFacets}
+                    deleteFilter={deleteFilter}
+                  />
+                  <MobileFilter
+                    label="skill"
+                    setFilterQuery={goToSearchWithFilters}
+                    filterOptions={skillFacets}
+                    deleteFilter={deleteFilter}
+                  />
+                  <MobileFilter
+                    label="label"
+                    setFilterQuery={goToSearchWithFilters}
+                    filterOptions={labelFacets}
+                    deleteFilter={deleteFilter}
+                  />
+                </div>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                 </div>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
-                <button
-                  type="button"
-                  disabled={page === 0}
-                  className={page == 0 ? "primary default pageButton" : "primary pageButton"}
-                  onClick={goToPreviousPage}
-                >
-                  Previous{" "}
-                </button>{" "}
-                <button
-                  type="button"
-                  disabled={!hasMore}
-                  className={!hasMore ? "primary default pageButton" : "primary pageButton"}
-                  onClick={goToNextPage}
-                >
-                  Next
-                </button>
+                <div className="homeWrapper__pagination-buttons">
+                  <button
+                    type="button"
+                    disabled={page === 0}
+                    className={page == 0 ? "primary default pageButton" : "primary pageButton"}
+                    onClick={goToPreviousPage}
+                  >
+                    Previous{" "}
+                  </button>{" "}
+                  <button
+                    type="button"
+                    disabled={!hasMore}
+                    className={!hasMore ? "primary default pageButton" : "primary pageButton"}
+                    onClick={goToNextPage}
+                  >
+                    Next
+                  </button>
+                </div>
               </CardBox>
             </div>
           </div>
