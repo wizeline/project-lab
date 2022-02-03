@@ -8,6 +8,8 @@ import { useProjectMember } from "app/core/hooks/useProjectMember"
 import useContributorPath from "app/projects/components/tabs/hooks/useContributorPath"
 import SnackbarAlert from "app/core/components/SnackbarAlert"
 
+import Editor from "rich-markdown-editor"
+
 interface IPathItem {
   current?: boolean
   name: string
@@ -21,9 +23,6 @@ interface ICareerPathComponentProps {
   viewMode?: boolean
   project?: any
 }
-
-const theTestContent: string = "Some information"
-const theTestContentB: string = "[watch video](https://www.youtube.com/watch?v=xPzuOSv95fc&t=277s)"
 
 const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentProps) => {
   const { projectTeamMember } = useProjectMember(project)
@@ -105,7 +104,10 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 }}
               >
                 <b>Criteria:</b>
-                <p>{pathItem.criteria}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.criteria ? pathItem.criteria : ""}
+                ></Editor>
 
                 <b>Tasks:</b>
                 {pathItem.projectTasks.map((taskItem, index) => {
@@ -128,18 +130,11 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                     />
                   )
                 })}
-                <TaskItem
-                  completed={true}
-                  editable={true}
-                  description={`Hi Hello this info could change ${theTestContentB}`}
-                  contributorPath={1}
-                  taskItemId={2}
-                  changeHandle={() => {
-                    console.log("Not an actual item")
-                  }}
-                />
                 <b>Mission:</b>
-                <p>{pathItem.mission}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.mission ? pathItem.mission : ""}
+                ></Editor>
               </div>
             </Card>
           )
