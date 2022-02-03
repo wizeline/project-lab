@@ -141,3 +141,11 @@ span.status.active {
   background-color: #27e527;
   border: solid 2px #27e527;
 }
+
+@media (max-width: 768px) {
+  table.table-project-members {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

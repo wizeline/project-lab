@@ -10,7 +10,7 @@ export function CommentForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
   return (
     <Form<S> {...props}>
       <Box sx={{ marginTop: 1 }}>
-        <LabeledTextField style={{ width: 940 }} name="comment" label="Write a comment" />
+        <LabeledTextField style={{ width: "100%" }} name="comment" label="Write a comment" />
       </Box>
     </Form>
   )

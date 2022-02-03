@@ -143,7 +143,7 @@ const Wrapper = styled.div`
     display: none;
   }
 
-  @media (max-width: 968px) {
+  @media (max-width: 820px) {
     margin-top: 10px;
 
     .homeWrapper__navbar {
