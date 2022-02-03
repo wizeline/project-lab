@@ -22,6 +22,9 @@ interface ICareerPathComponentProps {
   project?: any
 }
 
+const theTestContent: string = "Some information"
+const theTestContentB: string = "[watch video](https://www.youtube.com/watch?v=xPzuOSv95fc&t=277s)"
+
 const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentProps) => {
   const { projectTeamMember } = useProjectMember(project)
   const { isLoading, createContributorPathHandler, deleteContributorPathHandler } =
@@ -125,7 +128,16 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                     />
                   )
                 })}
-
+                <TaskItem
+                  completed={true}
+                  editable={true}
+                  description={`Hi Hello this info could change ${theTestContentB}`}
+                  contributorPath={1}
+                  taskItemId={2}
+                  changeHandle={() => {
+                    console.log("Not an actual item")
+                  }}
+                />
                 <b>Mission:</b>
                 <p>{pathItem.mission}</p>
               </div>
