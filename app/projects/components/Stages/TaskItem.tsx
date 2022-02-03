@@ -1,9 +1,7 @@
 import React from "react"
 import styled from "@emotion/styled"
 import Checkbox from "@mui/material/Checkbox"
-
 import Editor from "rich-markdown-editor"
-
 import { useSession } from "blitz"
 
 const HorizontalDiv = styled.div`

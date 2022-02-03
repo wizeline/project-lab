@@ -7,7 +7,6 @@ import TaskItem from "./TaskItem"
 import { useProjectMember } from "app/core/hooks/useProjectMember"
 import useContributorPath from "app/projects/components/tabs/hooks/useContributorPath"
 import SnackbarAlert from "app/core/components/SnackbarAlert"
-
 import Editor from "rich-markdown-editor"
 
 interface IPathItem {
