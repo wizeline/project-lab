@@ -122,7 +122,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                       key={index}
                       completed={!!contributorPath}
                       contributorPath={contributorPath}
-                      editable={viewMode}
+                      editable={projectTeamMember?.active}
                       taskItemId={taskItem.id}
                       changeHandle={changeHandle}
                       {...taskItem}
