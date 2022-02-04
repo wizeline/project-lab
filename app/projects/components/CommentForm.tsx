@@ -6,8 +6,12 @@ import { z } from "zod"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
+const commentFields = z.object({
+  comment: z.string(),
+})
 export function CommentForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
+    //<Form<S> {...props} schema={commentFields}>
     <Form<S> {...props}>
       <Box sx={{ marginTop: 1 }}>
         <LabeledTextField style={{ width: 940 }} name="comment" label="Write a comment" />

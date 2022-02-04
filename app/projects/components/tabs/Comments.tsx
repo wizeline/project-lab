@@ -20,6 +20,7 @@ import getComments from "app/projects/queries/getComments"
 // import Close from "@mui/icons-material"
 import { Close } from "@mui/icons-material"
 import { WrapperDialog, Button as ButtonQuick } from "./Comments.styles"
+import { z } from "zod"
 
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import CommentItem from "./CommentItem"
@@ -33,6 +34,10 @@ const initialComment: IComment = {
   body: "",
   projectId: "",
 }
+
+const commentFields = z.object({
+  comment: z.string(),
+})
 
 const Comments = (props: IProps) => {
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
@@ -147,6 +152,7 @@ const Comments = (props: IProps) => {
         <Grid>
           <CommentForm
             submitText="Add Comment"
+            schema={commentFields}
             onSubmit={(values) => createCommentHandler(values)}
           />
           <Paper sx={{ paddingX: 7, paddingY: 5, marginTop: 2 }}>
