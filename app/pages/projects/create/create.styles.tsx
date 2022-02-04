@@ -14,4 +14,3 @@ export const WrapperContentForm = styled.div`
   width: 100%;
   max-width: 540px;
 `
-export default WrapperContent

@@ -103,7 +103,7 @@ export const EditProject = () => {
     <>
       <Header title={"Edit " + project.name} />
       <div className="wrapper">
-        <h1>Edit {project.name}</h1>
+        <h1 className="form__center-text">Edit {project.name}</h1>
       </div>
       <div className="wrapper">
         <GoBack
@@ -136,7 +136,7 @@ export const EditProject = () => {
           }}
         />
       </div>
-      <div className="wrapper">
+      <div className="wrapper form__center-text">
         <DeleteButton
           project={project}
           deleteProjectMutation={deleteProjectMutation}

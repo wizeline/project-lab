@@ -142,10 +142,27 @@ span.status.active {
   border: solid 2px #27e527;
 }
 
+.rows__separator {
+  display: none;
+}
+
 @media (max-width: 768px) {
   table.table-project-members {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+
+  .form__center-text {
+    text-align: center;
+  }
+
+  .rows__separator {
+    display: block;
+    margin: 0 auto;
+    height: 1px;
+    width: 95%;
+    background-color: #111823;
+    margin-bottom: 5px;
   }
 }
