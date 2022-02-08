@@ -2,6 +2,7 @@ import { z } from "zod"
 import { Field } from "react-final-form"
 import { Form, FormProps } from "app/core/components/Form"
 import { StageStyles, TextFieldStyles } from "./ProjectContributorsPathForm.styles"
+import MarkdownEditor from "./ProjectContributorPathMarkdownEditor"
 
 export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   submitText,
@@ -38,18 +39,16 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                   onChange={handleOnChange(stage, "name")}
                   fullWidth
                 ></TextFieldStyles>
-                <TextFieldStyles
+                <MarkdownEditor
                   label="Criteria"
                   defaultValue={stage.criteria}
                   onChange={handleOnChange(stage, "criteria")}
-                  fullWidth
-                ></TextFieldStyles>
-                <TextFieldStyles
+                ></MarkdownEditor>
+                <MarkdownEditor
                   label="Mission"
                   defaultValue={stage.mission}
                   onChange={handleOnChange(stage, "mission")}
-                  fullWidth
-                ></TextFieldStyles>
+                ></MarkdownEditor>
               </StageStyles>
             ))
           }}
