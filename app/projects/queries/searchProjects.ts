@@ -36,36 +36,27 @@ export default resolver.pipe(
     { session }: Ctx
   ) => {
     const prefixSearch = "%" + search + "%"
-    let where = Prisma.empty
+    let where = Prisma.sql`WHERE p.id IS NOT NULL`
 
     if (search && search !== "") {
       search !== "myProposals"
-        ? (where = Prisma.sql`${where} WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
-        : (where = Prisma.sql`${where} WHERE ownerId == ${session.profileId}`)
+        ? (where = Prisma.sql`WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
+        : (where = Prisma.sql`WHERE ownerId == ${session.profileId}`)
     }
 
     if (category) {
       const categories = typeof category === "string" ? [category] : category
-      where =
-        where === Prisma.empty
-          ? Prisma.sql`WHERE categoryName IN (${Prisma.join(categories)})`
-          : Prisma.sql`${where} AND categoryName IN (${Prisma.join(categories)})`
+      where = Prisma.sql`${where} AND categoryName IN (${Prisma.join(categories)})`
     }
 
     if (skill) {
       const skills = typeof skill === "string" ? [skill] : skill
-      where =
-        where === Prisma.empty
-          ? Prisma.sql`WHERE Skills.name IN (${Prisma.join(skills)})`
-          : Prisma.sql`${where} AND Skills.name IN (${Prisma.join(skills)})`
+      where = Prisma.sql`${where} AND Skills.name IN (${Prisma.join(skills)})`
     }
 
     if (label) {
       const labels = typeof label === "string" ? [label] : label
-      where =
-        where === Prisma.empty
-          ? Prisma.sql`WHERE Labels.name IN (${Prisma.join(labels)})`
-          : Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
+      where = Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
     }
 
     // order by string for sorting
