@@ -35,15 +35,13 @@ const TaskItem = ({
 
   return (
     <HorizontalDiv>
-      {editable && (
-        <Checkbox
-          onChange={() => {
-            changeHandle(taskItemId, contributorPathId)
-          }}
-          checked={completed}
-          disabled={!editable}
-        />
-      )}
+      <Checkbox
+        onChange={() => {
+          changeHandle(taskItemId, contributorPathId)
+        }}
+        checked={completed}
+        disabled={!editable}
+      />
       <Editor readOnly={true} defaultValue={description ? description : ""}></Editor>
     </HorizontalDiv>
   )
