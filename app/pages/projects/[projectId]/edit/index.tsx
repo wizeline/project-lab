@@ -1,5 +1,5 @@
 import { Suspense, SyntheticEvent, useState } from "react"
-import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes, useSession } from "blitz"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
@@ -9,6 +9,7 @@ import AccessDenied from "app/core/components/AccessDenied"
 import getProject from "app/projects/queries/getProject"
 import getProjectMembers from "app/projects/queries/getProjectMembers"
 import updateProject from "app/projects/mutations/updateProject"
+import updateStages from "app/projects/mutations/updateStages"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { FullCreate, ContributorPath } from "app/projects/validations"
@@ -22,7 +23,7 @@ export const EditProject = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "string")
   const [deleteProjectMutation] = useMutation(deleteProject)
-  const [project, { setQueryData }] = useQuery(
+  const [project, { setQueryData, refetch }] = useQuery(
     getProject,
     { id: projectId },
     {
@@ -38,7 +39,10 @@ export const EditProject = () => {
   const existedMembers = projectMembers.map((member) => member.id)
 
   const [updateProjectMutation] = useMutation(updateProject)
+  const [updateStageMutation] = useMutation(updateStages)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
+
+  const session = useSession()
 
   if (!isTeamMember) {
     return <AccessDenied />
@@ -46,7 +50,6 @@ export const EditProject = () => {
 
   async function handleSubmitProjectDetails(values) {
     values.existedMembers = existedMembers
-
     try {
       const updated = await updateProjectMutation({
         id: project.id,
@@ -63,15 +66,15 @@ export const EditProject = () => {
   }
 
   async function handleSubmitContributorPath(values) {
-    values.existedMembers = existedMembers
-
     try {
-      const updated = await updateProjectMutation({
+      await updateStageMutation({
         id: project.id,
+        projectMembers: project.projectMembers,
+        owner: project.owner,
         ...values,
       })
-      await setQueryData(updated)
-      router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+      refetch()
+      router.push(Routes.ShowProjectPage({ projectId: project.id }))
     } catch (error) {
       console.error(error)
       return {
@@ -119,7 +122,7 @@ export const EditProject = () => {
             submitText="Update Stages"
             schema={ContributorPath}
             initialValues={project.stages}
-            onSubmit={handleSubmitProjectDetails}
+            onSubmit={handleSubmitContributorPath}
           />
         </TabPanel>
       </div>

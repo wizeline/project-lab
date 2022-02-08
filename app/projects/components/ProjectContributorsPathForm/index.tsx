@@ -15,7 +15,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
         submitText={submitText}
         schema={schema}
         initialValues={{ stages: [...initialValues] }}
-        onSubmit={(values) => console.log("submit", values)}
+        onSubmit={onSubmit}
       >
         <Field name="stages">
           {({ input }) => {
@@ -29,7 +29,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                   label="Position"
                   size="small"
                   type="number"
-                  value={stage.position}
+                  defaultValue={stage.position}
                   onChange={handleOnChange(stage, "position")}
                 ></TextFieldStyles>
                 <TextFieldStyles

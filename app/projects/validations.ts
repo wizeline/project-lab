@@ -89,15 +89,20 @@ const extractSearchSkills = (val) => {
 
 export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
 
-const ContributorPathFormFields = {
+const ContributorPathFields = {
+  id: z.string(),
   name: z.string(),
   criteria: z.string(),
   mission: z.string(),
-  position: z.number(),
+  position: z
+    .string()
+    .transform((val) => (val ? parseInt(val) : null))
+    .or(z.number()),
+  projectId: z.string(),
   projectTasks: z.array(z.object({ description: z.string() })),
 }
 
-export const ContributorPath = z.array(z.object(ContributorPathFormFields)).nonempty()
+export const ContributorPath = z.array(z.object(ContributorPathFields)).nonempty()
 
 export const FullUpdate = z
   .object({
@@ -116,10 +121,12 @@ export const UpdateVotes = z.object({
 export const validateIsTeamMember = (session, data) => {
   //validate if the user have permissions (team member or owner of the project)
   const { profileId } = session
-  const isProjectMember = data.projectMembers.some((p) => p.profileId === profileId)
+  const isProjectMember = data.projectMembers.some((member) => member.profileId === profileId)
   const isProjectOwner = profileId === data.owner?.id
-  if (!isProjectMember && !isProjectOwner)
+
+  if (!isProjectMember && !isProjectOwner) {
     throw new Error("You don't have permission to perform this operation")
+  }
 }
 export const CreateComment = z.object({
   projectId: z.string(),
