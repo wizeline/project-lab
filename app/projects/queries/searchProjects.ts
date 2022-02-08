@@ -87,7 +87,7 @@ export default resolver.pipe(
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.B = Labels.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
       ${whereString}
       GROUP BY p.id
       ORDER BY ${orderByText}
@@ -102,7 +102,7 @@ export default resolver.pipe(
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.B = Labels.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
       ${where}
     `
 
@@ -113,7 +113,7 @@ export default resolver.pipe(
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.B = Labels.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
       ${where}
       AND p.categoryName IS NOT NULL
       GROUP BY categoryName
@@ -127,7 +127,7 @@ export default resolver.pipe(
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.B = Labels.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
       ${where}
       AND Skills.name IS NOT NULL
       AND Skills.id IS NOT NULL
