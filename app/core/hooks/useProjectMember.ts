@@ -5,6 +5,7 @@ interface IProjectMember {
   id: string
   projectId: string
   profileId: string
+  active: boolean
   contributorPath: any
 }
 
@@ -12,6 +13,7 @@ const initialState = {
   id: "",
   projectId: "",
   profileId: "",
+  active: true,
   contributorPath: [],
 }
 export const useProjectMember = (project) => {
