@@ -162,8 +162,8 @@ export const Projects = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1, q: search } })
-  const goToNextPage = () => router.push({ query: { page: page + 1, q: search } })
+  const goToPreviousPage = () => router.push({ query: { ...router.query, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { ...router.query, page: page + 1 } })
 
   const initials = (firstName, lastName) => {
     return firstName.substring(0, 1) + lastName.substring(0, 1)
