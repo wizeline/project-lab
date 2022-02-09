@@ -9,8 +9,9 @@ import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
 import { ExpandMore } from "@mui/icons-material"
+import FilterAltIcon from "@mui/icons-material/FilterAlt"
+import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
-import { MobileFilter } from "app/core/components/MobileFilter"
 
 type SearchFilters = {
   category: string[]
@@ -26,9 +27,14 @@ type queryItems = {
   label?: string
 }
 
+type wrapperProps = {
+  filtersOpen: boolean
+}
+
 const ITEMS_PER_PAGE = 4
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<wrapperProps>`
+  position: relative;
   margin-top: 35px;
   margin-bottom: 100px;
   max-width: 997px;
@@ -143,7 +149,15 @@ const Wrapper = styled.div`
     display: none;
   }
 
-  @media (max-width: 820px) {
+  .filter__mobile-close-button {
+    display: none;
+  }
+
+  .filter__mobile-button {
+    display: none;
+  }
+
+  @media (max-width: 1025px) {
     margin-top: 10px;
 
     .homeWrapper__navbar {
@@ -156,7 +170,12 @@ const Wrapper = styled.div`
     }
 
     .homeWrapper__myProposals {
-      display: none;
+      position: absolute;
+      left: ${(props) => (props.filtersOpen ? "0" : "-24rem")};
+      z-index: 99;
+      transition: all 0.3s ease-in-out;
+      height: 100%;
+      top: 68px;
     }
     .homeWrapper__popular {
     }
@@ -180,6 +199,41 @@ const Wrapper = styled.div`
 
     .homeWrapper__information {
       max-width: 100%;
+    }
+
+    .filter__mobile-button {
+      display: block;
+      position: relative;
+      border: none;
+      color: #ffffff;
+      font-family: Poppins;
+      font-size: 13px;
+      font-weight: 600;
+      width: 100px;
+      letter-spacing: 0;
+      line-height: 27px;
+      cursor: pointer;
+      border-radius: 4px;
+      background-color: #e94d44;
+      padding: 4px 15px 4px 4px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+      margin-left: 20px;
+    }
+
+    .filter__mobile-close-button {
+      display: block;
+      position: absolute;
+      top: 25px;
+      right: 5%;
+    }
+  }
+  @media (max-width: 480px) {
+    .homeWrapper__navbar__sort {
+      justify-content: space-around;
+    }
+
+    .homeWrapper__myProposals {
+      height: 100%;
     }
   }
 `
@@ -369,10 +423,16 @@ export const Projects = () => {
       : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
   }
 
+  //Mobile Filters logic
+  const [openMobileFilters, setOpenMobileFilters] = useState(false)
+  const handleMobileFilters = () => {
+    setOpenMobileFilters(!openMobileFilters)
+  }
+
   return (
     <>
       <Header title="Projects" />
-      <Wrapper className="homeWrapper">
+      <Wrapper className="homeWrapper" filtersOpen={openMobileFilters}>
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__tabs">
             <div
@@ -393,7 +453,12 @@ export const Projects = () => {
           <div className="homeWrapper__myProposals">
             {makeChips()}
             <CardBox title="Filters">
-              <div className="homeWrapper__myProposals">
+              <div>
+                <CloseIcon
+                  fontSize="large"
+                  className="filter__mobile-close-button"
+                  onClick={handleMobileFilters}
+                />
                 <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
@@ -480,28 +545,12 @@ export const Projects = () => {
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
               <CardBox centerText title={tab.allResults ? "All Results" : "My Proposals"}>
-                <div className="homeWrapper__mobile-filters">
-                  <MobileFilter
-                    label="category"
-                    setFilterQuery={goToSearchWithFilters}
-                    filterOptions={categoryFacets}
-                    deleteFilter={deleteFilter}
-                  />
-                  <MobileFilter
-                    label="skill"
-                    setFilterQuery={goToSearchWithFilters}
-                    filterOptions={skillFacets}
-                    deleteFilter={deleteFilter}
-                  />
-                  <MobileFilter
-                    label="label"
-                    setFilterQuery={goToSearchWithFilters}
-                    filterOptions={labelFacets}
-                    deleteFilter={deleteFilter}
-                  />
-                </div>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
+                  <button className="filter__mobile-button" onClick={handleMobileFilters}>
+                    Filters
+                    <FilterAltIcon sx={{ fontSize: "17px", position: "absolute", top: "20%" }} />
+                  </button>
                 </div>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
                 <div className="homeWrapper__pagination-buttons">

@@ -160,6 +160,20 @@ const Wrapper = styled.div`
       font-size: 16px;
     }
   }
+
+  @media (max-width: 468px) {
+    .logo {
+      margin-left: 5px;
+    }
+
+    .logo--text {
+      font-size: 0.875rem;
+    }
+
+    .logo {
+      width: 40%;
+    }
+  }
 `
 
 export default Header
