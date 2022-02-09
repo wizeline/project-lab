@@ -174,8 +174,9 @@ const Wrapper = styled.div<wrapperProps>`
       left: ${(props) => (props.filtersOpen ? "0" : "-24rem")};
       z-index: 99;
       transition: all 0.3s ease-in-out;
-      height: 100%;
       top: 68px;
+      border-radius: 7px;
+      box-shadow: 10px 10px 24px 1px rgba(0, 0, 0, 0.1), 10px -10px 32px 1px rgba(0, 0, 0, 0.1);
     }
     .homeWrapper__popular {
     }
@@ -230,10 +231,6 @@ const Wrapper = styled.div<wrapperProps>`
   @media (max-width: 480px) {
     .homeWrapper__navbar__sort {
       justify-content: space-around;
-    }
-
-    .homeWrapper__myProposals {
-      height: 100%;
     }
   }
 `
