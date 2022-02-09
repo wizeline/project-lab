@@ -20,7 +20,10 @@ import projects from "./projects"
 import { ListItem } from "@mui/material"
 import createLabel from "app/labels/mutations/createLabel"
 import { LabelForm, FORM_ERROR } from "app/labels/components/LabelForm"
+
+import getLabel from "app/labels/queries/getLabel"
 import updateLabel from "app/labels/mutations/updateLabel"
+import { useState } from "react"
 // Delete when cleaning up
 // const rows: GridRowsProp = [
 //   { id: 1, col1: "Summer2021", col2: "Delete" },
@@ -31,10 +34,40 @@ import updateLabel from "app/labels/mutations/updateLabel"
 const LABELS_PER_PAGE = 100
 
 const SomeButton = (puid) => {
-  const manageEdition = (puid: string = "someID") => {
+  // Add mutation for label
+  // const [label, { setQueryData }] = useQuery(
+  //   getLabel,
+  //   { id: labelId },
+  //   {
+  //     staleTime: Infinity,
+  //   }
+  // )
+  const [updateLabelMutation] = useMutation(updateLabel)
+  const editLabelInfo = async (id: string, values: any) => {
+    try {
+      const update = await updateLabelMutation({
+        id: id,
+        ...values,
+      })
+      // await setQueryData(updated)
+      console.log("Values were UPDATED for label")
+      // router.push(Routes.ManagerPage())
+      // router.push(Routes.ShowLabelPage({ labelId: updated.id }))
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  const manageEdition = async (puid: any) => {
     console.dir(puid)
     console.log(`Edit: ${puid.row.id}`)
-    let newLabel = `${puid.row.col1} - Edited`
+    let id = puid.row.id
+    // let newLabel = `${puid.row.name} - Edited`
+    let newLabel = puid.row.name
+    await editLabelInfo(id, { name: newLabel })
     console.log(`New Label Value: ${newLabel}`)
   }
 
@@ -57,31 +90,7 @@ const ManagerPage: BlitzPage = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [createLabelMutation] = useMutation(createLabel)
-
-  // Add mutation for label
-  // const [label, { setQueryData }] = useQuery(
-  //   getLabel,
-  //   { id: labelId },
-  //   {
-  //   staleTime: Infinity,
-  //   }
-  // )
-  const [updateLabelMutation] = useMutation(updateLabel)
-  const editLabelInfo = async (values) => {
-    try {
-      const updated = await updateLabelMutation({
-        id: labels.id,
-        ...values,
-      })
-      // await setQueryData(updated)
-      router.push(Routes.ShowLabelPage({ labelId: updated.id }))
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
-    }
-  }
+  const [submitValue, getSubmitValue] = useState("")
 
   // Turn into its own compoennet
   const [{ labels, hasMore }] = usePaginatedQuery(getLabels, {
@@ -92,14 +101,24 @@ const ManagerPage: BlitzPage = () => {
 
   const rows: GridRowsProp = labels.map((item, key) => ({
     id: item.id,
-    col1: item.name,
-    col2: "delete",
+    name: item.name,
+    edit: "delete",
     // col3: item.id,
   }))
 
+  const getInfoValue = (params) => {
+    return params.data.name
+  }
+
   const columns: GridColDef[] = [
-    { field: "col1", headerName: "Name", width: 300 },
-    { field: "col2", headerName: "Edition", width: 150, renderCell: SomeButton },
+    { field: "name", headerName: "Name", width: 300, editable: true },
+    {
+      field: "edit",
+      headerName: "Edition",
+      width: 150,
+      renderCell: SomeButton,
+      // valueGetter: getInfoValue,
+    },
     // { field: "col3", headerName: "ID", width: 150 },
   ]
 
@@ -114,6 +133,21 @@ const ManagerPage: BlitzPage = () => {
         <CardBox title="Parameters">
           <div>
             <h2>Labels</h2>
+            {/* <div>
+              {labels.map((item, key) => (
+                <p key={key}>{item.name}</p>
+              ))}
+            </div> */}
+            <div style={{ height: 300, width: "100%" }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                rowsPerPageOptions={[4, 8, 12]}
+                pageSize={4}
+              />
+            </div>
+
+            <h3>Create Label</h3>
             <LabelForm
               submitText="Create Label"
               // TODO use a zod schema for form validation
@@ -136,15 +170,6 @@ const ManagerPage: BlitzPage = () => {
                 }
               }}
             />
-            <div>
-              {labels.map((item, key) => (
-                <p key={key}>{item.name}</p>
-              ))}
-            </div>
-            {/* <LabelsSelect name="labels" label="Labels" /> */}
-            <div style={{ height: 300, width: "100%" }}>
-              <DataGrid rows={rows} columns={columns} pageSize={4} />
-            </div>
           </div>
         </CardBox>
       </Wrapper>
