@@ -110,6 +110,7 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
   let counter = 0
   let totalProfiles = 0
   let pageSize = 25
+  let includeNonBillable = true
   do {
     let {
       data: {
@@ -121,7 +122,7 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
       process.env.WOS_API_URL,
       {
         query: `
-          query GetProfiles($filters: ProfileFilters, $limit: Int = ${pageSize}) {
+          query GetProfiles($filters: ProfileFilters = { includeNonBillable: ${includeNonBillable} }, $limit: Int = ${pageSize}) {
             profiles(first: $limit, after: "${counter}", filters: $filters) {
               totalCount
               edges {

@@ -7,6 +7,7 @@ import TaskItem from "./TaskItem"
 import { useProjectMember } from "app/core/hooks/useProjectMember"
 import useContributorPath from "app/projects/components/tabs/hooks/useContributorPath"
 import SnackbarAlert from "app/core/components/SnackbarAlert"
+import Editor from "rich-markdown-editor"
 
 interface IPathItem {
   current?: boolean
@@ -50,9 +51,13 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
           width: "100%",
           flexGrow: 1,
           display: "flex",
+          gap: "15px",
           flexDirection: "row",
           marginTop: "10px",
           marginBottom: "10px",
+          overflowX: "auto",
+          paddingBottom: "10px",
+          scrollSnapType: "x mandatory",
         }}
       >
         {path.map((pathItem, index) => {
@@ -72,10 +77,13 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 flexDirection: "column",
                 alignItems: "center",
                 display: "flex",
-                marginLeft: "10px",
-                marginRight: "10px",
-                width: "300px",
+                width: 180,
                 fontFamily: "Poppins",
+                flex: "10 0 auto",
+                "@media (max-width: 600px)": {
+                  width: "70%",
+                  scrollSnapAlign: "center",
+                },
               }}
               elevation={3}
             >
@@ -102,7 +110,10 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 }}
               >
                 <b>Criteria:</b>
-                <p>{pathItem.criteria}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.criteria ? pathItem.criteria : ""}
+                ></Editor>
 
                 <b>Tasks:</b>
                 {pathItem.projectTasks.map((taskItem, index) => {
@@ -118,16 +129,18 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                       key={index}
                       completed={!!contributorPath}
                       contributorPath={contributorPath}
-                      editable={viewMode}
+                      editable={projectTeamMember?.active}
                       taskItemId={taskItem.id}
                       changeHandle={changeHandle}
                       {...taskItem}
                     />
                   )
                 })}
-
                 <b>Mission:</b>
-                <p>{pathItem.mission}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.mission ? pathItem.mission : ""}
+                ></Editor>
               </div>
             </Card>
           )

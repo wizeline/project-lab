@@ -70,7 +70,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
             <Grid container spacing={1} style={{ paddingTop: 20 }}>
               {input.value.map((row, index) => (
                 <React.Fragment key={index}>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={4}>
                     <Chip
                       onDelete={() => {
                         input.onChange(
@@ -82,7 +82,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <TextField
                       label="Role"
                       defaultValue={row.role}
@@ -93,7 +93,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <TextField
                       label="Hours"
                       helperText="H. per week"
@@ -104,9 +104,16 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                         row.hoursPerWeek = event.target.value
                         input.onChange(input.value)
                       }}
+                      sx={{
+                        "& .MuiFormHelperText-root": {
+                          marginLeft: 0,
+                          marginRight: 0,
+                          textAlign: "center",
+                        },
+                      }}
                     />
                   </Grid>
-                  <Grid item xs={1}>
+                  <Grid item xs={4} sm={1}>
                     <FormControlLabel
                       label="Active"
                       control={
@@ -121,6 +128,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
+                  <hr className="rows__separator" />
                 </React.Fragment>
               ))}
             </Grid>

@@ -24,7 +24,15 @@ interface IProps {
 export const ProposalCard = (props: IProps) => {
   return (
     <>
-      <Card sx={{ minWidth: 180, maxWidth: 280, borderRadius: 5 }}>
+      <Card
+        sx={{
+          width: 270,
+          borderRadius: 5,
+          "@media (max-width: 480px)": {
+            width: "80vw",
+          },
+        }}
+      >
         <CardActionArea style={{ height: "100%" }}>
           <Link href={Routes.ShowProjectPage({ projectId: props.id })}>
             <CardContent style={{ backgroundColor: "#FFF", height: "100%" }}>

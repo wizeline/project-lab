@@ -452,6 +452,16 @@ const seed = async () => {
       department: "Engineering",
     },
   })
+  await db.profiles.upsert({
+    where: { email: "jorge.gc@wizeline.com" },
+    update: {},
+    create: {
+      email: "jorge.gc@wizeline.com",
+      firstName: "Jorge",
+      lastName: "Gonzalez",
+      department: "Engineering",
+    },
+  })
   await db.projects.upsert({
     where: { name: "Proposal Hunt" },
     update: {},
