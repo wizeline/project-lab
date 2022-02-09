@@ -33,6 +33,7 @@
     "@mui/icons-material": "5.2.1",
     "@mui/material": "5.2.3",
     "@prisma/client": "2.26.0",
+    "@slack/web-api": "6.5.0",
     "axios": "0.21.1",
     "blitz": "0.44.4",
     "dotenv-flow": "3.2.0",
