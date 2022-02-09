@@ -68,6 +68,7 @@ export const DetailMoreHead = styled.div`
     letter-spacing: 0;
     line-height: 21px;
     display: inline-block;
+    text-align: center;
   }
 `
 

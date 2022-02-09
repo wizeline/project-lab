@@ -51,9 +51,13 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
           width: "100%",
           flexGrow: 1,
           display: "flex",
+          gap: "15px",
           flexDirection: "row",
           marginTop: "10px",
           marginBottom: "10px",
+          overflowX: "auto",
+          paddingBottom: "10px",
+          scrollSnapType: "x mandatory",
         }}
       >
         {path.map((pathItem, index) => {
@@ -73,10 +77,13 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 flexDirection: "column",
                 alignItems: "center",
                 display: "flex",
-                marginLeft: "10px",
-                marginRight: "10px",
-                width: "300px",
+                width: 180,
                 fontFamily: "Poppins",
+                flex: "10 0 auto",
+                "@media (max-width: 600px)": {
+                  width: "70%",
+                  scrollSnapAlign: "center",
+                },
               }}
               elevation={3}
             >

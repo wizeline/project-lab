@@ -12,4 +12,10 @@ export const CardBoxStyle = styled.div`
   .CardBox--content {
     margin-top: 20px;
   }
+
+  @media (max-width: 1024px) {
+    .CardBox--title {
+      text-align: center;
+    }
+  }
 `
