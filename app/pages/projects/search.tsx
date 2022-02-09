@@ -9,6 +9,8 @@ import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
 import { ExpandMore } from "@mui/icons-material"
+import FilterAltIcon from "@mui/icons-material/FilterAlt"
+import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
 
 type SearchFilters = {
@@ -25,9 +27,14 @@ type queryItems = {
   label?: string
 }
 
+type wrapperProps = {
+  filtersOpen: boolean
+}
+
 const ITEMS_PER_PAGE = 4
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<wrapperProps>`
+  position: relative;
   margin-top: 35px;
   margin-bottom: 100px;
   max-width: 997px;
@@ -43,6 +50,8 @@ const Wrapper = styled.div`
     margin-bottom: 21px;
   }
   .homeWrapper__navbar__sort {
+    display: flex;
+    align-items: flex-start;
     margin-bottom: 20px;
   }
   .homeWrapper__navbar__tabs {
@@ -92,24 +101,26 @@ const Wrapper = styled.div`
     justify-content: space-between;
     width: 100%;
   }
-  .homeWrapper__navbar {
-  }
+
   .homeWrapper__information {
     width: 100%;
     max-width: 737px;
   }
   .homeWrapper__information--row {
     margin-bottom: 20px;
+    width: 100%;
   }
   .homeWrapper__information--row:last-child {
     margin-bottom: 0px;
   }
   .homeWrapper__popular {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
     row-gap: 35px;
     column-gap: 15px;
     margin-bottom: 35px;
+    align-items: center;
+    justify-items: center;
   }
   .homeWrapper__myProposals {
     row-gap: 2px;
@@ -128,6 +139,99 @@ const Wrapper = styled.div`
   }
   .pageButton {
     margin-right: 10px;
+  }
+
+  .homeWrapper__pagination-buttons {
+    display: flex;
+  }
+
+  .homeWrapper__mobile-filters {
+    display: none;
+  }
+
+  .filter__mobile-close-button {
+    display: none;
+  }
+
+  .filter__mobile-button {
+    display: none;
+  }
+
+  @media (max-width: 1025px) {
+    margin-top: 10px;
+
+    .homeWrapper__navbar {
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .homeWrapper__navbar__tabs {
+      margin-left: 0px;
+    }
+
+    .homeWrapper__myProposals {
+      position: absolute;
+      left: ${(props) => (props.filtersOpen ? "0" : "-24rem")};
+      z-index: 99;
+      transition: all 0.3s ease-in-out;
+      top: 68px;
+      border-radius: 7px;
+      box-shadow: 10px 10px 24px 1px rgba(0, 0, 0, 0.1), 10px -10px 32px 1px rgba(0, 0, 0, 0.1);
+    }
+    .homeWrapper__popular {
+    }
+    .homeWrapper__navbar__sort {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .homeWrapper__pagination-buttons {
+      justify-content: center;
+    }
+
+    .homeWrapper__mobile-filters {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .homeWrapper__information {
+      max-width: 100%;
+    }
+
+    .filter__mobile-button {
+      display: block;
+      position: relative;
+      border: none;
+      color: #ffffff;
+      font-family: Poppins;
+      font-size: 13px;
+      font-weight: 600;
+      width: 100px;
+      letter-spacing: 0;
+      line-height: 27px;
+      cursor: pointer;
+      border-radius: 4px;
+      background-color: #e94d44;
+      padding: 4px 15px 4px 4px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+      margin-left: 20px;
+    }
+
+    .filter__mobile-close-button {
+      display: block;
+      position: absolute;
+      top: 25px;
+      right: 5%;
+    }
+  }
+  @media (max-width: 480px) {
+    .homeWrapper__navbar__sort {
+      justify-content: space-around;
+    }
   }
 `
 
@@ -196,7 +300,6 @@ export const Projects = () => {
 
   const goToSearchWithFilters = (event: Event, filter: string) => {
     event.preventDefault()
-
     const queryParams = JSON.parse(JSON.stringify(qParams))
     const searchParam = event.target && event.target["id"]
     const index = filters[filter].findIndex((item) => searchParam === item)
@@ -317,10 +420,16 @@ export const Projects = () => {
       : router.push({ pathname: "/projects/search", query: { q: "myProposals" } })
   }
 
+  //Mobile Filters logic
+  const [openMobileFilters, setOpenMobileFilters] = useState(false)
+  const handleMobileFilters = () => {
+    setOpenMobileFilters(!openMobileFilters)
+  }
+
   return (
-    <div>
+    <>
       <Header title="Projects" />
-      <Wrapper className="homeWrapper">
+      <Wrapper className="homeWrapper" filtersOpen={openMobileFilters}>
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__tabs">
             <div
@@ -341,7 +450,12 @@ export const Projects = () => {
           <div className="homeWrapper__myProposals">
             {makeChips()}
             <CardBox title="Filters">
-              <div className="homeWrapper__myProposals">
+              <div>
+                <CloseIcon
+                  fontSize="large"
+                  className="filter__mobile-close-button"
+                  onClick={handleMobileFilters}
+                />
                 <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
@@ -430,40 +544,46 @@ export const Projects = () => {
               <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
+                  <button className="filter__mobile-button" onClick={handleMobileFilters}>
+                    Filters
+                    <FilterAltIcon sx={{ fontSize: "17px", position: "absolute", top: "20%" }} />
+                  </button>
                 </div>
                 <div className="homeWrapper__popular">{projects.map(mapRenderProposals)}</div>
-                <button
-                  type="button"
-                  disabled={page === 0}
-                  className={page == 0 ? "primary default pageButton" : "primary pageButton"}
-                  onClick={goToPreviousPage}
-                >
-                  Previous{" "}
-                </button>{" "}
-                <button
-                  type="button"
-                  disabled={!hasMore}
-                  className={!hasMore ? "primary default pageButton" : "primary pageButton"}
-                  onClick={goToNextPage}
-                >
-                  Next
-                </button>
+                <div className="homeWrapper__pagination-buttons">
+                  <button
+                    type="button"
+                    disabled={page === 0}
+                    className={page == 0 ? "primary default pageButton" : "primary pageButton"}
+                    onClick={goToPreviousPage}
+                  >
+                    Previous{" "}
+                  </button>{" "}
+                  <button
+                    type="button"
+                    disabled={!hasMore}
+                    className={!hasMore ? "primary default pageButton" : "primary pageButton"}
+                    onClick={goToNextPage}
+                  >
+                    Next
+                  </button>
+                </div>
               </CardBox>
             </div>
           </div>
         </div>
       </Wrapper>
-    </div>
+    </>
   )
 }
 
 const SearchProjectsPage: BlitzPage = () => {
   return (
-    <div>
+    <>
       <Suspense fallback={<Loader />}>
         <Projects />
       </Suspense>
-    </div>
+    </>
   )
 }
 

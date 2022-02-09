@@ -67,13 +67,13 @@ const Header = ({ title }: IProps) => {
               <div className="actions--container__button">
                 <NewProposalButton />
               </div>
-              <div className="actions">
-                <DropDownButton options={options}>
-                  <div className="actions__user">
-                    <span className="actions__user--name">{currentUser?.email}</span>
-                  </div>
-                </DropDownButton>
-              </div>
+            </div>
+            <div className="actions">
+              <DropDownButton options={options}>
+                <div className="actions__user">
+                  <span className="actions__user--name">{currentUser?.email}</span>
+                </div>
+              </DropDownButton>
             </div>
           </div>
         </header>
@@ -84,10 +84,12 @@ const Header = ({ title }: IProps) => {
 
 const Wrapper = styled.div`
   header {
+    width: 100vw;
     height: 70px;
     background-color: #fff;
   }
   .content {
+    position: relative;
     max-width: 1024px;
     margin-left: auto;
     margin-right: auto;
@@ -101,6 +103,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: 200px;
     cursor: pointer;
+    margin-left: 20px;
   }
   .logo--img {
     margin-right: 7px;
@@ -119,6 +122,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 20px;
   }
   .actions .actions__user {
     display: flex;
@@ -149,6 +153,37 @@ const Wrapper = styled.div`
   }
   .actions--container__button {
     margin-right: 20px;
+  }
+
+  @media (max-width: 768px) {
+    header {
+      height: 145px;
+    }
+    .actions--container {
+      position: absolute;
+      right: calc(50% - 155px);
+      top: 70px;
+    }
+    .logo {
+      width: 150px;
+    }
+    .logo--text {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 468px) {
+    .logo {
+      margin-left: 5px;
+    }
+
+    .logo--text {
+      font-size: 0.875rem;
+    }
+
+    .logo {
+      width: 40%;
+    }
   }
 `
 
