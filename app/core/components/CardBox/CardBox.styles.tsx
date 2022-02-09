@@ -13,8 +13,8 @@ export const CardBoxStyle = styled.div`
     margin-top: 20px;
   }
 
-  @media (max-width: 1025px) {
-    .center-text {
+  @media (max-width: 1024px) {
+    .CardBox--title {
       text-align: center;
     }
   }

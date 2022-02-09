@@ -541,7 +541,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox centerText title={tab.allResults ? "All Results" : "My Proposals"}>
+              <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>

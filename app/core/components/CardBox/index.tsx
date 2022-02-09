@@ -4,17 +4,12 @@ import { CardBoxStyle } from "./CardBox.styles"
 interface IProps {
   children: React.ReactNode
   title?: string
-  centerText?: boolean
 }
 
-export const CardBox = ({ children, title, centerText = false }: IProps) => {
+export const CardBox = ({ children, title }: IProps) => {
   return (
     <CardBoxStyle>
-      {title != null ? (
-        <div className={`CardBox--title ${centerText && "center-text"}`}>{title}</div>
-      ) : (
-        ""
-      )}
+      {title != null && <div className={"CardBox--title"}>{title}</div>}
       <div className="CardBox--content">{children}</div>
     </CardBoxStyle>
   )
