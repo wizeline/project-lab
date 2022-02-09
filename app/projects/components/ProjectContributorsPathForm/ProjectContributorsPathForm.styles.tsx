@@ -3,8 +3,8 @@ import { TextField } from "@mui/material"
 import Editor from "rich-markdown-editor"
 
 export const TextFieldStyles = styled(TextField)`
-  margint-top: 1.25em;
-  margin-bottom: 1.25em;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
 `
 
 export const StageStyles = styled.div`
@@ -15,7 +15,7 @@ export const StageStyles = styled.div`
 `
 
 export const EditorStyles = styled(Editor)`
-  margint-top: 1.25em;
+  margin-top: 0.5em;
   border: 1px solid;
   padding: 0 14px 1em 2em;
   min-height: 3em;
@@ -23,7 +23,11 @@ export const EditorStyles = styled(Editor)`
   border-color: rgba(0, 0, 0, 0.23);
 
   & + p {
-    margin-bottom: 1.25em;
+    margin-bottom: 1em;
   }
 `
 // border-color: ${(props) => (props.errorStyles ? "#d32f2f" : "rgba(0, 0, 0, 0.23)")};
+
+export const LabelStyles = styled.p`
+  margin-bottom: 0.5em;
+`

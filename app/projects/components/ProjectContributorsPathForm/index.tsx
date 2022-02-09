@@ -1,8 +1,9 @@
 import { z } from "zod"
 import { Field } from "react-final-form"
 import { Form, FormProps } from "app/core/components/Form"
-import { StageStyles, TextFieldStyles } from "./ProjectContributorsPathForm.styles"
+import { LabelStyles, StageStyles, TextFieldStyles } from "./ProjectContributorsPathForm.styles"
 import MarkdownEditor from "./ProjectContributorPathMarkdownEditor"
+import { Button } from "@mui/material"
 
 export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   submitText,
@@ -49,6 +50,19 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                   defaultValue={stage.mission}
                   onChange={handleOnChange(stage, "mission")}
                 ></MarkdownEditor>
+                {stage.projectTasks ? (
+                  <>
+                    <LabelStyles>Tasks:</LabelStyles>
+                    {stage.projectTasks.map((task) => (
+                      <MarkdownEditor
+                        key={task.id}
+                        label="Description"
+                        defaultValue={task.description}
+                        onChange={handleOnChange(task, "description")}
+                      ></MarkdownEditor>
+                    ))}
+                  </>
+                ) : null}
               </StageStyles>
             ))
           }}

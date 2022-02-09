@@ -18,15 +18,29 @@ export default resolver.pipe(
     validateIsTeamMember(session, { owner, projectMembers })
 
     for (let index = 0; index < stages.length; index++) {
-      await db.projectStages.update({
-        where: { id: stages[index]?.id },
-        data: {
-          name: stages[index]?.name,
-          criteria: stages[index]?.criteria,
-          mission: stages[index]?.mission,
-          position: stages[index]?.position || 0,
-        },
-      })
+      const stage = stages[index] ? stages[index] : null
+
+      if (stage) {
+        await db.projectStages.update({
+          where: { id: stage.id },
+          data: {
+            name: stage.name,
+            criteria: stage.criteria,
+            mission: stage.mission,
+            position: stage.position || 0,
+            projectTasks: {
+              upsert: stage.projectTasks.map((task) => ({
+                where: { id: task.id },
+                create: { description: task.description },
+                update: { description: task.description },
+              })),
+            },
+          },
+          include: {
+            projectTasks: true,
+          },
+        })
+      }
     }
 
     return { id }

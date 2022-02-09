@@ -99,7 +99,13 @@ const ContributorPathFields = {
     .transform((val) => (val ? parseInt(val) : null))
     .or(z.number()),
   projectId: z.string(),
-  projectTasks: z.array(z.object({ description: z.string() })),
+  projectTasks: z.array(
+    z.object({
+      id: z.string(),
+      projectStageId: z.string(),
+      description: z.string(),
+    })
+  ),
 }
 
 export const ContributorPath = z.array(z.object(ContributorPathFields)).nonempty()
