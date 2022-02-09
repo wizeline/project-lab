@@ -20,6 +20,7 @@ import projects from "./projects"
 import { ListItem } from "@mui/material"
 import createLabel from "app/labels/mutations/createLabel"
 import { LabelForm, FORM_ERROR } from "app/labels/components/LabelForm"
+import updateLabel from "app/labels/mutations/updateLabel"
 // Delete when cleaning up
 // const rows: GridRowsProp = [
 //   { id: 1, col1: "Summer2021", col2: "Delete" },
@@ -32,7 +33,9 @@ const LABELS_PER_PAGE = 100
 const SomeButton = (puid) => {
   const manageEdition = (puid: string = "someID") => {
     console.dir(puid)
-    console.log(`Edit: ${puid}`)
+    console.log(`Edit: ${puid.row.id}`)
+    let newLabel = `${puid.row.col1} - Edited`
+    console.log(`New Label Value: ${newLabel}`)
   }
 
   return (
@@ -41,7 +44,7 @@ const SomeButton = (puid) => {
         variant="contained"
         color="primary"
         size="small"
-        onClick={() => manageEdition(puid.row.id)}
+        onClick={() => manageEdition(puid)}
         style={{ marginLeft: 16, backgroundColor: "#AF2E33" }}
       >
         Edit
@@ -54,6 +57,31 @@ const ManagerPage: BlitzPage = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [createLabelMutation] = useMutation(createLabel)
+
+  // Add mutation for label
+  // const [label, { setQueryData }] = useQuery(
+  //   getLabel,
+  //   { id: labelId },
+  //   {
+  //   staleTime: Infinity,
+  //   }
+  // )
+  const [updateLabelMutation] = useMutation(updateLabel)
+  const editLabelInfo = async (values) => {
+    try {
+      const updated = await updateLabelMutation({
+        id: labels.id,
+        ...values,
+      })
+      // await setQueryData(updated)
+      router.push(Routes.ShowLabelPage({ labelId: updated.id }))
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
 
   // Turn into its own compoennet
   const [{ labels, hasMore }] = usePaginatedQuery(getLabels, {
