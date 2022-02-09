@@ -1,5 +1,6 @@
 import { Suspense, SyntheticEvent, useState } from "react"
-import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes, useSession } from "blitz"
+import { Box, Tabs } from "@mui/material"
+import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
@@ -13,11 +14,10 @@ import updateStages from "app/projects/mutations/updateStages"
 import deleteProject from "app/projects/mutations/deleteProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { FullCreate, ContributorPath } from "app/projects/validations"
-
-import { Box, Tab, Tabs } from "@mui/material"
 import DeleteButton from "app/projects/components/DeleteButton.component"
 import TabPanel from "app/projects/components/TabPanel.component"
 import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
+import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
 
 export const EditProject = () => {
   const router = useRouter()
@@ -32,7 +32,7 @@ export const EditProject = () => {
     }
   )
 
-  const [tabIndex, setTabIndex] = useState(1)
+  const [tabIndex, setTabIndex] = useState(0)
   const handleTabChange = (event: SyntheticEvent, tabNumber: number) => setTabIndex(tabNumber)
 
   const [projectMembers] = useQuery(getProjectMembers, { id: project.id })
@@ -41,8 +41,6 @@ export const EditProject = () => {
   const [updateProjectMutation] = useMutation(updateProject)
   const [updateStageMutation] = useMutation(updateStages)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
-
-  const session = useSession()
 
   if (!isTeamMember) {
     return <AccessDenied />
@@ -97,34 +95,30 @@ export const EditProject = () => {
           onClick={() => router.push(Routes.ShowProjectPage({ projectId: project.id }))}
         />
 
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Edit project">
-            <Tab label="Project Details" />
-            <Tab label="Contributors Path" />
-          </Tabs>
-        </Box>
-
-        <TabPanel value={tabIndex} index={0}>
-          <br />
-          <ProjectForm
-            submitText="Update Project"
-            // TODO use a zod schema for form validation
-            //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-            //         then import and use it here
-            schema={FullCreate}
-            initialValues={project}
-            onSubmit={handleSubmitProjectDetails}
-          />
-        </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
-          <br />
-          <ProjectContributorsPathForm
-            submitText="Update Stages"
-            schema={ContributorPath}
-            initialValues={project.stages}
-            onSubmit={handleSubmitContributorPath}
-          />
-        </TabPanel>
+        <EditPanelsStyles>
+          <Box>
+            <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Edit project">
+              <TabStyles label="Project Details" />
+              <TabStyles label="Contributor's Path" />
+            </Tabs>
+          </Box>
+          <TabPanel value={tabIndex} index={0}>
+            <ProjectForm
+              submitText="Update Project"
+              schema={FullCreate}
+              initialValues={project}
+              onSubmit={handleSubmitProjectDetails}
+            />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={1}>
+            <ProjectContributorsPathForm
+              submitText="Update Stages"
+              schema={ContributorPath}
+              initialValues={project.stages}
+              onSubmit={handleSubmitContributorPath}
+            />
+          </TabPanel>
+        </EditPanelsStyles>
       </div>
 
       <div className="wrapper">

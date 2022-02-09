@@ -31,3 +31,17 @@ export const EditorStyles = styled(Editor)`
 export const LabelStyles = styled.p`
   margin-bottom: 0.5em;
 `
+
+export const MultiColumnStyles = styled.div`
+  display: flex;
+
+  > div:first-of-type {
+    flex-grow: 1;
+    margin-right: 1.5em;
+  }
+`
+
+export const InstructionStyles = styled.p`
+  color: #999;
+  font-size: 0.8rem;
+`

@@ -16,18 +16,14 @@ export default function MarkdownEditor({
 }: IMarkdownEditor) {
   return (
     <div>
-      <FormLabel required>{label}</FormLabel>
+      <FormLabel>{label}:</FormLabel>
       <EditorStyles
         defaultValue={defaultValue}
         placeholder="For formatting your text using HTML markup hit the '/' (slash) character from your keyboard."
         onChange={(getValue) => onChange({ target: { value: getValue() } })}
       ></EditorStyles>
       <FormHelperText>
-        To add a new line break press the " &#9166; " (return) key twice from your keyboard. You can
-        also use the 'Markdown Basic Syntax' language inline{" "}
-        <a target="_blank" href="https://www.markdownguide.org/cheat-sheet/" rel="noreferrer">
-          Learn more about it here
-        </a>
+        <span style={{ fontSize: "x-small" }}>(markdown)</span>
       </FormHelperText>
     </div>
   )
