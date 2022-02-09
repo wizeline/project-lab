@@ -7,6 +7,7 @@ import TaskItem from "./TaskItem"
 import { useProjectMember } from "app/core/hooks/useProjectMember"
 import useContributorPath from "app/projects/components/tabs/hooks/useContributorPath"
 import SnackbarAlert from "app/core/components/SnackbarAlert"
+import Editor from "rich-markdown-editor"
 
 interface IPathItem {
   current?: boolean
@@ -102,7 +103,10 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 }}
               >
                 <b>Criteria:</b>
-                <p>{pathItem.criteria}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.criteria ? pathItem.criteria : ""}
+                ></Editor>
 
                 <b>Tasks:</b>
                 {pathItem.projectTasks.map((taskItem, index) => {
@@ -118,16 +122,18 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                       key={index}
                       completed={!!contributorPath}
                       contributorPath={contributorPath}
-                      editable={viewMode}
+                      editable={projectTeamMember?.active}
                       taskItemId={taskItem.id}
                       changeHandle={changeHandle}
                       {...taskItem}
                     />
                   )
                 })}
-
                 <b>Mission:</b>
-                <p>{pathItem.mission}</p>
+                <Editor
+                  readOnly={true}
+                  defaultValue={pathItem.mission ? pathItem.mission : ""}
+                ></Editor>
               </div>
             </Card>
           )

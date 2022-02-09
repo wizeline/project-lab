@@ -1,6 +1,6 @@
 import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
-import { Link, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Link, useQuery, useParam, BlitzPage, useMutation, invalidateQuery, Routes } from "blitz"
 import {
   Card,
   CardContent,
@@ -13,26 +13,31 @@ import {
   TextField,
   Button,
 } from "@mui/material"
-
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
+import getProjectMember from "app/projects/queries/getProjectMember"
 import upvoteProject from "app/projects/mutations/upvoteProject"
 import Header from "app/core/layouts/Header"
 import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
-import { HeaderInfo, DetailMoreHead } from "./[projectId].styles"
+import { HeaderInfo, DetailMoreHead, Like, LikeBox, EditButton } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
-import Image from "next/image"
+import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
+import updateProjectMember from "app/projects/mutations/updateProjectMember"
+import ConfirmationModal from "app/core/components/ConfirmationModal"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
   const [project, { refetch }] = useQuery(getProject, { id: projectId })
+  const [member] = useQuery(getProjectMember, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [joinProjectButton, setJoinProjectButton] = useState<boolean>(false)
   const handleVote = async (id: string) => {
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
@@ -43,12 +48,26 @@ export const Project = () => {
     }
   }
 
-  function handleJoinProject() {
+  const handleJoinProject = () => {
     setShowJoinModal(true)
   }
 
-  function handleCloseModal() {
+  const handleCloseModal = () => {
     setShowJoinModal(false)
+  }
+
+  const [updateProjectMemberMutation] = useMutation(updateProjectMember, {
+    onSuccess: async () => {
+      await invalidateQuery(getProjectMember)
+      refetch()
+      setJoinProjectButton(false)
+    },
+  })
+
+  const updateProjectMemberHandle = async (active) => {
+    setShowModal(false)
+    setJoinProjectButton(true)
+    await updateProjectMemberMutation({ id: member?.id, active })
   }
 
   return (
@@ -57,17 +76,12 @@ export const Project = () => {
       <div className="wrapper">
         <HeaderInfo>
           <div className="headerInfo--action">
-            <button
-              className={project.votes.length > 0 ? "primary unlike" : "primary like"}
-              onClick={() => handleVote(project.id)}
-            >
-              {project.votes.length > 0 ? "Unlike" : "Like"}
-            </button>
-            <div className="like-bubble navbar--like">{project.votesCount}</div>
             <div className="headerInfo--edit">
               {isTeamMember && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                  <Image src="/edit.svg" alt="" width="20" height="30" />
+                  <EditButton>
+                    <EditSharp />
+                  </EditButton>
                 </Link>
               )}
             </div>
@@ -119,6 +133,26 @@ export const Project = () => {
             <Grid item xs={8}>
               <Card variant="outlined">
                 <CardContent>
+                  <LikeBox>
+                    <Like>
+                      <div className="like-bubble">
+                        <span>{project.votesCount}</span>
+                      </div>
+                      <Button className="primary" onClick={() => handleVote(project.id)}>
+                        {project.votes.length > 0 ? (
+                          <>
+                            {"Unlike"}&nbsp;
+                            <ThumbDownSharp />
+                          </>
+                        ) : (
+                          <>
+                            {"Like"}&nbsp;
+                            <ThumbUpSharp />
+                          </>
+                        )}
+                      </Button>
+                    </Like>
+                  </LikeBox>
                   <h2>Description</h2>
                   <div>
                     <Editor
@@ -180,35 +214,15 @@ export const Project = () => {
                     </CardContent>
                   </Card>
                 )}
-                <Card variant="outlined">
-                  <CardContent>
-                    <big>Contributors:</big>
-                    <Stack direction="column">
-                      {project.projectMembers.map((item, index) => (
-                        <div key={index}>
-                          <Typography
-                            component={"div"}
-                            color={item.active ? "text.primary" : "text.secondary"}
-                          >
-                            <div>
-                              <span
-                                className={item.active ? "status active" : "status unactive"}
-                              ></span>
-                              {item.profile?.firstName} {item.profile?.lastName}
-                              {item.hoursPerWeek
-                                ? " - " + item.hoursPerWeek + " Hours per week"
-                                : null}
-                            </div>
-                            <div>
-                              <small>{item.role}</small>
-                            </div>
-                          </Typography>
-                        </div>
-                      ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
-                {!isTeamMember && (
+                {isTeamMember ? (
+                  <Button
+                    className="primary large"
+                    disabled={joinProjectButton}
+                    onClick={() => setShowModal(true)}
+                  >
+                    {member?.active ? "Leave Project" : "Join Project Again"}
+                  </Button>
+                ) : (
                   <Button className="primary large" onClick={handleJoinProject}>
                     Join Project
                   </Button>
@@ -229,6 +243,27 @@ export const Project = () => {
         open={showJoinModal}
         handleCloseModal={handleCloseModal}
       />
+      <ConfirmationModal
+        open={showModal}
+        handleClose={() => setShowModal(false)}
+        close={() => setShowModal(false)}
+        label={"confirm"}
+        onClick={async () => await updateProjectMemberHandle(!member?.active)}
+      >
+        {member?.active ? (
+          <>
+            <h1>We're sorry you're leaving the project</h1>
+            <p>
+              By confirming you will be inactive for this project but you can join again at anytime.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1>Welcome back!</h1>
+            <p>Do you want to contribute again?</p>
+          </>
+        )}
+      </ConfirmationModal>
     </>
   )
 }

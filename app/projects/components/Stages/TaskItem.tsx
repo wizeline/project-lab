@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "@emotion/styled"
 import Checkbox from "@mui/material/Checkbox"
+import Editor from "rich-markdown-editor"
 import { useSession } from "blitz"
 
 const HorizontalDiv = styled.div`
@@ -34,16 +35,14 @@ const TaskItem = ({
 
   return (
     <HorizontalDiv>
-      {editable && (
-        <Checkbox
-          onChange={() => {
-            changeHandle(taskItemId, contributorPathId)
-          }}
-          checked={completed}
-          disabled={!editable}
-        />
-      )}
-      <p>{description}</p>
+      <Checkbox
+        onChange={() => {
+          changeHandle(taskItemId, contributorPathId)
+        }}
+        checked={completed}
+        disabled={!editable}
+      />
+      <Editor readOnly={true} defaultValue={description ? description : ""}></Editor>
     </HorizontalDiv>
   )
 }
