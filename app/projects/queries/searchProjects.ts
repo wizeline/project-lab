@@ -4,6 +4,7 @@ import db from "db"
 
 interface SearchProjectsInput {
   search: string | string[]
+  status: any
   category: any
   skill: any
   label: any
@@ -32,7 +33,7 @@ export class SearchProjectsError extends Error {
 export default resolver.pipe(
   resolver.authorize(),
   async (
-    { search, category, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput,
+    { search, category, status, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput,
     { session }: Ctx
   ) => {
     const prefixSearch = "%" + search + "%"
@@ -42,6 +43,11 @@ export default resolver.pipe(
       search !== "myProposals"
         ? (where = Prisma.sql`WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
         : (where = Prisma.sql`WHERE ownerId == ${session.profileId}`)
+    }
+
+    if (status) {
+      const statuses = typeof status === "string" ? [status] : status
+      where = Prisma.sql`${where} AND s.name IN (${Prisma.join(statuses)}) `
     }
 
     if (category) {
@@ -99,6 +105,7 @@ export default resolver.pipe(
       SELECT count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -106,10 +113,23 @@ export default resolver.pipe(
       ${where}
     `
 
+    const statusFacets = await db.$queryRaw`
+      SELECT s.name, COUNT(DISTINCT p.id) as count
+      FROM Projects p
+      INNER JOIN ProjectStatus s on  s.name = p.status
+      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+      LEFT JOIN Skills ON _ps.B = Skills.id
+      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
+      ${where}
+      GROUP BY s.name
+      ORDER BY count DESC;`
+
     const categoryFacets = await db.$queryRaw`
       SELECT p.categoryName as name, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -124,6 +144,7 @@ export default resolver.pipe(
       SELECT Skills.name, Skills.id, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -140,6 +161,7 @@ export default resolver.pipe(
       SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -162,6 +184,7 @@ export default resolver.pipe(
       nextPage,
       hasMore,
       count: countResult[0].count,
+      statusFacets,
       categoryFacets,
       skillFacets,
       labelFacets,
