@@ -16,6 +16,7 @@ web_modules/
 .blitz-console-history
 .blitz.config.compiled.js
 blitz-log.log
+.blitz.config.compiled.js
 
 # misc
 .DS_Store

@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
 
 type SearchFilters = {
+  status: string[]
   category: string[]
   skill: string[]
   label: string[]
@@ -22,6 +23,7 @@ type SearchFilters = {
 type queryItems = {
   page?: number
   q?: string
+  status?: string
   category?: string
   skill?: string
   label?: string
@@ -241,9 +243,10 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { category, skill, label }: queryItems = router.query
+  const { status, category, skill, label }: queryItems = router.query
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
+    status: status ? [status] : [],
     category: category ? [category] : [],
     skill: skill ? [skill] : [],
     label: label ? [label] : [],
@@ -256,15 +259,19 @@ export const Projects = () => {
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
 
-  let [{ projects, hasMore, categoryFacets, skillFacets, labelFacets }] = useQuery(searchProjects, {
-    search,
-    category,
-    skill,
-    label,
-    orderBy: { ...sortQuery },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
+  let [{ projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets }] = useQuery(
+    searchProjects,
+    {
+      search,
+      category,
+      status,
+      skill,
+      label,
+      orderBy: { ...sortQuery },
+      skip: ITEMS_PER_PAGE * page,
+      take: ITEMS_PER_PAGE,
+    }
+  )
 
   const goToPreviousPage = () => router.push({ query: { ...router.query, page: page - 1 } })
   const goToNextPage = () => router.push({ query: { ...router.query, page: page + 1 } })
@@ -400,11 +407,12 @@ export const Projects = () => {
       })
     }
     setFilters({
+      status: status ? [status] : [],
       category: category ? [category] : [],
       skill: skill ? [skill] : [],
       label: label ? [label] : [],
     })
-  }, [router.query.q, category, skill, label])
+  }, [router.query.q, status, category, skill, label])
 
   const handleTabChange = (selectedTab: string) => {
     selectedTab === "allResults"
@@ -456,6 +464,32 @@ export const Projects = () => {
                   className="filter__mobile-close-button"
                   onClick={handleMobileFilters}
                 />
+                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel1a-controls"
+                    id="panel1a-header"
+                  >
+                    <h3>{statusFacets.length > 0 ? "Status" : ""}</h3>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="homeWrapper__myProposals--list">
+                      {statusFacets.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            id={item.name}
+                            underline="none"
+                            href=""
+                            color="#AF2E33"
+                            onClick={(e) => goToSearchWithFilters(e, "status")}
+                          >
+                            {item.name} ({item.count})
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
                 <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
