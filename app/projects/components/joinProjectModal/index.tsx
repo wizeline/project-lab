@@ -70,16 +70,19 @@ const JoinProjectModal = (props: IProps) => {
           </FormDivContainer>
 
           <CommitmentDivContainer>
-            <p className="title">Commitment is very important to us</p>
+            <p className="title">We are excited to have you on board!</p>
             <div className="paragraph">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci possimus animi
-              blanditiis fuga harum id nostrum ea? Exercitationem ipsum laborum quae debitis, beatae
-              recusandae, similique nemo amet, dolorem quisquam ut! Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Obcaecati suscipit error harum, corrupti quos nemo iure
-              officiis ratione eum nam impedit ea recusandae culpa minus, tenetur quisquam rerum ad
-              natus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet quis quibusdam
-              saepe veniam exercitationem hic tempore laudantium molestias mollitia, illo nulla
-              deserunt neque. Harum ipsam ipsa deserunt nisi beatae eveniet!
+              Everyone is welcome to join the project, whether you have the skills we are looking
+              for, wish to sharpen them even more, or are eager to learn something new. <br />
+              Take ownership of your role in the project, stay on track with your Contributor Path,
+              take initiative, participate and ask questions. Stay informed about the project's
+              latest updates, and keep the team updated about your progress as well. Your commitment
+              to the project is important, but keep in mind that if you are assigned to work with a
+              client it will have a higher priority. <br />
+              If at any time you wish to leave the project you are completely free to do so, just
+              let your team know about it and keep them updated on your latest contributions in
+              order to help everyone adapt and continue working as smoothly as possible.
+              <br />
             </div>
 
             <Button type="submit" className="primary large">
