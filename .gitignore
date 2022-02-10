@@ -14,6 +14,7 @@ web_modules/
 *.sqlite-journal
 .now
 .blitz-console-history
+.blitz.config.compiled.js
 blitz-log.log
 
 # misc
