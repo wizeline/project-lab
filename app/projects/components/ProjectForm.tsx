@@ -40,7 +40,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
   }
 
   return (
-    <Form<S> {...props} style={{ padding: "0 2em", margin: "0 auto" }}>
+    <Form<S> {...props}>
       <LabeledTextField fullWidth name="name" label="Name" placeholder="Name" />
 
       <LabeledTextFieldArea
@@ -96,7 +96,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           name="category"
           label="Category"
         />
-        {projectformType != "create" && (
+        {projectformType !== "create" && (
           <InputSelect
             valuesList={statuses}
             defaultValue={defaultStatus}

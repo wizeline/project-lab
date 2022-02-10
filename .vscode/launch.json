@@ -5,7 +5,7 @@
       "name": "Blitz: debug server-side",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev"
+      "command": "yarn dev"
     },
     {
       "name": "Blitz: debug client-side",
@@ -17,7 +17,7 @@
       "name": "Blitz: debug full stack",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev",
+      "command": "yarn dev",
       "console": "integratedTerminal",
       "serverReadyAction": {
         "pattern": "started server on .+, url: (https?://.+)",

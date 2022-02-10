@@ -52,6 +52,7 @@
     "zod": "3.2.0"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "11.7.2",
     "@types/preview-email": "2.0.0",
     "@types/react": "17.0.37",
     "eslint": "7.29.0",

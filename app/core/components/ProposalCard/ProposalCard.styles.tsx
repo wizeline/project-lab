@@ -25,6 +25,7 @@ export const ProposalCardWrap = styled.div`
     width: 60px;
     height: 60px;
     border-radius: 100%;
+    object-fit: cover;
   }
   .ProposalCard__head__description {
     margin-left: 20px;
