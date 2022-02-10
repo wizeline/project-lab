@@ -128,8 +128,8 @@ const LabelsDataGrid = () => {
       orderBy: { name: "asc" },
       skip: RESULTS_QUEUED * page,
       take: RESULTS_QUEUED,
-    },
-    { staleTime: 200, refetchInterval: 200 }
+    }
+    // { staleTime: 200, refetchInterval: 4000 }
   )
 
   // const [{ labels }] = useQuery(getLabels, {
