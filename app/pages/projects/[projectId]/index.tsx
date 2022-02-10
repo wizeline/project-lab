@@ -102,16 +102,48 @@ export const Project = () => {
       </div>
       <div className="wrapper">
         <DetailMoreHead>
-          <Grid container alignItems="center">
-            <Grid item xs={4}>
-              <div className="itemHeadName">Status:</div>{" "}
-              <div className="itemHeadValue">{project.status}</div>
+          <Grid container alignItems="center" justifyContent="flex-start">
+            <Grid
+              item
+              container
+              xs={4}
+              spacing={1}
+              alignItems="center"
+              justifyContent="flex-start"
+              direction={{ xs: "column", md: "row" }}
+            >
+              <Grid item>
+                <div className="itemHeadName">Status:</div>{" "}
+              </Grid>
+              <Grid item>
+                <div className="itemHeadValue">{project.status}</div>
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <div className="itemHeadName">Category:</div>{" "}
-              <div className="itemHeadValue">{project.categoryName}</div>
+            <Grid
+              item
+              container
+              xs={4}
+              spacing={1}
+              alignItems="center"
+              justifyContent="flex-start"
+              direction={{ xs: "column", md: "row" }}
+            >
+              <Grid item>
+                <div className="itemHeadName">Category:</div>{" "}
+              </Grid>
+              <Grid item>
+                <div className="itemHeadValue">{project.categoryName}</div>
+              </Grid>
             </Grid>
-            <Grid item container xs={4} spacing={1} alignItems="center">
+            <Grid
+              item
+              container
+              xs={4}
+              spacing={1}
+              alignItems="center"
+              justifyContent="flex-start"
+              direction={{ xs: "column", md: "row" }}
+            >
               <Grid item>
                 <div className="itemHeadName">Labels:</div>
               </Grid>
@@ -133,7 +165,7 @@ export const Project = () => {
       )}
       <div className="wrapper">
         <Container style={{ padding: "0px" }}>
-          <Grid container spacing={2} alignItems="stretch">
+          <Grid container spacing={2} alignItems="stretch" direction={{ xs: "column", md: "row" }}>
             <Grid item xs={8}>
               <Card variant="outlined">
                 <CardContent>
