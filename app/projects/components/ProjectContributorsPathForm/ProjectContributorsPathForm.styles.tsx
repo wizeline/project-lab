@@ -37,7 +37,7 @@ export const MultiColumnStyles = styled.div`
 
   > div:first-of-type {
     flex-grow: 1;
-    margin-right: 1.5em;
+    ${"" /* margin-right: 1.5em; */}
   }
 `
 
