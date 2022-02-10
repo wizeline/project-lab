@@ -1,7 +1,7 @@
 module.exports = {
   env: {
-    production: {
-      plugins: [],
+    test: {
+      plugins: ["@emotion"],
     },
   },
   presets: ["blitz/babel"],
