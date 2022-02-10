@@ -38,12 +38,16 @@ export const Project = () => {
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [joinProjectButton, setJoinProjectButton] = useState<boolean>(false)
+  const [savingVoteStatus, setSavingVoteStatus] = useState<boolean>(false)
   const handleVote = async (id: string) => {
+    setSavingVoteStatus(true)
     try {
       const haveIVoted = project.votes.length > 0 ? true : false
       await upvoteProjectMutation({ id, haveIVoted })
-      refetch()
+      await refetch()
+      setSavingVoteStatus(false)
     } catch (error) {
+      setSavingVoteStatus(false)
       alert("Error updating votes " + JSON.stringify(error, null, 2))
     }
   }
@@ -170,7 +174,11 @@ export const Project = () => {
                       <div className="like-bubble">
                         <span>{project.votesCount}</span>
                       </div>
-                      <Button className="primary" onClick={() => handleVote(project.id)}>
+                      <Button
+                        className="primary"
+                        disabled={savingVoteStatus}
+                        onClick={() => handleVote(project.id)}
+                      >
                         {project.votes.length > 0 ? (
                           <>
                             {"Unlike"}&nbsp;
