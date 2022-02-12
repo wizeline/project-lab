@@ -37,6 +37,7 @@ import { LabelForm, FORM_ERROR } from "app/labels/components/LabelForm"
 import getLabel from "app/labels/queries/getLabel"
 import updateLabel from "app/labels/mutations/updateLabel"
 import { useState } from "react"
+import { RowingSharp } from "@mui/icons-material"
 
 // Tool bara elemento de edicion
 const EditToolbar = (props) => {
@@ -57,7 +58,12 @@ const EditToolbar = (props) => {
 
     //   apiRef.current.setCellFocus(id, "name")
     // })
-    setRows((prevRows) => [...prevRows, { id, name: newName, isNew: true }])
+    setRows((prevRows) => {
+      if (prevRows.find((rowValue) => rowValue.id === "new-value")) {
+        return [...prevRows]
+      }
+      return [...prevRows, { id, name: newName, isNew: true }]
+    })
   }
   return (
     <GridToolbarContainer>
@@ -143,15 +149,16 @@ const LabelsDataGrid = () => {
     const id = idRef.row.id
 
     const row = idRef.api.getRow(id)
-    if (row && row.isNew) {
+    const isValid = await idRef.api.commitRowChange(idRef.row.id)
+    if (row && row.isNew && isValid) {
       let newLabel = idRef.api.getCellValue(id, "name")
-      // await createNewLabel(newLabel)
+      const newValues = { name: newLabel }
       idRef.api.setRowMode(id, "view")
-      console.log("the row will be SAVED")
+      await createNewLabel(newValues)
+      console.log("the row was Saved")
       return
       // Remove row that has the name of a new
     }
-    const isValid = await idRef.api.commitRowChange(idRef.row.id)
     if (isValid) {
       const row = idRef.api.getRow(idRef.row.id)
       let id = idRef.row.id
@@ -160,7 +167,7 @@ const LabelsDataGrid = () => {
       idRef.api.updateRows([{ ...row, isNew: false }])
       idRef.api.setRowMode(id, "view")
       console.log(`New Label Value: ${newLabel}`)
-      router.push(Routes.ManagerPage())
+      // router.push(Routes.ManagerPage())
     }
   }
 
@@ -169,14 +176,27 @@ const LabelsDataGrid = () => {
     apiRef.current.updateRows([{ id, _action: "delete" }])
   }
 
-  const handleCancelClick = (idRef) => {
+  const setRowModeEdit = (idRef) => {
+    console.log(`Make the row Editable: ${idRef.api.id}`)
+  }
+
+  const handleCancelClick = async (idRef) => {
     // event.stopPropagation()
     const id = idRef.row.id
     idRef.api.setRowMode(id, "view")
 
     const row = idRef.api.getRow(id)
     if (row && row.isNew) {
-      idRef.api.updateRows([{ id, _action: "delete" }])
+      console.log("This row will not be CREATED")
+      await idRef.api.updateRows([{ id, _action: "delete" }])
+      // const handleDeleteRow = () => {
+      console.dir(rows)
+      await setRows((prevRows) => {
+        const rowToDeleteIndex = prevRows.length - 1
+        console.log(prevRows)
+        return [...rows.slice(0, rowToDeleteIndex), ...rows.slice(rowToDeleteIndex + 1)]
+      })
+      // }
       // Remove row that has the name of a new
     }
   }
@@ -198,6 +218,12 @@ const LabelsDataGrid = () => {
       width: 300,
       cellClassName: "actions",
       renderCell: (id) => {
+        // console.log("Th Row id", id.row.id)
+        if (id.row.id === "new-value") {
+          id.api.setRowMode(id.row.id, "edit")
+          id.api.setCellFocus(id.row.id, "name")
+          console.dir(id.api)
+        }
         const isInEditMode = id.api.getRowMode(id.row.id) === "edit"
         if (isInEditMode) {
           return (
