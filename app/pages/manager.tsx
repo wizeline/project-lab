@@ -43,21 +43,9 @@ import { RowingSharp } from "@mui/icons-material"
 const EditToolbar = (props) => {
   const { apiRef, setRows } = props
 
-  const handleClick = (idRef) => {
+  const handleAddClick = () => {
     const id = "new-value"
     const newName = ""
-    // console.dir(idRef)
-    // console.dir(apiRef)
-    // apiRef.current.updateRows([{ id, isNew: true }])
-    // apiRef.current.setRowMode(id, "edit")
-    // Wait for the grid to render with the new row
-    // setTimeout(() => {
-    //   apiRef.current.scrollToIndexes({
-    //     rowIndex: apiRef.current.getRowsCount() - 1,
-    //   })
-
-    //   apiRef.current.setCellFocus(id, "name")
-    // })
     setRows((prevRows) => {
       if (prevRows.find((rowValue) => rowValue.id === "new-value")) {
         return [...prevRows]
@@ -67,7 +55,12 @@ const EditToolbar = (props) => {
   }
   return (
     <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={(idRef) => handleClick(idRef)}>
+      <Button
+        variant="container"
+        color="primary"
+        startIcon={<AddIcon />}
+        onClick={() => handleAddClick()}
+      >
         Create new LABEL
       </Button>
     </GridToolbarContainer>
@@ -176,9 +169,9 @@ const LabelsDataGrid = () => {
     apiRef.current.updateRows([{ id, _action: "delete" }])
   }
 
-  const setRowModeEdit = (idRef) => {
-    console.log(`Make the row Editable: ${idRef.api.id}`)
-  }
+  // const setRowModeEdit = (idRef) => {
+  //   console.log(`Make the row Editable: ${idRef.api.id}`)
+  // }
 
   const handleCancelClick = async (idRef) => {
     // event.stopPropagation()
@@ -213,12 +206,10 @@ const LabelsDataGrid = () => {
 
     {
       field: "actions",
-      // type: "actions",
       headerName: "Actions",
       width: 300,
       cellClassName: "actions",
-      renderCell: (id) => {
-        // console.log("Th Row id", id.row.id)
+      renderCell: (id: any) => {
         if (id.row.id === "new-value") {
           id.api.setRowMode(id.row.id, "edit")
           id.api.setCellFocus(id.row.id, "name")
@@ -277,7 +268,7 @@ const LabelsDataGrid = () => {
           <DataGrid
             rows={rows}
             columns={columns}
-            apiRef={apiRef}
+            // apiRef={apiRef}
             rowsPerPageOptions={[10]}
             pageSize={10}
             editMode="row"
