@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo, useState } from "react"
 import { useRouter, useMutation, useSession, BlitzPage, Routes, Router } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
@@ -12,20 +12,25 @@ export const NewProject = () => {
   const session = useSession()
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
+  const [savingProject, setSavingProject] = useState<boolean>(false)
 
-  const INIT_VAUES_PROJECTFORM = {
-    skills: [],
-    labels: [],
-    // add current profile as default member
-    projectMembers: InitialMembers(session.profileId),
-  }
+  const INIT_VAUES_PROJECTFORM = useMemo(() => {
+    return {
+      skills: [],
+      labels: [],
+      // add current profile as default member
+      projectMembers: InitialMembers(session.profileId),
+    }
+  }, [session])
 
   const projectFormOnSubmit = async (values) => {
+    setSavingProject(true)
     try {
       const project = await createProjectMutation(values)
       router.push(Routes.ShowProjectPage({ projectId: project.id }))
     } catch (error) {
       console.error(error)
+      setSavingProject(false)
       return {
         [FORM_ERROR]: error.toString(),
       }
@@ -46,6 +51,7 @@ export const NewProject = () => {
           initialValues={INIT_VAUES_PROJECTFORM}
           schema={FullCreate}
           onSubmit={projectFormOnSubmit}
+          disabled={savingProject}
         />
       </div>
     </div>
