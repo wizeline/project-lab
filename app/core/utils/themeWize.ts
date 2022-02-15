@@ -15,7 +15,6 @@ declare module "@mui/material/styles" {
     secondaryC: Palette["primary"]
   }
 
-  // allow configuration using `createTheme`
   interface PaletteOptions {
     secondaryB?: PaletteOptions["primary"]
     secondaryC?: PaletteOptions["primary"]
