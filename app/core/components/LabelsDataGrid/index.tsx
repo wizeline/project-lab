@@ -65,7 +65,7 @@ const LabelsDataGrid = () => {
   )
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-  const [selectedID, setSelectedID] = useState("")
+  const [selectedRowID, setSelectedRowID] = useState("")
 
   const createNewLabel = async (values) => {
     try {
@@ -101,7 +101,7 @@ const LabelsDataGrid = () => {
   const deleteConfirmationHandler = async () => {
     setOpenDeleteModal(false)
     try {
-      const deleted = await deleteLabelMutation({ id: selectedID })
+      const deleted = await deleteLabelMutation({ id: selectedRowID })
       refetch()
     } catch (error: any) {
       console.error(error)
@@ -110,7 +110,7 @@ const LabelsDataGrid = () => {
       }
     }
     setRows((prevRows) => {
-      const rowToDeleteIndex = prevRows.findIndex((rowValue) => rowValue.id === selectedID)
+      const rowToDeleteIndex = prevRows.findIndex((rowValue) => rowValue.id === selectedRowID)
       return [...rows.slice(0, rowToDeleteIndex), ...rows.slice(rowToDeleteIndex + 1)]
     })
   }
@@ -164,7 +164,7 @@ const LabelsDataGrid = () => {
 
   const handleDeleteClick = (idRef) => {
     let id = idRef.row.id
-    setSelectedID(() => id)
+    setSelectedRowID(() => id)
     setOpenDeleteModal(() => true)
   }
 
