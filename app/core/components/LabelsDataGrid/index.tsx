@@ -1,6 +1,6 @@
-import { useRouter, useQuery, useMutation } from "blitz"
+import { useQuery, useMutation } from "blitz"
 import getLabels from "app/labels/queries/getLabels"
-import { DataGrid, useGridApiRef, GridToolbarContainer } from "@mui/x-data-grid"
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid"
 import Button from "@mui/material/Button"
 import AddIcon from "@mui/icons-material/Add"
 import EditIcon from "@mui/icons-material/Edit"
@@ -12,7 +12,9 @@ import createLabel from "app/labels/mutations/createLabel"
 import { LabelForm, FORM_ERROR } from "app/labels/components/LabelForm"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import updateLabel from "app/labels/mutations/updateLabel"
-import { useState } from "react"
+import React, { useContext, createContext, useState, useEffect, useMemo } from "react"
+import ConfirmationModal from "../ConfirmationModal"
+import deleteLabel from "app/labels/mutations/deleteLabel"
 
 const theme = createTheme({
   palette: {
@@ -22,20 +24,12 @@ const theme = createTheme({
       dark: "#751F22",
       contrastText: "#fff",
     },
-    // secondary: {
-    //   light: "#C7D4E5",
-    //   main: "#3B72A4",
-    //   dark: "#4E90B9",
-    //   contrastText: "#fff",
-    // },
     secondary: { main: "#3B72A4" },
-    // error: "red",
   },
 })
-// Tool bara elemento de edicion
-const GridEditToolbar = (props) => {
-  const { apiRef, setRows, createButtonText } = props
 
+const GridEditToolbar = (props) => {
+  const { setRows, createButtonText } = props
   const handleAddClick = () => {
     const id = "new-value"
     const newName = ""
@@ -62,27 +56,44 @@ const GridEditToolbar = (props) => {
 }
 
 const LabelsDataGrid = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
+  const createButtonText = "Create New Label"
   const [createLabelMutation] = useMutation(createLabel)
+  const [updateLabelMutation] = useMutation(updateLabel)
+  const [deleteLabelMutation] = useMutation(deleteLabel)
   const [{ labels }, { refetch }] = useQuery(
     getLabels,
     {
       orderBy: { name: "asc" },
     },
-    { staleTime: 200, refetchInterval: 10000 }
+    { refetchInterval: 10000 }
   )
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-  const [updateLabelMutation] = useMutation(updateLabel)
+  const [selectedID, setSelectedID] = useState("")
+
+  const createNewLabel = async (values) => {
+    try {
+      const label = await createLabelMutation(values)
+      await refetch()
+      setRows((prevRows) => {
+        const rowToDeleteIndex = prevRows.length - 1
+        const savedRowValues = { id: label.id, name: label.name }
+        return [...rows.slice(0, rowToDeleteIndex), savedRowValues]
+      })
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   const editLabelInfo = async (id: string, values: any) => {
     try {
       const updated = await updateLabelMutation({
         id: id,
         ...values,
       })
-      console.log(refetch())
-      console.log("Values were UPDATED for label")
-      // router.push(Routes.ManagerPage())
     } catch (error: any) {
       console.error(error)
       return {
@@ -91,106 +102,85 @@ const LabelsDataGrid = () => {
     }
   }
 
-  const createNewLabel = async (values) => {
+  const deleteConfirmationHandler = async () => {
+    setOpenDeleteModal(false)
     try {
-      console.log("Labelprevious val", labels)
-      const label = await createLabelMutation(values)
-      console.log("Info was saved")
-      console.dir(label)
-      await refetch()
-      // Set the new row value in table =
-      setRows((prevRows) => {
-        const rowToDeleteIndex = prevRows.length - 1
-        const savedRowValues = { id: label.id, name: label.name }
-        console.log("prev_array", prevRows)
-        console.log("new Values for row", savedRowValues)
-        return [...rows.slice(0, rowToDeleteIndex), savedRowValues]
-      })
-      // await console.log("Label const new Val", labels)
-      // setRows(() => [...labels])
+      const deleted = await deleteLabelMutation({ id: selectedID })
+      refetch()
     } catch (error: any) {
       console.error(error)
       return {
         [FORM_ERROR]: error.toString(),
       }
     }
+    setRows((prevRows) => {
+      const rowToDeleteIndex = prevRows.findIndex((rowValue) => rowValue.id === selectedID)
+      return [...rows.slice(0, rowToDeleteIndex), ...rows.slice(rowToDeleteIndex + 1)]
+    })
   }
 
   // Set handles for interactions
-  const apiRef = useGridApiRef()
 
-  const handleRowEditStart = (params, event) => {
+  const handleRowEditStart = (event) => {
     event.defaultMuiPrevented = true
   }
 
-  const handleRowEditStop = (params, event) => {
+  const handleRowEditStop = (event) => {
     event.defaultMuiPrevented = true
   }
 
-  const handleCellFocusOut = (params, event) => {
+  const handleCellFocusOut = (event) => {
     event.defaultMuiPrevented = true
   }
 
-  const handleEditClick = (id) => {
-    id.api.setRowMode(id.row.id, "edit")
-    console.dir(id)
+  const handleEditClick = (idRef) => {
+    idRef.api.setRowMode(idRef.row.id, "edit")
   }
+
   const handleSaveClick = async (idRef) => {
     const id = idRef.row.id
 
     const row = idRef.api.getRow(id)
     const isValid = await idRef.api.commitRowChange(idRef.row.id)
-    const newLabel = idRef.api.getCellValue(id, "name")
+    const newName = idRef.api.getCellValue(id, "name")
 
-    if (rows.find((rowValue) => rowValue.name === newLabel)) {
+    if (rows.find((rowValue) => rowValue.name === newName)) {
       console.error("Field Already exists")
       return
     } else {
       console.error("All fields are valid")
     }
 
-    if (idRef.api.getCellValue(id, "name"))
-      if (row.isNew && isValid) {
-        // let newLabel = idRef.api.getCellValue(id, "name")
-        const newValues = { name: newLabel }
-        idRef.api.setRowMode(id, "view")
-        const resRowInsert = await createNewLabel(newValues)
-        console.log("Label const new Val", labels)
-        console.dir(resRowInsert)
-        return
-        // Remove row that has the name of a new
-      }
+    if (row.isNew && isValid) {
+      const newValues = { name: newName }
+      idRef.api.setRowMode(id, "view")
+      const resRowInsert = await createNewLabel(newValues)
+      return
+    }
     if (isValid) {
       const row = idRef.api.getRow(idRef.row.id)
       let id = idRef.row.id
-      // let newLabel = idRef.api.getCellValue(id, "name")
-      await editLabelInfo(id, { name: newLabel })
+      await editLabelInfo(id, { name: newName })
       idRef.api.updateRows([{ ...row, isNew: false }])
       idRef.api.setRowMode(id, "view")
-      console.log(`New Label Value: ${newLabel}`)
-      // router.push(Routes.ManagerPage())
     }
   }
 
-  const handleDeleteClick = (id) => (event) => {
-    event.stopPropagation()
-    // apiRef.current.updateRows([{ id, _action: "delete" }])
+  const handleDeleteClick = (idRef) => {
+    let id = idRef.row.id
+    setSelectedID(() => id)
+    setOpenDeleteModal(() => true)
   }
 
   const handleCancelClick = async (idRef) => {
-    // event.stopPropagation()
     const id = idRef.row.id
     idRef.api.setRowMode(id, "view")
 
     const row = idRef.api.getRow(id)
     if (row && row.isNew) {
-      console.log("This row will not be CREATED")
       await idRef.api.updateRows([{ id, _action: "delete" }])
-
-      console.dir(rows)
       setRows((prevRows) => {
         const rowToDeleteIndex = prevRows.length - 1
-        console.log(prevRows)
         return [...rows.slice(0, rowToDeleteIndex), ...rows.slice(rowToDeleteIndex + 1)]
       })
     }
@@ -200,7 +190,6 @@ const LabelsDataGrid = () => {
     labels.map((item) => ({
       id: item.id,
       name: item.name,
-      // edit: "delete",
     }))
   )
   const columns = [
@@ -211,13 +200,12 @@ const LabelsDataGrid = () => {
       headerName: "Actions",
       width: 300,
       cellClassName: "actions",
-      renderCell: (id: any) => {
-        if (id.row.id === "new-value") {
-          id.api.setRowMode(id.row.id, "edit")
-          id.api.setCellFocus(id.row.id, "name")
-          console.dir(id.api)
+      renderCell: (idRef: any) => {
+        if (idRef.row.id === "new-value") {
+          idRef.api.setRowMode(idRef.row.id, "edit")
+          idRef.api.setCellFocus(idRef.row.id, "name")
         }
-        const isInEditMode = id.api.getRowMode(id.row.id) === "edit"
+        const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
         if (isInEditMode) {
           return (
             <>
@@ -225,7 +213,7 @@ const LabelsDataGrid = () => {
                 variant="contained"
                 color="primary"
                 size="small"
-                onClick={() => handleCancelClick(id)}
+                onClick={() => handleCancelClick(idRef)}
                 style={{ marginLeft: 16 }}
               >
                 <CancelIcon color="inherit" />
@@ -235,7 +223,7 @@ const LabelsDataGrid = () => {
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => handleSaveClick(id)}
+                onClick={() => handleSaveClick(idRef)}
                 style={{ marginLeft: 16 }}
               >
                 <SaveIcon color="inherit" />
@@ -245,12 +233,11 @@ const LabelsDataGrid = () => {
         }
         return (
           <>
-            {/* backgroundColor: "#AF2E33" */}
             <Button
               variant="contained"
               color="secondary"
               size="small"
-              onClick={() => handleEditClick(id)}
+              onClick={() => handleEditClick(idRef)}
               style={{ marginLeft: 16 }}
             >
               <EditIcon color="inherit" />
@@ -259,7 +246,7 @@ const LabelsDataGrid = () => {
               variant="contained"
               color="primary"
               size="small"
-              onClick={() => handleDeleteClick(id)}
+              onClick={() => handleDeleteClick(idRef)}
               style={{ marginLeft: 16 }}
             >
               <DeleteIcon color="inherit" />
@@ -269,11 +256,10 @@ const LabelsDataGrid = () => {
       },
     },
   ]
-  const createButtonText = "Create New Label"
+
   return (
     <div>
       <h2>Labels</h2>
-      {/* <div style={{ height: 300, width: "100%" }}> */}
       <div style={{ display: "flex", width: "100%", height: "70vh" }}>
         <div style={{ flexGrow: 1 }}>
           <ThemeProvider theme={theme}>
@@ -290,12 +276,28 @@ const LabelsDataGrid = () => {
                 Toolbar: GridEditToolbar,
               }}
               componentsProps={{
-                toolbar: { apiRef, setRows, createButtonText },
+                toolbar: { setRows, createButtonText },
               }}
             />
           </ThemeProvider>
         </div>
       </div>
+      {/* Confirmation for deletion */}
+      <ConfirmationModal
+        open={openDeleteModal}
+        handleClose={() => setOpenDeleteModal(false)}
+        close={() => setOpenDeleteModal(false)}
+        label="Delete"
+        className="warning"
+        disabled={false}
+        onClick={async () => {
+          deleteConfirmationHandler()
+        }}
+      >
+        <h2>Are you sure you want to delete this Label ?</h2>
+        <p>This action cannot be undone.</p>
+        <br />
+      </ConfirmationModal>
     </div>
   )
 }
