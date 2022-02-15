@@ -8,7 +8,6 @@ import { Box, Tabs } from "@mui/material"
 import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
 
 import { SyntheticEvent, useState } from "react"
-import { RowingSharp } from "@mui/icons-material"
 import TabPanel from "app/projects/components/TabPanel.component"
 import LabelsDataGrid from "app/core/components/LabelsDataGrid"
 
@@ -37,15 +36,9 @@ const ManagerPage: BlitzPage = () => {
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
               <div>Edit Categories</div>
-              <div>
-                <RowingSharp />
-              </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
               <div>Edit Statuses</div>
-              <div>
-                <RowingSharp />
-              </div>
             </TabPanel>
           </EditPanelsStyles>
         </CardBox>

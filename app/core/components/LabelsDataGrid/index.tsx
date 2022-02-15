@@ -10,23 +10,20 @@ import CancelIcon from "@mui/icons-material/Close"
 
 import createLabel from "app/labels/mutations/createLabel"
 import { LabelForm, FORM_ERROR } from "app/labels/components/LabelForm"
-import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { ThemeProvider } from "@mui/material/styles"
+
 import updateLabel from "app/labels/mutations/updateLabel"
-import React, { useContext, createContext, useState, useEffect, useMemo } from "react"
+import { useState } from "react"
 import ConfirmationModal from "../ConfirmationModal"
 import deleteLabel from "app/labels/mutations/deleteLabel"
+import themeWize from "app/core/utils/themeWize"
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      light: "#E94D44",
-      main: "#AF2E33",
-      dark: "#751F22",
-      contrastText: "#fff",
-    },
-    secondary: { main: "#3B72A4" },
-  },
-})
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    secondaryB: true
+    secondaryC: true
+  }
+}
 
 const GridEditToolbar = (props) => {
   const { setRows, createButtonText } = props
@@ -45,7 +42,6 @@ const GridEditToolbar = (props) => {
       <Button
         variant="contained"
         color="primary"
-        style={{ backgroundColor: "#e94d44" }}
         startIcon={<AddIcon />}
         onClick={() => handleAddClick()}
       >
@@ -262,7 +258,7 @@ const LabelsDataGrid = () => {
       <h2>Labels</h2>
       <div style={{ display: "flex", width: "100%", height: "70vh" }}>
         <div style={{ flexGrow: 1 }}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={themeWize}>
             <DataGrid
               rows={rows}
               columns={columns}
