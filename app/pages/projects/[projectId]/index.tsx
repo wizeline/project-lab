@@ -83,14 +83,13 @@ export const Project = () => {
         <HeaderInfo>
           <div className="headerInfo--action">
             <div className="headerInfo--edit">
-              {isTeamMember ||
-                (user?.role === "ADMIN" && (
-                  <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
-                    <EditButton>
-                      <EditSharp />
-                    </EditButton>
-                  </Link>
-                ))}
+              {(isTeamMember || user?.role === "ADMIN") && (
+                <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
+                  <EditButton>
+                    <EditSharp />
+                  </EditButton>
+                </Link>
+              )}
             </div>
           </div>
           <Grid container justifyContent="space-between">
@@ -161,12 +160,11 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
-      {isTeamMember ||
-        (user?.role === "ADMIN" && (
-          <div className="wrapper">
-            <Stages path={project.stages} viewMode={true} project={project} />
-          </div>
-        ))}
+      {(isTeamMember || user?.role === "ADMIN") && (
+        <div className="wrapper">
+          <Stages path={project.stages} viewMode={true} project={project} />
+        </div>
+      )}
       <div className="wrapper">
         <Container style={{ padding: "0px" }}>
           <Grid container spacing={2} alignItems="stretch" direction={{ xs: "column", md: "row" }}>
