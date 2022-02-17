@@ -54,6 +54,7 @@ export const EditProject = () => {
     try {
       const updated = await updateProjectMutation({
         id: project.id,
+        isAdmin: user?.role === adminRoleName,
         ...values,
       })
       await setQueryData(updated)
@@ -70,6 +71,7 @@ export const EditProject = () => {
     try {
       await updateStageMutation({
         id: project.id,
+        isAdmin: user?.role === adminRoleName,
         projectMembers: project.projectMembers,
         owner: project.owner,
         ...values,
