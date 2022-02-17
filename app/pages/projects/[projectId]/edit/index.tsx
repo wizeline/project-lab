@@ -19,6 +19,7 @@ import TabPanel from "app/projects/components/TabPanel.component"
 import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
 import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
 import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
+import { adminRoleName } from "app/core/utils/constants"
 
 export const EditProject = () => {
   const router = useRouter()
@@ -44,7 +45,7 @@ export const EditProject = () => {
   const [updateStageMutation] = useMutation(updateStages)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
 
-  if (!isTeamMember && user?.role !== "ADMIN") {
+  if (!isTeamMember && user?.role !== adminRoleName) {
     return <AccessDenied />
   }
 
