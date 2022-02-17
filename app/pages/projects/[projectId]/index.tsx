@@ -28,6 +28,7 @@ import Stages from "app/projects/components/Stages"
 import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
+import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -35,6 +36,7 @@ export const Project = () => {
   const [member] = useQuery(getProjectMember, { id: projectId })
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
+  const user = useCurrentUser()
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [joinProjectButton, setJoinProjectButton] = useState<boolean>(false)
@@ -81,7 +83,7 @@ export const Project = () => {
         <HeaderInfo>
           <div className="headerInfo--action">
             <div className="headerInfo--edit">
-              {isTeamMember && (
+              {(isTeamMember || user?.role === "ADMIN") && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
                   <EditButton>
                     <EditSharp />
@@ -158,7 +160,7 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
-      {isTeamMember && (
+      {(isTeamMember || user?.role === "ADMIN") && (
         <div className="wrapper">
           <Stages path={project.stages} viewMode={true} project={project} />
         </div>
