@@ -10,6 +10,7 @@ import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabS
 import { SyntheticEvent, useState } from "react"
 import TabPanel from "app/projects/components/TabPanel.component"
 import LabelsDataGrid from "app/core/components/LabelsDataGrid"
+import CategoryDataGrid from "app/core/components/CategoryDataGrid"
 
 const ManagerPage: BlitzPage = () => {
   const [tabIndex, setTabIndex] = useState(0)
@@ -35,7 +36,7 @@ const ManagerPage: BlitzPage = () => {
               <LabelsDataGrid />
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
-              <div>Edit Categories</div>
+              <CategoryDataGrid />
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
               <div>Edit Statuses</div>
