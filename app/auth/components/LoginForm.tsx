@@ -1,4 +1,4 @@
-import { Image, Link } from "blitz"
+import { Image } from "blitz"
 import { Panel, Greet, StyledLoginForm, Button, Footer, Body } from "./LoginForm.styles"
 
 type LoginFormProps = {
