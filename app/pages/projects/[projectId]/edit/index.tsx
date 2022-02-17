@@ -18,9 +18,11 @@ import DeleteButton from "app/projects/components/DeleteButton.component"
 import TabPanel from "app/projects/components/TabPanel.component"
 import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
 import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
+import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
 
 export const EditProject = () => {
   const router = useRouter()
+  const user = useCurrentUser()
   const projectId = useParam("projectId", "string")
   const [deleteProjectMutation] = useMutation(deleteProject)
   const [project, { setQueryData, refetch }] = useQuery(
@@ -42,7 +44,7 @@ export const EditProject = () => {
   const [updateStageMutation] = useMutation(updateStages)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
 
-  if (!isTeamMember) {
+  if (!isTeamMember && user?.role !== "ADMIN") {
     return <AccessDenied />
   }
 
