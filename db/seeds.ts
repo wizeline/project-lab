@@ -91,62 +91,6 @@ const seed = async () => {
     })
   })
 
-  // await db.projectStatus.upsert({
-  //   where: { name: "Idea Submitted" },
-  //   update: {},
-  //   create: { name: "Idea Submitted", color: "#fe6f18" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Need SME Review" },
-  //   update: {},
-  //   create: { name: "Need SME Review", color: "#188bff" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "In Review 1" },
-  //   update: {},
-  //   create: { name: "In Review 1", color: "#7bc96b" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Pitch Preparation" },
-  //   update: {},
-  //   create: { name: "Pitch Preparation" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "In Review 2" },
-  //   update: {},
-  //   create: { name: "In Review 2" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Idea in Progress" },
-  //   update: {},
-  //   create: { name: "Idea in Progress" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "In Review 3" },
-  //   update: {},
-  //   create: { name: "In Review 3" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Closed" },
-  //   update: {},
-  //   create: { name: "Closed" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "On Hold" },
-  //   update: {},
-  //   create: { name: "On Hold" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Inactive" },
-  //   update: {},
-  //   create: { name: "Inactive" },
-  // })
-  // await db.projectStatus.upsert({
-  //   where: { name: "Launched" },
-  //   update: {},
-  //   create: { name: "Launched" },
-  // })
-
   await db.category.upsert({
     where: { name: "Experimenter" },
     update: {},
