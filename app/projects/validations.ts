@@ -113,6 +113,7 @@ export const ContributorPath = z.array(z.object(ContributorPathFields)).nonempty
 export const FullUpdate = z
   .object({
     id: z.string(),
+    isAdmin: z.boolean(),
     owner: z.object({ id: z.string() }),
     existedMembers: z.array(z.string()),
     ...FullFormFields,

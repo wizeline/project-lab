@@ -15,7 +15,8 @@ import TextEditor from "app/core/components/TextEditor"
 
 import getCategories from "app/categories/queries/getCategories"
 import getStatuses from "app/statuses/queries/getStatuses"
-import { defaultCategory, defaultStatus } from "app/core/utils/constants"
+import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/constants"
+import { useCurrentUser } from "../../core/hooks/useCurrentUser"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -38,6 +39,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       name: `${data.firstName} ${data.lastName}`,
     }
   }
+
+  const user = useCurrentUser()
 
   return (
     <Form<S> {...props}>
@@ -95,6 +98,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           defaultValue={defaultCategory}
           name="category"
           label="Category"
+          disabled={user?.role !== adminRoleName}
         />
         {projectformType !== "create" && (
           <InputSelect
@@ -102,6 +106,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
             defaultValue={defaultStatus}
             name="projectStatus"
             label="Status"
+            disabled={user?.role !== adminRoleName}
           />
         )}
         <SkillsSelect name="skills" label="Skills" />
