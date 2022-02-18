@@ -8,7 +8,7 @@ import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
 import { Accordion, AccordionDetails, AccordionSummary, Link, Chip } from "@mui/material"
-import { ExpandMore } from "@mui/icons-material"
+import { ConstructionOutlined, ExpandMore } from "@mui/icons-material"
 import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
@@ -18,6 +18,7 @@ type SearchFilters = {
   category: string[]
   skill: string[]
   label: string[]
+  projectStatus: string[]
 }
 
 type queryItems = {
@@ -27,6 +28,7 @@ type queryItems = {
   category?: string
   skill?: string
   label?: string
+  projectStatus?: string
 }
 
 type wrapperProps = {
@@ -243,13 +245,14 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label }: queryItems = router.query
+  const { status, category, skill, label, projectStatus }: queryItems = router.query
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     status: status ? [status] : [],
     category: category ? [category] : [],
     skill: skill ? [skill] : [],
     label: label ? [label] : [],
+    projectStatus: projectStatus ? [projectStatus] : [],
   })
 
   useEffect(() => {
@@ -259,19 +262,19 @@ export const Projects = () => {
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
 
-  let [{ projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets }] = useQuery(
-    searchProjects,
-    {
-      search,
-      category,
-      status,
-      skill,
-      label,
-      orderBy: { ...sortQuery },
-      skip: ITEMS_PER_PAGE * page,
-      take: ITEMS_PER_PAGE,
-    }
-  )
+  let [
+    { projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets, projectFacets },
+  ] = useQuery(searchProjects, {
+    search,
+    category,
+    status,
+    skill,
+    label,
+    projectStatus,
+    orderBy: { ...sortQuery },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
 
   const goToPreviousPage = () => router.push({ query: { ...router.query, page: page - 1 } })
   const goToNextPage = () => router.push({ query: { ...router.query, page: page + 1 } })
@@ -310,18 +313,14 @@ export const Projects = () => {
     const queryParams = JSON.parse(JSON.stringify(qParams))
     const searchParam = event.target && event.target["id"]
     const index = filters[filter].findIndex((item) => searchParam === item)
-
     if (index === -1) {
       const updatedFilters = [...filters[filter], searchParam]
 
       setFilters({ ...filters, [filter]: updatedFilters })
       setChips([...chips, searchParam])
 
-      queryParams[filter] = !queryParams[filter]
-        ? searchParam
-        : [...queryParams[filter], searchParam]
+      queryParams[filter] = searchParam
     }
-
     Router.push({
       pathname: "/projects/search",
       query: queryParams,
@@ -406,13 +405,24 @@ export const Projects = () => {
         myProposals: "",
       })
     }
+
     setFilters({
       status: status ? [status] : [],
       category: category ? [category] : [],
       skill: skill ? [skill] : [],
       label: label ? [label] : [],
+      projectStatus: projectStatus ? [projectStatus] : [],
     })
-  }, [router.query.q, status, category, skill, label])
+  }, [router.query.q, status, category, skill, label, projectStatus])
+
+  useEffect(() => {
+    const queryParams = JSON.parse(JSON.stringify(qParams))
+    let params = queryParams["projectStatus"] === undefined ? { projectStatus: "Actives" } : null
+    Router.push({
+      pathname: "/projects/search",
+      query: { ...queryParams, ...params },
+    })
+  }, [qParams, projectStatus])
 
   const handleTabChange = (selectedTab: string) => {
     selectedTab === "allResults"
@@ -474,6 +484,19 @@ export const Projects = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
+                      {projectFacets.map((item) => (
+                        <li key={item.Status ? "Actives" : "Inactives"}>
+                          <Link
+                            id={item.Status ? "Actives" : "Inactives"}
+                            underline="none"
+                            href=""
+                            color="#AF2E33"
+                            onClick={(e) => goToSearchWithFilters(e, "projectStatus")}
+                          >
+                            {item.Status ? "Actives" : "Inactives"}({item.count})
+                          </Link>
+                        </li>
+                      ))}
                       {statusFacets.map((item) => (
                         <li key={item.name}>
                           <Link

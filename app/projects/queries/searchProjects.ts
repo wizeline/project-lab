@@ -10,6 +10,7 @@ interface SearchProjectsInput {
   label: any
   skip: number
   take: number
+  projectStatus: any
   orderBy: { field: string; order: string }
 }
 
@@ -33,7 +34,17 @@ export class SearchProjectsError extends Error {
 export default resolver.pipe(
   resolver.authorize(),
   async (
-    { search, category, status, skill, label, orderBy, skip = 0, take = 50 }: SearchProjectsInput,
+    {
+      search,
+      category,
+      status,
+      skill,
+      label,
+      projectStatus,
+      orderBy,
+      skip = 0,
+      take = 50,
+    }: SearchProjectsInput,
     { session }: Ctx
   ) => {
     const prefixSearch = "%" + search + "%"
@@ -64,6 +75,23 @@ export default resolver.pipe(
       const labels = typeof label === "string" ? [label] : label
       where = Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
     }
+    let StatusWhere = where
+    if (projectStatus) {
+      const selectedStatus = typeof label === "string" ? [projectStatus][0] : projectStatus
+      let filterValue: number[] = []
+
+      switch (selectedStatus) {
+        case "Actives":
+          filterValue[0] = 1
+          break
+        case "Inactives":
+          filterValue[0] = 0
+          break
+      }
+
+      if (filterValue.length !== 0)
+        where = Prisma.sql` ${where} AND p.isActive IN (${Prisma.join(filterValue)})`
+    }
 
     // order by string for sorting
     const orderByText = `${orderBy.field === "projectMembers" ? "" : "p."}${orderBy.field} ${
@@ -75,7 +103,13 @@ export default resolver.pipe(
     let strIdx = 0
     while (whereString.match(/[?]/)) {
       if (where.values[strIdx])
+        //For sql values of false, this if statement causes an infinite loop
         whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
+
+      if (where.values[strIdx] === 0)
+        //For sql values of false, this will resolve the ? symbols
+        whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
+
       strIdx++
     }
 
@@ -111,6 +145,23 @@ export default resolver.pipe(
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
       ${where}
+    `
+
+    const projectFacets = await db.$queryRaw`
+    SELECT DISTINCT p.isActive as 'Status', COUNT (p.id) as count
+    FROM Projects p
+    WHERE 1=1 AND p.id IN (Select p.id  FROM Projects p
+    INNER JOIN projects_idx ON projects_idx.id = p.id
+    INNER JOIN ProjectStatus s on s.name = p.status
+    INNER JOIN Profiles pr on pr.id = p.ownerId
+    INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+    LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+    LEFT JOIN Skills ON _ps.B = Skills.id
+    LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+    LEFT JOIN Labels ON _lp.A = Labels.id
+      ${StatusWhere}
+    )
+    GROUP BY p.isActive
     `
 
     const statusFacets = await db.$queryRaw`
@@ -186,6 +237,7 @@ export default resolver.pipe(
       count: countResult[0].count,
       statusFacets,
       categoryFacets,
+      projectFacets,
       skillFacets,
       labelFacets,
     }

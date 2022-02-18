@@ -169,6 +169,7 @@ model Projects {
   comments       Comments[]
   stages         ProjectStages[]
   votesCount     Int              @default(0)
+  isActive       Boolean          @default(true)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
