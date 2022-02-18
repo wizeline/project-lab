@@ -45,3 +45,9 @@ export const InstructionStyles = styled.p`
   color: #999;
   font-size: 0.8rem;
 `
+export const CollapsableHeader = styled(MultiColumnStyles)`
+  display: grid;
+  grid-template-columns: auto min-content;
+  color: red;
+  cursor: grab;
+`
