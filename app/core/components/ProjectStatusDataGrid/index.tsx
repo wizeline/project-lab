@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "blitz"
-import getCategories from "app/categories/queries/getCategories"
+import getStatuses from "app/statuses/queries/getStatuses"
 import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid"
 import Button from "@mui/material/Button"
 import AddIcon from "@mui/icons-material/Add"
@@ -7,15 +7,15 @@ import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/DeleteOutlined"
 import SaveIcon from "@mui/icons-material/Save"
 import CancelIcon from "@mui/icons-material/Close"
-import createCategory from "app/categories/mutations/createCategory"
+import createProjectStatus from "app/project-statuses/mutations/createProjectStatus"
 import { FORM_ERROR } from "app/labels/components/LabelForm"
 import { ThemeProvider } from "@mui/material/styles"
-import updateCategory from "app/categories/mutations/updateCategory"
+import updateProjectStatus from "app/project-statuses/mutations/updateProjectStatus"
 import { useState } from "react"
 import ConfirmationModal from "../ConfirmationModal"
-import deleteCategory from "app/categories/mutations/deleteCategory"
+import deleteProjectStatus from "app/project-statuses/mutations/deleteProjectStatus"
 import themeWize from "app/core/utils/themeWize"
-import { baseCategories } from "app/core/utils/constants"
+import { baseStatuses } from "app/core/utils/constants"
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -50,24 +50,24 @@ const GridEditToolbar = (props) => {
   )
 }
 
-const CategoryDataGrid = () => {
-  const createButtonText = "Create New Category"
-  const [createCategoryMutation] = useMutation(createCategory)
-  const [updateCategoryMutation] = useMutation(updateCategory)
-  const [deleteCategoryMutation] = useMutation(deleteCategory)
-  const [categories, { refetch }] = useQuery(getCategories, {})
+const ProjectStatusDataGrid = () => {
+  const createButtonText = "Create New Status"
+  const [createProjectStatusMutation] = useMutation(createProjectStatus)
+  const [updateProjectStatusMutation] = useMutation(updateProjectStatus)
+  const [deleteProjectStatusMutation] = useMutation(deleteProjectStatus)
+  const [statuses, { refetch }] = useQuery(getStatuses, {})
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const [selectedID, setSelectedID] = useState("")
 
-  const createNewCategory = async (values) => {
+  const createNewProjectStatus = async (values) => {
     try {
-      const category = await createCategoryMutation(values)
+      const projectStatus = await createProjectStatusMutation(values)
       await refetch()
       setRows((prevRows) => {
         const rowToDeleteIndex = prevRows.length - 1
-        const savedRowValues = { id: category.name, name: category.name }
+        const savedRowValues = { id: projectStatus.name, name: projectStatus.name }
         return [...rows.slice(0, rowToDeleteIndex), savedRowValues]
       })
     } catch (error: any) {
@@ -78,9 +78,9 @@ const CategoryDataGrid = () => {
     }
   }
 
-  const editCategoryInfo = async (id: string, values: any) => {
+  const editProjectStatusInfo = async (id: string, values: any) => {
     try {
-      const updated = await updateCategoryMutation({
+      const updated = await updateProjectStatusMutation({
         id: id,
         ...values,
       })
@@ -95,7 +95,7 @@ const CategoryDataGrid = () => {
   const deleteConfirmationHandler = async () => {
     setOpenDeleteModal(false)
     try {
-      const deleted = await deleteCategoryMutation({ name: selectedID })
+      const deleted = await deleteProjectStatusMutation({ name: selectedID })
       refetch()
     } catch (error: any) {
       console.error(error)
@@ -139,13 +139,13 @@ const CategoryDataGrid = () => {
     if (row.isNew && isValid) {
       const newValues = { name: newName }
       idRef.api.setRowMode(id, "view")
-      const resRowInsert = await createNewCategory(newValues)
+      const resRowInsert = await createNewProjectStatus(newValues)
       return
     }
     if (isValid) {
       const row = idRef.api.getRow(idRef.row.id)
       let id = idRef.row.id
-      await editCategoryInfo(id, { name: newName })
+      await editProjectStatusInfo(id, { name: newName })
       setRows((prevRows) => {
         const rowToEditIndex = prevRows.findIndex((rowValue) => rowValue.id === id)
         return [
@@ -178,7 +178,7 @@ const CategoryDataGrid = () => {
   }
 
   const [rows, setRows] = useState(() =>
-    categories.map((item) => ({
+    statuses.map((item) => ({
       id: item.name,
       name: item.name,
     }))
@@ -197,7 +197,7 @@ const CategoryDataGrid = () => {
           idRef.api.setCellFocus(idRef.row.id, "name")
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
-        const isConstant = baseCategories.find((value) => value === idRef.row.name)
+        const isConstant = baseStatuses.find((value) => value.name === idRef.row.name)
         if (isConstant) {
           return <></>
         }
@@ -289,11 +289,11 @@ const CategoryDataGrid = () => {
           deleteConfirmationHandler()
         }}
       >
-        <h2>Are you sure you want to delete this Category: {`${selectedID}`} ?</h2>
+        <h2>Are you sure you want to delete this Status ?</h2>
         <p>This action cannot be undone.</p>
         <br />
       </ConfirmationModal>
     </div>
   )
 }
-export default CategoryDataGrid
+export default ProjectStatusDataGrid
