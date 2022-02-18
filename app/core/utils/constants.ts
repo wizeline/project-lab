@@ -46,7 +46,7 @@ export const baseCategories = [
   "Value Creator",
   "Experimenter",
   "Business Enabler",
-  "Strategic differentiator",
+  "Strategic Differentiator",
   "Community Innovation",
 ]
 export const baseStatuses = [

@@ -1,5 +1,5 @@
 import db from "./index"
-import { contributorPath } from "app/core/utils/constants"
+import { contributorPath, baseStatuses } from "app/core/utils/constants"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -83,61 +83,69 @@ const seed = async () => {
     create: { name: "Go", id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
   })
 
-  await db.projectStatus.upsert({
-    where: { name: "Draft" },
-    update: {},
-    create: { name: "Draft", color: "#fe6f18" },
+  baseStatuses.map(async (status) => {
+    await db.projectStatus.upsert({
+      where: { name: status.name },
+      update: {},
+      create: { name: status.name, color: status.color },
+    })
   })
-  await db.projectStatus.upsert({
-    where: { name: "Needs Review" },
-    update: {},
-    create: { name: "Needs Review", color: "#188bff" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "In Review 1" },
-    update: {},
-    create: { name: "In Review 1", color: "#7bc96b" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "Pitch Preparation" },
-    update: {},
-    create: { name: "Pitch Preparation" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "In Review 2" },
-    update: {},
-    create: { name: "In Review 2" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "Idea in Progress" },
-    update: {},
-    create: { name: "Idea in Progress" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "In Review 3" },
-    update: {},
-    create: { name: "In Review 3" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "Closed" },
-    update: {},
-    create: { name: "Closed" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "On Hold" },
-    update: {},
-    create: { name: "On Hold" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "Inactive" },
-    update: {},
-    create: { name: "Inactive" },
-  })
-  await db.projectStatus.upsert({
-    where: { name: "Launched" },
-    update: {},
-    create: { name: "Launched" },
-  })
+
+  // await db.projectStatus.upsert({
+  //   where: { name: "Idea Submitted" },
+  //   update: {},
+  //   create: { name: "Idea Submitted", color: "#fe6f18" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Need SME Review" },
+  //   update: {},
+  //   create: { name: "Need SME Review", color: "#188bff" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "In Review 1" },
+  //   update: {},
+  //   create: { name: "In Review 1", color: "#7bc96b" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Pitch Preparation" },
+  //   update: {},
+  //   create: { name: "Pitch Preparation" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "In Review 2" },
+  //   update: {},
+  //   create: { name: "In Review 2" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Idea in Progress" },
+  //   update: {},
+  //   create: { name: "Idea in Progress" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "In Review 3" },
+  //   update: {},
+  //   create: { name: "In Review 3" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Closed" },
+  //   update: {},
+  //   create: { name: "Closed" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "On Hold" },
+  //   update: {},
+  //   create: { name: "On Hold" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Inactive" },
+  //   update: {},
+  //   create: { name: "Inactive" },
+  // })
+  // await db.projectStatus.upsert({
+  //   where: { name: "Launched" },
+  //   update: {},
+  //   create: { name: "Launched" },
+  // })
 
   await db.category.upsert({
     where: { name: "Experiment" },
@@ -481,7 +489,7 @@ const seed = async () => {
       description: "Visibility of projects",
       valueStatement: "Socialize them with comments, votes, simple search.",
       target: "All wizeliners",
-      projectStatus: { connect: { name: "Needs Review" } },
+      projectStatus: { connect: { name: "Need SME Review" } },
       searchSkills: "TypeScript, SQLite, React",
       skills: {
         connect: [
@@ -515,7 +523,7 @@ const seed = async () => {
       description: "Visibility of initiatives. Follow up of skills and work from Wizeliners",
       valueStatement: "New WCI board",
       target: "All wizeliners",
-      projectStatus: { connect: { name: "Needs Review" } },
+      projectStatus: { connect: { name: "Need SME Review" } },
       searchSkills: "TypeScript, SQLite, React",
       skills: {
         connect: [
@@ -574,7 +582,7 @@ const seed = async () => {
       * Fulfills the expectations of hybrid work: from home and the office.
       * Helps the Facilities Team to maximize the use of our workspace and comply with health and safety regulations. ",
       target: "All wizeliners`,
-      projectStatus: { connect: { name: "Needs Review" } },
+      projectStatus: { connect: { name: "Need SME Review" } },
       searchSkills: "React, AWS, Ruby",
       skills: {
         connect: [
@@ -609,7 +617,7 @@ const seed = async () => {
       valueStatement:
         "Nowadays, there are a number of systems that allow users to participate in running challenges or participate in virtual races with some limitations. The first drawback is that most of these systems are not free. Users have to pay to be able to participate in virtual races or to be able to join public or private running challenges individually or with a team. The second limitation is that some of the paid systems, such as the ChallengeRunner, have a rather monotonous and boring design and reporting. That may reduce the users' motivation when using the app. Finally, most systems only support one of two functions, either participating in running challenges or participating in virtual races. In other words, to use both of those functions, users have to use and switch between two separate systems which is complex and costly. That motivates us to build a centralized system for Wizeliners to improve physical and mental health through virtual running functions.",
       target: "All wizeliners",
-      projectStatus: { connect: { name: "Draft" } },
+      projectStatus: { connect: { name: "Idea Submitted" } },
       searchSkills: "Java, PostgreSQL, React",
       skills: {
         connect: [
@@ -651,7 +659,7 @@ const seed = async () => {
 
       We decided to join efforts and take the work that was already developed and finish the basic functionality so we can deliver this platform faster and gets ready to use in less time. `,
       target: "All wizeliners",
-      projectStatus: { connect: { name: "Needs Review" } },
+      projectStatus: { connect: { name: "Need SME Review" } },
       searchSkills: "Go, MySQL, React",
       skills: {
         connect: [
