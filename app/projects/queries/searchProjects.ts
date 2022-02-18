@@ -66,9 +66,9 @@ export default resolver.pipe(
     }
 
     // order by string for sorting
-    const orderByText = `${orderBy.field === "projectMembers" ? "" : "p."}${orderBy.field} ${
-      orderBy.order
-    }`
+    const orderByText = `${
+      orderBy.field === "projectMembers" ? "" : orderBy.field === "votesCount" ? "" : "p."
+    }${orderBy.field} ${orderBy.order}`
 
     // convert where into string for the projects query
     let whereString = where.sql
@@ -81,7 +81,7 @@ export default resolver.pipe(
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>(
       `
-      SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, votesCount, s.color,
+      SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
         p.createdAt,
         p.updatedAt,
       COUNT(DISTINCT pm.profileId) as projectMembers
@@ -90,6 +90,7 @@ export default resolver.pipe(
       INNER JOIN ProjectStatus s on s.name = p.status
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      LEFT JOIN Vote v on v.projectId = p.id
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
