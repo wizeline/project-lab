@@ -38,6 +38,6 @@ export default resolver.pipe(
 
     if (!project) throw new NotFoundError()
 
-    return { ...project, votesCount: project.votes.length }
+    return project
   }
 )
