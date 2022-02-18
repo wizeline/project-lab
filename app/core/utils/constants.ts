@@ -1,4 +1,5 @@
 export const defaultStatus = "Draft"
+export const adminRoleName = "ADMIN"
 export const defaultCategory = "Experiment"
 export const contributorPath = [
   {

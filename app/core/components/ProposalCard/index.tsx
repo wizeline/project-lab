@@ -3,7 +3,6 @@ import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@mui/material"
 import EllipsisText from "app/core/components/EllipsisText"
 import ThumbUpIcon from "@mui/icons-material/ThumbUp"
-import { defaultStatus } from "../../utils/constants"
 import Image from "next/image"
 
 import { ProposalCardWrap } from "./ProposalCard.styles"
