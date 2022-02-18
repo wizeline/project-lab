@@ -263,20 +263,28 @@ export const Projects = () => {
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
 
-
-  let [{ projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets, count, projectFacets }] =
-    useQuery(searchProjects, {
-      search,
-      category,
-      status,
-      skill,
-      label,
+  let [
+    {
+      projects,
+      hasMore,
+      statusFacets,
+      categoryFacets,
+      skillFacets,
+      labelFacets,
+      count,
       projectFacets,
-      orderBy: { ...sortQuery },
-      skip: ITEMS_PER_PAGE * page,
-      take: ITEMS_PER_PAGE,
-    })
-
+    },
+  ] = useQuery(searchProjects, {
+    search,
+    category,
+    status,
+    skill,
+    label,
+    projectStatus,
+    orderBy: { ...sortQuery },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
 
   const goToPreviousPage = () => router.push({ query: { ...router.query, page: page - 1 } })
   const goToNextPage = () => router.push({ query: { ...router.query, page: page + 1 } })
