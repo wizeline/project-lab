@@ -8,6 +8,7 @@ interface InputSelectProps {
   label: string
   helperText?: string
   margin?: "normal" | "none" | "dense" | undefined
+  disabled?: boolean
 }
 
 export const InputSelect = ({
@@ -17,6 +18,7 @@ export const InputSelect = ({
   label,
   helperText,
   margin,
+  disabled,
 }: InputSelectProps) => {
   return (
     <Field name={name}>
@@ -32,7 +34,7 @@ export const InputSelect = ({
               id={name}
               sx={{ width: 300 }}
               label={label}
-              disabled={submitting}
+              disabled={submitting || disabled}
               value={input.value.name ? input.value.name : defaultValue}
               onChange={(event) => {
                 const newValue = valuesList.find((item) => item.name === event.target.value)

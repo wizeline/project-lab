@@ -29,6 +29,7 @@ import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
 import ConfirmationModal from "app/core/components/ConfirmationModal"
 import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
+import { adminRoleName } from "app/core/utils/constants"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -83,7 +84,7 @@ export const Project = () => {
         <HeaderInfo>
           <div className="headerInfo--action">
             <div className="headerInfo--edit">
-              {(isTeamMember || user?.role === "ADMIN") && (
+              {(isTeamMember || user?.role === adminRoleName) && (
                 <Link href={Routes.EditProjectPage({ projectId: project.id })} passHref>
                   <EditButton>
                     <EditSharp />
@@ -160,7 +161,7 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
-      {(isTeamMember || user?.role === "ADMIN") && (
+      {(isTeamMember || user?.role === adminRoleName) && (
         <div className="wrapper">
           <Stages path={project.stages} viewMode={true} project={project} />
         </div>
