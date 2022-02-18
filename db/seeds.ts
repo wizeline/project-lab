@@ -1,5 +1,5 @@
 import db from "./index"
-import { contributorPath, baseStatuses } from "app/core/utils/constants"
+import { contributorPath } from "app/core/utils/constants"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -83,12 +83,35 @@ const seed = async () => {
     create: { name: "Go", id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
   })
 
-  baseStatuses.map(async (status) => {
-    await db.projectStatus.upsert({
-      where: { name: status.name },
-      update: {},
-      create: { name: status.name, color: status.color },
-    })
+  await db.projectStatus.upsert({
+    where: { name: "Idea Submitted" },
+    update: {},
+    create: { name: "Idea Submitted", color: "#fe6f18" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Need SME Review" },
+    update: {},
+    create: { name: "Need SME Review", color: "#188bff" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Idea in Progress" },
+    update: {},
+    create: { name: "Idea in Progress", color: "#7bc96b" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Need Tier Review" },
+    update: {},
+    create: { name: "Need Tier Review" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Closed" },
+    update: {},
+    create: { name: "Closed" },
+  })
+  await db.projectStatus.upsert({
+    where: { name: "Inactive" },
+    update: {},
+    create: { name: "Inactive" },
   })
 
   await db.category.upsert({
