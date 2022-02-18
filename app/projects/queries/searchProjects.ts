@@ -162,6 +162,7 @@ export default resolver.pipe(
       ${StatusWhere}
     )
     GROUP BY p.isActive
+    ORDER BY p.isActive DESC
     `
 
     const statusFacets = await db.$queryRaw`
