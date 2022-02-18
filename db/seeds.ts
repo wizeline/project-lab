@@ -148,9 +148,9 @@ const seed = async () => {
   // })
 
   await db.category.upsert({
-    where: { name: "Experiment" },
+    where: { name: "Experimenter" },
     update: {},
-    create: { name: "Experiment" },
+    create: { name: "Experimenter" },
   })
   await db.category.upsert({
     where: { name: "Value Creator" },
