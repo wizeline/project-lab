@@ -15,7 +15,8 @@ import { useState } from "react"
 import ConfirmationModal from "../ConfirmationModal"
 import deleteProjectStatus from "app/project-statuses/mutations/deleteProjectStatus"
 import themeWize from "app/core/utils/themeWize"
-import { baseStatuses } from "app/core/utils/constants"
+import { baseStatuses, adminRoleName } from "app/core/utils/constants"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -25,7 +26,7 @@ declare module "@mui/material/Button" {
 }
 
 const GridEditToolbar = (props) => {
-  const { setRows, createButtonText } = props
+  const { setRows, createButtonText, user } = props
   const handleAddClick = () => {
     const id = "new-value"
     const newName = ""
@@ -36,6 +37,7 @@ const GridEditToolbar = (props) => {
       return [...prevRows, { id, name: newName, isNew: true }]
     })
   }
+  if (user?.role !== adminRoleName) return <></>
   return (
     <GridToolbarContainer>
       <Button
@@ -51,6 +53,7 @@ const GridEditToolbar = (props) => {
 }
 
 const ProjectStatusDataGrid = () => {
+  const user = useCurrentUser()
   const createButtonText = "Create New Status"
   const [createProjectStatusMutation] = useMutation(createProjectStatus)
   const [updateProjectStatusMutation] = useMutation(updateProjectStatus)
@@ -198,7 +201,7 @@ const ProjectStatusDataGrid = () => {
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
         const isConstant = baseStatuses.find((value) => value.name === idRef.row.name)
-        if (isConstant) {
+        if (isConstant || user?.role !== adminRoleName) {
           return <></>
         }
         if (isInEditMode) {

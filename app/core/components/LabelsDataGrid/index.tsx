@@ -17,6 +17,8 @@ import { useState } from "react"
 import ConfirmationModal from "../ConfirmationModal"
 import deleteLabel from "app/labels/mutations/deleteLabel"
 import themeWize from "app/core/utils/themeWize"
+import { adminRoleName } from "app/core/utils/constants"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -26,7 +28,7 @@ declare module "@mui/material/Button" {
 }
 
 const GridEditToolbar = (props) => {
-  const { setRows, createButtonText } = props
+  const { setRows, createButtonText, user } = props
   const handleAddClick = () => {
     const id = "new-value"
     const newName = ""
@@ -37,8 +39,10 @@ const GridEditToolbar = (props) => {
       return [...prevRows, { id, name: newName, isNew: true }]
     })
   }
+  if (user?.role !== adminRoleName) return <></>
   return (
     <GridToolbarContainer>
+      {user?.role == adminRoleName && <></>}
       <Button
         variant="contained"
         color="primary"
@@ -52,6 +56,7 @@ const GridEditToolbar = (props) => {
 }
 
 const LabelsDataGrid = () => {
+  const user = useCurrentUser()
   const createButtonText = "Create New Label"
   const [createLabelMutation] = useMutation(createLabel)
   const [updateLabelMutation] = useMutation(updateLabel)
@@ -202,6 +207,9 @@ const LabelsDataGrid = () => {
           idRef.api.setCellFocus(idRef.row.id, "name")
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
+        if (user?.role !== adminRoleName) {
+          return <></>
+        }
         if (isInEditMode) {
           return (
             <>
@@ -272,7 +280,7 @@ const LabelsDataGrid = () => {
                 Toolbar: GridEditToolbar,
               }}
               componentsProps={{
-                toolbar: { setRows, createButtonText },
+                toolbar: { setRows, createButtonText, user },
               }}
             />
           </ThemeProvider>
