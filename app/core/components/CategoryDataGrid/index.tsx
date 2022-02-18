@@ -18,7 +18,8 @@ import { ThemeProvider } from "@mui/material/styles"
 import updateCategory from "app/categories/mutations/updateCategory"
 import { useState } from "react"
 import ConfirmationModal from "../ConfirmationModal"
-import deleteLabel from "app/labels/mutations/deleteLabel"
+// import deleteLabel from "app/labels/mutations/deleteLabel"
+import deleteCategory from "app/categories/mutations/deleteCategory"
 import themeWize from "app/core/utils/themeWize"
 
 declare module "@mui/material/Button" {
@@ -55,10 +56,10 @@ const GridEditToolbar = (props) => {
 }
 
 const CategoryDataGrid = () => {
-  const createButtonText = "Create New Label"
+  const createButtonText = "Create New Category"
   const [createCategoryMutation] = useMutation(createCategory)
   const [updateCategoryMutation] = useMutation(updateCategory)
-  const [deleteLabelMutation] = useMutation(deleteLabel)
+  const [deleteCategoryMutation] = useMutation(deleteCategory)
   //   const [{ categories }, { refetch }] = useQuery(
   //     getCategories,
   //     {
@@ -67,8 +68,7 @@ const CategoryDataGrid = () => {
   //     { refetchInterval: 10000 }
   //   )
   const [categories, { refetch }] = useQuery(getCategories, {})
-  // const categories = useQuery(getCategories, {})
-  console.dir("whatsHere", categories)
+
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const [selectedID, setSelectedID] = useState("")
@@ -93,7 +93,7 @@ const CategoryDataGrid = () => {
   const editCategoryInfo = async (id: string, values: any) => {
     try {
       const updated = await updateCategoryMutation({
-        name: id,
+        id: id,
         ...values,
       })
     } catch (error: any) {
@@ -107,7 +107,7 @@ const CategoryDataGrid = () => {
   const deleteConfirmationHandler = async () => {
     setOpenDeleteModal(false)
     try {
-      const deleted = await deleteLabelMutation({ id: selectedID })
+      const deleted = await deleteCategoryMutation({ name: selectedID })
       refetch()
     } catch (error: any) {
       console.error(error)
@@ -163,8 +163,16 @@ const CategoryDataGrid = () => {
       const row = idRef.api.getRow(idRef.row.id)
       let id = idRef.row.id
       await editCategoryInfo(id, { name: newName })
-      idRef.api.updateRows([{ ...row, isNew: false }])
-      idRef.api.setRowMode(id, "view")
+      setRows((prevRows) => {
+        const rowToEditIndex = prevRows.findIndex((rowValue) => rowValue.id === id)
+        return [
+          ...rows.slice(0, rowToEditIndex),
+          { id: newName, name: newName },
+          ...rows.slice(rowToEditIndex + 1),
+        ]
+      })
+      // idRef.api.updateRows([{ ...row, id: newName, isNew: false }])
+      // idRef.api.setRowMode(id, "view")
     }
   }
 
@@ -296,7 +304,7 @@ const CategoryDataGrid = () => {
           deleteConfirmationHandler()
         }}
       >
-        <h2>Are you sure you want to delete this Label ?</h2>
+        <h2>Are you sure you want to delete this Category: {`${selectedID}`} ?</h2>
         <p>This action cannot be undone.</p>
         <br />
       </ConfirmationModal>
