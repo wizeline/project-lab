@@ -5,6 +5,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd"
 interface IProps {
   dragItemsArray: Array<any>
   functAfterReorder?(arg1): void
+  onDragStartFunct?: () => void
   setReorderedItems(arg1): void
   children: React.ReactNode
 }
@@ -12,6 +13,7 @@ interface IProps {
 function DragDropContainer({
   dragItemsArray,
   functAfterReorder,
+  onDragStartFunct,
   setReorderedItems,
   children,
 }: IProps) {
@@ -41,7 +43,7 @@ function DragDropContainer({
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragStart={onDragStartFunct} onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>

@@ -56,6 +56,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
         <DragDropContainer
           dragItemsArray={stagesArray}
           functAfterReorder={assignNewPosition}
+          onDragStartFunct={() => setOpenedStage(0)}
           setReorderedItems={setStagesArray}
         >
           <Field name="stages">
