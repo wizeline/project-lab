@@ -26,6 +26,14 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   const [openedStage, setOpenedStage] = useState(0)
   const [stagesArray, setStagesArray] = useState<any[]>([])
 
+  const assignNewPosition = (dragDropReordered) => {
+    //This 'dragDropReordered' variable comes from inside the DragDropContainer, and it contains the RE-ORDERED array of elements
+    //after the drag n drop action.
+    dragDropReordered.map((stage: any, index: number) => {
+      stage["position"] = index + 1
+    })
+  }
+
   if (initialValues instanceof Array) {
     if (stagesArray.length === 0) setStagesArray(initialValues)
 
@@ -45,7 +53,11 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
           <br />
           To add a new line break press the " &#9166; " (return) key twice from your keyboard.
         </InstructionStyles>
-        <DragDropContainer dragItemsArray={stagesArray} setReorderedItems={setStagesArray}>
+        <DragDropContainer
+          dragItemsArray={stagesArray}
+          functAfterReorder={assignNewPosition}
+          setReorderedItems={setStagesArray}
+        >
           <Field name="stages">
             {({ input }) => {
               const handleOnChange = (obj, key) => (evt) => {

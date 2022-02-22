@@ -4,19 +4,25 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd"
 
 interface IProps {
   dragItemsArray: Array<any>
+  functAfterReorder?(arg1): void
   setReorderedItems(arg1): void
   children: React.ReactNode
 }
 
-function DragDropContainer({ dragItemsArray, setReorderedItems, children }: IProps) {
+function DragDropContainer({
+  dragItemsArray,
+  functAfterReorder,
+  setReorderedItems,
+  children,
+}: IProps) {
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
 
-    result.map((stage: any, index: number) => {
-      stage["position"] = index + 1
-    })
+    // functAfterReorder is meant to be for any custom function that wants to be executed after the re-ordering happened
+    // BUT before the state is updated...
+    if (functAfterReorder) functAfterReorder(result)
 
     return result
   }
