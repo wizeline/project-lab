@@ -24,7 +24,7 @@ Changes that are cosmetic in nature and do not add anything substantial to the s
 
 - Suggest your change in the [slack channel](https://slack.com/app_redirect?channel=CQCB5MWG6) and start writing code.
 
-- Please open an issue on GitHub and try to attend the meetings so everyone can hear and understand your request. In this is not possible, contact any of the principal stakeholders.
+- Please open an issue on GitHub and try to attend the meetings so everyone can hear and understand your request. If this is not possible, contact any of the principal stakeholders.
 
 #### **Do you have questions about the source code?**
 
