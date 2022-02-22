@@ -21,6 +21,7 @@ export const EditorStyles = styled(Editor)`
   min-height: 3em;
   border-radius: 4px;
   border-color: rgba(0, 0, 0, 0.23);
+  cursor: auto;
 
   & + p {
     margin-bottom: 1em;
@@ -45,9 +46,18 @@ export const InstructionStyles = styled.p`
   color: #999;
   font-size: 0.8rem;
 `
-export const CollapsableHeader = styled(MultiColumnStyles)`
+export const CollapsableHeader = styled.div`
   display: grid;
   grid-template-columns: auto min-content;
+  align-items: center;
+  background-color: #347ab7;
+  border-radius: 10px 10px 0px 0px;
   color: red;
   cursor: grab;
+  margin-bottom: 5px;
+  padding: 10px 16px;
+  & > h2,
+  button {
+    color: white;
+  }
 `
