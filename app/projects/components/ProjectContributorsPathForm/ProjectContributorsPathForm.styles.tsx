@@ -54,7 +54,6 @@ export const CollapsableHeader = styled.div`
   border-radius: 10px 10px 0px 0px;
   color: red;
   cursor: grab;
-  margin-bottom: 5px;
   padding: 10px 16px;
   & > h2,
   button {

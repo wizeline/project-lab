@@ -24,9 +24,11 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   onSubmit,
 }: FormProps<S>) {
   const [openedStage, setOpenedStage] = useState(0)
-  const [stagesArray, setStagesArray] = useState(initialValues)
+  const [stagesArray, setStagesArray] = useState<any[]>([])
 
   if (initialValues instanceof Array) {
+    if (stagesArray.length === 0) setStagesArray(initialValues)
+
     return (
       <Form<S>
         submitText={submitText}
@@ -47,9 +49,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
           <Field name="stages">
             {({ input }) => {
               const handleOnChange = (obj, key) => (evt) => {
-                console.log(obj[key])
                 obj[key] = evt.target.value
-                console.log(input.value)
                 input.onChange(input.value)
               }
               return stagesArray.map((stage, index) => (
