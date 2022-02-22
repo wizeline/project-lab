@@ -67,7 +67,7 @@ export default resolver.pipe(
 
     // order by string for sorting
     const orderByText = `${
-      orderBy.field === "projectMembers" ? "" : orderBy.field === "votesCount" ? "" : "p."
+      orderBy.field === "projectMembers" || orderBy.field === "votesCount" ? "" : "p."
     }${orderBy.field} ${orderBy.order}`
 
     // convert where into string for the projects query
