@@ -28,7 +28,7 @@ Changes that are cosmetic in nature and do not add anything substantial to the s
 
 #### **Do you have questions about the source code?**
 
-- Ask any question about how to use Ruby on Rails in the [slack channel](https://slack.com/app_redirect?channel=CQCB5MWG6).
+- Ask any question about ProjectLab in the [slack channel](https://slack.com/app_redirect?channel=CQCB5MWG6).
 
 Thanks! :heart: :heart: :heart:
 
