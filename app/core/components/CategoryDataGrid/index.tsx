@@ -240,15 +240,6 @@ const CategoryDataGrid = () => {
             >
               <EditIcon color="inherit" />
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => handleDeleteClick(idRef)}
-              style={{ marginLeft: 16 }}
-            >
-              <DeleteIcon color="inherit" />
-            </Button>
           </>
         )
       },
@@ -274,28 +265,12 @@ const CategoryDataGrid = () => {
                 Toolbar: GridEditToolbar,
               }}
               componentsProps={{
-                toolbar: { setRows, createButtonText },
+                toolbar: { setRows, createButtonText, user },
               }}
             />
           </ThemeProvider>
         </div>
       </div>
-      {/* Confirmation for deletion */}
-      <ConfirmationModal
-        open={openDeleteModal}
-        handleClose={() => setOpenDeleteModal(false)}
-        close={() => setOpenDeleteModal(false)}
-        label="Delete"
-        className="warning"
-        disabled={false}
-        onClick={async () => {
-          deleteConfirmationHandler()
-        }}
-      >
-        <h2>Are you sure you want to delete this Category: {`${selectedID}`} ?</h2>
-        <p>This action cannot be undone.</p>
-        <br />
-      </ConfirmationModal>
     </div>
   )
 }

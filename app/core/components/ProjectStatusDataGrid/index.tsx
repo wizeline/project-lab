@@ -240,15 +240,6 @@ const ProjectStatusDataGrid = () => {
             >
               <EditIcon color="inherit" />
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => handleDeleteClick(idRef)}
-              style={{ marginLeft: 16 }}
-            >
-              <DeleteIcon color="inherit" />
-            </Button>
           </>
         )
       },
@@ -257,7 +248,7 @@ const ProjectStatusDataGrid = () => {
 
   return (
     <div>
-      <h2>Categories</h2>
+      <h2>Statuses</h2>
       <div style={{ display: "flex", width: "100%", height: "70vh" }}>
         <div style={{ flexGrow: 1 }}>
           <ThemeProvider theme={themeWize}>
@@ -274,28 +265,12 @@ const ProjectStatusDataGrid = () => {
                 Toolbar: GridEditToolbar,
               }}
               componentsProps={{
-                toolbar: { setRows, createButtonText },
+                toolbar: { setRows, createButtonText, user },
               }}
             />
           </ThemeProvider>
         </div>
       </div>
-      {/* Confirmation for deletion */}
-      <ConfirmationModal
-        open={openDeleteModal}
-        handleClose={() => setOpenDeleteModal(false)}
-        close={() => setOpenDeleteModal(false)}
-        label="Delete"
-        className="warning"
-        disabled={false}
-        onClick={async () => {
-          deleteConfirmationHandler()
-        }}
-      >
-        <h2>Are you sure you want to delete this Status ?</h2>
-        <p>This action cannot be undone.</p>
-        <br />
-      </ConfirmationModal>
     </div>
   )
 }

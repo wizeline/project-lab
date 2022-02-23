@@ -42,7 +42,6 @@ const GridEditToolbar = (props) => {
   if (user?.role !== adminRoleName) return <></>
   return (
     <GridToolbarContainer>
-      {user?.role == adminRoleName && <></>}
       <Button
         variant="contained"
         color="primary"
