@@ -85,13 +85,6 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                             defaultValue={stage.name}
                             onChange={handleOnChange(stage, "name")}
                           ></TextFieldStyles>
-                          {/* <TextFieldStyles
-                          label="Position"
-                          type="number"
-                          defaultValue={stage.position}
-                          onChange={handleOnChange(stage, "position")}
-                          InputProps={{ inputProps: { min: 1, max: input.value.length } }}
-                        ></TextFieldStyles> */}
                         </MultiColumnStyles>
                         <MarkdownEditor
                           label="Criteria"
