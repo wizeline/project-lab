@@ -175,7 +175,7 @@ export const Project = () => {
                   <LikeBox>
                     <Like>
                       <div className="like-bubble">
-                        <span>{project.votesCount}</span>
+                        <span>{project.votes.length}</span>
                       </div>
                       <Button
                         className="primary"
