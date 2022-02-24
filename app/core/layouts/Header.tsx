@@ -25,17 +25,50 @@ const Header = ({ title }: IProps) => {
   const goHome = () => {
     Router.push(Routes.Home())
   }
-
-  const options: MenuItemArgs[] = [
-    {
-      permissions: true,
-      onClick: async () => {
-        await logoutMutation()
-      },
-      text: "Sign out",
-      testId: "sign-out-button",
-    },
-  ]
+  const goManager = () => {
+    Router.push(Routes.ManagerPage())
+  }
+  const managerItem =
+    currentUser?.role === "ADMIN"
+      ? {
+          permissions: true,
+          onClick: async () => {
+            goManager()
+          },
+          text: "Manager",
+          testId: "go-to-admin",
+        }
+      : null
+  const options: MenuItemArgs[] =
+    currentUser?.role === "ADMIN"
+      ? [
+          {
+            permissions: true,
+            onClick: async () => {
+              await logoutMutation()
+            },
+            text: "Sign out",
+            testId: "sign-out-button",
+          },
+          {
+            permissions: true,
+            onClick: async () => {
+              goManager()
+            },
+            text: "Manager",
+            testId: "go-to-admin",
+          },
+        ]
+      : [
+          {
+            permissions: true,
+            onClick: async () => {
+              await logoutMutation()
+            },
+            text: "Sign out",
+            testId: "sign-out-button",
+          },
+        ]
 
   return (
     <>
