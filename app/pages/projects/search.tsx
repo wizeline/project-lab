@@ -29,6 +29,8 @@ type queryItems = {
   skill?: string
   label?: string
   projectStatus?: string
+  count?: number
+
 }
 
 type wrapperProps = {
@@ -262,19 +264,21 @@ export const Projects = () => {
 
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
-  let [
-    { projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets, projectFacets },
-  ] = useQuery(searchProjects, {
-    search,
-    category,
-    status,
-    skill,
-    label,
-    projectStatus,
-    orderBy: { ...sortQuery },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
+
+
+  let [{ projects, hasMore, statusFacets, categoryFacets, skillFacets, labelFacets, projectFacets, count }] =
+    useQuery(searchProjects, {
+      search,
+      category,
+      status,
+      skill,
+      label,
+        projectStatus,
+      orderBy: { ...sortQuery },
+      skip: ITEMS_PER_PAGE * page,
+      take: ITEMS_PER_PAGE,
+    })
+
 
   const goToPreviousPage = () => router.push({ query: { ...router.query, page: page - 1 } })
   const goToNextPage = () => router.push({ query: { ...router.query, page: page + 1 } })
@@ -603,7 +607,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? "All Results" : "My Proposals"}>
+              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Proposals"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>

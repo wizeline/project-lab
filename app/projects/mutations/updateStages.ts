@@ -7,15 +7,16 @@ const UpdateContributorPath = z.object({
   id: z.string(),
   owner: z.object({ id: z.string() }),
   projectMembers: z.array(z.object({ profileId: z.string() })),
+  isAdmin: z.boolean(),
   stages: ContributorPath,
 })
 
 export default resolver.pipe(
   resolver.zod(UpdateContributorPath),
   resolver.authorize(),
-  async ({ id, owner, projectMembers, stages }, { session }: Ctx) => {
+  async ({ id, owner, projectMembers, isAdmin, stages }, { session }: Ctx) => {
     //validate if the user have permissions (team member or owner of the project)
-    validateIsTeamMember(session, { owner, projectMembers })
+    if (!isAdmin) validateIsTeamMember(session, { owner, projectMembers })
 
     for (let index = 0; index < stages.length; index++) {
       const stage = stages[index] ? stages[index] : null

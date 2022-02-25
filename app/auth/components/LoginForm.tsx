@@ -1,4 +1,4 @@
-import { Image, Link } from "blitz"
+import { Image } from "blitz"
 import { Panel, Greet, StyledLoginForm, Button, Footer, Body } from "./LoginForm.styles"
 
 type LoginFormProps = {
@@ -12,9 +12,9 @@ export const LoginForm = (props: LoginFormProps) => {
       <StyledLoginForm>
         <Body>
           <Greet>Welcome back Wizeliner!</Greet>
-          <Link href="/api/auth/auth0">
+          <a href="/api/auth/auth0">
             <Button>Login with your Wizeline email account</Button>
-          </Link>
+          </a>
         </Body>
         <Footer />
       </StyledLoginForm>

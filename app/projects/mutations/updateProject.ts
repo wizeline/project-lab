@@ -5,9 +5,9 @@ import { FullUpdate, validateIsTeamMember } from "app/projects/validations"
 export default resolver.pipe(
   resolver.zod(FullUpdate),
   resolver.authorize(),
-  async ({ id, ...data }, { session }: Ctx) => {
+  async ({ id, isAdmin, ...data }, { session }: Ctx) => {
     //validate if the user have permissions (team member or owner of the project)
-    validateIsTeamMember(session, data)
+    if (!isAdmin) validateIsTeamMember(session, data)
 
     let activeMembers: any = []
 
