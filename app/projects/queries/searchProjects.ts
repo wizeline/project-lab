@@ -49,7 +49,6 @@ export default resolver.pipe(
   ) => {
     const prefixSearch = "%" + search + "%"
     let where = Prisma.sql`WHERE p.id IS NOT NULL`
-    console.log(projectStatus)
     if (search && search !== "") {
       search !== "myProposals"
         ? (where = Prisma.sql`WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)

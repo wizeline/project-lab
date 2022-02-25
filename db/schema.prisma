@@ -168,7 +168,6 @@ model Projects {
   votes          Vote[]
   comments       Comments[]
   stages         ProjectStages[]
-
   votesCount     Int              @default(0)
   isArchived     Boolean          @default(false)
 
