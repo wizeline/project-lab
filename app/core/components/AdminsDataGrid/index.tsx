@@ -12,11 +12,14 @@ import CancelIcon from "@mui/icons-material/Close"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
 import themeWize from "app/core/utils/themeWize"
+import { FORM_ERROR } from "app/labels/components/LabelForm"
 
 import getAdminUsers from "../../../users/queries/getAdminUsers"
+import addAdminUser from "app/users/mutations/addAdminUser"
 
 const GridEditToolbar = (props) => {
   const { setRows, createButtonText, user } = props
+
   const handleAddClick = () => {
     const id = "new-value"
     const newName = ""
@@ -46,7 +49,25 @@ const GridEditToolbar = (props) => {
 const AdminsDataGrid = () => {
   const user = useCurrentUser()
   const createButtonText = "Add New Admin"
-  const [admins] = useQuery(getAdminUsers, null)
+  const [admins, { refetch }] = useQuery(getAdminUsers, null)
+  const [addAdminUserMutation] = useMutation(addAdminUser)
+
+  const addNewAdminUser = async (values) => {
+    try {
+      const admin = await addAdminUserMutation(values)
+      await refetch()
+      setRows((prevRows) => {
+        const rowToDeleteIndex = prevRows.length - 1
+        const savedRowValues = { id: admin.id, name: admin.name, email: admin.email }
+        return [...rows.slice(0, rowToDeleteIndex), savedRowValues]
+      })
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
 
   // Set handles for interactions
 
@@ -75,7 +96,28 @@ const AdminsDataGrid = () => {
       })
     }
   }
-  const handleSaveClick = (id) => {}
+
+  const handleSaveClick = async (idRef) => {
+    const id = idRef.row.id
+
+    const row = idRef.api.getRow(id)
+    const isValid = await idRef.api.commitRowChange(idRef.row.id)
+    const newEmail = idRef.api.getCellValue(id, "email")
+
+    if (rows.find((rowValue) => rowValue.email === newEmail)) {
+      console.error("Field Already exists")
+      return
+    } else {
+      console.error("All fields are valid")
+    }
+
+    if (row.isNew && isValid) {
+      const newValues = { email: newEmail }
+      idRef.api.setRowMode(id, "view")
+      const resRowInsert = await addNewAdminUser(newValues)
+      return
+    }
+  }
   const handleDeleteClick = (id) => {}
 
   const [rows, setRows] = useState(() =>
@@ -96,7 +138,7 @@ const AdminsDataGrid = () => {
       renderCell: (idRef: any) => {
         if (idRef.row.id === "new-value") {
           idRef.api.setRowMode(idRef.row.id, "edit")
-          idRef.api.setCellFocus(idRef.row.id, "name")
+          idRef.api.setCellFocus(idRef.row.id, "email")
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
         if (user?.role !== adminRoleName) {
