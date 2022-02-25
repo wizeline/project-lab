@@ -13,9 +13,11 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
 import themeWize from "app/core/utils/themeWize"
 import { FORM_ERROR } from "app/labels/components/LabelForm"
+import ConfirmationModal from "../ConfirmationModal"
 
 import getAdminUsers from "../../../users/queries/getAdminUsers"
 import addAdminUser from "app/users/mutations/addAdminUser"
+import removeAdminRole from "app/users/mutations/removeAdminRole"
 
 const GridEditToolbar = (props) => {
   const { setRows, createButtonText, user } = props
@@ -51,6 +53,11 @@ const AdminsDataGrid = () => {
   const createButtonText = "Add New Admin"
   const [admins, { refetch }] = useQuery(getAdminUsers, null)
   const [addAdminUserMutation] = useMutation(addAdminUser)
+  const [removeAdminRoleMutation] = useMutation(removeAdminRole)
+
+  // handle Delete Admin variables
+  const [selectedRowID, setSelectedRowID] = useState("")
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const addNewAdminUser = async (values) => {
     try {
@@ -67,6 +74,21 @@ const AdminsDataGrid = () => {
         [FORM_ERROR]: error.toString(),
       }
     }
+  }
+
+  const deleteConfirmationHandler = async () => {
+    setOpenDeleteModal(false)
+    try {
+      const deleted = await removeAdminRoleMutation({ id: +selectedRowID })
+      refetch()
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+
+    setRows((prevRows) => prevRows.filter((rowValue) => rowValue.id !== +selectedRowID))
   }
 
   // Set handles for interactions
@@ -118,7 +140,11 @@ const AdminsDataGrid = () => {
       return
     }
   }
-  const handleDeleteClick = (id) => {}
+  const handleDeleteClick = (idRef) => {
+    let id = idRef.row.id
+    setSelectedRowID(() => id)
+    setOpenDeleteModal(() => true)
+  }
 
   const [rows, setRows] = useState(() =>
     admins.map((item) => ({
@@ -185,28 +211,48 @@ const AdminsDataGrid = () => {
   ]
 
   return (
-    <div style={{ display: "flex", width: "100%", height: "70vh" }}>
-      <div style={{ flexGrow: 1 }}>
-        <ThemeProvider theme={themeWize}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            rowsPerPageOptions={[50]}
-            pageSize={50}
-            editMode="row"
-            onRowEditStart={handleRowEditStart}
-            onRowEditStop={handleRowEditStop}
-            onCellFocusOut={handleCellFocusOut}
-            components={{
-              Toolbar: GridEditToolbar,
-            }}
-            componentsProps={{
-              toolbar: { setRows, createButtonText, user },
-            }}
-          />
-        </ThemeProvider>
+    <>
+      <div style={{ display: "flex", width: "100%", height: "70vh" }}>
+        <div style={{ flexGrow: 1 }}>
+          <ThemeProvider theme={themeWize}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              rowsPerPageOptions={[50]}
+              pageSize={50}
+              editMode="row"
+              onRowEditStart={handleRowEditStart}
+              onRowEditStop={handleRowEditStop}
+              onCellFocusOut={handleCellFocusOut}
+              components={{
+                Toolbar: GridEditToolbar,
+              }}
+              componentsProps={{
+                toolbar: { setRows, createButtonText, user },
+              }}
+            />
+          </ThemeProvider>
+        </div>
       </div>
-    </div>
+      {/* Confirmation for deletion */}
+      <ConfirmationModal
+        open={openDeleteModal}
+        handleClose={() => setOpenDeleteModal(false)}
+        close={() => setOpenDeleteModal(false)}
+        label="Remove"
+        className="warning"
+        disabled={false}
+        onClick={async () => {
+          deleteConfirmationHandler()
+        }}
+      >
+        <h2>
+          Are you sure you want to remove the Admin role from{" "}
+          {rows[rows.findIndex((row) => row.id === +selectedRowID)]?.email}?
+        </h2>
+        <br />
+      </ConfirmationModal>
+    </>
   )
 }
 

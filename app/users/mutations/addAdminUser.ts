@@ -17,7 +17,7 @@ export default resolver.pipe(
         email,
         role: "ADMIN",
       },
-      update: { email },
+      update: { email, role: "ADMIN" },
     })
 
     return user
