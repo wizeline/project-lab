@@ -70,6 +70,12 @@ export const DetailMoreHead = styled.div`
     display: inline-block;
     text-align: center;
   }
+
+  @media (max-width: 599px) {
+    .itemHeadValue {
+      margin-bottom: 18px;
+    }
+  }
 `
 
 export const Like = styled.div`

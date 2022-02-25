@@ -109,7 +109,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={6}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -125,7 +126,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={6}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -141,7 +143,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={6}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -157,7 +160,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={6}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
