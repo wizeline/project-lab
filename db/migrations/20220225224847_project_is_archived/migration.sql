@@ -12,8 +12,8 @@ CREATE TABLE "new_Projects" (
     "repoUrl" TEXT,
     "slackChannel" TEXT,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
-    "status" TEXT NOT NULL DEFAULT 'Draft',
-    "categoryName" TEXT NOT NULL DEFAULT 'Experiment',
+    "status" TEXT DEFAULT 'Idea Submitted',
+    "categoryName" TEXT DEFAULT 'Experimenter',
     "positions" TEXT,
     "searchSkills" TEXT NOT NULL DEFAULT '',
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -21,8 +21,8 @@ CREATE TABLE "new_Projects" (
     "votesCount" INTEGER NOT NULL DEFAULT 0,
     "isArchived" BOOLEAN NOT NULL DEFAULT false,
     FOREIGN KEY ("ownerId") REFERENCES "Profiles" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("categoryName") REFERENCES "Category" ("name") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("status") REFERENCES "ProjectStatus" ("name") ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY ("categoryName") REFERENCES "Category" ("name") ON DELETE SET NULL ON UPDATE CASCADE
 );
 INSERT INTO "new_Projects" ("categoryName", "createdAt", "demo", "description", "id", "isApproved", "logo", "name", "ownerId", "positions", "repoUrl", "searchSkills", "slackChannel", "status", "target", "updatedAt", "valueStatement", "votesCount") SELECT "categoryName", "createdAt", "demo", "description", "id", "isApproved", "logo", "name", "ownerId", "positions", "repoUrl", "searchSkills", "slackChannel", "status", "target", "updatedAt", "valueStatement", "votesCount" FROM "Projects";
 DROP TABLE "Projects";
