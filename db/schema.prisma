@@ -153,22 +153,21 @@ model Projects {
   repoUrl        String?
   slackChannel   String?
   isApproved     Boolean          @default(false)
-  status         String           @default("Draft")
-  categoryName   String           @default("Experiment")
+  status         String?          @default("Idea Submitted")
+  categoryName   String?          @default("Experimenter")
   positions      String?
   searchSkills   String           @default("")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
   owner          Profiles?        @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name], onDelete: Cascade, onUpdate: Cascade)
-  category       Category         @relation(fields: [categoryName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus  ProjectStatus?   @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  category       Category?        @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
   projectMembers ProjectMembers[]
   skills         Skills[]
   labels         Labels[]
   votes          Vote[]
   comments       Comments[]
   stages         ProjectStages[]
-  votesCount     Int              @default(0)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")

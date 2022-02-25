@@ -38,7 +38,7 @@ export const DropDownButton = ({ children, options }) => {
   }, [openActionsUser])
 
   return (
-    <div>
+    <div style={{ zIndex: 1000 }}>
       <DropdownPlaceholderContainer ref={actionsUserRef} onClick={handleToggle}>
         {children}
         <ExpandMoreIcon fontSize="small" />
