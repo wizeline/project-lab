@@ -11,6 +11,10 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ email }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+    const profileUser = await db.profiles.findFirst({ where: { email } })
+    if (!profileUser) {
+      throw new Error("User not found in WOS")
+    }
     const user = await db.user.upsert({
       where: { email },
       create: {

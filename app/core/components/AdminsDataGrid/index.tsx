@@ -50,6 +50,7 @@ const GridEditToolbar = (props) => {
 
 const AdminsDataGrid = () => {
   const user = useCurrentUser()
+  const [error, setError] = useState<string>("")
   const createButtonText = "Add New Admin"
   const [admins, { refetch }] = useQuery(getAdminUsers, null)
   const [addAdminUserMutation] = useMutation(addAdminUser)
@@ -68,8 +69,10 @@ const AdminsDataGrid = () => {
         const savedRowValues = { id: admin.id, name: admin.name, email: admin.email }
         return [...rows.slice(0, rowToDeleteIndex), savedRowValues]
       })
+      setError("")
     } catch (error: any) {
       console.error(error)
+      setError(error.toString())
       return {
         [FORM_ERROR]: error.toString(),
       }
@@ -117,6 +120,7 @@ const AdminsDataGrid = () => {
         return [...rows.slice(0, rowToDeleteIndex), ...rows.slice(rowToDeleteIndex + 1)]
       })
     }
+    setError("")
   }
 
   const handleSaveClick = async (idRef) => {
@@ -128,6 +132,7 @@ const AdminsDataGrid = () => {
 
     if (rows.find((rowValue) => rowValue.email === newEmail)) {
       console.error("Field Already exists")
+      setError("Error: User is already an admin")
       return
     } else {
       console.error("All fields are valid")
@@ -215,6 +220,7 @@ const AdminsDataGrid = () => {
       <div style={{ display: "flex", width: "100%", height: "70vh" }}>
         <div style={{ flexGrow: 1 }}>
           <ThemeProvider theme={themeWize}>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <DataGrid
               rows={rows}
               columns={columns}
