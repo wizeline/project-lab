@@ -234,6 +234,7 @@ model ProjectStages {
 model ProjectTasks {
   id              String            @id @default(uuid())
   description     String
+  position        Int
   projectStageId  String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())

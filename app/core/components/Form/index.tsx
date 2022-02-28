@@ -17,6 +17,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
   disabled?: boolean
+  addNewStage?: any
 }
 
 export function Form<S extends z.ZodType<any, any>>({

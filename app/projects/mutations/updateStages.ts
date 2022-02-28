@@ -22,25 +22,43 @@ export default resolver.pipe(
       const stage = stages[index] ? stages[index] : null
 
       if (stage) {
-        await db.projectStages.update({
-          where: { id: stage.id },
-          data: {
-            name: stage.name,
-            criteria: stage.criteria,
-            mission: stage.mission,
-            position: stage.position || 0,
-            projectTasks: {
-              upsert: stage.projectTasks.map((task) => ({
-                where: { id: task.id },
-                create: { description: task.description },
-                update: { description: task.description },
-              })),
+        if (stage.isNewStage) {
+          await db.projectStages.create({
+            data: {
+              name: stage.name,
+              criteria: stage.criteria,
+              mission: stage.mission,
+              position: stage.position || 0,
+              projectId: stage.projectId,
+              projectTasks: {
+                create: stage.projectTasks.map((task) => ({
+                  description: task.description,
+                  position: task.position || 0,
+                })),
+              },
             },
-          },
-          include: {
-            projectTasks: true,
-          },
-        })
+          })
+        } else {
+          await db.projectStages.update({
+            where: { id: stage.id },
+            data: {
+              name: stage.name,
+              criteria: stage.criteria,
+              mission: stage.mission,
+              position: stage.position || 0,
+              projectTasks: {
+                upsert: stage.projectTasks.map((task) => ({
+                  where: { id: task.id },
+                  create: { description: task.description, position: task.position || 0 },
+                  update: { description: task.description, position: task.position || 0 },
+                })),
+              },
+            },
+            include: {
+              projectTasks: true,
+            },
+          })
+        }
       }
     }
 
