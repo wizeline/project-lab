@@ -5,11 +5,9 @@ import { z } from "zod"
 import { validateZodSchema } from "blitz"
 export { FORM_ERROR } from "final-form"
 
-export interface FormProps<S extends z.ZodType<any, any>>
+export interface FormStagesProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
-  /** All your form fields */
   children?: ReactNode
-  /** Text to display in the submit button */
   submitText?: string
   projectformType?: string
   schema?: S
@@ -17,9 +15,11 @@ export interface FormProps<S extends z.ZodType<any, any>>
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
   disabled?: boolean
+  projectId?: string
+  retrieveProjectInfo?: Function
 }
 
-export function Form<S extends z.ZodType<any, any>>({
+export default function FormStages<S extends z.ZodType<any, any>>({
   children,
   submitText,
   schema,
@@ -28,14 +28,14 @@ export function Form<S extends z.ZodType<any, any>>({
   onSubmit,
   disabled,
   ...props
-}: FormProps<S>) {
+}: FormStagesProps<S>) {
   const { projectformType, ...validFormProps } = props
   return (
     <FinalForm
       initialValues={initialValues}
       validate={validateZodSchema(schema)}
       onSubmit={onSubmit}
-      render={({ handleSubmit, submitting, submitError }) => (
+      render={({ handleSubmit, submitting, submitError, values }) => (
         <form onSubmit={handleSubmit} className="form" {...validFormProps}>
           {/* Form fields supplied as children are rendered here */}
           {children}
@@ -69,5 +69,3 @@ export function Form<S extends z.ZodType<any, any>>({
     />
   )
 }
-
-export default Form

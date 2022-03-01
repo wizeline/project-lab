@@ -68,16 +68,24 @@ export const EditProject = () => {
     }
   }
 
+  function retrieveProjectInfo() {
+    return {
+      id: project.id,
+      isAdmin: user?.role === adminRoleName,
+      projectMembers: project.projectMembers,
+      owner: project.owner,
+    }
+  }
+
   async function handleSubmitContributorPath(values) {
     try {
       await updateStageMutation({
-        id: project.id,
-        isAdmin: user?.role === adminRoleName,
-        projectMembers: project.projectMembers,
-        owner: project.owner,
+        ...retrieveProjectInfo(),
         ...values,
       })
+
       refetch()
+
       router.push(Routes.ShowProjectPage({ projectId: project.id }))
     } catch (error) {
       console.error(error)
@@ -85,32 +93,6 @@ export const EditProject = () => {
         [FORM_ERROR]: error.toString(),
       }
     }
-  }
-
-  function addNewStage() {
-    const newStage = {
-      isNewStage: true,
-      name: "Test",
-      criteria: "blah",
-      mission: "blah",
-      position: project.stages.length + 1,
-      projectId: project.id,
-      projectTasks: [
-        {
-          position: 1,
-          description: "blah",
-          id: "",
-          projectStageId: "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      id: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    project.stages.push(newStage)
   }
 
   return (
@@ -148,7 +130,8 @@ export const EditProject = () => {
               schema={ContributorPath}
               initialValues={project.stages}
               onSubmit={handleSubmitContributorPath}
-              addNewStage={addNewStage}
+              projectId={project.id}
+              retrieveProjectInfo={retrieveProjectInfo}
             />
           </TabPanel>
         </EditPanelsStyles>
