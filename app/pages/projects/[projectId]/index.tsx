@@ -104,11 +104,29 @@ export const Project = () => {
       </div>
       <div className="wrapper">
         <DetailMoreHead>
-          <Grid container alignItems="center" justifyContent="flex-start">
+          <Grid container alignItems="flex-start" justifyContent="flex-start">
             <Grid
               item
               container
-              xs={4}
+              sm={6}
+              xs={12}
+              spacing={1}
+              alignItems="center"
+              justifyContent="flex-start"
+              direction={{ xs: "column", md: "row" }}
+            >
+              <Grid item>
+                <div className="itemHeadName">Owner:</div>{" "}
+              </Grid>
+              <Grid item>
+                <div className="itemHeadValue">{`${project.owner?.firstName} ${project.owner?.lastName}`}</div>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              container
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -124,7 +142,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={4}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -140,7 +159,8 @@ export const Project = () => {
             <Grid
               item
               container
-              xs={4}
+              sm={6}
+              xs={12}
               spacing={1}
               alignItems="center"
               justifyContent="flex-start"
@@ -150,11 +170,11 @@ export const Project = () => {
                 <div className="itemHeadName">Labels:</div>
               </Grid>
               <Grid item>
-                {project.labels.map((item, index) => (
-                  <div className="itemHeadValue" key={index}>
-                    {item.name}
-                  </div>
-                ))}
+                <Stack direction="row" spacing={1}>
+                  {project.labels.map((item, index) => (
+                    <Chip key={index} label={item.name} />
+                  ))}
+                </Stack>
               </Grid>
             </Grid>
           </Grid>
