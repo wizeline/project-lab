@@ -74,6 +74,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                       {...provided.dragHandleProps}
                     >
                       <StageCollapsableHeader
+                        name={stage.name}
                         openedStage={openedStage}
                         position={stage.position}
                         setOpenedStage={setOpenedStage}

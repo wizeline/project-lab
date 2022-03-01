@@ -7,15 +7,18 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import { CollapsableHeader } from "./ProjectContributorsPathForm.styles"
 
 interface IProps {
+  name: string
   openedStage: number
   position: number
   setOpenedStage(arg1): void
 }
 
-function StageCollapsableHeader({ openedStage, position, setOpenedStage }: IProps) {
+function StageCollapsableHeader({ name, openedStage, position, setOpenedStage }: IProps) {
   return (
     <CollapsableHeader onClick={() => setOpenedStage(position === openedStage ? 0 : position)}>
-      <h2>Stage {position}</h2>
+      <h2>
+        Stage {position} - {name}
+      </h2>
       <IconButton
         aria-label="expand row"
         size="small"
