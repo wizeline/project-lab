@@ -13,6 +13,7 @@ import {
   TextField,
   Button,
 } from "@mui/material"
+import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
@@ -23,12 +24,11 @@ import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
+import ProjectConfirmationModal from "./ProjectConfirmationModal"
 import { HeaderInfo, DetailMoreHead, Like, LikeBox, EditButton } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
 import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
-import ConfirmationModal from "app/core/components/ConfirmationModal"
-import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
 
 export const Project = () => {
@@ -306,27 +306,17 @@ export const Project = () => {
         open={showJoinModal}
         handleCloseModal={handleCloseModal}
       />
-      <ConfirmationModal
-        open={showModal}
-        handleClose={() => setShowModal(false)}
-        close={() => setShowModal(false)}
-        label={"confirm"}
-        onClick={async () => await updateProjectMemberHandle(!member?.active)}
-      >
-        {member?.active ? (
-          <>
-            <h1>We're sorry you're leaving the project</h1>
-            <p>
-              By confirming you will be inactive for this project but you can join again at anytime.
-            </p>
-          </>
-        ) : (
-          <>
-            <h1>Welcome back!</h1>
-            <p>Do you want to contribute again?</p>
-          </>
-        )}
-      </ConfirmationModal>
+      {member && (
+        <ProjectConfirmationModal
+          close={() => setShowModal(false)}
+          handleClose={() => setShowModal(false)}
+          label={"confirm"}
+          member={member}
+          onClick={async () => await updateProjectMemberHandle(!member?.active)}
+          open={showModal}
+          project={project}
+        />
+      )}
     </>
   )
 }
