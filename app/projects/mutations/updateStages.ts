@@ -23,6 +23,7 @@ export default resolver.pipe(
 
       if (stage) {
         if (stage.isNewStage) {
+          console.log("creating new stage")
           await db.projectStages.create({
             data: {
               name: stage.name,

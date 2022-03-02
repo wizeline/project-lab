@@ -83,9 +83,7 @@ export const EditProject = () => {
         ...retrieveProjectInfo(),
         ...values,
       })
-
-      refetch()
-
+      await refetch()
       router.push(Routes.ShowProjectPage({ projectId: project.id }))
     } catch (error) {
       console.error(error)
