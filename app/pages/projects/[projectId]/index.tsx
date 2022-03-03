@@ -177,7 +177,7 @@ export const Project = () => {
       )}
       <div className="wrapper">
         <Grid container spacing={2} alignItems="stretch">
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={8}>
             <Card variant="outlined">
               <CardContent>
                 <LikeBox>
