@@ -168,12 +168,12 @@ model Projects {
   votes          Vote[]
   comments       Comments[]
   stages         ProjectStages[]
-  votesCount     Int              @default(0)
   isArchived     Boolean          @default(false)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
+  @@index([isArchived], name: "projects_isArchived_idx")
 }
 
 model Vote {
