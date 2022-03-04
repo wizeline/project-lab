@@ -29,6 +29,7 @@ import { HeaderInfo, DetailMoreHead, Like, LikeBox, EditButton } from "./[projec
 import Stages from "app/projects/components/Stages"
 import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
+import updateProjectOwner from "app/projects/mutations/updateProjectOwner"
 import { adminRoleName } from "app/core/utils/constants"
 
 export const Project = () => {
@@ -71,9 +72,21 @@ export const Project = () => {
     },
   })
 
-  const updateProjectMemberHandle = async (active) => {
+  const [updateProjectOwnerMutation] = useMutation(updateProjectOwner, {
+    onSuccess: async () => {
+      await invalidateQuery(getProject)
+      refetch()
+    },
+  })
+
+  const updateProjectMemberHandle = async (active, newOwner) => {
     setShowModal(false)
     setJoinProjectButton(true)
+
+    //If it is the case the owner is leaving...
+    if (member?.profileId === project.ownerId)
+      await updateProjectOwnerMutation({ data: project, newOwner: newOwner, projectId: project.id })
+
     await updateProjectMemberMutation({ id: member?.id, active })
   }
 
@@ -312,7 +325,7 @@ export const Project = () => {
           handleClose={() => setShowModal(false)}
           label={"confirm"}
           member={member}
-          onClick={async () => await updateProjectMemberHandle(!member?.active)}
+          onClick={updateProjectMemberHandle}
           open={showModal}
           project={project}
         />
