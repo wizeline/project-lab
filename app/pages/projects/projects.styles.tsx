@@ -148,7 +148,6 @@ const Wrapper = styled.div<wrapperProps>`
       box-shadow: 10px 10px 24px 1px rgba(0, 0, 0, 0.1), 10px -10px 32px 1px rgba(0, 0, 0, 0.1);
     }
     .homeWrapper__popular {
-      display: flex;
       justify-content: center;
     }
     .homeWrapper__navbar__sort {
