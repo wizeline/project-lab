@@ -176,9 +176,8 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
           >
             <Field name="stages">
               {(field) => {
-                console.log("field", field)
-
                 const { input } = field
+
                 const handleOnChange = (obj, key) => (evt) => {
                   obj[key] = evt.target.value
                   input.onChange(input.value)
@@ -209,6 +208,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                                   label="Name"
                                   defaultValue={stage.name}
                                   onChange={handleOnChange(stage, "name")}
+                                  required
                                 ></TextFieldStyles>
                                 <button
                                   tabIndex={-1}

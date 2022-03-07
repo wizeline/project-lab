@@ -18,12 +18,17 @@ export const useContributorPath = () => {
     },
   })
 
-  const createContributorPathHandler = async (projectMemberId: string, projectTaskId: string) => {
+  const createContributorPathHandler = async (
+    projectMemberId: string,
+    projectTaskId: string,
+    projectStageId: string
+  ) => {
     setisLoading(true)
     try {
       await createContributorPathMutation({
-        projectMemberId: projectMemberId,
-        projectTaskId: projectTaskId,
+        projectMemberId,
+        projectTaskId,
+        projectStageId,
       })
       setisLoading(false)
     } catch (e: any) {

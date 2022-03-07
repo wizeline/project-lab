@@ -8,8 +8,9 @@ export default resolver.pipe(
   async (input) => {
     await db.contributorPath.create({
       data: {
-        projectMember: { connect: { id: input.projectMemberId } },
-        projectTask: { connect: { id: input.projectTaskId } },
+        projectMemberId: input.projectMemberId,
+        projectTaskId: input.projectTaskId,
+        projectStageId: input.projectStageId,
       },
     })
   }

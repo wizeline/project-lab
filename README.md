@@ -72,16 +72,16 @@ npx blitz prisma migrate reset
 sqlite3 db/db.sqlite < db/search_indexes.sql
 ```
 
-9. Populate with test data:
-
-```
-npx blitz db seed
-```
-
-10. Sync profiles and skills from Wizeline OS, this is optional and it takes a couple of minutes, the seeding contains sample data that can be enough to run locally:
+9. Sync profiles and skills from Wizeline OS, this is optional and it takes a couple of minutes, the seeding contains sample data that can be enough to run locally:
 
 ```
 yarn sync-all-from-wos
+```
+
+10. Populate with test data:
+
+```
+npx blitz db seed
 ```
 
 11. Run blitz:
