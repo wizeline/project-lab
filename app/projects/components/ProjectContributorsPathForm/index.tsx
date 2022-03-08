@@ -3,7 +3,6 @@ import { useMutation } from "blitz"
 import { z } from "zod"
 import { Draggable } from "react-beautiful-dnd"
 import { Field } from "react-final-form"
-import uniqueId from "lodash.uniqueid"
 import Collapse from "@mui/material/Collapse"
 import FormStages, { FormStagesProps } from "./FormStages"
 import MarkdownEditor from "./ProjectContributorPathMarkdownEditor"
@@ -13,16 +12,28 @@ import updateStages from "app/projects/mutations/updateStages"
 import deleteProjectTask from "app/projects/mutations/deleteProjectTask"
 import deleteProjectStage from "app/projects/mutations/deleteProjectStage"
 import updateProjectTask from "app/projects/mutations/updateProjectTask"
+import { Button, ButtonText } from "app/core/components/Button"
+import {
+  setHandleDeleteStage,
+  setHandleDeleteTask,
+  setHandleNewStage,
+  setHandleNewTask,
+} from "./ProjectContributorsPathEditHelpers"
 import {
   InstructionStyles,
   LabelStyles,
   MultiColumnStyles,
+  LabelWithButtonDivStyles,
   StageStyles,
   TextFieldStyles,
 } from "./ProjectContributorsPathForm.styles"
 
-// import StageInputs from "./StageInputs.component"
-// import { Button } from "@mui/material"
+//This 'dragDropReordered' variable comes from inside the DragDropContainer,
+// and it contains the RE-ORDERED array of elements
+//after the drag n drop action.
+const assignNewPosition = (dragDropReordered) => {
+  dragDropReordered.map((stage: any, index: number) => (stage["position"] = index + 1))
+}
 
 export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   submitText,
@@ -40,110 +51,24 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   const [deleteProjectStageMutation] = useMutation(deleteProjectStage)
   const [updateProjectTaskPositionMutation] = useMutation(updateProjectTask)
 
-  const assignNewPosition = (dragDropReordered) => {
-    //This 'dragDropReordered' variable comes from inside the DragDropContainer, and it contains the RE-ORDERED array of elements
-    //after the drag n drop action.
-    dragDropReordered.map((stage: any, index: number) => {
-      stage["position"] = index + 1
-    })
-  }
+  const handleNewStage = setHandleNewStage(projectId, stagesArray, setStagesArray)
 
-  const handleNewStage = (input) => {
-    const newStage = {
-      projectId,
-      id: uniqueId(),
-      isNewStage: true,
-      name: "",
-      criteria: "",
-      mission: "",
-      position: stagesArray.length + 1,
-      projectTasks: [
-        {
-          position: 1,
-          description: "",
-          id: uniqueId(),
-          isNewTask: true,
-          projectStageId: "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
+  const handleNewTask = setHandleNewTask(setStagesArray)
 
-    setStagesArray([...stagesArray, newStage])
-    input.value.push(newStage)
-  }
+  const handleDeleteStage = setHandleDeleteStage(
+    retrieveProjectInfo,
+    stagesArray,
+    setStagesArray,
+    updateStageMutation,
+    deleteProjectStageMutation
+  )
 
-  const handleNewTask = (stageToEdit) => {
-    stageToEdit.projectTasks.push({
-      position: stageToEdit.projectTasks.length + 1,
-      description: "",
-      id: uniqueId(),
-      isNewTask: true,
-      projectStageId: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-
-    setStagesArray((prevStages) =>
-      prevStages.map((prevStage) =>
-        prevStage.id !== stageToEdit.id ? prevStage : { ...stageToEdit }
-      )
-    )
-  }
-
-  const handleDeleteStage = async (stageToDelete) => {
-    try {
-      if (!stageToDelete.isNewStage) {
-        const projectInfo = retrieveProjectInfo ? retrieveProjectInfo() : {}
-        await deleteProjectStageMutation({ ...projectInfo, stageId: stageToDelete.id })
-        // update other stages positions
-        await updateStageMutation({
-          ...projectInfo,
-          stages: stagesArray
-            .filter((stage) => !stage.isNewStage && stage.id !== stageToDelete.id)
-            .map((stage, index) => ({ ...stage, position: index + 1 })),
-        })
-      }
-
-      setStagesArray((prevStages) => {
-        const filteredStages = prevStages.filter((prevStage) => prevStage.id !== stageToDelete.id)
-        return filteredStages.map((stage, index) => ({
-          ...stage,
-          position: index + 1,
-        }))
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleDeleteTask = async (stage, taskToDelete) => {
-    try {
-      const projectTasks = stage.projectTasks.filter((task) => task.id !== taskToDelete.id)
-
-      if (!taskToDelete.isNewTask) {
-        const projectInfo = retrieveProjectInfo ? retrieveProjectInfo() : {}
-        await deleteProjectTaskMutation({ ...projectInfo, projectTaskId: taskToDelete.id })
-        await updateProjectTaskPositionMutation({
-          ...projectInfo,
-          projectTasks: stage.projectTasks.filter(
-            (task) => !task.isNewTask && task.id !== taskToDelete.id
-          ),
-        })
-      }
-
-      setStagesArray((prevStages) =>
-        prevStages.map((prevStage) =>
-          prevStage.id !== stage.id ? prevStage : { ...stage, projectTasks }
-        )
-      )
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const handleDeleteTask = setHandleDeleteTask(
+    retrieveProjectInfo,
+    setStagesArray,
+    deleteProjectTaskMutation,
+    updateProjectTaskPositionMutation
+  )
 
   if (initialValues instanceof Array) {
     if (stagesArray.length === 0) {
@@ -151,128 +76,131 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
     }
 
     return (
-      <>
-        <FormStages<S>
-          submitText={submitText}
-          schema={schema}
-          initialValues={{ stages: [...stagesArray] }}
-          onSubmit={onSubmit}
-        >
-          <InstructionStyles>
-            * Fields marked with (markdown) have Markdown notation enabled:{" "}
-            <a target="_blank" href="https://www.markdownguide.org/cheat-sheet/" rel="noreferrer">
-              Basic Syntax
-            </a>{" "}
-            & line breaks
-            <br />
-            To add a new line break press the " &#9166; " (return) key twice from your keyboard.
-          </InstructionStyles>
+      <FormStages<S>
+        submitText={submitText}
+        schema={schema}
+        initialValues={{ stages: [...stagesArray] }}
+        onSubmit={onSubmit}
+      >
+        <InstructionStyles>
+          * Fields marked with (markdown) have Markdown notation enabled:{" "}
+          <a target="_blank" href="https://www.markdownguide.org/cheat-sheet/" rel="noreferrer">
+            Basic Syntax
+          </a>{" "}
+          & line breaks
+          <br />
+          To add a new line break press the " &#9166; " (return) key twice from your keyboard.
+        </InstructionStyles>
 
-          <DragDropContainer
-            dragItemsArray={stagesArray}
-            functAfterReorder={assignNewPosition}
-            onDragStartFunct={() => setOpenedStage(0)}
-            setReorderedItems={setStagesArray}
-          >
-            <Field name="stages">
-              {(field) => {
-                const { input } = field
+        <Field name="stages">
+          {({ input }) => {
+            const handleOnChange = (obj, key) => (evt) => {
+              obj[key] = evt.target.value
+              input.onChange(input.value)
+            }
 
-                const handleOnChange = (obj, key) => (evt) => {
-                  obj[key] = evt.target.value
-                  input.onChange(input.value)
-                }
+            return (
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  tabIndex={-1}
+                  type="button"
+                  onClick={() => handleNewStage(input)}
+                >
+                  Add new Stage
+                </Button>
 
-                return (
-                  <>
-                    {stagesArray.map((stage, index) => (
-                      <Draggable key={stage.id} draggableId={stage.id} index={index}>
-                        {(provided) => (
-                          <StageStyles
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
+                <DragDropContainer
+                  dragItemsArray={stagesArray}
+                  functAfterReorder={assignNewPosition}
+                  onDragStartFunct={() => setOpenedStage(0)}
+                  setReorderedItems={setStagesArray}
+                >
+                  {stagesArray.map((stage, index) => (
+                    <Draggable key={stage.id} draggableId={stage.id} index={index}>
+                      {(provided) => (
+                        <StageStyles
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <StageCollapsableHeader
+                            openedStage={openedStage}
+                            position={stage.position}
+                            setOpenedStage={setOpenedStage}
+                          />
+                          <Collapse
+                            in={openedStage === stage.position}
+                            timeout="auto"
+                            unmountOnExit
                           >
-                            <StageCollapsableHeader
-                              openedStage={openedStage}
-                              position={stage.position}
-                              setOpenedStage={setOpenedStage}
-                            />
-                            <Collapse
-                              in={openedStage === stage.position}
-                              timeout="auto"
-                              unmountOnExit
-                            >
-                              <MultiColumnStyles>
-                                <TextFieldStyles
-                                  label="Name"
-                                  defaultValue={stage.name}
-                                  onChange={handleOnChange(stage, "name")}
-                                  required
-                                ></TextFieldStyles>
-                                <button
-                                  tabIndex={-1}
-                                  type="button"
-                                  onClick={() => handleDeleteStage(stage)}
-                                >
-                                  Delete Stage
-                                </button>
-                              </MultiColumnStyles>
-                              <MarkdownEditor
-                                label="Criteria"
-                                defaultValue={stage.criteria}
-                                onChange={handleOnChange(stage, "criteria")}
-                              ></MarkdownEditor>
-                              <MarkdownEditor
-                                label="Mission"
-                                defaultValue={stage.mission}
-                                onChange={handleOnChange(stage, "mission")}
-                              ></MarkdownEditor>
-                              {stage.projectTasks ? (
-                                <>
-                                  <div>
-                                    <LabelStyles>Tasks:</LabelStyles>
-                                    <button
+                            <MultiColumnStyles>
+                              <TextFieldStyles
+                                label="Name"
+                                defaultValue={stage.name}
+                                onChange={handleOnChange(stage, "name")}
+                                required
+                              ></TextFieldStyles>
+                              <ButtonText
+                                tabIndex={-1}
+                                type="button"
+                                onClick={() => handleDeleteStage(stage)}
+                              >
+                                Delete Stage
+                              </ButtonText>
+                            </MultiColumnStyles>
+                            <MarkdownEditor
+                              label="Criteria"
+                              defaultValue={stage.criteria}
+                              onChange={handleOnChange(stage, "criteria")}
+                            ></MarkdownEditor>
+                            <MarkdownEditor
+                              label="Mission"
+                              defaultValue={stage.mission}
+                              onChange={handleOnChange(stage, "mission")}
+                            ></MarkdownEditor>
+                            {stage.projectTasks ? (
+                              <>
+                                <LabelWithButtonDivStyles>
+                                  <LabelStyles>Tasks:</LabelStyles>
+                                  <ButtonText
+                                    tabIndex={-1}
+                                    type="button"
+                                    onClick={() => handleNewTask(stage)}
+                                  >
+                                    Add new Task
+                                  </ButtonText>
+                                </LabelWithButtonDivStyles>
+                                {stage.projectTasks.map((task) => (
+                                  <MultiColumnStyles key={task.id}>
+                                    <MarkdownEditor
+                                      label="Description"
+                                      defaultValue={task.description}
+                                      onChange={handleOnChange(task, "description")}
+                                    ></MarkdownEditor>
+                                    <ButtonText
                                       tabIndex={-1}
                                       type="button"
-                                      onClick={() => handleNewTask(stage)}
+                                      onClick={() => handleDeleteTask(stage, task)}
                                     >
-                                      New Task
-                                    </button>
-                                  </div>
-                                  {stage.projectTasks.map((task) => (
-                                    <MultiColumnStyles key={task.id}>
-                                      <MarkdownEditor
-                                        label="Description"
-                                        defaultValue={task.description}
-                                        onChange={handleOnChange(task, "description")}
-                                      ></MarkdownEditor>
-                                      <button
-                                        tabIndex={-1}
-                                        type="button"
-                                        onClick={() => handleDeleteTask(stage, task)}
-                                      >
-                                        Delete Task
-                                      </button>
-                                    </MultiColumnStyles>
-                                  ))}
-                                </>
-                              ) : null}
-                            </Collapse>
-                          </StageStyles>
-                        )}
-                      </Draggable>
-                    ))}
-                    <button tabIndex={-1} type="button" onClick={() => handleNewStage(input)}>
-                      Add Stage
-                    </button>
-                  </>
-                )
-              }}
-            </Field>
-          </DragDropContainer>
-        </FormStages>
-      </>
+                                      Delete Task
+                                    </ButtonText>
+                                  </MultiColumnStyles>
+                                ))}
+                              </>
+                            ) : null}
+                          </Collapse>
+                        </StageStyles>
+                      )}
+                    </Draggable>
+                  ))}
+                </DragDropContainer>
+              </>
+            )
+          }}
+        </Field>
+      </FormStages>
     )
   }
   return null
