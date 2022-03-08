@@ -45,6 +45,7 @@
     "pm2": "5.1.0",
     "preview-email": "3.0.5",
     "react": "18.0.0-alpha-e0aa5e205-20211109",
+    "react-beautiful-dnd": "13.1.0",
     "react-dom": "18.0.0-alpha-e0aa5e205-20211109",
     "react-final-form": "6.5.3",
     "react-moment": "1.1.1",

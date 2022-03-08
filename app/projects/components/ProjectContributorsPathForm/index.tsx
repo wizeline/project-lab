@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { z } from "zod"
+import { Draggable } from "react-beautiful-dnd"
 import { Field } from "react-final-form"
 import { Form, FormProps } from "app/core/components/Form"
 import {
@@ -9,7 +11,11 @@ import {
   TextFieldStyles,
 } from "./ProjectContributorsPathForm.styles"
 import MarkdownEditor from "./ProjectContributorPathMarkdownEditor"
+import DragDropContainer from "../DragDropContainer"
+import StageCollapsableHeader from "./StageCollapsableHeader"
 import { Button } from "@mui/material"
+import Collapse from "@mui/material/Collapse"
+import { SatelliteAlt } from "@mui/icons-material"
 
 export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   submitText,
@@ -17,7 +23,20 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
   initialValues,
   onSubmit,
 }: FormProps<S>) {
+  const [openedStage, setOpenedStage] = useState(0)
+  const [stagesArray, setStagesArray] = useState<any[]>([])
+
+  const assignNewPosition = (dragDropReordered) => {
+    //This 'dragDropReordered' variable comes from inside the DragDropContainer, and it contains the RE-ORDERED array of elements
+    //after the drag n drop action.
+    dragDropReordered.map((stage: any, index: number) => {
+      stage["position"] = index + 1
+    })
+  }
+
   if (initialValues instanceof Array) {
+    if (stagesArray.length === 0) setStagesArray(initialValues)
+
     return (
       <Form<S>
         submitText={submitText}
@@ -34,55 +53,71 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
           <br />
           To add a new line break press the " &#9166; " (return) key twice from your keyboard.
         </InstructionStyles>
-        <Field name="stages">
-          {({ input }) => {
-            const handleOnChange = (obj, key) => (evt) => {
-              obj[key] = evt.target.value
-              input.onChange(input.value)
-            }
-            return input.value.map((stage) => (
-              <StageStyles key={stage.id}>
-                <MultiColumnStyles>
-                  <TextFieldStyles
-                    label="Name"
-                    defaultValue={stage.name}
-                    onChange={handleOnChange(stage, "name")}
-                  ></TextFieldStyles>
-                  {/* <TextFieldStyles
-                    label="Position"
-                    type="number"
-                    defaultValue={stage.position}
-                    onChange={handleOnChange(stage, "position")}
-                    InputProps={{ inputProps: { min: 1, max: input.value.length } }}
-                  ></TextFieldStyles> */}
-                </MultiColumnStyles>
-                <MarkdownEditor
-                  label="Criteria"
-                  defaultValue={stage.criteria}
-                  onChange={handleOnChange(stage, "criteria")}
-                ></MarkdownEditor>
-                <MarkdownEditor
-                  label="Mission"
-                  defaultValue={stage.mission}
-                  onChange={handleOnChange(stage, "mission")}
-                ></MarkdownEditor>
-                {stage.projectTasks ? (
-                  <>
-                    <LabelStyles>Tasks:</LabelStyles>
-                    {stage.projectTasks.map((task) => (
-                      <MarkdownEditor
-                        key={task.id}
-                        label="Description"
-                        defaultValue={task.description}
-                        onChange={handleOnChange(task, "description")}
-                      ></MarkdownEditor>
-                    ))}
-                  </>
-                ) : null}
-              </StageStyles>
-            ))
-          }}
-        </Field>
+        <DragDropContainer
+          dragItemsArray={stagesArray}
+          functAfterReorder={assignNewPosition}
+          onDragStartFunct={() => setOpenedStage(0)}
+          setReorderedItems={setStagesArray}
+        >
+          <Field name="stages">
+            {({ input }) => {
+              const handleOnChange = (obj, key) => (evt) => {
+                obj[key] = evt.target.value
+                input.onChange(input.value)
+              }
+              return stagesArray.map((stage, index) => (
+                <Draggable key={stage.id} draggableId={stage.id} index={index}>
+                  {(provided) => (
+                    <StageStyles
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <StageCollapsableHeader
+                        name={stage.name}
+                        openedStage={openedStage}
+                        position={stage.position}
+                        setOpenedStage={setOpenedStage}
+                      />
+                      <Collapse in={openedStage === stage.position} timeout="auto" unmountOnExit>
+                        <MultiColumnStyles>
+                          <TextFieldStyles
+                            label="Name"
+                            defaultValue={stage.name}
+                            onChange={handleOnChange(stage, "name")}
+                          ></TextFieldStyles>
+                        </MultiColumnStyles>
+                        <MarkdownEditor
+                          label="Criteria"
+                          defaultValue={stage.criteria}
+                          onChange={handleOnChange(stage, "criteria")}
+                        ></MarkdownEditor>
+                        <MarkdownEditor
+                          label="Mission"
+                          defaultValue={stage.mission}
+                          onChange={handleOnChange(stage, "mission")}
+                        ></MarkdownEditor>
+                        {stage.projectTasks ? (
+                          <>
+                            <LabelStyles>Tasks:</LabelStyles>
+                            {stage.projectTasks.map((task) => (
+                              <MarkdownEditor
+                                key={task.id}
+                                label="Description"
+                                defaultValue={task.description}
+                                onChange={handleOnChange(task, "description")}
+                              ></MarkdownEditor>
+                            ))}
+                          </>
+                        ) : null}
+                      </Collapse>
+                    </StageStyles>
+                  )}
+                </Draggable>
+              ))
+            }}
+          </Field>
+        </DragDropContainer>
       </Form>
     )
   }

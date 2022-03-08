@@ -7,7 +7,7 @@ import getMyProjects from "app/projects/queries/getMyProjects"
 import CardBox from "app/core/components/CardBox"
 import ProposalCard from "app/core/components/ProposalCard"
 import Header from "app/core/layouts/Header"
-import { Wrapper } from "./projects.styles"
+import Wrapper from "./projects.styles"
 import { SortInput } from "app/core/components/SortInput"
 
 const ITEMS_PER_PAGE = 4
