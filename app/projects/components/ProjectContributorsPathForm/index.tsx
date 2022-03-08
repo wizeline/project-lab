@@ -132,6 +132,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                             setOpenedStage={setOpenedStage}
                           />
                           <Collapse
+                            style={{ paddingTop: "1em" }}
                             in={openedStage === stage.position}
                             timeout="auto"
                             unmountOnExit
