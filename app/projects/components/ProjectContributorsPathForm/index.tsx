@@ -31,7 +31,7 @@ import {
 //This 'dragDropReordered' variable comes from inside the DragDropContainer,
 // and it contains the RE-ORDERED array of elements
 //after the drag n drop action.
-const assignNewPosition = (dragDropReordered) => {
+const assignNewPosition = (dragDropReordered): void => {
   dragDropReordered.map((stage: any, index: number) => (stage["position"] = index + 1))
 }
 
@@ -126,6 +126,7 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
                           {...provided.dragHandleProps}
                         >
                           <StageCollapsableHeader
+                            name={stage.name}
                             openedStage={openedStage}
                             position={stage.position}
                             setOpenedStage={setOpenedStage}
