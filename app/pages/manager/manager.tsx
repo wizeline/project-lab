@@ -2,7 +2,7 @@ import { BlitzPage, useRouter } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import Header from "app/core/layouts/Header"
 import CardBox from "app/core/components/CardBox"
-import { Wrapper } from "../projects/projects.styles"
+import Wrapper from "../projects/projects.styles"
 
 import { Box, Tabs } from "@mui/material"
 import {
