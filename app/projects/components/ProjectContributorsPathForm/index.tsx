@@ -103,7 +103,6 @@ export function ProjectContributorsPathForm<S extends z.ZodType<any, any>>({
               <>
                 <Button
                   variant="contained"
-                  color="primary"
                   tabIndex={-1}
                   type="button"
                   onClick={() => handleNewStage(input)}
