@@ -1,17 +1,8 @@
 import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import { Link, useQuery, useParam, BlitzPage, useMutation, invalidateQuery, Routes } from "blitz"
-import {
-  Card,
-  CardContent,
-  Container,
-  Chip,
-  Stack,
-  Grid,
-  Box,
-  TextField,
-  Button,
-} from "@mui/material"
+import { Card, CardContent, Chip, Stack, Grid, Box, TextField, Button } from "@mui/material"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
@@ -22,12 +13,12 @@ import Loader from "app/core/components/Loader"
 import Comments from "app/projects/components/tabs/Comments"
 import JoinProjectModal from "app/projects/components/joinProjectModal"
 import ContributorPathReport from "app/projects/components/ContributorPathReport"
+import ProjectConfirmationModal from "./ProjectConfirmationModal"
 import { HeaderInfo, DetailMoreHead, Like, LikeBox, EditButton } from "./[projectId].styles"
 import Stages from "app/projects/components/Stages"
 import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
-import ConfirmationModal from "app/core/components/ConfirmationModal"
-import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
+import updateProjectOwner from "app/projects/mutations/updateProjectOwner"
 import { adminRoleName } from "app/core/utils/constants"
 
 export const Project = () => {
@@ -70,9 +61,21 @@ export const Project = () => {
     },
   })
 
-  const updateProjectMemberHandle = async (active) => {
+  const [updateProjectOwnerMutation] = useMutation(updateProjectOwner, {
+    onSuccess: async () => {
+      await invalidateQuery(getProject)
+      refetch()
+    },
+  })
+
+  const updateProjectMemberHandle = async (active, newOwner) => {
     setShowModal(false)
     setJoinProjectButton(true)
+
+    //If it is the case the owner is leaving...
+    if (member?.profileId === project.ownerId)
+      await updateProjectOwnerMutation({ data: project, newOwner: newOwner, projectId: project.id })
+
     await updateProjectMemberMutation({ id: member?.id, active })
   }
 
@@ -186,113 +189,111 @@ export const Project = () => {
         </div>
       )}
       <div className="wrapper">
-        <Container style={{ padding: "0px" }}>
-          <Grid container spacing={2} alignItems="stretch" direction={{ xs: "column", md: "row" }}>
-            <Grid item xs={8}>
-              <Card variant="outlined">
-                <CardContent>
-                  <LikeBox>
-                    <Like>
-                      <div className="like-bubble">
-                        <span>{project.votes.length}</span>
-                      </div>
-                      <Button
-                        className="primary"
-                        disabled={savingVoteStatus}
-                        onClick={() => handleVote(project.id)}
-                      >
-                        {project.votes.length > 0 ? (
-                          <>
-                            {"Unlike"}&nbsp;
-                            <ThumbDownSharp />
-                          </>
-                        ) : (
-                          <>
-                            {"Like"}&nbsp;
-                            <ThumbUpSharp />
-                          </>
-                        )}
-                      </Button>
-                    </Like>
-                  </LikeBox>
-                  <h2>Description</h2>
-                  <div>
-                    <Editor
-                      readOnly={true}
-                      defaultValue={project.valueStatement ? project.valueStatement : ""}
-                    ></Editor>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={4}>
-              <Stack direction="column" spacing={1}>
-                {project.slackChannel && (
-                  <Card variant="outlined">
-                    <CardContent>
-                      <big>Slack Channel:</big>
-                      <Stack direction="row" spacing={1}>
-                        {project.slackChannel}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                )}
-                {project.repoUrl && (
-                  <Card variant="outlined">
-                    <CardContent>
-                      <big>Repo URL:</big>
-                      <Box
-                        component="form"
-                        sx={{
-                          "& .MuiTextField-root": { width: "100%" },
-                        }}
-                        noValidate
-                        autoComplete="off"
-                      >
-                        <TextField
-                          id="foo"
-                          defaultValue={project.repoUrl}
-                          variant="outlined"
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          sx={{
-                            width: "100%",
-                          }}
-                        />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                )}
-                {project.skills.length > 0 && (
-                  <Card variant="outlined">
-                    <CardContent>
-                      <big>Skills:</big>
-                      <Stack direction="row" spacing={1}>
-                        {project.skills.map((item, index) => (
-                          <Chip key={index} label={item.name} />
-                        ))}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                )}
-                {isTeamMember ? (
-                  <Button
-                    className="primary large"
-                    disabled={joinProjectButton}
-                    onClick={() => setShowModal(true)}
-                  >
-                    {member?.active ? "Leave Project" : "Join Project Again"}
-                  </Button>
-                ) : (
-                  <Button className="primary large" onClick={handleJoinProject}>
-                    Join Project
-                  </Button>
-                )}
-              </Stack>
-            </Grid>
+        <Grid container spacing={2} alignItems="stretch">
+          <Grid item xs={12} md={8}>
+            <Card variant="outlined">
+              <CardContent>
+                <LikeBox>
+                  <Like>
+                    <div className="like-bubble">
+                      <span>{project.votes.length}</span>
+                    </div>
+                    <Button
+                      className="primary"
+                      disabled={savingVoteStatus}
+                      onClick={() => handleVote(project.id)}
+                    >
+                      {project.votes.length > 0 ? (
+                        <>
+                          {"Unlike"}&nbsp;
+                          <ThumbDownSharp />
+                        </>
+                      ) : (
+                        <>
+                          {"Like"}&nbsp;
+                          <ThumbUpSharp />
+                        </>
+                      )}
+                    </Button>
+                  </Like>
+                </LikeBox>
+                <h2>Description</h2>
+                <div>
+                  <Editor
+                    readOnly={true}
+                    defaultValue={project.valueStatement ? project.valueStatement : ""}
+                  ></Editor>
+                </div>
+              </CardContent>
+            </Card>
           </Grid>
-        </Container>
+          <Grid item xs={12} md={4}>
+            <Stack direction="column" spacing={1}>
+              {project.slackChannel && (
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Slack Channel:</big>
+                    <Stack direction="row" spacing={1}>
+                      {project.slackChannel}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+              {project.repoUrl && (
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Repo URL:</big>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& .MuiTextField-root": { width: "100%" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="foo"
+                        defaultValue={project.repoUrl}
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+              )}
+              {project.skills.length > 0 && (
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Skills:</big>
+                    <Stack direction="row" spacing={1}>
+                      {project.skills.map((item, index) => (
+                        <Chip key={index} label={item.name} />
+                      ))}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+              {isTeamMember ? (
+                <Button
+                  className="primary large"
+                  disabled={joinProjectButton}
+                  onClick={() => setShowModal(true)}
+                >
+                  {member?.active ? "Leave Project" : "Join Project Again"}
+                </Button>
+              ) : (
+                <Button className="primary large" onClick={handleJoinProject}>
+                  Join Project
+                </Button>
+              )}
+            </Stack>
+          </Grid>
+        </Grid>
       </div>
       <div className="wrapper">
         <ContributorPathReport project={project} />
@@ -305,27 +306,17 @@ export const Project = () => {
         open={showJoinModal}
         handleCloseModal={handleCloseModal}
       />
-      <ConfirmationModal
-        open={showModal}
-        handleClose={() => setShowModal(false)}
-        close={() => setShowModal(false)}
-        label={"confirm"}
-        onClick={async () => await updateProjectMemberHandle(!member?.active)}
-      >
-        {member?.active ? (
-          <>
-            <h1>We're sorry you're leaving the project</h1>
-            <p>
-              By confirming you will be inactive for this project but you can join again at anytime.
-            </p>
-          </>
-        ) : (
-          <>
-            <h1>Welcome back!</h1>
-            <p>Do you want to contribute again?</p>
-          </>
-        )}
-      </ConfirmationModal>
+      {member && (
+        <ProjectConfirmationModal
+          close={() => setShowModal(false)}
+          handleClose={() => setShowModal(false)}
+          label={"confirm"}
+          member={member}
+          onClick={updateProjectMemberHandle}
+          open={showModal}
+          project={project}
+        />
+      )}
     </>
   )
 }
