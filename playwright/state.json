@@ -1,0 +1,165 @@
+{
+  "cookies": [
+    {
+      "sameSite": "Lax",
+      "name": "proposalHunt_sAnonymousSessionToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibGl0empzIjp7ImlzQW5vbnltb3VzIjp0cnVlLCJoYW5kbGUiOiJXVXhST2loRkJ5YU5vVmtNNTdOOFctblJ5bFNmU3FpSDphand0IiwicHVibGljRGF0YSI6eyJ1c2VySWQiOm51bGx9LCJhbnRpQ1NSRlRva2VuIjoidnAtSUwtMmJtRmdTYzFLcWNZVjFZRDBITVc5Y0Jwd0wifSwiaWF0IjoxNjQ2NDE4OTc3LCJhdWQiOiJibGl0empzIiwiaXNzIjoiYmxpdHpqcyIsInN1YiI6ImFub255bW91cyJ9.ZQ3ROXZl6KSlWwysgyknQ-MRMuuC3ydfc1DKhVpa0RU",
+      "domain": "labs.wizeline.com",
+      "path": "/",
+      "expires": 2593147351.866616,
+      "httpOnly": true,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "proposalHunt_sAntiCsrfToken",
+      "value": "vp-IL-2bmFgSc1KqcYV1YD0HMW9cBpwL",
+      "domain": "labs.wizeline.com",
+      "path": "/",
+      "expires": 2593147351.866763,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "proposalHunt_sPublicDataToken",
+      "value": "eyJ1c2VySWQiOm51bGx9",
+      "domain": "labs.wizeline.com",
+      "path": "/",
+      "expires": 2593147351.866793,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "express:sess",
+      "value": "eyJhdXRoUGFyYW1zIjp7InNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJub25jZSI6IjllNTQ4ODExNjEwN2U0MjhiODYxMDUxNjAzMWExODA1In0sIm9hdXRoMjpzYm94LWRldi5hdXRoMC5jb20iOnsic3RhdGUiOiI2Rk9GaDlFZ3kzT0VaVEpKbXpsNFhaNFcifX0=",
+      "domain": "labs.wizeline.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "express:sess.sig",
+      "value": "VEF5ckaM48n9IIUZ8W1iTaJH27I",
+      "domain": "labs.wizeline.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false
+    },
+    {
+      "sameSite": "None",
+      "name": "did",
+      "value": "s%3Av0%3Ada122ec0-9bea-11ec-9154-79eb0aca8e66.pXs2p3sps9bPjb3gCD%2BA64zmxrkf8KRyIvCBycYPMps",
+      "domain": "sbox-dev.auth0.com",
+      "path": "/",
+      "expires": 1677976952.431099,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "None",
+      "name": "auth0",
+      "value": "s%3Av1.gadzZXNzaW9ugqZoYW5kbGXEQJUDrFpbiHQykE8iz1d3r8awjPL0hOjnEkTt_rLfFoLIfOAze6ryr94QPfmtCq5E2ANWyIi9j6kcJWLv392CZ8KmY29va2llg6dleHBpcmVz1_9_E70AYiZSGK5vcmlnaW5hbE1heEFnZc4PcxQAqHNhbWVTaXRlpG5vbmU.739tRLfg7g%2Bx3c9A2kKyea%2BMY51vaRgwQs4nzZxTFdg",
+      "domain": "sbox-dev.auth0.com",
+      "path": "/",
+      "expires": 1646678552.431244,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "did_compat",
+      "value": "s%3Av0%3Ada122ec0-9bea-11ec-9154-79eb0aca8e66.pXs2p3sps9bPjb3gCD%2BA64zmxrkf8KRyIvCBycYPMps",
+      "domain": "sbox-dev.auth0.com",
+      "path": "/",
+      "expires": 1677976952.431362,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "auth0_compat",
+      "value": "s%3Av1.gadzZXNzaW9ugqZoYW5kbGXEQJUDrFpbiHQykE8iz1d3r8awjPL0hOjnEkTt_rLfFoLIfOAze6ryr94QPfmtCq5E2ANWyIi9j6kcJWLv392CZ8KmY29va2llg6dleHBpcmVz1_9_E70AYiZSGK5vcmlnaW5hbE1heEFnZc4PcxQAqHNhbWVTaXRlpG5vbmU.739tRLfg7g%2Bx3c9A2kKyea%2BMY51vaRgwQs4nzZxTFdg",
+      "domain": "sbox-dev.auth0.com",
+      "path": "/",
+      "expires": 1646678552.431387,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "None",
+      "name": "NID",
+      "value": "511=iqjqHIxA7UU3WsY282OT9TQI8hwptClgS9Z3sg_NRUbul2cCVD3iaRpkofCOqeaQtTxdNt0mYrb2FIaWwA2hXPdTqFYatVRxI_LRsvMvNFeg-OQpS7keeibiNUkvA0n7D_mVIYNmK8-j5Q-y6OwDoac9uiasZGvlCsW6k0TuFVY",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1662230554.805371,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "__Host-GAPS",
+      "value": "1:9hinsTb9J5ALdg7YNuPsDlcG_ynyXg:Fh6g4rl2u_YTUF_M",
+      "domain": "accounts.google.com",
+      "path": "/",
+      "expires": 1709491355.448388,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "t",
+      "value": "default",
+      "domain": "wizeline.okta.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "None",
+      "name": "DT",
+      "value": "DI05edjDzfLT4q70NZcNV0oLw",
+      "domain": "wizeline.okta.com",
+      "path": "/",
+      "expires": 1709491356.052479,
+      "httpOnly": false,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "JSESSIONID",
+      "value": "6B2E8E7BE01555A7850155116AB08F52",
+      "domain": "wizeline.okta.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "None",
+      "name": "oktaStateToken",
+      "value": "00sV1MB-U3HARTrN6VwXVgEmdrOi9OuYsE1JN-FV4F",
+      "domain": "wizeline.okta.com",
+      "path": "/",
+      "expires": 1646419658,
+      "httpOnly": false,
+      "secure": true
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://accounts.google.com",
+      "localStorage": [
+        {
+          "name": "promo",
+          "value": "{}"
+        }
+      ]
+    }
+  ]
+}
