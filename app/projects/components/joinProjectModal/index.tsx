@@ -21,7 +21,7 @@ export const JoinFields = z.object({
   hoursPerWeek: z.string().refine((val) => !val || /^\d+$/.test(val), {
     message: "Value must be an integer",
   }),
-  skills: z.any(),
+  practicedSkills: z.array(z.any()),
 })
 
 const JoinProjectModal = (props: IProps) => {
@@ -43,6 +43,7 @@ const JoinProjectModal = (props: IProps) => {
               projectId: props.projectId,
               role: values.role,
               hoursPerWeek: parseInt(values.hoursPerWeek),
+              practicedSkills: values.practicedSkills,
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))

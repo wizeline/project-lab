@@ -149,5 +149,6 @@ export const CreateContributorPath = z.object({
 export const CreateProjectMember = z.object({
   projectId: z.any(),
   hoursPerWeek: z.number(),
+  practicedSkills: z.array(z.object({ id: z.string() })),
   role: z.string(),
 })
