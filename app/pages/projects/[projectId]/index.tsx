@@ -284,11 +284,11 @@ export const Project = () => {
                   disabled={joinProjectButton}
                   onClick={() => setShowModal(true)}
                 >
-                  {member?.active ? "Leave Project" : "Join Project Again"}
+                  {member?.active ? "Suspend my Membership" : "Join Project Again"}
                 </Button>
               ) : (
                 <Button className="primary large" onClick={handleJoinProject}>
-                  Join Project
+                  Want to Join?
                 </Button>
               )}
             </Stack>
