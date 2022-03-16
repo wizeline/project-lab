@@ -25,6 +25,9 @@
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "eslint --fix"
+    ],
+    "eslintIgnore": [
+      "playwright/"
     ]
   },
   "dependencies": {
