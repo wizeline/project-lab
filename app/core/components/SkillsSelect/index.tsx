@@ -40,7 +40,7 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
               isOptionEqualToValue={(option, value) => option.name === value.name}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
-              value={input.value}
+              value={input.value ? input.value : []}
               onChange={(_, value) => {
                 input.onChange(value)
               }}

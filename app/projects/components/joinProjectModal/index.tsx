@@ -72,7 +72,7 @@ const JoinProjectModal = (props: IProps) => {
             />
 
             <p className="question">Which skills are you practicing?</p>
-            {/*<SkillsSelect name="skills" label="Skills" />*/}
+            <SkillsSelect name="practicedSkills" label="Skills" />
           </FormDivContainer>
 
           <CommitmentDivContainer>
