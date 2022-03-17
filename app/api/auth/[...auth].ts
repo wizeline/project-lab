@@ -31,7 +31,7 @@ export default passportAuth({
               email,
               name: profile.displayName,
             },
-            update: { email },
+            update: { email, name: profile.displayName },
           })
           const profileId = await getUserProfile(user.id)
 
