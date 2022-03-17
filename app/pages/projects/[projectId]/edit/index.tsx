@@ -124,7 +124,7 @@ export const EditProject = () => {
           </TabPanel>
           <TabPanel value={tabIndex} index={1}>
             <ProjectContributorsPathForm
-              submitText="Update Stages"
+              submitText="Update Stages "
               schema={ContributorPath}
               initialValues={project.stages}
               onSubmit={handleSubmitContributorPath}
