@@ -25,7 +25,10 @@ const seed = async () => {
     let projectTasks: any = []
 
     for (let j = 0; j < tasks.length; j++) {
-      projectTasks.push({ description: tasks[j]?.name })
+      projectTasks.push({
+        description: tasks[j]?.name,
+        position: j + 1,
+      })
     }
 
     projectStages.push({
