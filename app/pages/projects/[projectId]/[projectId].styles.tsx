@@ -50,6 +50,13 @@ export const HeaderInfo = styled.div`
     padding-right: 24px;
     margin-top: 15px;
   }
+  .lastUpdateProposal {
+    color: #4e5c6e;
+    font-size: 14px;
+    padding: 0px 24px;
+    display: flex;
+    justify-content: end;
+  }
 `
 
 export const DetailMoreHead = styled.div`

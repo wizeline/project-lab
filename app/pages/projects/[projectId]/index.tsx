@@ -20,6 +20,7 @@ import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
 import updateProjectOwner from "app/projects/mutations/updateProjectOwner"
 import { adminRoleName } from "app/core/utils/constants"
+import { formatDistance } from "date-fns"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -101,6 +102,9 @@ export const Project = () => {
                 <h1>{project.name}</h1>
               </div>
               <div className="descriptionProposal">{project.description}</div>
+              <div className="lastUpdateProposal">
+                Last update: {formatDistance(project.updatedAt, new Date(), { addSuffix: true })}
+              </div>
             </Grid>
           </Grid>
         </HeaderInfo>
