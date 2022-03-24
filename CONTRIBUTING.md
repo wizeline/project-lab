@@ -96,5 +96,5 @@ Thanks! :heart: :heart: :heart:
 Project Lab Team
 
 #### **References**
-- Wizeline [contribution guidelines](https://github.com/wizeline/wize-docs/blob/master/development/git-contributing-guidelines.md).
 
+- Wizeline [contribution guidelines](https://github.com/wizeline/wize-docs/blob/master/development/git-contributing-guidelines.md).

@@ -51,6 +51,7 @@ export default resolver.pipe(
       where: { id },
       data: {
         ...data,
+        updatedAt: new Date(),
         category: { connect: { name: data.category?.name } },
         projectStatus: { connect: { name: data.projectStatus?.name } },
         owner: { connect: { id: data.owner?.id } },
