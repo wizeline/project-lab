@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `votesCount` on the `Projects` table. All the data in the column will be lost.
-
-*/
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_Projects" (
