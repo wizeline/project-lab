@@ -6,13 +6,28 @@ import getSkills from "app/skills/queries/getSkills"
 import debounce from "lodash/debounce"
 
 interface SkillsSelectProps {
+  defaultValue?: any[]
+  customOnChange?: (arg: any) => void
+  fullWidth?: boolean
   name: string
   label: string
   helperText?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
+  size?: "small" | "medium" | undefined
+  style?: object
 }
 
-export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSelectProps) => {
+export const SkillsSelect = ({
+  customOnChange,
+  defaultValue = [],
+  fullWidth,
+  name,
+  label,
+  helperText,
+  outerProps,
+  size,
+  style,
+}: SkillsSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [{ skills }, { isLoading }] = useQuery(getSkills, {
@@ -31,8 +46,8 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
           <div {...outerProps}>
             <Autocomplete
               multiple={true}
-              fullWidth
-              style={{ margin: "1em 0" }}
+              fullWidth={fullWidth ? fullWidth : false}
+              style={style ? style : { margin: "1em 0" }}
               disabled={submitting}
               loading={isLoading}
               options={skills}
@@ -40,9 +55,10 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
               isOptionEqualToValue={(option, value) => option.name === value.name}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
-              value={input.value ? input.value : []}
+              value={input.value ? input.value : defaultValue}
               onChange={(_, value) => {
                 input.onChange(value)
+                if (customOnChange) customOnChange(value)
               }}
               renderInput={(params) => (
                 <TextField
@@ -60,7 +76,8 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
                       </Fragment>
                     ),
                   }}
-                  style={{ width: "100%" }}
+                  size={size}
+                  style={{ width: "100%", ...style }}
                 />
               )}
             />
