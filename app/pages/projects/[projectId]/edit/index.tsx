@@ -51,6 +51,7 @@ export const EditProject = () => {
 
   async function handleSubmitProjectDetails(values) {
     values.existedMembers = existedMembers
+
     try {
       const updated = await updateProjectMutation({
         id: project.id,
@@ -67,16 +68,22 @@ export const EditProject = () => {
     }
   }
 
+  function retrieveProjectInfo() {
+    return {
+      id: project.id,
+      isAdmin: user?.role === adminRoleName,
+      projectMembers: project.projectMembers,
+      owner: project.owner,
+    }
+  }
+
   async function handleSubmitContributorPath(values) {
     try {
       await updateStageMutation({
-        id: project.id,
-        isAdmin: user?.role === adminRoleName,
-        projectMembers: project.projectMembers,
-        owner: project.owner,
+        ...retrieveProjectInfo(),
         ...values,
       })
-      refetch()
+      await refetch()
       router.push(Routes.ShowProjectPage({ projectId: project.id }))
     } catch (error) {
       console.error(error)
@@ -117,10 +124,12 @@ export const EditProject = () => {
           </TabPanel>
           <TabPanel value={tabIndex} index={1}>
             <ProjectContributorsPathForm
-              submitText="Update Stages"
+              submitText="Update Stages "
               schema={ContributorPath}
               initialValues={project.stages}
               onSubmit={handleSubmitContributorPath}
+              projectId={project.id}
+              retrieveProjectInfo={retrieveProjectInfo}
             />
           </TabPanel>
         </EditPanelsStyles>

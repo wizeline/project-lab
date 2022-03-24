@@ -15,6 +15,7 @@ interface IPathItem {
   criteria: string
   projectTasks: Array<any>
   mission: string
+  id: string
 }
 
 interface ICareerPathComponentProps {
@@ -28,13 +29,17 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
   const { isLoading, createContributorPathHandler, deleteContributorPathHandler } =
     useContributorPath()
   const [messageAlert, setMessageAlert] = useState<string>("")
-  const changeHandle = (projectTaskId: string, contributorPathId: string | null) => {
+  const changeHandle = (
+    projectTaskId: string,
+    contributorPathId: string | null,
+    projectStageId: string
+  ) => {
     if (projectTeamMember.id) {
       if (contributorPathId) {
         deleteContributorPathHandler(contributorPathId)
         setMessageAlert("Task unchecked")
       } else {
-        createContributorPathHandler(projectTeamMember.id, projectTaskId)
+        createContributorPathHandler(projectTeamMember.id, projectTaskId, projectStageId)
         setMessageAlert("Task Checked")
       }
     }
@@ -61,7 +66,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
         }}
       >
         {path.map((pathItem, index) => {
-          const { projectTasks } = pathItem
+          const { projectTasks, id: projectStageId } = pathItem
           const projectTaskIds = projectTasks.map((projectTask) => projectTask.id)
           const finishSomeTask =
             projectTeamMember?.contributorPath &&
@@ -116,7 +121,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                 ></Editor>
 
                 <b>Tasks:</b>
-                {pathItem.projectTasks.map((taskItem, index) => {
+                {pathItem.projectTasks.map((taskItem) => {
                   const contributorPath =
                     projectTeamMember?.contributorPath &&
                     projectTeamMember.contributorPath.find(
@@ -126,11 +131,12 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                     )
                   return (
                     <TaskItem
-                      key={index}
+                      key={taskItem.id}
                       completed={!!contributorPath}
                       contributorPath={contributorPath}
                       editable={projectTeamMember?.active}
                       taskItemId={taskItem.id}
+                      projectStageId={projectStageId}
                       changeHandle={changeHandle}
                       {...taskItem}
                     />
