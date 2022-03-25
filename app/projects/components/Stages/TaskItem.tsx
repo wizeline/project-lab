@@ -19,6 +19,7 @@ interface ITaskItemProps {
   completed?: boolean
   changeHandle: any
   taskItemId: any
+  projectStageId: any
   contributorPath?: any
 }
 
@@ -28,6 +29,7 @@ const TaskItem = ({
   completed,
   changeHandle,
   taskItemId,
+  projectStageId,
   contributorPath,
 }: ITaskItemProps) => {
   const session = useSession()
@@ -37,7 +39,7 @@ const TaskItem = ({
     <HorizontalDiv>
       <Checkbox
         onChange={() => {
-          changeHandle(taskItemId, contributorPathId)
+          changeHandle(taskItemId, contributorPathId, projectStageId)
         }}
         checked={completed}
         disabled={!editable}

@@ -96,7 +96,7 @@ const extractSearchSkills = (val) => {
 export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
 
 const ContributorPathFields = {
-  id: z.string(),
+  id: z.string().optional(),
   name: z.string(),
   criteria: z.string(),
   mission: z.string(),
@@ -107,11 +107,16 @@ const ContributorPathFields = {
   projectId: z.string(),
   projectTasks: z.array(
     z.object({
-      id: z.string(),
+      id: z.string().optional(),
       projectStageId: z.string(),
       description: z.string(),
+      position: z
+        .string()
+        .transform((val) => (val ? parseInt(val) : null))
+        .or(z.number()),
     })
   ),
+  isNewStage: z.boolean().optional(),
 }
 
 export const ContributorPath = z.array(z.object(ContributorPathFields)).nonempty()
@@ -150,6 +155,7 @@ export const CreateComment = z.object({
 export const CreateContributorPath = z.object({
   projectTaskId: z.string(),
   projectMemberId: z.string(),
+  projectStageId: z.string(),
 })
 
 export const CreateProjectMember = z.object({

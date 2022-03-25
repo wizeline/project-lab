@@ -1,8 +1,8 @@
 import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import { Link, useQuery, useParam, BlitzPage, useMutation, invalidateQuery, Routes } from "blitz"
-import { useCurrentUser } from "../../../core/hooks/useCurrentUser"
 import { Card, CardContent, Chip, Stack, Grid, Box, TextField, Button } from "@mui/material"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
@@ -20,6 +20,7 @@ import { EditSharp, ThumbUpSharp, ThumbDownSharp } from "@mui/icons-material"
 import updateProjectMember from "app/projects/mutations/updateProjectMember"
 import updateProjectOwner from "app/projects/mutations/updateProjectOwner"
 import { adminRoleName } from "app/core/utils/constants"
+import { formatDistance } from "date-fns"
 
 export const Project = () => {
   const projectId = useParam("projectId", "string")
@@ -101,6 +102,9 @@ export const Project = () => {
                 <h1>{project.name}</h1>
               </div>
               <div className="descriptionProposal">{project.description}</div>
+              <div className="lastUpdateProposal">
+                Last update: {formatDistance(project.updatedAt, new Date(), { addSuffix: true })}
+              </div>
             </Grid>
           </Grid>
         </HeaderInfo>
@@ -284,11 +288,11 @@ export const Project = () => {
                   disabled={joinProjectButton}
                   onClick={() => setShowModal(true)}
                 >
-                  {member?.active ? "Leave Project" : "Join Project Again"}
+                  {member?.active ? "Suspend my Membership" : "Join Project Again"}
                 </Button>
               ) : (
                 <Button className="primary large" onClick={handleJoinProject}>
-                  Join Project
+                  Want to Join?
                 </Button>
               )}
             </Stack>

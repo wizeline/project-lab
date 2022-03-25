@@ -169,10 +169,12 @@ model Projects {
   votes          Vote[]
   comments       Comments[]
   stages         ProjectStages[]
+  isArchived     Boolean          @default(false)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
+  @@index([isArchived], name: "projects_isArchived_idx")
 }
 
 model Vote {
@@ -220,21 +222,23 @@ model Comments {
 }
 
 model ProjectStages {
-  id           String         @id @default(uuid())
-  name         String
-  criteria     String
-  mission      String
-  projectId    String
-  position     Int
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now())
-  project      Projects?      @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  projectTasks ProjectTasks[]
+  id              String            @id @default(uuid())
+  name            String
+  criteria        String
+  mission         String
+  projectId       String
+  position        Int
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  project         Projects?         @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectTasks    ProjectTasks[]
+  contributorPath ContributorPath[]
 }
 
 model ProjectTasks {
   id              String            @id @default(uuid())
   description     String
+  position        Int
   projectStageId  String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
@@ -246,8 +250,10 @@ model ContributorPath {
   id              String         @id @default(uuid())
   projectTaskId   String
   projectMemberId String
+  projectStageId  String
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @default(now())
   projectMember   ProjectMembers @relation(fields: [projectMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projectTask     ProjectTasks   @relation(fields: [projectTaskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStage    ProjectStages  @relation(fields: [projectStageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

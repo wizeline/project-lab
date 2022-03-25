@@ -9,8 +9,8 @@ export const TextFieldStyles = styled(TextField)`
 
 export const StageStyles = styled.div`
   :not(:first-of-type) {
-    border-top: 1px solid #ccc;
-    padding-top: 2em;
+    ${"" /* border-top: 1px solid #ccc; */}
+    padding-top: 1em;
   }
 `
 
@@ -35,11 +35,18 @@ export const LabelStyles = styled.p`
 
 export const MultiColumnStyles = styled.div`
   display: flex;
+  align-items: center;
 
   > div:first-of-type {
     flex-grow: 1;
-    ${"" /* margin-right: 1.5em; */}
+    margin-right: 1.5em;
   }
+`
+
+export const LabelWithButtonDivStyles = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 export const InstructionStyles = styled.p`
@@ -51,7 +58,7 @@ export const CollapsableHeader = styled.div`
   grid-template-columns: auto min-content;
   align-items: center;
   background-color: #347ab7;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 4px;
   color: red;
   cursor: grab;
   padding: 10px 16px;

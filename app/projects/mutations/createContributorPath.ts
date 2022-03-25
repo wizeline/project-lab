@@ -5,11 +5,12 @@ import { CreateContributorPath } from "app/projects/validations"
 export default resolver.pipe(
   resolver.zod(CreateContributorPath),
   resolver.authorize(),
-  async (input) => {
+  async ({ projectMemberId, projectTaskId, projectStageId }) => {
     await db.contributorPath.create({
       data: {
-        projectMember: { connect: { id: input.projectMemberId } },
-        projectTask: { connect: { id: input.projectTaskId } },
+        projectMemberId,
+        projectTaskId,
+        projectStageId,
       },
     })
   }
