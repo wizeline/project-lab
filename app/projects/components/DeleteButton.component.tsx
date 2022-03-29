@@ -19,7 +19,7 @@ const DeleteButton = (props) => {
   const deleteProposal = async () => {
     try {
       await props.deleteProjectMutation({ id: props.project.id })
-      props.router.push(Routes.ProjectsPage())
+      props.router.push(Routes.Home())
     } catch (error) {
       handleClose()
       console.log(error)
