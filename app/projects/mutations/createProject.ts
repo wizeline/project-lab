@@ -36,7 +36,7 @@ export default resolver.pipe(
       let projectTasks: any = []
 
       for (let j = 0; j < tasks.length; j++) {
-        projectTasks.push({ description: tasks[j]?.name })
+        projectTasks.push({ description: tasks[j]?.name, position: tasks[j]?.position })
       }
 
       await db.projectStages.create({

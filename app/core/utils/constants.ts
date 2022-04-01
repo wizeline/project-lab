@@ -9,6 +9,7 @@ export const contributorPath = [
     tasks: [
       {
         name: "Join Slack Channel",
+        position: 1,
       },
     ],
   },
@@ -19,6 +20,7 @@ export const contributorPath = [
     tasks: [
       {
         name: "Clone Git Repo",
+        position: 2,
       },
     ],
   },
@@ -29,6 +31,7 @@ export const contributorPath = [
     tasks: [
       {
         name: "Assign yourself a task from Github Kanban board",
+        position: 3,
       },
     ],
   },
@@ -39,6 +42,7 @@ export const contributorPath = [
     tasks: [
       {
         name: "Participate in the code reviews and help keep track of the code sanity.",
+        position: 4,
       },
     ],
   },
