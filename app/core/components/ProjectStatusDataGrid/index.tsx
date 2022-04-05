@@ -1,22 +1,28 @@
 import { useQuery, useMutation } from "blitz"
+import styled from "@emotion/styled"
 import getStatuses from "app/statuses/queries/getStatuses"
 import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid"
 import Button from "@mui/material/Button"
 import AddIcon from "@mui/icons-material/Add"
 import EditIcon from "@mui/icons-material/Edit"
-import DeleteIcon from "@mui/icons-material/DeleteOutlined"
 import SaveIcon from "@mui/icons-material/Save"
 import CancelIcon from "@mui/icons-material/Close"
+import EastIcon from "@mui/icons-material/East"
 import createProjectStatus from "app/project-statuses/mutations/createProjectStatus"
 import { FORM_ERROR } from "app/labels/components/LabelForm"
 import { ThemeProvider } from "@mui/material/styles"
 import updateProjectStatus from "app/project-statuses/mutations/updateProjectStatus"
 import { useState } from "react"
-import ConfirmationModal from "../ConfirmationModal"
 import deleteProjectStatus from "app/project-statuses/mutations/deleteProjectStatus"
 import themeWize from "app/core/utils/themeWize"
 import { baseStatuses, adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import getProjects from "app/projects/queries/getProjects"
+import { InputSelect } from "app/core/components/InputSelect"
+import { Form } from "app/core/components/Form"
+import ModalBox from "../ModalBox"
+import { UpdateProjectsStatus } from "../../../projects/validations"
+import updateStatusFromProject from "app/projects/mutations/updateStatusFromProject"
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -24,6 +30,11 @@ declare module "@mui/material/Button" {
     secondaryC: true
   }
 }
+
+const ModalButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
 
 const GridEditToolbar = (props) => {
   const { setRows, createButtonText, user } = props
@@ -58,11 +69,20 @@ const ProjectStatusDataGrid = () => {
   const [createProjectStatusMutation] = useMutation(createProjectStatus)
   const [updateProjectStatusMutation] = useMutation(updateProjectStatus)
   const [deleteProjectStatusMutation] = useMutation(deleteProjectStatus)
+  const [updateStatusFromProjectMutation] = useMutation(updateStatusFromProject)
   const [statuses, { refetch }] = useQuery(getStatuses, {})
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const [selectedID, setSelectedID] = useState("")
+  const [{ projects, count: countProjectsSelected }, { refetch: refetchProjects }] = useQuery(
+    getProjects,
+    {
+      where: {
+        status: selectedID,
+      },
+    }
+  )
 
   const createNewProjectStatus = async (values) => {
     try {
@@ -166,6 +186,21 @@ const ProjectStatusDataGrid = () => {
     setOpenDeleteModal(() => true)
   }
 
+  const handleSubmit = async ({
+    projectsIds,
+    status,
+  }: {
+    projectsIds: string[]
+    status: string
+  }) => {
+    await updateStatusFromProjectMutation({
+      ids: projectsIds,
+      status,
+    })
+    await deleteConfirmationHandler()
+    await refetchProjects()
+  }
+
   const handleCancelClick = async (idRef) => {
     const id = idRef.row.id
     idRef.api.setRowMode(id, "view")
@@ -240,11 +275,22 @@ const ProjectStatusDataGrid = () => {
             >
               <EditIcon color="inherit" />
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => handleDeleteClick(idRef)}
+              style={{ marginLeft: 16 }}
+            >
+              <EastIcon color="inherit" />
+            </Button>
           </>
         )
       },
     },
   ]
+
+  const isMergeAction = projects.length > 0
 
   return (
     <div>
@@ -271,6 +317,68 @@ const ProjectStatusDataGrid = () => {
           </ThemeProvider>
         </div>
       </div>
+      <ModalBox
+        open={openDeleteModal}
+        handleClose={() => setOpenDeleteModal(false)}
+        close={() => setOpenDeleteModal(false)}
+      >
+        <h2>Choose the status to merge {selectedID} with </h2>
+        <p>This action will delete {selectedID}</p>
+        <p>This action cannot be undone.</p>
+        <br />
+        <p>
+          {countProjectsSelected < 1
+            ? "There are no projects"
+            : countProjectsSelected === 1
+            ? "There is 1 project"
+            : `There are ${countProjectsSelected} projects`}{" "}
+          with this status
+        </p>
+        <br />
+        <div>
+          <Form
+            schema={UpdateProjectsStatus}
+            onSubmit={async (values) => {
+              await handleSubmit({
+                projectsIds: projects.map((project) => project.id),
+                status: values.status.name,
+              })
+            }}
+          >
+            {isMergeAction && (
+              <InputSelect
+                valuesList={statuses.filter((status) => status.name !== selectedID)}
+                defaultValue=""
+                name="status"
+                label="Status to merge with"
+                disabled={false}
+              />
+            )}
+
+            <ModalButtonsContainer>
+              <Button className="primary default" onClick={() => setOpenDeleteModal(false)}>
+                Cancel
+              </Button>
+              &nbsp;
+              <Button
+                className="primary warning"
+                disabled={false}
+                {...(isMergeAction
+                  ? {
+                      type: "submit",
+                    }
+                  : {
+                      onClick: async () => {
+                        await deleteConfirmationHandler()
+                      },
+                    })}
+              >
+                {isMergeAction ? "Merge" : "Delete"}
+              </Button>
+            </ModalButtonsContainer>
+          </Form>
+        </div>
+      </ModalBox>
     </div>
   )
 }

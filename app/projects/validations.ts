@@ -157,3 +157,11 @@ export const CreateProjectMember = z.object({
   hoursPerWeek: z.number(),
   role: z.string(),
 })
+
+export const UpdateProjectsCategory = z.object({
+  categoryName: z.object({ name: z.string() }),
+})
+
+export const UpdateProjectsStatus = z.object({
+  status: z.object({ name: z.string() }),
+})
