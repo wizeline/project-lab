@@ -15,10 +15,16 @@ interface SkillsSelectProps {
 export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
-  const [{ skills }, { isLoading }] = useQuery(getSkills, {
-    where: { name: { contains: searchTerm } },
-    orderBy: { id: "asc" },
-  })
+  const [data, { isLoading }] = useQuery(
+    getSkills,
+    {
+      where: { name: { contains: searchTerm } },
+      orderBy: { id: "asc" },
+    },
+    { suspense: false }
+  )
+
+  const { skills } = data || { skills: [] }
 
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
 
@@ -34,7 +40,7 @@ export const SkillsSelect = ({ name, label, helperText, outerProps }: SkillsSele
               fullWidth
               style={{ margin: "1em 0" }}
               disabled={submitting}
-              loading={isLoading}
+              loading={isLoading || !data}
               options={skills}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.name === value.name}
