@@ -15,10 +15,16 @@ interface LabelsSelectProps {
 export const LabelsSelect = ({ name, label, helperText, outerProps }: LabelsSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
-  const [{ labels }, { isLoading }] = useQuery(getLabels, {
-    where: { name: { contains: searchTerm } },
-    orderBy: { id: "asc" },
-  })
+  const [data, { isLoading }] = useQuery(
+    getLabels,
+    {
+      where: { name: { contains: searchTerm } },
+      orderBy: { id: "asc" },
+    },
+    { suspense: false }
+  )
+
+  const { labels } = data || { labels: [] }
 
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
 
@@ -34,7 +40,7 @@ export const LabelsSelect = ({ name, label, helperText, outerProps }: LabelsSele
               fullWidth
               style={{ margin: "1em 0" }}
               disabled={submitting}
-              loading={isLoading}
+              loading={isLoading || !data}
               options={labels}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.name === value.name}

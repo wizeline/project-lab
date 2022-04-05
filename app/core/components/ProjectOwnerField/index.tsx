@@ -13,9 +13,11 @@ interface ProfilesSelectProps {
 
 export const ProjectOwnerField = ({ name, label, owner, helperText }: ProfilesSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [profiles, { isLoading }] = useQuery(getProfiles, searchTerm)
+  const [data, { isLoading }] = useQuery(getProfiles, searchTerm, { suspense: false })
   const [value, setValue] = useState(owner)
   const [inputValue, setInputValue] = useState("")
+
+  const profiles = data || []
 
   return (
     <Field name={name}>
@@ -25,7 +27,7 @@ export const ProjectOwnerField = ({ name, label, owner, helperText }: ProfilesSe
         return (
           <Autocomplete
             id={name}
-            loading={isLoading}
+            loading={isLoading || !data}
             value={value}
             onChange={(event: any, newValue: any | null, reason) => {
               if (reason === "selectOption") {
