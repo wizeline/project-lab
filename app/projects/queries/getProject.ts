@@ -33,7 +33,7 @@ export default resolver.pipe(
           },
           orderBy: [{ position: "asc" }],
         },
-        votes: { where: { profileId: session.profileId } },
+        votes: { where: { projectId: id } },
       },
     })
 
