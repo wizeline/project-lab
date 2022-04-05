@@ -199,7 +199,7 @@ export const Project = () => {
       </div>
       {(isTeamMember || user?.role === adminRoleName) && (
         <div className="wrapper">
-          <Stages path={project.stages} viewMode={true} project={project} />
+          <Stages path={project.stages} project={project} />
         </div>
       )}
       <div className="wrapper">
