@@ -73,13 +73,6 @@ const Stages = ({ project, path = [] }: ICareerPathComponentProps) => {
       >
         {path.map((pathItem) => {
           const { projectTasks, id: projectStageId } = pathItem
-          const projectTaskIds = projectTasks.map((projectTask) => projectTask.id)
-
-          const finishSomeTask =
-            projectTeamMember?.contributorPath &&
-            projectTeamMember.contributorPath.some((CP: any) =>
-              projectTaskIds.includes(CP.projectTaskId)
-            )
 
           const finishedStage = isStagedCompleted(projectTasks, projectTeamMember.contributorPath)
 
