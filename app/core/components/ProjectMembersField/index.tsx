@@ -23,7 +23,9 @@ interface ProfilesSelectProps {
 export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
-  const [profiles, { isLoading }] = useQuery(getProfiles, searchTerm)
+  const [data, { isLoading }] = useQuery(getProfiles, searchTerm, { suspense: false })
+
+  const profiles = data || []
 
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
 
@@ -37,7 +39,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
             <Autocomplete
               multiple={true}
               disabled={submitting}
-              loading={isLoading}
+              loading={isLoading || !data}
               options={profiles}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
