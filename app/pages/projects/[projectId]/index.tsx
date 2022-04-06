@@ -46,7 +46,11 @@ export const Project = () => {
   const handleVote = async (id: string) => {
     setSavingVoteStatus(true)
     try {
-      const haveIVoted = project.votes.length > 0 ? true : false
+      const haveIVoted =
+        project.votes.filter((vote) => {
+          return vote.profileId === session.profileId
+        }).length > 0
+
       await upvoteProjectMutation({ id, haveIVoted })
       await refetch()
       setSavingVoteStatus(false)
