@@ -13,15 +13,36 @@ export default resolver.pipe(
 
     // Loop Project Members
     for (let index = 0; index < data.projectMembers.length; index++) {
+      // Creates the array for the practicedSkills connect
+      const practicedSkillsArrayConnect = data.projectMembers[index].practicedSkills.map(
+        (skill) => {
+          return { id: skill.id }
+        }
+      )
       // Create only the members that don't exist in this project
       if (data.projectMembers[index].profile) {
         activeMembers.push(data.projectMembers[index]?.id)
+        // Just disconnects ALL related practicedSkills, so it can UPDATE just the new selected ones after...
+        await db.projectMembers.update({
+          where: { id: data.projectMembers[index].id },
+          data: {
+            practicedSkills: { set: [] },
+          },
+          include: {
+            practicedSkills: true,
+          },
+        })
+        // Makes all the actual updates to the projectMember
         await db.projectMembers.update({
           where: { id: data.projectMembers[index].id },
           data: {
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
             role: data.projectMembers[index].role,
             active: data.projectMembers[index].active,
+            practicedSkills: { connect: practicedSkillsArrayConnect },
+          },
+          include: {
+            practicedSkills: true,
           },
         })
       } else {
@@ -31,6 +52,7 @@ export default resolver.pipe(
             profile: { connect: { id: data.projectMembers[index].profileId } },
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
             role: data.projectMembers[index].role,
+            practicedSkills: { connect: practicedSkillsArrayConnect },
           },
         })
       }
@@ -77,6 +99,7 @@ export default resolver.pipe(
           include: {
             profile: { select: { firstName: true, lastName: true, email: true } },
             contributorPath: true,
+            practicedSkills: true,
           },
         },
         votes: { where: { profileId: session.profileId } },
