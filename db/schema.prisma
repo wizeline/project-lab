@@ -124,6 +124,7 @@ model ProjectMembers {
   profile         Profiles?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   project         Projects?         @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   contributorPath ContributorPath[]
+  practicedSkills Skills[]
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")
   @@index([profileId], name: "project_members_profile_id_idx")
@@ -187,12 +188,13 @@ model Vote {
 }
 
 model Skills {
-  id            String          @id @default(uuid())
-  name          String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @default(now())
-  profileSkills ProfileSkills[]
-  projects      Projects[]
+  id             String           @id @default(uuid())
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+  profileSkills  ProfileSkills[]
+  projects       Projects[]
+  projectMembers ProjectMembers[]
 
   @@index([name], name: "skills_name_idx")
 }

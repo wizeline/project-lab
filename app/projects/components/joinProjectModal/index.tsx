@@ -3,8 +3,10 @@ import { z } from "zod"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
 import ModalBox from "app/core/components/ModalBox"
-import { Button } from "@mui/material"
+import Button from "@mui/material/Button"
+
 import useProjectMembers from "app/projects/hooks/useProjectMembers"
+import { SkillsSelect } from "app/core/components/SkillsSelect"
 import { Grid, FormDivContainer, CommitmentDivContainer } from "./joinProjectModal.styles"
 import { Routes, useRouter } from "blitz"
 
@@ -19,6 +21,7 @@ export const JoinFields = z.object({
   hoursPerWeek: z.string().refine((val) => !val || /^\d+$/.test(val), {
     message: "Value must be an integer",
   }),
+  practicedSkills: z.array(z.any()),
 })
 
 const JoinProjectModal = (props: IProps) => {
@@ -40,6 +43,7 @@ const JoinProjectModal = (props: IProps) => {
               projectId: props.projectId,
               role: values.role,
               hoursPerWeek: parseInt(values.hoursPerWeek),
+              practicedSkills: values.practicedSkills,
             })
 
             router.push(Routes.JoinSuccess({ projectId: props.projectId }))
@@ -67,6 +71,9 @@ const JoinProjectModal = (props: IProps) => {
               label="Hours per Week"
               outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
             />
+
+            <p className="question">Which skills are you practicing?</p>
+            <SkillsSelect name="practicedSkills" label="Skills" />
           </FormDivContainer>
 
           <CommitmentDivContainer>

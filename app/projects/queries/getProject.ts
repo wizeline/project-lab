@@ -23,6 +23,7 @@ export default resolver.pipe(
           include: {
             profile: { select: { firstName: true, lastName: true, email: true } },
             contributorPath: true,
+            practicedSkills: true,
           },
           orderBy: [{ active: "desc" }, { role: "asc" }],
         },
