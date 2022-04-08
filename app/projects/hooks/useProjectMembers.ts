@@ -11,6 +11,7 @@ const useProjectMembers = () => {
     projectId: string
     profileId?: string
     hoursPerWeek: number
+    practicedSkills: any[]
     role: string
   }
   const createProjectMemberHandler = async (object: IProjectMember) => {

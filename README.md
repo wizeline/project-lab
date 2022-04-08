@@ -132,6 +132,23 @@ blitz new project-lab
 
 5. Finally, follow the **Getting started** instructions from **step 5** to make sure everything is working.
 
+## Impersonate Users
+
+Admin users are allowed to impersonate other other in the App.
+
+### Prerequisites
+
+1. The User must be an admin user.
+2. The User you want to impersonate must exist in the `User`table.
+
+### Steps
+
+1. Go to the `/impersonate` path to access the impersonate page. There is no button for this path so you must type it manually.
+2. Type the user email you want to impersonate and click on 'Switch to User'.
+3. Click on 'GO HOME' and that's it! You are now impersonating this User.
+
+To Stop impersonating, go to the `/impersonate` path and click on 'STOP IMPERSONATING', you will stop the impersonating, and it's done!
+
 ## Commands
 
 Blitz comes with a powerful CLI that is designed to make development easy and fast. You can install it with `npm i -g blitz`

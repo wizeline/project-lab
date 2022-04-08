@@ -14,6 +14,7 @@ declare module "blitz" {
       userId: User["id"]
       profileId: string
       role: Role
+      impersonatingFromUserId?: User["id"]
     }
   }
 }

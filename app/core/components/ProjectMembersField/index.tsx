@@ -12,6 +12,7 @@ import {
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"
+import { SkillsSelect } from "app/core/components/SkillsSelect"
 
 interface ProfilesSelectProps {
   name: string
@@ -69,10 +70,10 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                 />
               )}
             />
-            <Grid container spacing={1} style={{ paddingTop: 20 }}>
+            <Grid container spacing={1} rowSpacing={{ xs: 2, sm: 1 }} style={{ paddingTop: 20 }}>
               {input.value.map((row, index) => (
                 <React.Fragment key={index}>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={2}>
                     <Chip
                       onDelete={() => {
                         input.onChange(
@@ -84,7 +85,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
-                  <Grid item xs={4} sm={3}>
+                  <Grid item xs={6} sm={2}>
                     <TextField
                       label="Role"
                       defaultValue={row.role}
@@ -95,7 +96,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4} sm={3}>
+                  <Grid item xs={6} sm={2}>
                     <TextField
                       label="Hours"
                       helperText="H. per week"
@@ -115,7 +116,21 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4} sm={1}>
+                  <Grid item xs={6} sm={4}>
+                    <SkillsSelect
+                      customOnChange={(value) => {
+                        row.practicedSkills = value
+                        input.onChange(input.value)
+                      }}
+                      defaultValue={row.practicedSkills}
+                      fullWidth={true}
+                      label="Skills"
+                      name={`practicedSkills-${row.profileId}`}
+                      size="small"
+                      style={{ margin: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={2} style={{ textAlign: "center" }}>
                     <FormControlLabel
                       label="Active"
                       control={
