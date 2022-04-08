@@ -1,6 +1,15 @@
 import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
-import { Link, useQuery, useParam, BlitzPage, useMutation, invalidateQuery, Routes } from "blitz"
+import {
+  Link,
+  useQuery,
+  useParam,
+  BlitzPage,
+  useMutation,
+  invalidateQuery,
+  Routes,
+  useSession,
+} from "blitz"
 import { Card, CardContent, Chip, Stack, Grid, Box, TextField, Button } from "@mui/material"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
@@ -29,6 +38,7 @@ export const Project = () => {
   const [upvoteProjectMutation] = useMutation(upvoteProject)
   const isTeamMember = useSessionUserIsProjectTeamMember(project)
   const user = useCurrentUser()
+  const session = useSession()
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [joinProjectButton, setJoinProjectButton] = useState<boolean>(false)
@@ -36,7 +46,11 @@ export const Project = () => {
   const handleVote = async (id: string) => {
     setSavingVoteStatus(true)
     try {
-      const haveIVoted = project.votes.length > 0 ? true : false
+      const haveIVoted =
+        project.votes.filter((vote) => {
+          return vote.profileId === session.profileId
+        }).length > 0
+
       await upvoteProjectMutation({ id, haveIVoted })
       await refetch()
       setSavingVoteStatus(false)
@@ -207,7 +221,9 @@ export const Project = () => {
                       disabled={savingVoteStatus}
                       onClick={() => handleVote(project.id)}
                     >
-                      {project.votes.length > 0 ? (
+                      {project.votes.filter((vote) => {
+                        return vote.profileId === session.profileId
+                      }).length > 0 ? (
                         <>
                           {"Unlike"}&nbsp;
                           <ThumbDownSharp />
