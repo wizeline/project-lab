@@ -33,7 +33,7 @@ type queryItems = {
   count?: number
 }
 
-const ITEMS_PER_PAGE = 4
+const ITEMS_PER_PAGE = 50
 
 export const Projects = () => {
   //functions to load and paginate projects in `Popular` CardBox
