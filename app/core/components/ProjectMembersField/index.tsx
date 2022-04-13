@@ -33,7 +33,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
-        const isError = touched && normalizedError
+        const isError = touched && normalizedError !== undefined
         return (
           <React.Fragment>
             <Autocomplete

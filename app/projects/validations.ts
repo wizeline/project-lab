@@ -19,12 +19,14 @@ const projectMembers = z
   .array(
     z.object({
       id: z.string().optional(),
-      practicedSkills: z.array(
-        z.object({
-          id: z.string(),
-          name: z.string(),
-        })
-      ),
+      practicedSkills: z
+        .array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+          })
+        )
+        .optional(),
       profileId: z.string(),
       role: z.string().nullish(),
       profile: z
