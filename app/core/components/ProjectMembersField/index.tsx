@@ -39,13 +39,13 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
             <Autocomplete
               multiple={true}
               disabled={submitting}
-              loading={isLoading || !data}
+              loading={isLoading}
               options={profiles}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
-              value={input.value}
+              value={input.value ? input.value : []}
               onChange={(_, value, reason) => {
                 if (reason === "selectOption") {
                   input.onChange(value)

@@ -94,7 +94,24 @@ const extractSearchSkills = (val) => {
   return val
 }
 
-export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
+const connectMembersPracticedSkills = (val) => {
+  val.projectMembers = val.projectMembers?.map((item) => {
+    item.profile = { connect: { id: item.profileId } }
+    delete item.profileId
+    item.practicedSkills = {
+      connect: item.practicedSkills?.map((item) => {
+        return { id: item.id }
+      }),
+    }
+    return item
+  })
+  return val
+}
+
+export const FullCreate = z
+  .object(FullFormFields)
+  .transform(extractSearchSkills)
+  .transform(connectMembersPracticedSkills)
 
 const ContributorPathFields = {
   id: z.string().optional(),
