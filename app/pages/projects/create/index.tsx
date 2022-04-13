@@ -19,7 +19,7 @@ export const NewProject = () => {
       skills: [],
       labels: [],
       // add current profile as default member
-      projectMembers: InitialMembers(session.profileId),
+      projectMembers: InitialMembers(session),
     }
   }, [session])
 

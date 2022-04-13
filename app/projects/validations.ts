@@ -1,14 +1,15 @@
 import { z } from "zod"
 
-export const InitialMembers = (profileId) => {
-  return profileId
+export const InitialMembers = (session) => {
+  return session.profileId
     ? [
         {
-          profileId,
-          name: "You ;-)",
+          profileId: session.profileId,
+          name: session.name,
           role: "Owner",
           active: true,
           hoursPerWeek: 40,
+          practicedSkills: [],
         },
       ]
     : []
