@@ -15,7 +15,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import updateCategory from "app/categories/mutations/updateCategory"
 import deleteCategory from "app/categories/mutations/deleteCategory"
 import themeWize from "app/core/utils/themeWize"
-import { baseCategories, adminRoleName } from "app/core/utils/constants"
+import { adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import getProjects from "app/projects/queries/getProjects"
 import { InputSelect } from "app/core/components/InputSelect"
@@ -236,10 +236,6 @@ const CategoryDataGrid = () => {
           idRef.api.setCellFocus(idRef.row.id, "name")
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
-        const isConstant = baseCategories.find((value) => value === idRef.row.name)
-        if (isConstant || user?.role !== adminRoleName) {
-          return <></>
-        }
         if (isInEditMode) {
           return (
             <>
