@@ -5,44 +5,64 @@ export const contributorPath = [
   {
     name: "Intro",
     criteria: "You received an intro session.",
-    mission: "To run the project.",
+    mission: "Introduce yourself to the team.",
     tasks: [
       {
-        name: "Join Slack Channel",
+        name: "Join the slack channel `team-channel`",
         position: 1,
+      },
+      {
+        name: "Introduce yourself",
+        position: 2,
       },
     ],
   },
   {
     name: "Setup",
     criteria: "You are able to run the project.",
-    mission: "A quick win.",
+    mission: "Understand the project tech stack, purpose, and goals.",
     tasks: [
       {
-        name: "Clone Git Repo",
+        name: "Ask if you need any special permissions (github, auth0) or onboarding",
+        position: 1,
+      },
+      {
+        name: "Locate and clone the git repo",
         position: 2,
       },
-    ],
-  },
-  {
-    name: "Quick Winner",
-    criteria: "You completed at least one quick win.",
-    mission: "A major contribution.",
-    tasks: [
       {
-        name: "Assign yourself a task from Github Kanban board",
+        name: "Follow the README and get the project running",
         position: 3,
       },
     ],
   },
   {
+    name: "Quick Win",
+    criteria: "You completed at least one quick win.",
+    mission: "Get a feel of the work that needs to be done.",
+    tasks: [
+      {
+        name: "Assign yourself a task from the project board, notify the team",
+        position: 1,
+      },
+      {
+        name: "Review a pull request or clarify a ticket that seems vague",
+        position: 2,
+      },
+    ],
+  },
+  {
     name: "Major Contributor",
-    criteria: "You did a major contribution.",
+    criteria: "You did your first contribution.",
     mission: "To lead the development process and influence the project direction.",
     tasks: [
       {
-        name: "Participate in the code reviews and help keep track of the code sanity.",
-        position: 4,
+        name: "Participate in the project ceremonies and help keep track of the code sanity",
+        position: 1,
+      },
+      {
+        name: "Get your contribution deployed",
+        position: 2,
       },
     ],
   },
