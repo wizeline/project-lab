@@ -54,8 +54,5 @@ jobs:
       - name: Add Test Data
         run: blitz db seed
 
-      - name: Sync Skills With Wizeline OS
-        run: yarn sync-all-from-wos
-
       - name: Run Build
         run: yarn build
