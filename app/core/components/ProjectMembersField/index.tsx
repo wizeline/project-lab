@@ -33,19 +33,19 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
-        const isError = touched && normalizedError
+        const isError = touched && normalizedError !== undefined
         return (
           <React.Fragment>
             <Autocomplete
               multiple={true}
               disabled={submitting}
-              loading={isLoading || !data}
+              loading={isLoading}
               options={profiles}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
-              value={input.value}
+              value={input.value ? input.value : []}
               onChange={(_, value, reason) => {
                 if (reason === "selectOption") {
                   input.onChange(value)
