@@ -185,3 +185,8 @@ export const UpdateProjectsCategory = z.object({
 export const UpdateProjectsStatus = z.object({
   status: z.object({ name: z.string() }),
 })
+
+export const UpdateMultipleProjectsStatus = z.object({
+  ids: z.array(z.string()),
+  status: z.string().nullish(),
+})

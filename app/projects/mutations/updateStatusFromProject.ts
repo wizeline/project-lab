@@ -1,28 +1,16 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { ProfileNotFoundError } from "app/auth/mutations/login"
+import { UpdateMultipleProjectsStatus } from "app/projects/validations"
 
 export default resolver.pipe(
+  resolver.zod(UpdateMultipleProjectsStatus),
   resolver.authorize(),
-  async ({ id, status, ids }, { session }: Ctx) => {
+  async ({ status, ids }, { session }: Ctx) => {
     if (!session.profileId) throw new ProfileNotFoundError()
-
-    const updateProject = async (id: string) =>
-      await db.projects.update({
-        where: {
-          id,
-        },
-        data: {
-          projectStatus: { connect: { name: status } },
-        },
-      })
-
-    if (ids?.length === 1) {
-      return updateProject(ids[0])
-    } else if (ids?.length) {
-      return await Promise.all(ids.map(async (id) => updateProject(id)))
-    }
-
-    return updateProject(id)
+    await db.projects.updateMany({
+      where: { id: { in: ids } },
+      data: { status: status },
+    })
   }
 )
