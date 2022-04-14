@@ -51,13 +51,6 @@ const projectMembers = z
   )
   .optional()
 
-export const QuickCreate = z.object({
-  name: z.string(),
-  description: z.string().nullish(),
-  valueStatement: z.string().nullish(),
-  projectMembers,
-})
-
 export const FullFormFields = {
   name: z.string(),
   description: z.string(),
