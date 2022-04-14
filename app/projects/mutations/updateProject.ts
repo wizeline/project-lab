@@ -14,7 +14,7 @@ export default resolver.pipe(
     // Loop Project Members
     for (let index = 0; index < data.projectMembers.length; index++) {
       // Creates the array for the practicedSkills connect
-      const practicedSkillsArrayConnect = data.projectMembers[index].practicedSkills.map(
+      const practicedSkillsArrayConnect = data.projectMembers[index].practicedSkills?.map(
         (skill) => {
           return { id: skill.id }
         }
