@@ -23,6 +23,7 @@ export default resolver.pipe(
           include: {
             profile: { select: { firstName: true, lastName: true, email: true } },
             contributorPath: true,
+            practicedSkills: true,
           },
           orderBy: [{ active: "desc" }, { role: "asc" }],
         },
@@ -32,7 +33,7 @@ export default resolver.pipe(
           },
           orderBy: [{ position: "asc" }],
         },
-        votes: { where: { profileId: session.profileId } },
+        votes: { where: { projectId: id } },
       },
     })
 

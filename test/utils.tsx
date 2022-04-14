@@ -31,7 +31,7 @@ export function render(
   let localWrapper = wrapper
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test
-    localWrapper = ({ children }) => (
+    localWrapper = ({ children }: { children: React.ReactNode }) => (
       <BlitzProvider dehydratedState={dehydratedState}>
         <RouterContext.Provider value={{ ...mockRouter, ...router }}>
           {children}

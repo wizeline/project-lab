@@ -37,6 +37,7 @@ export default passportAuth({
 
           const publicData = {
             userId: user.id,
+            name: user.name,
             profileId: profileId,
             roles: [user.role],
             source: "auth0",

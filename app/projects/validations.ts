@@ -1,14 +1,15 @@
 import { z } from "zod"
 
-export const InitialMembers = (profileId) => {
-  return profileId
+export const InitialMembers = (session) => {
+  return session.profileId
     ? [
         {
-          profileId,
-          name: "You ;-)",
+          profileId: session.profileId,
+          name: session.name,
           role: "Owner",
           active: true,
           hoursPerWeek: 40,
+          practicedSkills: [],
         },
       ]
     : []
@@ -18,6 +19,14 @@ const projectMembers = z
   .array(
     z.object({
       id: z.string().optional(),
+      practicedSkills: z
+        .array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+          })
+        )
+        .optional(),
       profileId: z.string(),
       role: z.string().nullish(),
       profile: z
@@ -41,13 +50,6 @@ const projectMembers = z
     })
   )
   .optional()
-
-export const QuickCreate = z.object({
-  name: z.string(),
-  description: z.string().nullish(),
-  valueStatement: z.string().nullish(),
-  projectMembers,
-})
 
 export const FullFormFields = {
   name: z.string(),
@@ -87,7 +89,24 @@ const extractSearchSkills = (val) => {
   return val
 }
 
-export const FullCreate = z.object(FullFormFields).transform(extractSearchSkills)
+const connectMembersPracticedSkills = (val) => {
+  val.projectMembers = val.projectMembers?.map((item) => {
+    item.profile = { connect: { id: item.profileId } }
+    delete item.profileId
+    item.practicedSkills = {
+      connect: item.practicedSkills?.map((item) => {
+        return { id: item.id }
+      }),
+    }
+    return item
+  })
+  return val
+}
+
+export const FullCreate = z
+  .object(FullFormFields)
+  .transform(extractSearchSkills)
+  .transform(connectMembersPracticedSkills)
 
 const ContributorPathFields = {
   id: z.string().optional(),
@@ -155,6 +174,7 @@ export const CreateContributorPath = z.object({
 export const CreateProjectMember = z.object({
   projectId: z.any(),
   hoursPerWeek: z.number(),
+  practicedSkills: z.array(z.object({ id: z.string() })),
   role: z.string(),
 })
 

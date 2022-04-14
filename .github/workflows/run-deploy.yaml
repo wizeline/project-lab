@@ -10,7 +10,6 @@ jobs:
     env:
       NODE_ENV: "production"
       DB_PATH: "/home/admin/projectlab/db/db.sqlite"
-      ADD_SEED_DATA: "yes"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -87,7 +86,7 @@ jobs:
 
       - name: Add Test Data
         run: |
-          if [ "${{ env.ADD_SEED_DATA }}" == "yes" ]; then
+          if [ "${{ steps.get-branch.outputs.branch }}" != "production" ]; then
             blitz db seed
           fi
 

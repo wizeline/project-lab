@@ -19,16 +19,21 @@ interface IPathItem {
 }
 
 interface ICareerPathComponentProps {
-  path?: Array<IPathItem>
-  viewMode?: boolean
   project?: any
+  path?: Array<IPathItem>
 }
 
-const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentProps) => {
+const isStagedCompleted = (projectTasks, contributorPath) => {
+  const contributorTasks = contributorPath.map(({ projectTaskId }) => projectTaskId)
+  return projectTasks.every((task) => contributorTasks.includes(task.id))
+}
+
+const Stages = ({ project, path = [] }: ICareerPathComponentProps) => {
   const { projectTeamMember } = useProjectMember(project)
   const { isLoading, createContributorPathHandler, deleteContributorPathHandler } =
     useContributorPath()
   const [messageAlert, setMessageAlert] = useState<string>("")
+
   const changeHandle = (
     projectTaskId: string,
     contributorPathId: string | null,
@@ -46,10 +51,11 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
   }
   return (
     <>
-      {isLoading && <div> Loading... </div>}
       <SnackbarAlert show={!!messageAlert} message={messageAlert} />
       <Typography variant="h5" sx={{ marginTop: "30px", marginBottom: "30px" }}>
-        {`There are ${path.length} stages in your contributor path`}
+        {`There ${path.length >= 1 ? "are" : "is"} ${path.length} stage${
+          path.length >= 1 ? "s" : ""
+        } in your Contributor's Path`}
       </Typography>
       <Box
         sx={{
@@ -65,18 +71,18 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
           scrollSnapType: "x mandatory",
         }}
       >
-        {path.map((pathItem, index) => {
+        {path.map((pathItem) => {
           const { projectTasks, id: projectStageId } = pathItem
-          const projectTaskIds = projectTasks.map((projectTask) => projectTask.id)
-          const finishSomeTask =
-            projectTeamMember?.contributorPath &&
-            projectTeamMember.contributorPath.some((CP: any) =>
-              projectTaskIds.includes(CP.projectTaskId)
-            )
+          const finishedStage = projectTeamMember
+            ? isStagedCompleted(projectTasks, projectTeamMember.contributorPath)
+            : false
 
           return (
             <Card
-              key={index}
+              key={projectStageId}
+              style={{
+                pointerEvents: isLoading ? "none" : "all",
+              }}
               sx={{
                 flexGrow: 1,
                 flexDirection: "column",
@@ -92,7 +98,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
               }}
               elevation={3}
             >
-              <CardHeaderComponent current={finishSomeTask}>
+              <CardHeaderComponent current={finishedStage}>
                 <Typography
                   variant="h4"
                   sx={{
@@ -103,7 +109,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                   {pathItem.name}
                 </Typography>
               </CardHeaderComponent>
-              <ArrowDownIcon current={finishSomeTask} />
+              <ArrowDownIcon current={finishedStage} />
               <div
                 style={{
                   paddingLeft: "5px",
@@ -129,6 +135,7 @@ const Stages = ({ project, path = [], viewMode = true }: ICareerPathComponentPro
                         contributorPath.projectTaskId === taskItem.id &&
                         contributorPath.projectMemberId === projectTeamMember.id
                     )
+
                   return (
                     <TaskItem
                       key={taskItem.id}

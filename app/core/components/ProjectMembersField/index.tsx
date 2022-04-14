@@ -12,6 +12,7 @@ import {
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"
+import { SkillsSelect } from "app/core/components/SkillsSelect"
 
 interface ProfilesSelectProps {
   name: string
@@ -22,7 +23,9 @@ interface ProfilesSelectProps {
 export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
-  const [profiles, { isLoading }] = useQuery(getProfiles, searchTerm)
+  const [data, { isLoading }] = useQuery(getProfiles, searchTerm, { suspense: false })
+
+  const profiles = data || []
 
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
 
@@ -30,7 +33,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
         const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
-        const isError = touched && normalizedError
+        const isError = touched && normalizedError !== undefined
         return (
           <React.Fragment>
             <Autocomplete
@@ -42,7 +45,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
               isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
               getOptionLabel={(option) => option.name}
               onInputChange={(_, value) => setSearchTermDebounced(value)}
-              value={input.value}
+              value={input.value ? input.value : []}
               onChange={(_, value, reason) => {
                 if (reason === "selectOption") {
                   input.onChange(value)
@@ -67,10 +70,10 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                 />
               )}
             />
-            <Grid container spacing={1} style={{ paddingTop: 20 }}>
+            <Grid container spacing={1} rowSpacing={{ xs: 2, sm: 1 }} style={{ paddingTop: 20 }}>
               {input.value.map((row, index) => (
                 <React.Fragment key={index}>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={2}>
                     <Chip
                       onDelete={() => {
                         input.onChange(
@@ -82,7 +85,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
-                  <Grid item xs={4} sm={3}>
+                  <Grid item xs={6} sm={2}>
                     <TextField
                       label="Role"
                       defaultValue={row.role}
@@ -93,7 +96,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4} sm={3}>
+                  <Grid item xs={6} sm={2}>
                     <TextField
                       label="Hours"
                       helperText="H. per week"
@@ -113,7 +116,21 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4} sm={1}>
+                  <Grid item xs={6} sm={4}>
+                    <SkillsSelect
+                      customOnChange={(value) => {
+                        row.practicedSkills = value
+                        input.onChange(input.value)
+                      }}
+                      defaultValue={row.practicedSkills}
+                      fullWidth={true}
+                      label="Skills"
+                      name={`practicedSkills-${row.profileId}`}
+                      size="small"
+                      style={{ margin: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={2} style={{ textAlign: "center" }}>
                     <FormControlLabel
                       label="Active"
                       control={
