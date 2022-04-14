@@ -78,20 +78,26 @@ const JoinProjectModal = (props: IProps) => {
 
           <CommitmentDivContainer>
             <p className="title">We are excited to have you on board!</p>
-            <div className="paragraph">
-              Everyone is welcome to join the project, whether you have the skills we are looking
-              for, wish to sharpen them even more, or are eager to learn something new. <br />
-              Take ownership of your role in the project, stay on track with your Contributor Path,
-              take initiative, participate and ask questions. Stay informed about the project's
-              latest updates, and keep the team updated about your progress as well. Your commitment
-              to the project is important, but keep in mind that if you are assigned to work with a
-              client it will have a higher priority. <br />
-              If at any time you wish to leave the project you are completely free to do so, just
-              let your team know about it and keep them updated on your latest contributions in
-              order to help everyone adapt and continue working as smoothly as possible.
-              <br />
-            </div>
-
+            <ul>
+              <li>
+                <strong>Everyone</strong> is welcome to join the project, whether you have the
+                skills we are looking for and want to sharpen them, or are eager to learn something
+                new.
+              </li>
+              <li>
+                Take <strong>ownership</strong> of your role in the project, stay on track with your
+                Contributor Path, take initiative, participate and ask questions.
+              </li>
+              <li>
+                Keep in mind that if you are assigned to work with a client it will have a higher
+                priority, but you can keep participating.
+              </li>
+              <li>
+                You are free to leave a project at any time, just let your team know about it and do
+                a <strong>knowledge transfer</strong> of your latest contributions.
+              </li>
+            </ul>
+            <p>&nbsp;</p>
             <Button type="submit" className="primary large">
               Join Project
             </Button>

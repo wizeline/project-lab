@@ -1,22 +1,28 @@
+import React, { useState } from "react"
 import { useQuery, useMutation } from "blitz"
+import styled from "@emotion/styled"
 import getCategories from "app/categories/queries/getCategories"
 import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid"
 import Button from "@mui/material/Button"
 import AddIcon from "@mui/icons-material/Add"
 import EditIcon from "@mui/icons-material/Edit"
-import DeleteIcon from "@mui/icons-material/DeleteOutlined"
 import SaveIcon from "@mui/icons-material/Save"
 import CancelIcon from "@mui/icons-material/Close"
+import EastIcon from "@mui/icons-material/East"
 import createCategory from "app/categories/mutations/createCategory"
 import { FORM_ERROR } from "app/labels/components/LabelForm"
 import { ThemeProvider } from "@mui/material/styles"
 import updateCategory from "app/categories/mutations/updateCategory"
-import { useState } from "react"
-import ConfirmationModal from "../ConfirmationModal"
 import deleteCategory from "app/categories/mutations/deleteCategory"
 import themeWize from "app/core/utils/themeWize"
-import { baseCategories, adminRoleName } from "app/core/utils/constants"
+import { adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import getProjects from "app/projects/queries/getProjects"
+import { InputSelect } from "app/core/components/InputSelect"
+import { Form } from "app/core/components/Form"
+import updateProjectCategory from "app/projects/mutations/updateProjectCategory"
+import ModalBox from "../ModalBox"
+import { UpdateProjectsCategory } from "app/projects/validations"
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -24,6 +30,11 @@ declare module "@mui/material/Button" {
     secondaryC: true
   }
 }
+
+const ModalButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
 
 const GridEditToolbar = (props) => {
   const { setRows, createButtonText, user } = props
@@ -58,11 +69,21 @@ const CategoryDataGrid = () => {
   const [createCategoryMutation] = useMutation(createCategory)
   const [updateCategoryMutation] = useMutation(updateCategory)
   const [deleteCategoryMutation] = useMutation(deleteCategory)
+  const [updateProjectCategoryMutation] = useMutation(updateProjectCategory)
   const [categories, { refetch }] = useQuery(getCategories, {})
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const [selectedID, setSelectedID] = useState("")
+
+  const [{ projects, count: countProjectsSelected }, { refetch: refetchProjects }] = useQuery(
+    getProjects,
+    {
+      where: {
+        categoryName: selectedID,
+      },
+    }
+  )
 
   const createNewCategory = async (values) => {
     try {
@@ -166,6 +187,21 @@ const CategoryDataGrid = () => {
     setOpenDeleteModal(() => true)
   }
 
+  const handleSubmit = async ({
+    projectsIds,
+    category,
+  }: {
+    projectsIds: string[]
+    category: string
+  }) => {
+    await updateProjectCategoryMutation({
+      ids: projectsIds,
+      categoryName: category,
+    })
+    await deleteConfirmationHandler()
+    await refetchProjects()
+  }
+
   const handleCancelClick = async (idRef) => {
     const id = idRef.row.id
     idRef.api.setRowMode(id, "view")
@@ -200,10 +236,6 @@ const CategoryDataGrid = () => {
           idRef.api.setCellFocus(idRef.row.id, "name")
         }
         const isInEditMode = idRef.api.getRowMode(idRef.row.id) === "edit"
-        const isConstant = baseCategories.find((value) => value === idRef.row.name)
-        if (isConstant || user?.role !== adminRoleName) {
-          return <></>
-        }
         if (isInEditMode) {
           return (
             <>
@@ -240,11 +272,22 @@ const CategoryDataGrid = () => {
             >
               <EditIcon color="inherit" />
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => handleDeleteClick(idRef)}
+              style={{ marginLeft: 16 }}
+            >
+              <EastIcon color="inherit" />
+            </Button>
           </>
         )
       },
     },
   ]
+
+  const isMergeAction = projects.length > 0
 
   return (
     <div>
@@ -271,6 +314,68 @@ const CategoryDataGrid = () => {
           </ThemeProvider>
         </div>
       </div>
+      <ModalBox
+        open={openDeleteModal}
+        handleClose={() => setOpenDeleteModal(false)}
+        close={() => setOpenDeleteModal(false)}
+      >
+        <h2>Choose the category to merge {selectedID} with </h2>
+        <p>This action will delete {selectedID}</p>
+        <p>This action cannot be undone.</p>
+        <br />
+        <p>
+          {countProjectsSelected < 1
+            ? "There are no projects"
+            : countProjectsSelected === 1
+            ? "There is 1 project"
+            : `There are ${countProjectsSelected} projects`}{" "}
+          with this category
+        </p>
+        <br />
+        <div>
+          <Form
+            schema={UpdateProjectsCategory}
+            onSubmit={async (values) => {
+              await handleSubmit({
+                projectsIds: projects.map((project) => project.id),
+                category: values.categoryName.name,
+              })
+            }}
+          >
+            {isMergeAction && (
+              <InputSelect
+                valuesList={categories.filter((category) => category.name !== selectedID)}
+                defaultValue=""
+                name="categoryName"
+                label="Category to merge with"
+                disabled={false}
+              />
+            )}
+
+            <ModalButtonsContainer>
+              <Button className="primary default" onClick={() => setOpenDeleteModal(false)}>
+                Cancel
+              </Button>
+              &nbsp;
+              <Button
+                className="primary warning"
+                disabled={false}
+                {...(isMergeAction
+                  ? {
+                      type: "submit",
+                    }
+                  : {
+                      onClick: async () => {
+                        await deleteConfirmationHandler()
+                      },
+                    })}
+              >
+                {isMergeAction ? "Merge" : "Delete"}
+              </Button>
+            </ModalButtonsContainer>
+          </Form>
+        </div>
+      </ModalBox>
     </div>
   )
 }
