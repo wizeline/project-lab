@@ -177,3 +177,16 @@ export const CreateProjectMember = z.object({
   practicedSkills: z.array(z.object({ id: z.string() })),
   role: z.string(),
 })
+
+export const UpdateProjectsCategory = z.object({
+  categoryName: z.object({ name: z.string() }),
+})
+
+export const UpdateProjectsStatus = z.object({
+  status: z.object({ name: z.string() }),
+})
+
+export const UpdateMultipleProjectsStatus = z.object({
+  ids: z.array(z.string()),
+  status: z.string().nullish(),
+})

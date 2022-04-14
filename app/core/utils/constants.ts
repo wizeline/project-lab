@@ -67,18 +67,3 @@ export const contributorPath = [
     ],
   },
 ]
-export const baseCategories = [
-  "Value Creator",
-  "Experimenter",
-  "Business Enabler",
-  "Strategic Differentiator",
-  "Community Innovation",
-]
-export const baseStatuses = [
-  { name: "Idea Submitted", color: "#fe6f18" },
-  { name: "Need SME Review", color: "#188bff" },
-  { name: "Idea in Progress", color: "#7bc96b" },
-  { name: "Need Tier Review", color: "#d3d3d4" },
-  { name: "Closed", color: "#d3d3d4" },
-  { name: "Inactive", color: "#d3d3d4" },
-]
