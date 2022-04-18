@@ -85,7 +85,26 @@ const seed = async () => {
     update: {},
     create: { name: "Go", id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
   })
-
+  await db.disciplines.upsert({
+    where: { name: "UX Designer" },
+    update: {},
+    create: { name: "UX Designer" },
+  })
+  await db.disciplines.upsert({
+    where: { name: "React Dev" },
+    update: {},
+    create: { name: "React Dev" },
+  })
+  await db.disciplines.upsert({
+    where: { name: ".Net Dev" },
+    update: {},
+    create: { name: ".Net Dev" },
+  })
+  await db.disciplines.upsert({
+    where: { name: "Xamarin Dev" },
+    update: {},
+    create: { name: "Xamarin Dev" },
+  })
   await db.projectStatus.upsert({
     where: { name: "Idea Submitted" },
     update: {},
@@ -542,6 +561,7 @@ const seed = async () => {
           { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
         ],
       },
+      disciplines: { connect: [{ name: "UX Designer" }, { name: "React Dev" }] },
       labels: { connect: [{ name: "Innovation Camp 2020" }, { name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
@@ -612,6 +632,7 @@ const seed = async () => {
           { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
         ],
       },
+      disciplines: { connect: [{ name: "React Dev" }] },
       labels: { connect: [{ name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
