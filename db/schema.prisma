@@ -106,6 +106,7 @@ model Profiles {
   projectMembers         ProjectMembers[]
   projectMembersVersions ProjectMembersVersions[]
   projects               Projects[]
+  projectsVersions       ProjectsVersions[]
   votes                  Vote[]
   comments               Comments[]
 
@@ -153,14 +154,16 @@ model ProjectMembersVersions {
 }
 
 model ProjectStatus {
-  name     String     @id
-  color    String     @default("#1d1d1d")
-  projects Projects[]
+  name             String             @id
+  color            String             @default("#1d1d1d")
+  projects         Projects[]
+  projectsVersions ProjectsVersions[]
 }
 
 model Category {
-  name     String     @id
-  projects Projects[]
+  name             String             @id
+  projects         Projects[]
+  projectsVersions ProjectsVersions[]
 }
 
 model Projects {
@@ -197,6 +200,37 @@ model Projects {
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
   @@index([isArchived], name: "projects_isArchived_idx")
+}
+
+model ProjectsVersions {
+  id             Int            @id @default(autoincrement())
+  ownerId        String?
+  name           String
+  logo           String?
+  description    String?
+  valueStatement String?
+  target         String?
+  demo           String?
+  repoUrl        String?
+  slackChannel   String?
+  isApproved     Boolean        @default(false)
+  status         String?        @default("Idea Submitted")
+  categoryName   String?        @default("Experimenter")
+  positions      String?
+  searchSkills   String         @default("")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now())
+  membersCount   Int            @default(0)
+  votesCount     Int            @default(0)
+  isArchived     Boolean        @default(false)
+  owner          Profiles?      @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus  ProjectStatus? @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  category       Category?      @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([ownerId], name: "projects_version_owner_id_idx")
+  @@index([status], name: "projects_version_status_idx")
+  @@index([categoryName], name: "projects_version_category_idx")
+  @@index([isArchived], name: "projects_version_isArchived_idx")
 }
 
 model Vote {
