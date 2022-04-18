@@ -80,6 +80,9 @@ export default resolver.pipe(
         skills: {
           set: data.skills,
         },
+        disciplines: {
+          set: data.disciplines,
+        },
         labels: {
           set: data.labels,
         },
@@ -88,6 +91,7 @@ export default resolver.pipe(
         category: true,
         projectStatus: true,
         skills: true,
+        disciplines: true,
         labels: true,
         owner: true,
         stages: {
