@@ -69,7 +69,7 @@
     "prettier": "2.3.1",
     "prettier-plugin-prisma": "0.12.1",
     "pretty-quick": "3.1.1",
-    "prisma": "^2.27.0",
+    "prisma": "3.12.0",
     "typescript": "~4.3"
   },
   "private": true
