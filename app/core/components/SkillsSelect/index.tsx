@@ -41,8 +41,6 @@ export const SkillsSelect = ({
 
   const { skills } = data || { skills: [] }
 
-  const setSearchTermDebounced = debounce(setSearchTerm, 500)
-
   return (
     <Field name={name}>
       {({ input, meta: { touched, error, submitError, submitting } }) => {
@@ -60,7 +58,6 @@ export const SkillsSelect = ({
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.name === value.name}
               getOptionLabel={(option) => option.name}
-              onInputChange={(_, value) => setSearchTermDebounced(value)}
               value={input.value ? input.value : defaultValue}
               onChange={(_, value) => {
                 input.onChange(value)
