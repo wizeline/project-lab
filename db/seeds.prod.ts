@@ -1,6 +1,7 @@
 import db from "./index"
 import { contributorPath } from "app/core/utils/constants"
 import seedDisciplines from "./seeds/disciplines"
+
 /*
  * This seed function is executed when you run `blitz db seed`.
  *
