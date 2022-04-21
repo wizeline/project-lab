@@ -8,9 +8,9 @@ import seedDisciplines from "./seeds/disciplines"
  * or https://github.com/Marak/Faker.js to easily generate
  * realistic data.
  */
-seedDisciplines()
 
 const seed = async () => {
+  await seedDisciplines()
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
