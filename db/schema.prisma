@@ -166,6 +166,7 @@ model Projects {
   projectMembers ProjectMembers[]
   skills         Skills[]
   labels         Labels[]
+  disciplines    Disciplines[]
   votes          Vote[]
   comments       Comments[]
   stages         ProjectStages[]
@@ -197,6 +198,16 @@ model Skills {
   projectMembers ProjectMembers[]
 
   @@index([name], name: "skills_name_idx")
+}
+
+model Disciplines {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  projects  Projects[]
+
+  @@index([name], name: "discipline_name_idx")
 }
 
 model Labels {

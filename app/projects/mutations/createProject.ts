@@ -16,6 +16,9 @@ export default resolver.pipe(
         skills: {
           connect: input.skills,
         },
+        disciplines: {
+          connect: input.disciplines,
+        },
         labels: {
           connect: input.labels,
         },

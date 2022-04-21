@@ -298,6 +298,18 @@ export const Project = () => {
                   </CardContent>
                 </Card>
               )}
+              {project.disciplines.length > 0 && (
+                <Card variant="outlined">
+                  <CardContent>
+                    <big>Looking for:</big>
+                    <Stack direction="row" spacing={1}>
+                      {project.disciplines.map((item, index) => (
+                        <Chip key={index} label={item.name} />
+                      ))}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
               {isTeamMember ? (
                 <Button
                   className="primary large"
