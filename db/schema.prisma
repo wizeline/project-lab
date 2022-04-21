@@ -280,7 +280,7 @@ model OpportunityAreasSponsor {
   id                String            @id @default(uuid())
   opportunityAreaId String
   profileId         String
-  status            String?
+  status            String?           @default("active")
   active            Boolean           @default(true)
   sponsor           Profiles?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   opportunityArea   OpportunityAreas? @relation(fields: [opportunityAreaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
