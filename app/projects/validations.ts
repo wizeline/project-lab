@@ -68,6 +68,7 @@ export const FullFormFields = {
       })
     )
     .optional(),
+  disciplines: z.array(z.object({ name: z.string() })).optional(),
   labels: z
     .array(
       z.object({
