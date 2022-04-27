@@ -1,7 +1,12 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { FullCreate } from "app/projects/validations"
-import { defaultCategory, defaultStatus, contributorPath } from "app/core/utils/constants"
+import {
+  defaultCategory,
+  defaultStatus,
+  contributorPath,
+  defaultTier,
+} from "app/core/utils/constants"
 
 export default resolver.pipe(
   resolver.zod(FullCreate),
@@ -25,6 +30,7 @@ export default resolver.pipe(
         projectMembers: {
           create: input.projectMembers,
         },
+        innovationTiers: { connect: { name: input.innovationTiers?.name || defaultTier } },
       },
     })
 

@@ -35,6 +35,7 @@ export default resolver.pipe(
           orderBy: [{ position: "asc" }],
         },
         votes: { where: { projectId: id } },
+        innovationTiers: true,
       },
     })
 

@@ -16,8 +16,15 @@ import TextEditor from "app/core/components/TextEditor"
 
 import getCategories from "app/categories/queries/getCategories"
 import getStatuses from "app/statuses/queries/getStatuses"
-import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/constants"
+import {
+  defaultCategory,
+  defaultStatus,
+  adminRoleName,
+  defaultTier,
+} from "app/core/utils/constants"
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
+import { TireRepairSharp } from "@mui/icons-material"
+import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -26,6 +33,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
   const [displayFields, setDisplayFields] = useState(projectformType == "create" ? false : true)
   const [categories] = useQuery(getCategories, {})
   const [statuses] = useQuery(getStatuses, {})
+  const [{ tiers }] = useQuery(getInnovationTiers, {})
 
   const handleDisplaySwitch = (e: any) => {
     console.log(`Change value of ${e.target.checked.toString()}`)
@@ -113,6 +121,15 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         <SkillsSelect name="skills" label="Skills" />
         <DisciplinesSelect name="disciplines" label="Looking for..." />
         <LabelsSelect name="labels" label="Labels" />
+        {projectformType !== "create" && (
+          <InputSelect
+            valuesList={tiers}
+            defaultValue={defaultTier}
+            name="innovationTiers"
+            label="Innovation Tier"
+            disabled={user?.role !== adminRoleName}
+          />
+        )}
         <ProjectMembersField name="projectMembers" label="Add a contributor" />
       </Collapse>
     </Form>

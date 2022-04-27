@@ -491,6 +491,26 @@ const seed = async () => {
       department: "Engineering",
     },
   })
+  await db.profiles.upsert({
+    where: { email: "martin.robledo@wizeline.com" },
+    update: {},
+    create: {
+      email: "martin.robledo@wizeline.com",
+      firstName: "Martin",
+      lastName: "Robledo",
+      department: "Engineering",
+    },
+  })
+  await db.innovationTiers.upsert({
+    where: { name: "Tier 3 (Experiment)" },
+    update: {},
+    create: {
+      name: "Tier 3 (Experiment)",
+      benefits: "Have a one time 50 USD budget for hosting",
+      requisites: "None, manager approval facilitated through WCI",
+      goals: "Create an artifact (documentation, blog post, etc)",
+    },
+  })
   await db.projects.upsert({
     where: { name: "Proposal Hunt" },
     update: {},

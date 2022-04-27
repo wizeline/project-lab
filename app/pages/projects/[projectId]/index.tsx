@@ -198,6 +198,24 @@ export const Project = () => {
                 </Stack>
               </Grid>
             </Grid>
+
+            <Grid
+              item
+              container
+              sm={6}
+              xs={12}
+              spacing={1}
+              alignItems="center"
+              justifyContent="flex-start"
+              direction={{ xs: "column", md: "row" }}
+            >
+              <Grid item>
+                <div className="itemHeadName">Innovation Tier:</div>
+              </Grid>
+              <Grid item>
+                <div className="itemHeadValue">{project.tierName}</div>
+              </Grid>
+            </Grid>
           </Grid>
         </DetailMoreHead>
       </div>
