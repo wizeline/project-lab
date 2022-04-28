@@ -1,6 +1,6 @@
 import db from "./index"
 import { contributorPath } from "app/core/utils/constants"
-
+import seedDisciplines from "./seeds/disciplines"
 /*
  * This seed function is executed when you run `blitz db seed`.
  *
@@ -8,7 +8,9 @@ import { contributorPath } from "app/core/utils/constants"
  * or https://github.com/Marak/Faker.js to easily generate
  * realistic data.
  */
+
 const seed = async () => {
+  await seedDisciplines()
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
@@ -85,7 +87,6 @@ const seed = async () => {
     update: {},
     create: { name: "Go", id: "8ea79390-240d-4b23-bd25-5eae45ac5132" },
   })
-
   await db.projectStatus.upsert({
     where: { name: "Idea Submitted" },
     update: {},
@@ -542,6 +543,9 @@ const seed = async () => {
           { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
         ],
       },
+      disciplines: {
+        connect: [{ name: "UX Designer" }, { name: "Backend" }, { name: "Frontend" }],
+      },
       labels: { connect: [{ name: "Innovation Camp 2020" }, { name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [
@@ -612,6 +616,7 @@ const seed = async () => {
           { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
         ],
       },
+      disciplines: { connect: [{ name: "Backend" }] },
       labels: { connect: [{ name: "Innovation Camp 2021" }] },
       projectMembers: {
         create: [

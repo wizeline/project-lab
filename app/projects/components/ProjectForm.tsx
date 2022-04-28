@@ -8,6 +8,7 @@ import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextFieldArea } from "app/core/components/LabeledTextFieldArea"
 import { InputSelect } from "app/core/components/InputSelect"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { DisciplinesSelect } from "app/core/components/DisciplinesSelect"
 import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
@@ -110,6 +111,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           />
         )}
         <SkillsSelect name="skills" label="Skills" />
+        <DisciplinesSelect name="disciplines" label="Looking for..." />
         <LabelsSelect name="labels" label="Labels" />
         <ProjectMembersField name="projectMembers" label="Add a contributor" />
       </Collapse>

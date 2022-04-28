@@ -17,6 +17,7 @@ export default resolver.pipe(
       include: {
         category: true,
         skills: true,
+        disciplines: true,
         labels: true,
         projectStatus: true,
         owner: true,
