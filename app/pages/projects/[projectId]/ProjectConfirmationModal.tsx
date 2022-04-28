@@ -74,7 +74,7 @@ const ProjectConfirmationModal = ({
       )
     } else if (member.active) {
       // In case any NO OWNER member leaves...
-      title = "We're sorry you're leaving the project"
+      title = "Come back soon!"
       content =
         "By confirming you will be inactive for this project but you can join again at anytime."
     } else {
