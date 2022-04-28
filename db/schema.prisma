@@ -86,8 +86,8 @@ model ProfileSkills {
 }
 
 model Profiles {
-  id                     String                    @id @default(uuid())
-  email                  String                    @unique
+  id                     String                   @id @default(uuid())
+  email                  String                   @unique
   firstName              String
   lastName               String
   searchCol              String?
@@ -97,11 +97,11 @@ model Profiles {
   jobLevelTier           String?
   jobLevelTitle          String?
   department             String?
-  createdAt              DateTime                  @default(now())
-  updatedAt              DateTime                  @default(now())
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @default(now())
   terminatedAt           DateTime?
-  jobTitles              JobTitles?                @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locations              Locations?                @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  jobTitles              JobTitles?               @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locations              Locations?               @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   profileSkills          ProfileSkills[]
   projectMembers         ProjectMembers[]
   projectMembersVersions ProjectMembersVersions[]
@@ -109,7 +109,7 @@ model Profiles {
   projectsVersions       ProjectsVersions[]
   votes                  Vote[]
   comments               Comments[]
-  sponsor                OpportunityAreasSponsor[]
+  sponsors               OpportunitySponsor[]
 
   @@index([email], name: "profiles_email_idx")
   @@index([jobTitleId], name: "profiles_job_title_id_idx")
@@ -168,36 +168,6 @@ model Category {
 }
 
 model Projects {
-  <<<<<<< HEAD
-  id                     String                   @id @default(uuid())
-  ownerId                String?
-  name                   String                   @unique
-  logo                   String?
-  description            String?
-  valueStatement         String?
-  target                 String?
-  demo                   String?
-  repoUrl                String?
-  slackChannel           String?
-  isApproved             Boolean                  @default(false)
-  status                 String?                  @default("Idea Submitted")
-  categoryName           String?                  @default("Experimenter")
-  positions              String?
-  searchSkills           String                   @default("")
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @default(now())
-  owner                  Profiles?                @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  projectStatus          ProjectStatus?           @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
-  category               Category?                @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
-  projectMembers         ProjectMembers[]
-  skills                 Skills[]
-  labels                 Labels[]
-  votes                  Vote[]
-  comments               Comments[]
-  stages                 ProjectStages[]
-  opportunityArea        OpportunityAreas[]
-  isArchived             Boolean                  @default(false)
-  =======
   id                     String                   @id @default(uuid())
   ownerId                String?
   name                   String                   @unique
@@ -226,7 +196,7 @@ model Projects {
   votes                  Vote[]
   comments               Comments[]
   stages                 ProjectStages[]
-  opportunityArea        OpportunityAreas[]
+  opportunity            Opportunity[]
   isArchived             Boolean                  @default(false)
 
   @@index([ownerId], name: "projects_owner_id_idx")
@@ -259,7 +229,6 @@ model ProjectsVersions {
   owner          Profiles?      @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projectStatus  ProjectStatus? @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
   category       Category?      @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
-  >>>>>>> main
 
   @@index([ownerId], name: "projects_version_owner_id_idx")
   @@index([status], name: "projects_version_status_idx")
@@ -358,35 +327,34 @@ model ContributorPath {
   projectStage    ProjectStages  @relation(fields: [projectStageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model OpportunityAreas {
-  id          String                    @id @default(uuid())
+model Opportunity {
+  id          String               @id @default(uuid())
   name        String
   description String?
-  sponsor     OpportunityAreasSponsor[]
+  sponsors    OpportunitySponsor[]
   createdBy   String
-  createdAt   DateTime                  @default(now())
-  updatedAt   DateTime                  @default(now())
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @default(now())
   creator     String?
-  project     Projects[]
-  isArchived  Boolean                   @default(false)
+  projects    Projects[]
+  isArchived  Boolean              @default(false)
 
   @@index([createdBy], name: "opportunity_areas_createdBy_idx")
   @@index([isArchived], name: "opportunity_areas_isArchived_idx")
 }
 
-model OpportunityAreasSponsor {
-  id                String            @id @default(uuid())
-  opportunityAreaId String
-  profileId         String
-  status            String?           @default("active")
-  active            Boolean           @default(true)
-  sponsor           Profiles?         @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  opportunityArea   OpportunityAreas? @relation(fields: [opportunityAreaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdBy         String
-  createdAt         DateTime          @default(now())
+model OpportunitySponsor {
+  id            String       @id @default(uuid())
+  opportunityId String
+  profileId     String
+  status        String?      @default("active")
+  sponsor       Profiles?    @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdBy     String
+  createdAt     DateTime     @default(now())
 
-  @@unique([opportunityAreaId, profileId])
+  @@unique([opportunityId, profileId])
   @@index([profileId], name: "opportunity_areas_sponsor_profile_id_idx")
-  @@index([opportunityAreaId], name: "opportunity_areas_sponsor_opportunity_area_id_idx")
+  @@index([opportunityId], name: "opportunity_areas_sponsor_opportunity_area_id_idx")
   @@index([createdBy], name: "opportunity_areas_sponsor_createdBy_idx")
 }
