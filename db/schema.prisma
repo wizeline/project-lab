@@ -86,28 +86,30 @@ model ProfileSkills {
 }
 
 model Profiles {
-  id             String                    @id @default(uuid())
-  email          String                    @unique
-  firstName      String
-  lastName       String
-  searchCol      String?
-  avatarUrl      String?
-  locationId     String?
-  jobTitleId     String?
-  jobLevelTier   String?
-  jobLevelTitle  String?
-  department     String?
-  createdAt      DateTime                  @default(now())
-  updatedAt      DateTime                  @default(now())
-  terminatedAt   DateTime?
-  jobTitles      JobTitles?                @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locations      Locations?                @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  profileSkills  ProfileSkills[]
-  projectMembers ProjectMembers[]
-  projects       Projects[]
-  votes          Vote[]
-  comments       Comments[]
-  sponsor        OpportunityAreasSponsor[]
+  id                     String                    @id @default(uuid())
+  email                  String                    @unique
+  firstName              String
+  lastName               String
+  searchCol              String?
+  avatarUrl              String?
+  locationId             String?
+  jobTitleId             String?
+  jobLevelTier           String?
+  jobLevelTitle          String?
+  department             String?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @default(now())
+  terminatedAt           DateTime?
+  jobTitles              JobTitles?                @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locations              Locations?                @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  profileSkills          ProfileSkills[]
+  projectMembers         ProjectMembers[]
+  projectMembersVersions ProjectMembersVersions[]
+  projects               Projects[]
+  projectsVersions       ProjectsVersions[]
+  votes                  Vote[]
+  comments               Comments[]
+  sponsor                OpportunityAreasSponsor[]
 
   @@index([email], name: "profiles_email_idx")
   @@index([jobTitleId], name: "profiles_job_title_id_idx")
@@ -117,6 +119,8 @@ model Profiles {
 
 model ProjectMembers {
   id              String            @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
   projectId       String
   profileId       String
   hoursPerWeek    Int?
@@ -132,51 +136,135 @@ model ProjectMembers {
   @@index([projectId], name: "project_members_project_id_idx")
 }
 
+model ProjectMembersVersions {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+  projectId       String
+  profileId       String
+  hoursPerWeek    Int?
+  role            String?
+  active          Boolean   @default(true)
+  profile         Profiles? @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  project         Projects? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  practicedSkills String?
+
+  @@index([projectId, profileId], name: "project_members_v_project_id_profile_id_key")
+  @@index([profileId], name: "project_members_v_profile_id_idx")
+  @@index([projectId], name: "project_members_v_project_id_idx")
+}
+
 model ProjectStatus {
-  name     String     @id
-  color    String     @default("#1d1d1d")
-  projects Projects[]
+  name             String             @id
+  color            String             @default("#1d1d1d")
+  projects         Projects[]
+  projectsVersions ProjectsVersions[]
 }
 
 model Category {
-  name     String     @id
-  projects Projects[]
+  name             String             @id
+  projects         Projects[]
+  projectsVersions ProjectsVersions[]
 }
 
 model Projects {
-  id              String             @id @default(uuid())
-  ownerId         String?
-  name            String             @unique
-  logo            String?
-  description     String?
-  valueStatement  String?
-  target          String?
-  demo            String?
-  repoUrl         String?
-  slackChannel    String?
-  isApproved      Boolean            @default(false)
-  status          String?            @default("Idea Submitted")
-  categoryName    String?            @default("Experimenter")
-  positions       String?
-  searchSkills    String             @default("")
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @default(now())
-  owner           Profiles?          @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  projectStatus   ProjectStatus?     @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
-  category        Category?          @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
-  projectMembers  ProjectMembers[]
-  skills          Skills[]
-  labels          Labels[]
-  votes           Vote[]
-  comments        Comments[]
-  stages          ProjectStages[]
-  opportunityArea OpportunityAreas[]
-  isArchived      Boolean            @default(false)
+  <<<<<<< HEAD
+  id                     String                   @id @default(uuid())
+  ownerId                String?
+  name                   String                   @unique
+  logo                   String?
+  description            String?
+  valueStatement         String?
+  target                 String?
+  demo                   String?
+  repoUrl                String?
+  slackChannel           String?
+  isApproved             Boolean                  @default(false)
+  status                 String?                  @default("Idea Submitted")
+  categoryName           String?                  @default("Experimenter")
+  positions              String?
+  searchSkills           String                   @default("")
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @default(now())
+  owner                  Profiles?                @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus          ProjectStatus?           @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  category               Category?                @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  projectMembers         ProjectMembers[]
+  skills                 Skills[]
+  labels                 Labels[]
+  votes                  Vote[]
+  comments               Comments[]
+  stages                 ProjectStages[]
+  opportunityArea        OpportunityAreas[]
+  isArchived             Boolean                  @default(false)
+  =======
+  id                     String                   @id @default(uuid())
+  ownerId                String?
+  name                   String                   @unique
+  logo                   String?
+  description            String?
+  valueStatement         String?
+  target                 String?
+  demo                   String?
+  repoUrl                String?
+  slackChannel           String?
+  isApproved             Boolean                  @default(false)
+  status                 String?                  @default("Idea Submitted")
+  categoryName           String?                  @default("Experimenter")
+  positions              String?
+  searchSkills           String                   @default("")
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @default(now())
+  owner                  Profiles?                @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus          ProjectStatus?           @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  category               Category?                @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  projectMembers         ProjectMembers[]
+  projectMembersVersions ProjectMembersVersions[]
+  skills                 Skills[]
+  labels                 Labels[]
+  disciplines            Disciplines[]
+  votes                  Vote[]
+  comments               Comments[]
+  stages                 ProjectStages[]
+  opportunityArea        OpportunityAreas[]
+  isArchived             Boolean                  @default(false)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
   @@index([isArchived], name: "projects_isArchived_idx")
+}
+
+model ProjectsVersions {
+  id             Int            @id @default(autoincrement())
+  ownerId        String?
+  name           String
+  logo           String?
+  description    String?
+  valueStatement String?
+  target         String?
+  demo           String?
+  repoUrl        String?
+  slackChannel   String?
+  isApproved     Boolean        @default(false)
+  status         String?        @default("Idea Submitted")
+  categoryName   String?        @default("Experimenter")
+  positions      String?
+  searchSkills   String         @default("")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now())
+  membersCount   Int            @default(0)
+  votesCount     Int            @default(0)
+  isArchived     Boolean        @default(false)
+  owner          Profiles?      @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectStatus  ProjectStatus? @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  category       Category?      @relation(fields: [categoryName], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  >>>>>>> main
+
+  @@index([ownerId], name: "projects_version_owner_id_idx")
+  @@index([status], name: "projects_version_status_idx")
+  @@index([categoryName], name: "projects_version_category_idx")
+  @@index([isArchived], name: "projects_version_isArchived_idx")
 }
 
 model Vote {
@@ -199,6 +287,16 @@ model Skills {
   projectMembers ProjectMembers[]
 
   @@index([name], name: "skills_name_idx")
+}
+
+model Disciplines {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  projects  Projects[]
+
+  @@index([name], name: "discipline_name_idx")
 }
 
 model Labels {
