@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { z } from "zod"
 import { Form } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
@@ -21,12 +21,24 @@ export const JoinFields = z.object({
   hoursPerWeek: z.string().refine((val) => !val || /^\d+$/.test(val), {
     message: "Value must be an integer",
   }),
-  practicedSkills: z.array(z.any()),
+  practicedSkills: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string().optional(),
+    })
+  ),
 })
 
 const JoinProjectModal = (props: IProps) => {
   const router = useRouter()
   const { createProjectMemberHandler } = useProjectMembers()
+
+  const INIT_VALUES_MODALFORM = useMemo(() => {
+    return {
+      practicedSkills: [],
+    }
+  }, [])
+
   return (
     <ModalBox
       open={props.open}
@@ -51,6 +63,7 @@ const JoinProjectModal = (props: IProps) => {
             console.error(error)
           }
         }}
+        initialValues={INIT_VALUES_MODALFORM}
       >
         <Grid>
           <FormDivContainer>
