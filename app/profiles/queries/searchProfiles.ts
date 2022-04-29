@@ -3,7 +3,7 @@ import db from "db"
 
 export default resolver.pipe(resolver.authorize(), async (search: String) => {
   const select = `
-    SELECT id as profileId, firstName || ' ' || lastName as name
+    SELECT id as profileId, firstName || ' ' || lastName || ' <' || email || '>' as name
     FROM profiles_idx
   `
   const orderBy = `
@@ -12,7 +12,7 @@ export default resolver.pipe(resolver.authorize(), async (search: String) => {
   `
   let result
   if (search && search !== "") {
-    const prefixSearch = search + "*"
+    const prefixSearch = "\"" + search + "\"*"
     const where = "WHERE profiles_idx match ?"
     result = await db.$queryRaw(
       `
