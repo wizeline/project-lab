@@ -110,13 +110,16 @@ export default async function syncCatalogs(
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
 
   await db.$transaction([
-    db.profiles.deleteMany({
+    db.profiles.updateMany({
       where: {
         id: {
           notIn: profilesFromWizelineOS.map((profile) => {
             return profile.id
           }),
         },
+      },
+      data: {
+        deleted: true,
       },
     }),
     ...profilesUpsert,

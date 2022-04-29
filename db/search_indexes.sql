@@ -26,9 +26,13 @@ CREATE TRIGGER IF NOT EXISTS profiles_idx_d AFTER DELETE ON "Profiles" BEGIN
   INSERT INTO profiles_idx(profiles_idx, rowid, id, "firstName", "lastName", "email") VALUES ('delete', old.rowid, old.id, old."firstName", old."lastName", old."email");
 END;
 
-CREATE TRIGGER IF NOT EXISTS profiles_idx_u AFTER UPDATE ON "Profiles" BEGIN
+DROP TRIGGER IF EXISTS profiles_idx_u;
+CREATE TRIGGER IF NOT EXISTS profiles_idx_u AFTER UPDATE ON "Profiles" WHEN new.deleted = false BEGIN
   INSERT INTO profiles_idx(profiles_idx, rowid, id, "firstName", "lastName", "email") VALUES ('delete', old.rowid, old.id, old."firstName", old."lastName", old."email");
   INSERT INTO profiles_idx(rowid, id, "firstName", "lastName", "email") VALUES (new.rowid, new.id, new."firstName", new."lastName", new."email");
+END;
+CREATE TRIGGER IF NOT EXISTS profiles_idx_u_deleted AFTER UPDATE ON "Profiles" WHEN new.deleted = true BEGIN
+  INSERT INTO profiles_idx(profiles_idx, rowid, id, "firstName", "lastName", "email") VALUES ('delete', old.rowid, old.id, old."firstName", old."lastName", old."email");
 END;
 -- this allows running queries like:
 -- select * from profiles_idx where profiles_idx match 'joaquin';
