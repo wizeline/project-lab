@@ -1,17 +1,17 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { FullCreate } from "app/projects/validations"
-import {
-  defaultCategory,
-  defaultStatus,
-  contributorPath,
-  defaultTier,
-} from "app/core/utils/constants"
+import { defaultCategory, defaultStatus, contributorPath } from "app/core/utils/constants"
 
 export default resolver.pipe(
   resolver.zod(FullCreate),
   resolver.authorize(),
   async (input, { session }: Ctx) => {
+    const defaultTier = await db.innovationTiers.findFirst({
+      select: { name: true },
+      where: { default: true },
+    })
+
     const project = await db.projects.create({
       data: {
         ...input,
@@ -30,7 +30,7 @@ export default resolver.pipe(
         projectMembers: {
           create: input.projectMembers,
         },
-        innovationTiers: { connect: { name: input.innovationTiers?.name || defaultTier } },
+        innovationTiers: { connect: { name: input.innovationTiers?.name || defaultTier?.name } },
       },
     })
 

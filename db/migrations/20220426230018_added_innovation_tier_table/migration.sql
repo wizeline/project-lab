@@ -4,9 +4,30 @@ CREATE TABLE "InnovationTiers" (
     "benefits" TEXT NOT NULL,
     "requisites" TEXT NOT NULL,
     "goals" TEXT NOT NULL,
+    "default" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TRIGGER IF NOT EXISTS innovation_tier_default_insert BEFORE INSERT ON "InnovationTiers"
+BEGIN
+  SELECT CASE
+    WHEN
+      ((SELECT "default" FROM "InnovationTiers" WHERE "default" = true) = NEW."default")
+    THEN
+      RAISE (FAIL, "default tier already exists")
+  END;
+END;
+
+CREATE TRIGGER IF NOT EXISTS innovation_tier_default_update BEFORE UPDATE OF "default" ON "InnovationTiers"
+BEGIN
+  SELECT CASE
+    WHEN
+      (OLD."default" != true AND (SELECT "default" FROM "InnovationTiers" WHERE "default" = true) = NEW."default")
+    THEN
+      RAISE (FAIL, "default tier already exists")
+  END;
+END;
 
 -- RedefineTables
 PRAGMA foreign_keys=OFF;

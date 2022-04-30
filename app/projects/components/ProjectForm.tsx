@@ -16,12 +16,7 @@ import TextEditor from "app/core/components/TextEditor"
 
 import getCategories from "app/categories/queries/getCategories"
 import getStatuses from "app/statuses/queries/getStatuses"
-import {
-  defaultCategory,
-  defaultStatus,
-  adminRoleName,
-  defaultTier,
-} from "app/core/utils/constants"
+import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
 import { TireRepairSharp } from "@mui/icons-material"
 import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
@@ -124,7 +119,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         {projectformType !== "create" && (
           <InputSelect
             valuesList={tiers}
-            defaultValue={defaultTier}
             name="innovationTiers"
             label="Innovation Tier"
             disabled={user?.role !== adminRoleName}

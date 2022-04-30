@@ -1,7 +1,6 @@
 export const defaultStatus = "Idea Submitted"
 export const defaultCategory = "Experimenter"
 export const adminRoleName = "ADMIN"
-export const defaultTier = "Tier 3 (Experiment)"
 export const contributorPath = [
   {
     name: "Intro",
