@@ -77,6 +77,7 @@ export const FullFormFields = {
     )
     .optional(),
   projectMembers,
+  innovationTiers: z.object({ name: z.string() }).optional(),
 }
 
 const extractSearchSkills = (val) => {
@@ -181,6 +182,10 @@ export const CreateProjectMember = z.object({
 
 export const UpdateProjectsCategory = z.object({
   categoryName: z.object({ name: z.string() }),
+})
+
+export const UpdateProjectsInoovationTier = z.object({
+  tierName: z.object({ name: z.string() }),
 })
 
 export const UpdateProjectsStatus = z.object({

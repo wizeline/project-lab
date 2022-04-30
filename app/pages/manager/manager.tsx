@@ -20,6 +20,7 @@ import ProjectStatusDataGrid from "app/core/components/ProjectStatusDataGrid"
 import AdminsDataGrid from "app/core/components/AdminsDataGrid"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
+import InnovationTiersGrid from "app/core/components/InnovationTiersDataGrid"
 
 const ManagerPage: BlitzPage = () => {
   const user = useCurrentUser()
@@ -61,6 +62,7 @@ const ManagerPage: BlitzPage = () => {
                   <TabStyles label="Labels" />
                   <TabStyles label="Categories" />
                   <TabStyles label="Statuses" />
+                  <TabStyles label="Innovation Tiers" />
                 </Tabs>
               </Box>
               <TabPanel value={tabIndex} index={0}>
@@ -71,6 +73,9 @@ const ManagerPage: BlitzPage = () => {
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
                 <ProjectStatusDataGrid />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={3}>
+                <InnovationTiersGrid />
               </TabPanel>
             </EditPanelsStyles>
           </CardBox>
