@@ -1,6 +1,6 @@
 import db from "./index"
 import { contributorPath } from "app/core/utils/constants"
-import seedDisciplines from "./seeds/disciplines"
+import seedProd from "./seeds.prod"
 /*
  * This seed function is executed when you run `blitz db seed`.
  *
@@ -10,7 +10,7 @@ import seedDisciplines from "./seeds/disciplines"
  */
 
 const seed = async () => {
-  await seedDisciplines()
+  await seedProd()
   // for (let i = 0; i < 5; i++) {
   //   await db.project.create({ data: { name: "Project " + i } })
   // }
@@ -488,6 +488,16 @@ const seed = async () => {
       email: "jorge.galindo@wizeline.com",
       firstName: "Jorge",
       lastName: "Galindo",
+      department: "Engineering",
+    },
+  })
+  await db.profiles.upsert({
+    where: { email: "martin.robledo@wizeline.com" },
+    update: {},
+    create: {
+      email: "martin.robledo@wizeline.com",
+      firstName: "Martin",
+      lastName: "Robledo",
       department: "Engineering",
     },
   })

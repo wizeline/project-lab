@@ -86,6 +86,7 @@ export default resolver.pipe(
         labels: {
           set: data.labels,
         },
+        innovationTiers: { connect: { name: data.innovationTiers?.name } },
       },
       include: {
         category: true,
@@ -107,6 +108,7 @@ export default resolver.pipe(
           },
         },
         votes: { where: { profileId: session.profileId } },
+        innovationTiers: true,
       },
     })
 
