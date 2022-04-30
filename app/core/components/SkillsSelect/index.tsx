@@ -57,6 +57,7 @@ export const SkillsSelect = ({
               disabled={submitting}
               loading={isLoading || !data}
               options={skills}
+              filterOptions={(x) => x}
               filterSelectedOptions
               isOptionEqualToValue={(option, value) => option.name === value.name}
               getOptionLabel={(option) => option.name}
