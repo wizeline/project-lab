@@ -201,7 +201,7 @@ export const Project = () => {
           </Grid>
         </DetailMoreHead>
       </div>
-      {(isTeamMember || user?.role === adminRoleName) && (
+      {isTeamMember && (
         <div className="wrapper">
           <Stages path={project.stages} project={project} />
         </div>
