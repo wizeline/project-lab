@@ -73,18 +73,6 @@ model Locations {
   profiles  Profiles[]
 }
 
-model ProfileSkills {
-  id          String   @id @default(uuid())
-  profileId   String
-  skillId     String
-  proficiency String?
-  profiles    Profiles @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  skills      Skills   @relation(fields: [skillId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([profileId], name: "profile_skills_profile_id_idx")
-  @@index([skillId], name: "profile_skills_skill_id_idx")
-}
-
 model Profiles {
   id                     String                   @id @default(uuid())
   email                  String                   @unique
@@ -100,9 +88,9 @@ model Profiles {
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @default(now())
   terminatedAt           DateTime?
+  deleted                Boolean                  @default(false)
   jobTitles              JobTitles?               @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locations              Locations?               @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  profileSkills          ProfileSkills[]
   projectMembers         ProjectMembers[]
   projectMembersVersions ProjectMembersVersions[]
   projects               Projects[]
@@ -252,7 +240,6 @@ model Skills {
   name           String
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
-  profileSkills  ProfileSkills[]
   projects       Projects[]
   projectMembers ProjectMembers[]
 
