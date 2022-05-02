@@ -50,10 +50,6 @@ const mockDataProviderGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOS
       jobLevelTier: "string",
       department: "string",
       locationId: "locationId",
-      profileSkills: {
-        skills: { connect: { id: "skillId" } },
-        proficiency: "level",
-      },
     },
   ])
 })
@@ -108,22 +104,11 @@ const mockDataProviderUpdatedGetProfilesFromWizelineOS = jest.fn((): Promise<Pro
       jobLevelTier: "string",
       department: "string",
       locationId: "locationId",
-      profileSkills: [
-        {
-          skills: { connect: { id: "skillId" } },
-          proficiency: "level",
-        },
-        {
-          skills: { connect: { id: "skillId2" } },
-          proficiency: "level",
-        },
-      ],
     },
   ])
 })
 
 const cleanData = async () => {
-  await db.profileSkills.deleteMany({})
   await db.profiles.deleteMany({})
   await db.$transaction([
     db.skills.deleteMany({}),
@@ -153,11 +138,9 @@ describe("sync All data from WOS", () => {
     const jobTitles = await db.jobTitles.findMany()
     const locations = await db.locations.findMany()
     const profiles = await db.profiles.findMany()
-    const profileSkills = await db.profileSkills.findMany()
     expect(skills.length).toEqual(1)
     expect(jobTitles.length).toEqual(1)
     expect(locations.length).toEqual(1)
-    expect(profileSkills.length).toEqual(1)
     expect(profiles.length).toEqual(1)
   })
 
@@ -171,11 +154,9 @@ describe("sync All data from WOS", () => {
     const jobTitles = await db.jobTitles.findMany()
     const locations = await db.locations.findMany()
     const profiles = await db.profiles.findMany()
-    const profileSkills = await db.profileSkills.findMany()
     expect(skills.length).toEqual(1)
     expect(jobTitles.length).toEqual(1)
     expect(locations.length).toEqual(1)
-    expect(profileSkills.length).toEqual(1)
     expect(profiles.length).toEqual(1)
 
     await syncCatalogs(
@@ -188,12 +169,10 @@ describe("sync All data from WOS", () => {
     const jobTitlesUpdated = await db.jobTitles.findMany()
     const locationsUpdated = await db.locations.findMany()
     const profilesUpdated = await db.profiles.findMany()
-    const profileSkillsUpdated = await db.profileSkills.findMany()
     expect(skillsUpdated.length).toEqual(2)
     expect(jobTitlesUpdated[0]?.name).toEqual("JobTitleNameUpdated")
     expect(locationsUpdated[0]?.name).toEqual("locationNameUpdated")
     expect(profilesUpdated.length).toEqual(1)
-    expect(profileSkillsUpdated.length).toEqual(3)
   })
 })
 

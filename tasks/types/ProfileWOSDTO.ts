@@ -10,6 +10,5 @@ export default class ProfileWOSDTO {
   department: string
   terminatedAt?: string
   locationId: string
-  profileSkills: any
   constructor() {}
 }
