@@ -20,6 +20,7 @@ type SearchFilters = {
   skill: string[]
   label: string[]
   projectStatus: string[]
+  discipline: string[]
 }
 
 type queryItems = {
@@ -29,6 +30,7 @@ type queryItems = {
   category?: string
   skill?: string
   label?: string
+  discipline?: string
   projectStatus?: string
   count?: number
 }
@@ -41,7 +43,7 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label, projectStatus }: queryItems = router.query
+  const { status, category, skill, label, projectStatus, discipline }: queryItems = router.query
   const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
@@ -49,6 +51,7 @@ export const Projects = () => {
     category: category ? [category] : [],
     skill: skill ? [skill] : [],
     label: label ? [label] : [],
+    discipline: discipline ? [discipline] : [],
     projectStatus: projectStatus ? [projectStatus] : [],
   })
 
@@ -66,6 +69,7 @@ export const Projects = () => {
       statusFacets,
       categoryFacets,
       skillFacets,
+      disciplineFacets,
       labelFacets,
       projectFacets,
       count,
@@ -77,6 +81,7 @@ export const Projects = () => {
     skill,
     label,
     projectStatus,
+    discipline,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -218,9 +223,10 @@ export const Projects = () => {
       category: category ? [category] : [],
       skill: skill ? [skill] : [],
       label: label ? [label] : [],
+      discipline: discipline ? [discipline] : [],
       projectStatus: projectStatus ? [projectStatus] : [],
     })
-  }, [router.query.q, status, category, skill, label, projectStatus])
+  }, [router.query.q, status, category, skill, label, discipline, projectStatus])
 
   useEffect(() => {
     if (isFirstLoading) {
@@ -369,6 +375,33 @@ export const Projects = () => {
                             href=""
                             color="#AF2E33"
                             onClick={(e) => goToSearchWithFilters(e, "skill")}
+                          >
+                            {item.name} ({item.count})
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel2a-controls"
+                    id="panel2a-header"
+                  >
+                    <h3>{disciplineFacets.length > 0 ? "Disciplines" : ""}</h3>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="homeWrapper__myProposals--list">
+                      {disciplineFacets.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            id={item.name}
+                            underline="none"
+                            href=""
+                            color="#AF2E33"
+                            onClick={(e) => goToSearchWithFilters(e, "discipline")}
                           >
                             {item.name} ({item.count})
                           </Link>
