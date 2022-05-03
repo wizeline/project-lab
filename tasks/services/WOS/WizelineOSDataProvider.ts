@@ -138,12 +138,6 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
                   department
                   terminatedAt
                   locationId
-                  skills {
-                    level
-                    skill{
-                      id
-                    }
-                  }
                 }
               }
             }
@@ -162,19 +156,9 @@ const getProfilesFromWizelineOS = async (): Promise<ProfileWOSDTO[]> => {
     totalProfiles = totalCount
     counter += edges.length
     profilesToReturn = profilesToReturn.concat(
-      edges.map((profile: { node: { id: string; skills: any; avatar: string } }) => {
-        let profileSkills = profile.node.skills.map(
-          (skillRelationship: { level: string; skill: { id: string } }) => {
-            return {
-              skills: { connect: { id: skillRelationship.skill.id } },
-              proficiency: skillRelationship.level,
-            }
-          }
-        )
-
+      edges.map((profile: { node: { id: string; avatar: string } }) => {
         const { avatar, ...othersProfileNode } = profile.node
-        let mapped = { ...othersProfileNode, avatarUrl: avatar, profileSkills }
-        delete mapped.skills
+        let mapped = { ...othersProfileNode, avatarUrl: avatar }
         return mapped
       })
     )

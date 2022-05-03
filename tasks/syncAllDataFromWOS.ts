@@ -60,19 +60,13 @@ export default async function syncCatalogs(
   })
 
   const profilesUpsert = profilesFromWizelineOS.map((profile) => {
-    const { jobTitleId, profileSkills, jobTitle, ...otherProps } = profile
+    const { jobTitleId, jobTitle, ...otherProps } = profile
     return db.profiles.upsert({
       where: { id: profile.id },
       update: {
-        profileSkills: {
-          create: profileSkills,
-        },
         ...otherProps,
       },
       create: {
-        profileSkills: {
-          create: profileSkills,
-        },
         ...otherProps,
       },
     })
@@ -116,7 +110,7 @@ export default async function syncCatalogs(
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
 
   await db.$transaction([
-    db.profiles.deleteMany({
+    db.profiles.updateMany({
       where: {
         id: {
           notIn: profilesFromWizelineOS.map((profile) => {
@@ -124,14 +118,8 @@ export default async function syncCatalogs(
           }),
         },
       },
-    }),
-    db.profileSkills.deleteMany({
-      where: {
-        profileId: {
-          notIn: profilesFromWizelineOS.map((profile) => {
-            return profile.id
-          }),
-        },
+      data: {
+        deleted: true,
       },
     }),
     ...profilesUpsert,
