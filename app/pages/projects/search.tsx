@@ -390,7 +390,7 @@ export const Projects = () => {
                     aria-controls="panel2a-controls"
                     id="panel2a-header"
                   >
-                    <h3>{disciplineFacets.length > 0 ? "Disciplines" : ""}</h3>
+                    <h3>{disciplineFacets.length > 0 ? "Looking for" : ""}</h3>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
