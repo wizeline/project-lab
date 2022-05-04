@@ -7,6 +7,7 @@ interface SearchProjectsInput {
   status: any
   category: any
   skill: any
+  discipline: any
   label: any
   skip: number
   take: number
@@ -52,6 +53,7 @@ export default resolver.pipe(
       category,
       status,
       skill,
+      discipline,
       label,
       projectStatus,
       orderBy,
@@ -81,6 +83,11 @@ export default resolver.pipe(
     if (skill) {
       const skills = typeof skill === "string" ? [skill] : skill
       where = Prisma.sql`${where} AND Skills.name IN (${Prisma.join(skills)})`
+    }
+
+    if (discipline) {
+      const disciplines = typeof discipline === "string" ? [discipline] : discipline
+      where = Prisma.sql`${where} AND Disciplines.name IN (${Prisma.join(disciplines)})`
     }
 
     if (label) {
@@ -133,6 +140,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${whereString}
       GROUP BY p.id
       ORDER BY ${orderByText}
@@ -149,6 +158,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${where}
     `
 
@@ -160,6 +171,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${where}
       GROUP BY s.name
       ORDER BY count DESC;`
@@ -173,6 +186,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${where}
       AND p.categoryName IS NOT NULL
       GROUP BY categoryName
@@ -189,6 +204,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${where}
       AND Skills.name IS NOT NULL
       AND Skills.id IS NOT NULL
@@ -197,6 +214,24 @@ export default resolver.pipe(
       LIMIT 10
     `
 
+    const disciplineFacets = await db.$queryRaw<FacetOutput[]>`
+    SELECT Disciplines.name, Disciplines.id, count(DISTINCT p.id) as count
+      FROM Projects p
+      INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
+      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+      LEFT JOIN Skills ON _ps.B = Skills.id
+      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      ${where}
+      AND Disciplines.name IS NOT NULL
+      AND Disciplines.id IS NOT NULL
+      GROUP BY Disciplines.name
+      ORDER BY count DESC
+      LIMIT 10
+    `
     const labelFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
       FROM Projects p
@@ -206,6 +241,8 @@ export default resolver.pipe(
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
       LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
       ${where}
       AND Labels.name IS NOT NULL
       AND Labels.id IS NOT NULL
@@ -226,6 +263,8 @@ export default resolver.pipe(
      LEFT JOIN Skills ON _ps.B = Skills.id
      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
      LEFT JOIN Labels ON _lp.A = Labels.id
+     LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
        ${where}
      )
      GROUP BY p.isArchived
@@ -246,6 +285,7 @@ export default resolver.pipe(
       skillFacets,
       labelFacets,
       projectFacets,
+      disciplineFacets,
     }
   }
 )
