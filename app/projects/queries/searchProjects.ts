@@ -26,6 +26,19 @@ interface SearchProjectsOutput {
   projectMembers: string
 }
 
+interface CountOutput {
+  count: number
+}
+
+interface FacetOutput {
+  name: string
+  count: number
+}
+
+interface ProjectFacetsOutput extends FacetOutput {
+  Status: string
+}
+
 export class SearchProjectsError extends Error {
   name = "SearchProjectsError"
   message = "There was an error while searching for projects."
@@ -105,10 +118,8 @@ export default resolver.pipe(
         whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
       strIdx++
     }
-
-    const projects = await db.$queryRaw<SearchProjectsOutput[]>(
-      `
-      SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
+    const projects = await db.$queryRawUnsafe<SearchProjectsOutput[]>(
+      `SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
         p.createdAt,
         p.updatedAt,
       COUNT(DISTINCT pm.profileId) as projectMembers
@@ -129,7 +140,7 @@ export default resolver.pipe(
     `
     )
 
-    const countResult = await db.$queryRaw`
+    const countResult = await db.$queryRaw<CountOutput[]>`
       SELECT count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
@@ -141,7 +152,7 @@ export default resolver.pipe(
       ${where}
     `
 
-    const statusFacets = await db.$queryRaw`
+    const statusFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT s.name, COUNT(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN ProjectStatus s on  s.name = p.status
@@ -153,7 +164,7 @@ export default resolver.pipe(
       GROUP BY s.name
       ORDER BY count DESC;`
 
-    const categoryFacets = await db.$queryRaw`
+    const categoryFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT p.categoryName as name, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
@@ -168,7 +179,8 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    const skillFacets = await db.$queryRaw`
+
+    const skillFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT Skills.name, Skills.id, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
@@ -185,7 +197,7 @@ export default resolver.pipe(
       LIMIT 10
     `
 
-    const labelFacets = await db.$queryRaw`
+    const labelFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
@@ -201,7 +213,8 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    const projectFacets = await db.$queryRaw`
+
+    const projectFacets = await db.$queryRaw<ProjectFacetsOutput[]>`
      SELECT DISTINCT p.isArchived as 'Status', COUNT (p.id) as count
      FROM Projects p
      WHERE 1=1 AND p.id IN (Select p.id  FROM Projects p
@@ -220,14 +233,14 @@ export default resolver.pipe(
 
     if (countResult.length < 1) throw new SearchProjectsError()
 
-    const hasMore = skip + take < countResult[0].count
+    const hasMore = skip + take < (countResult[0] ? countResult[0].count : 0)
     const nextPage = hasMore ? { take, skip: skip + take } : null
 
     return {
       projects,
       nextPage,
       hasMore,
-      count: countResult[0].count,
+      count: countResult[0]?.count,
       statusFacets,
       categoryFacets,
       skillFacets,

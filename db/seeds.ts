@@ -569,7 +569,6 @@ const seed = async () => {
             hoursPerWeek: 3,
             role: "Backend",
           },
-          ,
           {
             profile: { connect: { id: hramirez.id } },
             hoursPerWeek: 3,
