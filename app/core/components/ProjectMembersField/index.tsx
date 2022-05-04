@@ -12,7 +12,7 @@ import {
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"
-import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { LabSelect } from "../LabSelect"
 
 interface ProfilesSelectProps {
   name: string
@@ -117,17 +117,16 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                     />
                   </Grid>
                   <Grid item xs={6} sm={4}>
-                    <SkillsSelect
+                    <LabSelect
+                      type="skills"
                       customOnChange={(value) => {
                         row.practicedSkills = value
                         input.onChange(input.value)
                       }}
                       defaultValue={row.practicedSkills}
                       fullWidth={true}
-                      label="Skills"
                       name={`practicedSkills-${row.profileId}`}
                       size="small"
-                      style={{ margin: 0 }}
                     />
                   </Grid>
                   <Grid item xs={6} sm={2} style={{ textAlign: "center" }}>

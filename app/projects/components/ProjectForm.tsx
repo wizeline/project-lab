@@ -7,9 +7,6 @@ import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { LabeledTextFieldArea } from "app/core/components/LabeledTextFieldArea"
 import { InputSelect } from "app/core/components/InputSelect"
-import { SkillsSelect } from "app/core/components/SkillsSelect"
-import { DisciplinesSelect } from "app/core/components/DisciplinesSelect"
-import { LabelsSelect } from "app/core/components/LabelsSelect"
 import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
 import TextEditor from "app/core/components/TextEditor"
@@ -20,6 +17,7 @@ import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/co
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
 import { TireRepairSharp } from "@mui/icons-material"
 import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
+import { LabSelect } from "app/core/components/LabSelect"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -113,9 +111,9 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
             disabled={user?.role !== adminRoleName}
           />
         )}
-        <SkillsSelect name="skills" label="Skills" />
-        <DisciplinesSelect name="disciplines" label="Looking for..." />
-        <LabelsSelect name="labels" label="Labels" />
+        <LabSelect type="skills" name="skills" />
+        <LabSelect type="disciplines" name="disciplines" label="Looking for..." />
+        <LabSelect type="labels" name="labels" fullWidth />
         {projectformType !== "create" && (
           <InputSelect
             valuesList={tiers}

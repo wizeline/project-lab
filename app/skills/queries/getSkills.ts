@@ -7,12 +7,7 @@ interface GetSkillsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetSkillsInput) => {
-    const {
-      items: skills,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
+    const { items, hasMore, nextPage, count } = await paginate({
       skip,
       take,
       count: () => db.skills.count({ where }),
@@ -20,7 +15,8 @@ export default resolver.pipe(
     })
 
     return {
-      skills,
+      items,
+      skills: items,
       nextPage,
       hasMore,
       count,

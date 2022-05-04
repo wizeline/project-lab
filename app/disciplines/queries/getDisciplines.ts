@@ -7,12 +7,7 @@ interface GetDisciplinesInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetDisciplinesInput) => {
-    const {
-      items: disciplines,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
+    const { items, hasMore, nextPage, count } = await paginate({
       skip,
       take,
       count: () => db.disciplines.count({ where }),
@@ -20,7 +15,7 @@ export default resolver.pipe(
     })
 
     return {
-      disciplines,
+      items,
       nextPage,
       hasMore,
       count,
