@@ -6,7 +6,7 @@ import ModalBox from "app/core/components/ModalBox"
 import Button from "@mui/material/Button"
 
 import useProjectMembers from "app/projects/hooks/useProjectMembers"
-import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { LabSelect } from "app/core/components/LabSelect"
 import { Grid, FormDivContainer, CommitmentDivContainer } from "./joinProjectModal.styles"
 import { Routes, useRouter } from "blitz"
 
@@ -86,7 +86,7 @@ const JoinProjectModal = (props: IProps) => {
             />
 
             <p className="question">Which skills are you practicing?</p>
-            <SkillsSelect name="practicedSkills" label="Skills" />
+            <LabSelect type="skills" name="practicedSkills" />
           </FormDivContainer>
 
           <CommitmentDivContainer>

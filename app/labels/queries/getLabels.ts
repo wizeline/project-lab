@@ -8,12 +8,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetLabelsInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const {
-      items: labels,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
+    const { items, hasMore, nextPage, count } = await paginate({
       skip,
       take,
       count: () => db.labels.count({ where }),
@@ -21,7 +16,7 @@ export default resolver.pipe(
     })
 
     return {
-      labels,
+      items,
       nextPage,
       hasMore,
       count,
