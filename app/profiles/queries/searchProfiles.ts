@@ -1,5 +1,6 @@
 import { resolver } from "blitz"
 import db from "db"
+import { Prisma } from "@prisma/client"
 
 export default resolver.pipe(resolver.authorize(), async (search: String) => {
   const select = `
@@ -14,7 +15,7 @@ export default resolver.pipe(resolver.authorize(), async (search: String) => {
   if (search && search !== "") {
     const prefixSearch = `"${search}"*`
     const where = "WHERE profiles_idx match ?"
-    result = await db.$queryRaw(
+    result = await db.$queryRawUnsafe(
       `
       ${select}
       ${where}
@@ -23,10 +24,10 @@ export default resolver.pipe(resolver.authorize(), async (search: String) => {
       prefixSearch
     )
   } else {
-    result = await db.$queryRaw(`
+    result = await db.$queryRaw`
       ${select}
       ${orderBy}
-    `)
+    `
   }
   return result
 })
