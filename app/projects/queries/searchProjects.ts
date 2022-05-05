@@ -25,6 +25,7 @@ interface SearchProjectsOutput {
   color: string
   votesCount: string
   projectMembers: string
+  owner: string
 }
 
 interface CountOutput {
@@ -125,10 +126,13 @@ export default resolver.pipe(
         whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
       strIdx++
     }
+    whereString += ` OR pm.profileId == '${session.profileId}'`
+
     const projects = await db.$queryRawUnsafe<SearchProjectsOutput[]>(
       `SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
         p.createdAt,
         p.updatedAt,
+        p.ownerId,
       COUNT(DISTINCT pm.profileId) as projectMembers
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
