@@ -279,7 +279,7 @@ export const Projects = () => {
               className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
               onClick={() => handleTabChange("myProposals")}
             >
-              My proposals
+              My Projects
             </div>
           </div>
         </div>
@@ -444,7 +444,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Proposals"}>
+              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Projects"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>

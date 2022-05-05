@@ -99,7 +99,7 @@ const ProjectsPage: BlitzPage = () => {
             </div>
           </div>
           <div className="homeWrapper__myProposals">
-            <CardBox title="My proposals">
+            <CardBox title="My Projects">
               <div className="homeWrapper__myProposals">{myProjects.map(mapRenderProposals)}</div>
             </CardBox>
           </div>
