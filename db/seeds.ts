@@ -505,7 +505,7 @@ const seed = async () => {
   console.info("Profiles created, starting projects upsert")
 
   try {
-    await db.projects.upsert({
+    const pH = await db.projects.upsert({
       where: { name: "Proposal Hunt" },
       update: {},
       create: {
@@ -538,7 +538,8 @@ const seed = async () => {
         },
       },
     })
-    await db.projects.upsert({
+    console.info("Project created:", pH.id, pH.name)
+    const pL = await db.projects.upsert({
       where: { name: "Project Lab" },
       update: {},
       create: {
@@ -606,7 +607,9 @@ const seed = async () => {
         },
       },
     })
-    await db.projects.upsert({
+    console.info("Project created:", pL.id, pL.name)
+
+    const wS = await db.projects.upsert({
       where: { name: "Wizepace" },
       update: {},
       create: {
@@ -645,7 +648,9 @@ const seed = async () => {
         },
       },
     })
-    await db.projects.upsert({
+    console.info("Project created:", wS.id, wS.name)
+
+    const wR = await db.projects.upsert({
       where: { name: "WizeRunner" },
       update: {},
       create: {
@@ -680,7 +685,9 @@ const seed = async () => {
         },
       },
     })
-    await db.projects.upsert({
+    console.info("Project created:", wR.id, wR.name)
+
+    const sC = await db.projects.upsert({
       where: { name: "Sorting Cat / Communities Platform" },
       update: {},
       create: {
@@ -722,6 +729,7 @@ const seed = async () => {
         },
       },
     })
+    console.info("Project created:", sC.id, sC.name)
   } catch (e) {
     console.log("Error:", e)
   }
