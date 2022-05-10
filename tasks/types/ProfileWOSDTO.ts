@@ -11,4 +11,5 @@ export default class ProfileWOSDTO {
   terminatedAt?: string
   locationId: string
   constructor() {}
+  deleted: boolean
 }

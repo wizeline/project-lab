@@ -50,6 +50,7 @@ const mockDataProviderGetProfilesFromWizelineOS = jest.fn((): Promise<ProfileWOS
       jobLevelTier: "string",
       department: "string",
       locationId: "locationId",
+      deleted: false,
     },
   ])
 })
@@ -104,6 +105,7 @@ const mockDataProviderUpdatedGetProfilesFromWizelineOS = jest.fn((): Promise<Pro
       jobLevelTier: "string",
       department: "string",
       locationId: "locationId",
+      deleted: false,
     },
   ])
 })
