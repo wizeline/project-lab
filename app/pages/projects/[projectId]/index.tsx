@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Fragment, Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import {
   Link,
@@ -336,10 +336,12 @@ export const Project = () => {
                 >
                   {member?.active ? "Suspend my Membership" : "Join Project Again"}
                 </Button>
-              ) : (
+              ) : project.helpWanted ? (
                 <Button className="primary large" onClick={handleJoinProject}>
                   Want to Join?
                 </Button>
+              ) : (
+                <Fragment> </Fragment>
               )}
             </Stack>
           </Grid>
