@@ -103,9 +103,13 @@ const Wrapper = styled.div<wrapperProps>`
   }
   .homeWrapper__myProposals--list {
     list-style-type: none;
+    font-size: 0.8em;
   }
   .homeWrapper__accordion {
     box-shadow: none;
+  }
+  .homeWrapper__accordion::before {
+    background-color: transparent !important;
   }
   .pageButton {
     margin-right: 10px;
@@ -125,7 +129,27 @@ const Wrapper = styled.div<wrapperProps>`
   .filter__mobile-button {
     display: none;
   }
-
+  .filter__title {
+    display: flex;
+    justify-content: center;
+    color: #252a2f;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .filter__box {
+    padding: 15px 13px;
+  }
+  .filter__content__card {
+    margin-top: 0px !important;
+  }
+  .homeWrapper__accordion .MuiAccordionSummary-root {
+    min-height: 30px;
+  }
+  .homeWrapper__accordion .MuiPaper-root {
+  }
+  .accordion__filter__title .MuiAccordionSummary-content {
+    margin: 0px;
+  }
   @media (max-width: 1025px) {
     margin-top: 10px;
 
@@ -201,6 +225,9 @@ const Wrapper = styled.div<wrapperProps>`
   @media (max-width: 480px) {
     .homeWrapper__navbar__sort {
       justify-content: space-around;
+    }
+    .homeWrapper__myProposals--list {
+      font-size: 0.9em;
     }
   }
 `
