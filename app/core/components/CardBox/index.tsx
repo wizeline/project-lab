@@ -4,13 +4,22 @@ import { CardBoxStyle } from "./CardBox.styles"
 interface IProps {
   children: React.ReactNode
   title?: string
+  className?: string
+  titleClassName?: string
+  bodyClassName?: string
 }
 
-export const CardBox = ({ children, title }: IProps) => {
+export const CardBox = ({ children, title, className, titleClassName, bodyClassName }: IProps) => {
   return (
-    <CardBoxStyle>
-      {title != null && <div className={"CardBox--title"}>{title}</div>}
-      <div className="CardBox--content">{children}</div>
+    <CardBoxStyle className={className != null ? className : ""}>
+      {title != null && (
+        <div className={`CardBox--title ${titleClassName != null ? titleClassName : ""}`}>
+          {title}
+        </div>
+      )}
+      <div className={`CardBox--content ${bodyClassName != null ? bodyClassName : ""}`}>
+        {children}
+      </div>
     </CardBoxStyle>
   )
 }

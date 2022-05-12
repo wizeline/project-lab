@@ -176,26 +176,25 @@ export const Projects = () => {
   }
 
   const makeChips = () => {
-    let chipsComponent = (
-      <>
-        <span></span>
-      </>
-    )
+    let chipsComponent = <></>
 
     if (chips.length > 0) {
       chipsComponent = (
-        <CardBox title="Selected Filters">
-          {chips.map((filter) => (
-            <Chip
-              key={filter}
-              label={filter}
-              size="small"
-              variant="outlined"
-              className="homeWrapper__myProposals--filters"
-              onDelete={() => deleteFilter(filter)}
-            />
-          ))}
-        </CardBox>
+        <div>
+          <div className="filter__title">Selected Filters</div>
+          <>
+            {chips.map((filter) => (
+              <Chip
+                key={filter}
+                label={filter}
+                size="small"
+                variant="outlined"
+                className="homeWrapper__myProposals--filters"
+                onDelete={() => deleteFilter(filter)}
+              />
+            ))}
+          </>
+        </div>
       )
     }
 
@@ -285,21 +284,23 @@ export const Projects = () => {
         </div>
         <div className="homeWrapper--content">
           <div className="homeWrapper__myProposals">
-            {makeChips()}
-            <CardBox title="Filters">
+            <CardBox className="filter__box" bodyClassName="filter__content__card">
               <div>
                 <CloseIcon
                   fontSize="large"
                   className="filter__mobile-close-button"
                   onClick={handleMobileFilters}
                 />
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                {makeChips()}
+                <div className="filter__title">Filters</div>
+                <Accordion disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel1a-controls"
                     id="panel1a-header"
+                    className="accordion__filter__title"
                   >
-                    <h3>{statusFacets.length > 0 ? "Status" : ""}</h3>
+                    <h4>{statusFacets.length > 0 ? "Status" : ""}</h4>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
@@ -332,13 +333,14 @@ export const Projects = () => {
                     </ul>
                   </AccordionDetails>
                 </Accordion>
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                <Accordion disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel1a-controls"
                     id="panel1a-header"
+                    className="accordion__filter__title"
                   >
-                    <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
+                    <h4>{categoryFacets.length > 0 ? "Categories" : ""}</h4>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
@@ -359,13 +361,14 @@ export const Projects = () => {
                   </AccordionDetails>
                 </Accordion>
 
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                <Accordion disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel2a-controls"
                     id="panel2a-header"
+                    className="accordion__filter__title"
                   >
-                    <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
+                    <h4>{skillFacets.length > 0 ? "Skills" : ""}</h4>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
@@ -386,13 +389,14 @@ export const Projects = () => {
                   </AccordionDetails>
                 </Accordion>
 
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                <Accordion disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel2a-controls"
                     id="panel2a-header"
+                    className="accordion__filter__title"
                   >
-                    <h3>{disciplineFacets.length > 0 ? "Looking for" : ""}</h3>
+                    <h4>{disciplineFacets.length > 0 ? "Looking for" : ""}</h4>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
@@ -413,13 +417,14 @@ export const Projects = () => {
                   </AccordionDetails>
                 </Accordion>
 
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
+                <Accordion disableGutters className="homeWrapper__accordion">
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel3a-controls"
                     id="panel3a-header"
+                    className="accordion__filter__title"
                   >
-                    <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
+                    <h4>{labelFacets.length > 0 ? "Labels" : ""}</h4>
                   </AccordionSummary>
                   <AccordionDetails>
                     <ul className="homeWrapper__myProposals--list">
