@@ -35,6 +35,22 @@ export default async function syncCatalogs(
     return
   }
 
+  const skillsIds = skillsFromWizelineOs.map((skill) => {
+    return skill.id
+  })
+
+  const locationsIds = locationsFromWizelineOs.map((location) => {
+    return location.id
+  })
+
+  const jobTitleSkillIds = jobTitlesFromWizelineOs.map((skill) => {
+    return skill.id
+  })
+
+  const profileIds = profilesFromWizelineOS.map((profile) => {
+    return profile.id
+  })
+
   const skillsUpserts = skillsFromWizelineOs.map((skill) => {
     return db.skills.upsert({
       where: { id: skill.id },
@@ -73,33 +89,9 @@ export default async function syncCatalogs(
   })
 
   await db.$transaction([
-    db.skills.deleteMany({
-      where: {
-        id: {
-          notIn: skillsFromWizelineOs.map((skill) => {
-            return skill.id
-          }),
-        },
-      },
-    }),
-    db.jobTitles.deleteMany({
-      where: {
-        id: {
-          notIn: jobTitlesFromWizelineOs.map((skill) => {
-            return skill.id
-          }),
-        },
-      },
-    }),
-    db.locations.deleteMany({
-      where: {
-        id: {
-          notIn: locationsFromWizelineOs.map((skill) => {
-            return skill.id
-          }),
-        },
-      },
-    }),
+    db.$queryRaw`DELETE FROM JobTitles WHERE id NOT IN (${jobTitleSkillIds.join(",")})`,
+    db.$queryRaw`DELETE FROM Locations WHERE id NOT IN (${locationsIds.join(",")})`,
+    db.$queryRaw`DELETE FROM Skills WHERE id NOT IN (${skillsIds.join(",")})`,
     ...skillsUpserts,
     ...jobTitlesUpserts,
     ...locationsUpserts,
@@ -110,18 +102,7 @@ export default async function syncCatalogs(
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
 
   await db.$transaction([
-    db.profiles.updateMany({
-      where: {
-        id: {
-          notIn: profilesFromWizelineOS.map((profile) => {
-            return profile.id
-          }),
-        },
-      },
-      data: {
-        deleted: true,
-      },
-    }),
+    db.$queryRaw`UPDATE Profiles SET deleted=1 WHERE id NOT IN (${profileIds.join(",")})`,
     ...profilesUpsert,
   ])
 
