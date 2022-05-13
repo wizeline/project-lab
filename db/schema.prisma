@@ -186,6 +186,7 @@ model Projects {
   comments               Comments[]
   stages                 ProjectStages[]
   isArchived             Boolean                  @default(false)
+  helpWanted             Boolean                  @default(true)
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
