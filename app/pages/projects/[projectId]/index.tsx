@@ -336,15 +336,12 @@ export const Project = () => {
                 >
                   {member?.active ? "Suspend my Membership" : "Join Project Again"}
                 </Button>
-project.helpWanted && (
-                 <Button className="primary large" onClick={handleJoinProject}>
-                  Want to Join?
-                </Button> )
-                <Button className="primary large" onClick={handleJoinProject}>
-                  Want to Join?
-                </Button>
               ) : (
-                <Fragment> </Fragment>
+                project.helpWanted && (
+                  <Button className="primary large" onClick={handleJoinProject}>
+                    Want to Join?
+                  </Button>
+                )
               )}
             </Stack>
           </Grid>
