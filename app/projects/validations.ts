@@ -78,6 +78,7 @@ export const FullFormFields = {
     .optional(),
   projectMembers,
   innovationTiers: z.object({ name: z.string() }).optional(),
+  helpWanted: z.boolean().optional(),
 }
 
 const extractSearchSkills = (val) => {
