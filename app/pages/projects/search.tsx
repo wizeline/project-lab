@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from "react"
 import styled from "@emotion/styled"
-import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
+import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes, useSession } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import Loader from "app/core/components/Loader"
 import searchProjects from "app/projects/queries/searchProjects"
@@ -40,6 +40,7 @@ const ITEMS_PER_PAGE = 50
 export const Projects = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
+  const user = useSession()
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
@@ -115,6 +116,7 @@ export const Projects = () => {
         skills={
           item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
         }
+        isOwner={item.ownerId === user.profileId}
       />
     )
   }
@@ -277,7 +279,7 @@ export const Projects = () => {
               className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
               onClick={() => handleTabChange("myProposals")}
             >
-              My proposals
+              My Projects
             </div>
           </div>
         </div>
@@ -442,7 +444,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Proposals"}>
+              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Projects"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>
