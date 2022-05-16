@@ -19,4 +19,3 @@ export const CardBoxStyle = styled.div`
     }
   }
 `
-CardBoxStyle.defaultProps = {}
