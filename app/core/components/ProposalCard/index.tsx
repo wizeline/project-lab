@@ -18,6 +18,7 @@ interface IProps {
   color: any
   votesCount?: number | null
   skills?: { name: string }[]
+  isOwner?: boolean
 }
 
 export const ProposalCard = (props: IProps) => {
@@ -47,6 +48,9 @@ export const ProposalCard = (props: IProps) => {
                   <div className="ProposalCard__head__description">
                     <div className="ProposalCard__head__description--title">{props.title}</div>
                     <div className="ProposalCard__head__description--date">{props.date}</div>
+                    <div className="ProposalCard__head__description--isOwner">
+                      {props.isOwner && <p>Owner</p>}
+                    </div>
                   </div>
                 </div>
                 <div className="ProposalCard--description">
