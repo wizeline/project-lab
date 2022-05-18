@@ -21,6 +21,7 @@ type SearchFilters = {
   label: string[]
   projectStatus: string[]
   discipline: string[]
+  location: string[]
 }
 
 type queryItems = {
@@ -32,6 +33,7 @@ type queryItems = {
   label?: string
   discipline?: string
   projectStatus?: string
+  location?: string
   count?: number
 }
 
@@ -44,7 +46,8 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label, projectStatus, discipline }: queryItems = router.query
+  const { status, category, skill, label, projectStatus, discipline, location }: queryItems =
+    router.query
   const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
@@ -54,6 +57,7 @@ export const Projects = () => {
     label: label ? [label] : [],
     discipline: discipline ? [discipline] : [],
     projectStatus: projectStatus ? [projectStatus] : [],
+    location: location ? [location] : [],
   })
 
   useEffect(() => {
@@ -73,6 +77,7 @@ export const Projects = () => {
       disciplineFacets,
       labelFacets,
       projectFacets,
+      locationsFacets,
       count,
     },
   ] = useQuery(searchProjects, {
@@ -83,6 +88,7 @@ export const Projects = () => {
     label,
     projectStatus,
     discipline,
+    location,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -226,8 +232,9 @@ export const Projects = () => {
       label: label ? [label] : [],
       discipline: discipline ? [discipline] : [],
       projectStatus: projectStatus ? [projectStatus] : [],
+      location: location ? [location] : [],
     })
-  }, [router.query.q, status, category, skill, label, discipline, projectStatus])
+  }, [router.query.q, status, category, skill, label, discipline, projectStatus, location])
 
   useEffect(() => {
     if (isFirstLoading) {
@@ -442,6 +449,35 @@ export const Projects = () => {
                               href=""
                               color="#AF2E33"
                               onClick={(e) => goToSearchWithFilters(e, "label")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {locationsFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Locations</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {locationsFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "location")}
                             >
                               {item.name} ({item.count})
                             </Link>
