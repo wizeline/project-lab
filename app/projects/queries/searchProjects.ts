@@ -8,6 +8,7 @@ interface SearchProjectsInput {
   category: any
   skill: any
   discipline: any
+  tier: any
   location: any
   label: any
   skip: number
@@ -58,6 +59,7 @@ export default resolver.pipe(
       discipline,
       label,
       projectStatus,
+      tier,
       location,
       orderBy,
       skip = 0,
@@ -91,6 +93,11 @@ export default resolver.pipe(
     if (discipline) {
       const disciplines = typeof discipline === "string" ? [discipline] : discipline
       where = Prisma.sql`${where} AND Disciplines.name IN (${Prisma.join(disciplines)})`
+    }
+
+    if (tier) {
+      const tiers = typeof tier === "string" ? [tier] : tier
+      where = Prisma.sql`${where} AND tierName IN (${Prisma.join(tiers)})`
     }
 
     if (label) {
@@ -146,6 +153,7 @@ export default resolver.pipe(
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN Vote v on v.projectId = p.id
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
@@ -168,6 +176,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it  ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -184,6 +193,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -202,6 +212,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -223,6 +234,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -245,6 +257,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -266,6 +279,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -289,6 +303,7 @@ export default resolver.pipe(
      INNER JOIN Profiles pr on pr.id = p.ownerId
      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
      INNER JOIN Locations loc ON loc.id = pr.locationId
+     INNER JOIN InnovationTiers it ON it.name = p.tierName
      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
      LEFT JOIN Skills ON _ps.B = Skills.id
      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -300,6 +315,24 @@ export default resolver.pipe(
      GROUP BY p.isArchived
      ORDER BY p.isArchived ASC`
 
+    const tierFacets = await db.$queryRaw<FacetOutput[]>`
+     SELECT it.name, COUNT(DISTINCT p.id) as count
+     FROM Projects p
+     INNER JOIN ProjectStatus s on  s.name = p.status
+     INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+     INNER JOIN Profiles pr on pr.id = p.ownerId
+     INNER JOIN Locations loc ON loc.id = pr.locationId
+     INNER JOIN InnovationTiers it ON it.name = p.tierName
+     LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+     LEFT JOIN Skills ON _ps.B = Skills.id
+     LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+     LEFT JOIN Labels ON _lp.A = Labels.id
+     LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+     LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+     ${where}
+     GROUP BY it.name
+     ORDER BY count DESC, it.name;`
+
     const locationsFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT loc.name, loc.id, count(DISTINCT p.id) as count
       FROM Projects p
@@ -308,6 +341,7 @@ export default resolver.pipe(
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -337,6 +371,7 @@ export default resolver.pipe(
       labelFacets,
       projectFacets,
       disciplineFacets,
+      tierFacets,
       locationsFacets,
     }
   }

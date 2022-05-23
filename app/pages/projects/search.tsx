@@ -21,6 +21,7 @@ type SearchFilters = {
   label: string[]
   projectStatus: string[]
   discipline: string[]
+  tier: string[]
   location: string[]
 }
 
@@ -33,6 +34,7 @@ type queryItems = {
   label?: string
   discipline?: string
   projectStatus?: string
+  tier?: string
   location?: string
   count?: number
 }
@@ -46,7 +48,7 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label, projectStatus, discipline, location }: queryItems =
+  const { status, category, skill, label, projectStatus, discipline, location, tier }: queryItems =
     router.query
   const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
@@ -57,6 +59,7 @@ export const Projects = () => {
     label: label ? [label] : [],
     discipline: discipline ? [discipline] : [],
     projectStatus: projectStatus ? [projectStatus] : [],
+    tier: tier ? [tier] : [],
     location: location ? [location] : [],
   })
 
@@ -77,6 +80,7 @@ export const Projects = () => {
       disciplineFacets,
       labelFacets,
       projectFacets,
+      tierFacets,
       locationsFacets,
       count,
     },
@@ -88,6 +92,7 @@ export const Projects = () => {
     label,
     projectStatus,
     discipline,
+    tier,
     location,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
@@ -232,9 +237,10 @@ export const Projects = () => {
       label: label ? [label] : [],
       discipline: discipline ? [discipline] : [],
       projectStatus: projectStatus ? [projectStatus] : [],
+      tier: tier ? [tier] : [],
       location: location ? [location] : [],
     })
-  }, [router.query.q, status, category, skill, label, discipline, projectStatus, location])
+  }, [router.query.q, status, category, skill, label, discipline, projectStatus, tier, location])
 
   useEffect(() => {
     if (isFirstLoading) {
@@ -449,6 +455,35 @@ export const Projects = () => {
                               href=""
                               color="#AF2E33"
                               onClick={(e) => goToSearchWithFilters(e, "label")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {tierFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Innovation tiers</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {tierFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "tier")}
                             >
                               {item.name} ({item.count})
                             </Link>
