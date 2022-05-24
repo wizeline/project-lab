@@ -1,15 +1,15 @@
 import { useMutation } from "blitz"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { Form, FORM_ERROR } from "app/core/components/Form"
-import signup from "app/auth/mutations/signup"
+import testLogin from "app/auth/mutations/testLogin"
 import { Signup } from "app/auth/validations"
 
-type SignupFormProps = {
+type TestLoginFormProps = {
   onSuccess?: () => void
 }
 
-export const SignupForm = (props: SignupFormProps) => {
-  const [signupMutation] = useMutation(signup)
+export const TestLoginForm = (props: TestLoginFormProps) => {
+  const [testLoginMutation] = useMutation(testLogin)
 
   return (
     <div>
@@ -21,7 +21,7 @@ export const SignupForm = (props: SignupFormProps) => {
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {
           try {
-            await signupMutation(values)
+            await testLoginMutation(values)
             props.onSuccess?.()
           } catch (error) {
             if (error.code === "P2002" && error.meta?.target?.includes("email")) {
@@ -40,4 +40,4 @@ export const SignupForm = (props: SignupFormProps) => {
   )
 }
 
-export default SignupForm
+export default TestLoginForm
