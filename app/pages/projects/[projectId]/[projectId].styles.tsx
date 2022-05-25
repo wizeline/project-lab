@@ -78,6 +78,11 @@ export const DetailMoreHead = styled.div`
     text-align: center;
   }
 
+  .innovationTier {
+    color: blue;
+    text-decoration: underline blue;
+  }
+
   @media (max-width: 599px) {
     .itemHeadValue {
       margin-bottom: 18px;

@@ -8,6 +8,8 @@ interface SearchProjectsInput {
   category: any
   skill: any
   discipline: any
+  tier: any
+  location: any
   label: any
   skip: number
   take: number
@@ -25,6 +27,7 @@ interface SearchProjectsOutput {
   color: string
   votesCount: string
   projectMembers: string
+  owner: string
 }
 
 interface CountOutput {
@@ -56,6 +59,8 @@ export default resolver.pipe(
       discipline,
       label,
       projectStatus,
+      tier,
+      location,
       orderBy,
       skip = 0,
       take = 50,
@@ -67,7 +72,7 @@ export default resolver.pipe(
     if (search && search !== "") {
       search !== "myProposals"
         ? (where = Prisma.sql`WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
-        : (where = Prisma.sql`WHERE ownerId == ${session.profileId}`)
+        : (where = Prisma.sql`WHERE pm.profileId == ${session.profileId}`)
     }
 
     if (status) {
@@ -88,6 +93,11 @@ export default resolver.pipe(
     if (discipline) {
       const disciplines = typeof discipline === "string" ? [discipline] : discipline
       where = Prisma.sql`${where} AND Disciplines.name IN (${Prisma.join(disciplines)})`
+    }
+
+    if (tier) {
+      const tiers = typeof tier === "string" ? [tier] : tier
+      where = Prisma.sql`${where} AND tierName IN (${Prisma.join(tiers)})`
     }
 
     if (label) {
@@ -111,6 +121,11 @@ export default resolver.pipe(
         where = Prisma.sql` ${where} AND p.isArchived== ${Prisma.join(filterValue)}`
     }
 
+    if (location) {
+      const locationSelected = typeof location === "string" ? [location] : location
+      where = Prisma.sql`${where} AND loc.name == ${Prisma.join(locationSelected)}`
+    }
+
     // order by string for sorting
     const orderByText = `${
       orderBy.field === "projectMembers" || orderBy.field === "votesCount" ? "" : "p."
@@ -125,16 +140,20 @@ export default resolver.pipe(
         whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
       strIdx++
     }
+
     const projects = await db.$queryRawUnsafe<SearchProjectsOutput[]>(
       `SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
         p.createdAt,
         p.updatedAt,
+        p.ownerId,
       COUNT(DISTINCT pm.profileId) as projectMembers
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
       INNER JOIN Profiles pr on pr.id = p.ownerId
       INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN Vote v on v.projectId = p.id
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
@@ -154,6 +173,10 @@ export default resolver.pipe(
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it  ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -167,6 +190,10 @@ export default resolver.pipe(
       SELECT s.name, COUNT(DISTINCT p.id) as count
       FROM Projects p
       INNER JOIN ProjectStatus s on  s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -182,6 +209,10 @@ export default resolver.pipe(
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -200,6 +231,10 @@ export default resolver.pipe(
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -219,6 +254,10 @@ export default resolver.pipe(
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -237,6 +276,10 @@ export default resolver.pipe(
       FROM Projects p
       INNER JOIN projects_idx ON projects_idx.id = p.id
       INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
       LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
       LEFT JOIN Skills ON _ps.B = Skills.id
       LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -259,6 +302,8 @@ export default resolver.pipe(
      INNER JOIN ProjectStatus s on s.name = p.status
      INNER JOIN Profiles pr on pr.id = p.ownerId
      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+     INNER JOIN Locations loc ON loc.id = pr.locationId
+     INNER JOIN InnovationTiers it ON it.name = p.tierName
      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
      LEFT JOIN Skills ON _ps.B = Skills.id
      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
@@ -269,6 +314,46 @@ export default resolver.pipe(
      )
      GROUP BY p.isArchived
      ORDER BY p.isArchived ASC`
+
+    const tierFacets = await db.$queryRaw<FacetOutput[]>`
+     SELECT it.name, COUNT(DISTINCT p.id) as count
+     FROM Projects p
+     INNER JOIN ProjectStatus s on  s.name = p.status
+     INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+     INNER JOIN Profiles pr on pr.id = p.ownerId
+     INNER JOIN Locations loc ON loc.id = pr.locationId
+     INNER JOIN InnovationTiers it ON it.name = p.tierName
+     LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+     LEFT JOIN Skills ON _ps.B = Skills.id
+     LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+     LEFT JOIN Labels ON _lp.A = Labels.id
+     LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+     LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+     ${where}
+     GROUP BY it.name
+     ORDER BY count DESC, it.name;`
+
+    const locationsFacets = await db.$queryRaw<FacetOutput[]>`
+      SELECT loc.name, loc.id, count(DISTINCT p.id) as count
+      FROM Projects p
+      INNER JOIN projects_idx ON projects_idx.id = p.id
+      INNER JOIN ProjectStatus s on s.name = p.status
+      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
+      INNER JOIN Profiles pr on pr.id = p.ownerId
+      INNER JOIN Locations loc ON loc.id = pr.locationId
+      INNER JOIN InnovationTiers it ON it.name = p.tierName
+      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
+      LEFT JOIN Skills ON _ps.B = Skills.id
+      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
+      LEFT JOIN Labels ON _lp.A = Labels.id
+      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
+      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      ${where}
+      AND loc.name IS NOT NULL
+      AND loc.id IS NOT NULL
+      GROUP BY loc.name
+      ORDER BY count DESC
+    `
 
     if (countResult.length < 1) throw new SearchProjectsError()
 
@@ -286,6 +371,8 @@ export default resolver.pipe(
       labelFacets,
       projectFacets,
       disciplineFacets,
+      tierFacets,
+      locationsFacets,
     }
   }
 )

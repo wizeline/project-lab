@@ -213,7 +213,13 @@ export const Project = () => {
                 <div className="itemHeadName">Innovation Tier:</div>
               </Grid>
               <Grid item>
-                <div className="itemHeadValue">{project.tierName}</div>
+                <a
+                  href="https://wizeline.atlassian.net/wiki/spaces/wiki/pages/3075342381/Innovation+Tiers"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <div className="itemHeadValue innovationTier">{project.tierName}</div>
+                </a>
               </Grid>
             </Grid>
           </Grid>
