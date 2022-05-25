@@ -112,7 +112,7 @@ jobs:
 
       - id: get-lightsail-ssh-key
         name: Get Lightsail Private SSH Key
-        run: mkdir ~/.ssh && aws lightsail download-default-key-pair --profile ${{ steps.repo-name.outputs.REPO_NAME }} | jq '.privateKeyBase64' | tr -d '"' | sed 's/\\n/\n/g' > ~/.ssh/lightsail.pem
+        run: mkdir ~/.ssh && aws lightsail download-default-key-pair | jq '.privateKeyBase64' | tr -d '"' | sed 's/\\n/\n/g' > ~/.ssh/lightsail.pem
 
       - name: Prepare Server For Build
         uses: appleboy/ssh-action@master
