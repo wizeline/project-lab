@@ -13,10 +13,10 @@ export const TestLoginForm = (props: TestLoginFormProps) => {
 
   return (
     <div>
-      <h1>Create an Account</h1>
+      <h1>Test login</h1>
 
       <Form
-        submitText="Create Account"
+        submitText="Login"
         schema={Signup}
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {

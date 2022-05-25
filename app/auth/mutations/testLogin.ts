@@ -5,7 +5,11 @@ import { getUserProfile } from "app/auth/mutations/login"
 import { Role } from "types"
 
 export default resolver.pipe(resolver.zod(Signup), async ({ email, password }, ctx) => {
-  if (email !== "test@wizeline.com" || password !== process.env.TEST_USER_PASSWORD) {
+  if (
+    email !== "test@wizeline.com" ||
+    password !== process.env.TEST_USER_PASSWORD ||
+    process.env.NODE_ENV === "production"
+  ) {
     throw new AuthenticationError()
   }
   const hashedPassword = await SecurePassword.hash(password.trim())
