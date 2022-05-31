@@ -24,10 +24,10 @@ export default resolver.pipe(resolver.authorize(), async (search: String) => {
       prefixSearch
     )
   } else {
-    result = await db.$queryRaw`
+    result = await db.$queryRawUnsafe(`
       ${select}
       ${orderBy}
-    `
+    `)
   }
   return result
 })
