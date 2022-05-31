@@ -65,6 +65,21 @@ export default resolver.pipe(
       }
     }
 
+    // Update RepoUrls
+    const projectRepoUrls = await db.repos.findMany({
+      where: { projectId: id },
+    })
+
+    for (let i = 0; i < projectRepoUrls.length; i++) {
+      if (!data.repoUrls.find((repo) => repo.id === projectRepoUrls[i]?.id)) {
+        await db.repos.delete({ where: { id: projectRepoUrls[i]?.id } })
+      }
+    }
+
+    const newRepos = data.repoUrls.filter(
+      (repo) => !projectRepoUrls.find((repoUrl) => repoUrl.id === repo.id)
+    )
+
     // Delete from Form values because We already updated the project members.
     delete data.projectMembers
     delete data.existedMembers
@@ -86,6 +101,9 @@ export default resolver.pipe(
         labels: {
           set: data.labels,
         },
+        repoUrls: {
+          create: newRepos,
+        },
         innovationTiers: { connect: { name: data.innovationTiers?.name } },
       },
       include: {
@@ -94,6 +112,7 @@ export default resolver.pipe(
         skills: true,
         disciplines: true,
         labels: true,
+        repoUrls: true,
         owner: true,
         stages: {
           include: {
