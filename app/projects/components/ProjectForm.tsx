@@ -20,6 +20,7 @@ import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/co
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
 import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
 import { LabeledSwitchField } from "app/core/components/LabeledSwitchField"
+import MultiValueField from "app/core/components/MultivalueInput"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -88,13 +89,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Who is your target user/client"
           placeholder="Millenials"
         />
-        <LabeledTextField
-          fullWidth
-          style={{ margin: "1em 0" }}
-          name="repoUrl"
-          label="Repo URL"
-          placeholder="https://github.com"
-        />
+        <MultiValueField name="repoUrls" label="Repo URLs" />
         <LabeledTextField
           fullWidth
           style={{ margin: "1em 0" }}

@@ -36,7 +36,7 @@ export function Form<S extends z.ZodType<any, any>>({
       validate={validateZodSchema(schema)}
       onSubmit={onSubmit}
       render={({ handleSubmit, submitting, submitError }) => (
-        <form onSubmit={handleSubmit} className="form" {...validFormProps}>
+        <form onSubmit={(e) => e.preventDefault()} className="form" {...validFormProps}>
           {/* Form fields supplied as children are rendered here */}
           {children}
 
@@ -51,8 +51,9 @@ export function Form<S extends z.ZodType<any, any>>({
               <button
                 style={fullWidthButton ? { width: "100%" } : {}}
                 className="primary"
-                type="submit"
+                type="button"
                 disabled={submitting || disabled}
+                onClick={handleSubmit}
               >
                 {submitText}
               </button>

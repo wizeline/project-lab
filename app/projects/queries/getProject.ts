@@ -36,6 +36,7 @@ export default resolver.pipe(
         },
         votes: { where: { projectId: id } },
         innovationTiers: true,
+        repoUrls: true,
       },
     })
 
