@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from "react"
 import styled from "@emotion/styled"
-import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes } from "blitz"
+import { useQuery, useRouter, useRouterQuery, Router, BlitzPage, Routes, useSession } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import Loader from "app/core/components/Loader"
 import searchProjects from "app/projects/queries/searchProjects"
@@ -21,6 +21,8 @@ type SearchFilters = {
   label: string[]
   projectStatus: string[]
   discipline: string[]
+  tier: string[]
+  location: string[]
 }
 
 type queryItems = {
@@ -32,6 +34,8 @@ type queryItems = {
   label?: string
   discipline?: string
   projectStatus?: string
+  tier?: string
+  location?: string
   count?: number
 }
 
@@ -40,10 +44,12 @@ const ITEMS_PER_PAGE = 50
 export const Projects = () => {
   //functions to load and paginate projects in `Popular` CardBox
   const router = useRouter()
+  const user = useSession()
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label, projectStatus, discipline }: queryItems = router.query
+  const { status, category, skill, label, projectStatus, discipline, location, tier }: queryItems =
+    router.query
   const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
@@ -53,6 +59,8 @@ export const Projects = () => {
     label: label ? [label] : [],
     discipline: discipline ? [discipline] : [],
     projectStatus: projectStatus ? [projectStatus] : [],
+    tier: tier ? [tier] : [],
+    location: location ? [location] : [],
   })
 
   useEffect(() => {
@@ -72,6 +80,8 @@ export const Projects = () => {
       disciplineFacets,
       labelFacets,
       projectFacets,
+      tierFacets,
+      locationsFacets,
       count,
     },
   ] = useQuery(searchProjects, {
@@ -82,6 +92,8 @@ export const Projects = () => {
     label,
     projectStatus,
     discipline,
+    tier,
+    location,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -115,6 +127,7 @@ export const Projects = () => {
         skills={
           item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
         }
+        isOwner={item.ownerId === user.profileId}
       />
     )
   }
@@ -174,26 +187,25 @@ export const Projects = () => {
   }
 
   const makeChips = () => {
-    let chipsComponent = (
-      <>
-        <span></span>
-      </>
-    )
+    let chipsComponent = <></>
 
     if (chips.length > 0) {
       chipsComponent = (
-        <CardBox title="Selected Filters">
-          {chips.map((filter) => (
-            <Chip
-              key={filter}
-              label={filter}
-              size="small"
-              variant="outlined"
-              className="homeWrapper__myProposals--filters"
-              onDelete={() => deleteFilter(filter)}
-            />
-          ))}
-        </CardBox>
+        <div>
+          <div className="filter__title">Selected Filters</div>
+          <>
+            {chips.map((filter) => (
+              <Chip
+                key={filter}
+                label={filter}
+                size="small"
+                variant="outlined"
+                className="homeWrapper__myProposals--filters"
+                onDelete={() => deleteFilter(filter)}
+              />
+            ))}
+          </>
+        </div>
       )
     }
 
@@ -225,8 +237,10 @@ export const Projects = () => {
       label: label ? [label] : [],
       discipline: discipline ? [discipline] : [],
       projectStatus: projectStatus ? [projectStatus] : [],
+      tier: tier ? [tier] : [],
+      location: location ? [location] : [],
     })
-  }, [router.query.q, status, category, skill, label, discipline, projectStatus])
+  }, [router.query.q, status, category, skill, label, discipline, projectStatus, tier, location])
 
   useEffect(() => {
     if (isFirstLoading) {
@@ -277,172 +291,243 @@ export const Projects = () => {
               className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
               onClick={() => handleTabChange("myProposals")}
             >
-              My proposals
+              My Projects
             </div>
           </div>
         </div>
         <div className="homeWrapper--content">
           <div className="homeWrapper__myProposals">
-            {makeChips()}
-            <CardBox title="Filters">
+            <CardBox className="filter__box" bodyClassName="filter__content__card">
               <div>
                 <CloseIcon
                   fontSize="large"
                   className="filter__mobile-close-button"
                   onClick={handleMobileFilters}
                 />
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel1a-controls"
-                    id="panel1a-header"
-                  >
-                    <h3>{statusFacets.length > 0 ? "Status" : ""}</h3>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <ul className="homeWrapper__myProposals--list">
-                      {projectFacets.map((item) => (
-                        <li key={item.Status ? "Archived" : "Active"}>
-                          <Link
-                            id={item.Status ? "Archived" : "Active"}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "projectStatus")}
-                          >
-                            {item.Status ? "Archived" : "Active"} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                      {statusFacets.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            id={item.name}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "status")}
-                          >
-                            {item.name} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel1a-controls"
-                    id="panel1a-header"
-                  >
-                    <h3>{categoryFacets.length > 0 ? "Categories" : ""}</h3>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <ul className="homeWrapper__myProposals--list">
-                      {categoryFacets.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            id={item.name}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "category")}
-                          >
-                            {item.name} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel2a-controls"
-                    id="panel2a-header"
-                  >
-                    <h3>{skillFacets.length > 0 ? "Skills" : ""}</h3>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <ul className="homeWrapper__myProposals--list">
-                      {skillFacets.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            id={item.name}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "skill")}
-                          >
-                            {item.name} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel2a-controls"
-                    id="panel2a-header"
-                  >
-                    <h3>{disciplineFacets.length > 0 ? "Looking for" : ""}</h3>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <ul className="homeWrapper__myProposals--list">
-                      {disciplineFacets.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            id={item.name}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "discipline")}
-                          >
-                            {item.name} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion defaultExpanded disableGutters className="homeWrapper__accordion">
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel3a-controls"
-                    id="panel3a-header"
-                  >
-                    <h3>{labelFacets.length > 0 ? "Labels" : ""}</h3>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <ul className="homeWrapper__myProposals--list">
-                      {labelFacets.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            id={item.name}
-                            underline="none"
-                            href=""
-                            color="#AF2E33"
-                            onClick={(e) => goToSearchWithFilters(e, "label")}
-                          >
-                            {item.name} ({item.count})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionDetails>
-                </Accordion>
+                {makeChips()}
+                <div className="filter__title">Filters</div>
+                {statusFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel1a-controls"
+                      id="panel1a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Status</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {projectFacets.map((item) => (
+                          <li key={item.Status ? "Archived" : "Active"}>
+                            <Link
+                              id={item.Status ? "Archived" : "Active"}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "projectStatus")}
+                            >
+                              {item.Status ? "Archived" : "Active"} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                        {statusFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "status")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {categoryFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel1a-controls"
+                      id="panel1a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Categories</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {categoryFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "category")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {skillFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Skills</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {skillFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "skill")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {disciplineFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Looking for</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {disciplineFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "discipline")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {labelFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Labels</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {labelFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "label")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {tierFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Innovation tiers</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {tierFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "tier")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {locationsFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Locations</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {locationsFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "location")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
               </div>
             </CardBox>
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Proposals"}>
+              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Projects"}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>
@@ -458,8 +543,8 @@ export const Projects = () => {
                     className={page == 0 ? "primary default pageButton" : "primary pageButton"}
                     onClick={goToPreviousPage}
                   >
-                    Previous{" "}
-                  </button>{" "}
+                    Previous
+                  </button>
                   <button
                     type="button"
                     disabled={!hasMore}

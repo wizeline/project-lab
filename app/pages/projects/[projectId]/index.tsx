@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Fragment, Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import {
   Link,
@@ -213,7 +213,13 @@ export const Project = () => {
                 <div className="itemHeadName">Innovation Tier:</div>
               </Grid>
               <Grid item>
-                <div className="itemHeadValue">{project.tierName}</div>
+                <a
+                  href="https://wizeline.atlassian.net/wiki/spaces/wiki/pages/3075342381/Innovation+Tiers"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <div className="itemHeadValue innovationTier">{project.tierName}</div>
+                </a>
               </Grid>
             </Grid>
           </Grid>
@@ -277,10 +283,10 @@ export const Project = () => {
                   </CardContent>
                 </Card>
               )}
-              {project.repoUrl && (
+              {project.repoUrls && (
                 <Card variant="outlined">
                   <CardContent>
-                    <big>Repo URL:</big>
+                    <big>Repos URLs:</big>
                     <Box
                       component="form"
                       sx={{
@@ -289,17 +295,13 @@ export const Project = () => {
                       noValidate
                       autoComplete="off"
                     >
-                      <TextField
-                        id="foo"
-                        defaultValue={project.repoUrl}
-                        variant="outlined"
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
+                      {project.repoUrls.map((item, index) => (
+                        <Stack spacing={2} key={index}>
+                          <a href={item.url} target="_blank" rel="noreferrer">
+                            {item.url}
+                          </a>
+                        </Stack>
+                      ))}
                     </Box>
                   </CardContent>
                 </Card>
@@ -337,9 +339,11 @@ export const Project = () => {
                   {member?.active ? "Suspend my Membership" : "Join Project Again"}
                 </Button>
               ) : (
-                <Button className="primary large" onClick={handleJoinProject}>
-                  Want to Join?
-                </Button>
+                project.helpWanted && (
+                  <Button className="primary large" onClick={handleJoinProject}>
+                    Want to Join?
+                  </Button>
+                )
               )}
             </Stack>
           </Grid>

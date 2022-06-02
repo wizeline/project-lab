@@ -42,6 +42,12 @@ export const ProposalCardWrap = styled.div`
     font-weight: 700;
     font-size: 12px;
   }
+  .ProposalCard__head__description--isOwner {
+    color: #e94d44;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: underline;
+  }
   .ProposalCard--description {
     height: 40px;
     color: #727e8c;

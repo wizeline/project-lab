@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useQuery } from "blitz"
-import { FormControlLabel, Switch, Collapse } from "@mui/material"
+import { FormControlLabel, Switch, Collapse, Checkbox } from "@mui/material"
 import { z } from "zod"
 
 import { Form, FormProps } from "app/core/components/Form"
@@ -18,8 +18,9 @@ import getCategories from "app/categories/queries/getCategories"
 import getStatuses from "app/statuses/queries/getStatuses"
 import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
-import { TireRepairSharp } from "@mui/icons-material"
 import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
+import { LabeledSwitchField } from "app/core/components/LabeledSwitchField"
+import MultiValueField from "app/core/components/MultivalueInput"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
@@ -63,6 +64,11 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Your proposal"
         placeholder="Explain us your proposal..."
       ></TextEditor>
+      <LabeledSwitchField
+        name="helpWanted"
+        label="Help wanted"
+        initialValues={initialValues ? initialValues.helpWanted : true}
+      />
 
       {projectformType === "create" && (
         <FormControlLabel
@@ -83,13 +89,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Who is your target user/client"
           placeholder="Millenials"
         />
-        <LabeledTextField
-          fullWidth
-          style={{ margin: "1em 0" }}
-          name="repoUrl"
-          label="Repo URL"
-          placeholder="https://github.com"
-        />
+        <MultiValueField name="repoUrls" label="Repo URLs" />
         <LabeledTextField
           fullWidth
           style={{ margin: "1em 0" }}
