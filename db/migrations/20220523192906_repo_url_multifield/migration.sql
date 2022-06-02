@@ -8,15 +8,14 @@
 -- CreateTable
 CREATE TABLE "Repos" (
     "id" INTEGER NOT NULL PRIMARY KEY,
-    "url" TEXT NOT NULL,
+    "url" TEXT NOT NULL UNIQUE,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "projectId" TEXT NOT NULL,
     CONSTRAINT "Repos_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Projects" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO "Repos" ( "url", "createdAt", "updatedAt", "projectId") SELECT "repoUrl", "createdAt", "updatedAt", "id"
-from "Projects";
+INSERT INTO "Repos" ( "url", "createdAt", "updatedAt", "projectId") SELECT "repoUrl", "createdAt", "updatedAt", "id" FROM "Projects" WHERE "repoUrl" IS NOT NULL;
 
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
