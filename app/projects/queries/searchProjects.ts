@@ -67,12 +67,11 @@ export default resolver.pipe(
     }: SearchProjectsInput,
     { session }: Ctx
   ) => {
-    const prefixSearch = "%" + search + "%"
     let where = Prisma.sql`WHERE p.id IS NOT NULL`
     if (search && search !== "") {
       search !== "myProposals"
-        ? (where = Prisma.sql`WHERE ((p.name || p.description || p.valueStatement || p.searchSkills) LIKE ${prefixSearch})`)
-        : (where = Prisma.sql`WHERE pm.profileId == ${session.profileId}`)
+        ? (where = Prisma.sql`WHERE "tsColumn" @@ websearch_to_tsquery('english', ${search})`)
+        : (where = Prisma.sql`WHERE pm."profileId" == ${session.profileId}`)
     }
 
     if (status) {
@@ -82,48 +81,48 @@ export default resolver.pipe(
 
     if (category) {
       const categories = typeof category === "string" ? [category] : category
-      where = Prisma.sql`${where} AND categoryName IN (${Prisma.join(categories)})`
+      where = Prisma.sql`${where} AND "categoryName" IN (${Prisma.join(categories)})`
     }
 
     if (skill) {
       const skills = typeof skill === "string" ? [skill] : skill
-      where = Prisma.sql`${where} AND Skills.name IN (${Prisma.join(skills)})`
+      where = Prisma.sql`${where} AND "Skills".name IN (${Prisma.join(skills)})`
     }
 
     if (discipline) {
       const disciplines = typeof discipline === "string" ? [discipline] : discipline
-      where = Prisma.sql`${where} AND Disciplines.name IN (${Prisma.join(disciplines)})`
+      where = Prisma.sql`${where} AND "Disciplines".name IN (${Prisma.join(disciplines)})`
     }
 
     if (tier) {
       const tiers = typeof tier === "string" ? [tier] : tier
-      where = Prisma.sql`${where} AND tierName IN (${Prisma.join(tiers)})`
+      where = Prisma.sql`${where} AND "tierName" IN (${Prisma.join(tiers)})`
     }
 
     if (label) {
       const labels = typeof label === "string" ? [label] : label
-      where = Prisma.sql`${where} AND Labels.name IN (${Prisma.join(labels)})`
+      where = Prisma.sql`${where} AND "Labels".name IN (${Prisma.join(labels)})`
     }
     if (projectStatus) {
       const selectedStatus = typeof label === "string" ? [projectStatus][0] : projectStatus
-      let filterValue: number[] = []
+      let filterValue: boolean[] = []
 
       switch (selectedStatus) {
         case "Active":
-          filterValue[0] = 0
+          filterValue[0] = false
           break
         case "Archived":
-          filterValue[0] = 1
+          filterValue[0] = true
           break
       }
 
       if (filterValue.length !== 0)
-        where = Prisma.sql` ${where} AND p.isArchived== ${Prisma.join(filterValue)}`
+        where = Prisma.sql`${where} AND p."isArchived" = ${filterValue[0]}`
     }
 
     if (location) {
       const locationSelected = typeof location === "string" ? [location] : location
-      where = Prisma.sql`${where} AND loc.name == ${Prisma.join(locationSelected)}`
+      where = Prisma.sql`${where} AND loc.name = ${Prisma.join(locationSelected)}`
     }
 
     // order by string for sorting
@@ -142,218 +141,221 @@ export default resolver.pipe(
     }
 
     const projects = await db.$queryRawUnsafe<SearchProjectsOutput[]>(
-      `SELECT p.id, p.name, p.description, p.searchSkills, pr.firstName, pr.lastName, pr.avatarUrl, status, count(distinct v.profileId) votesCount, s.color,
-        p.createdAt,
-        p.updatedAt,
-        p.ownerId,
-      COUNT(DISTINCT pm.profileId) as projectMembers
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN Vote v on v.projectId = p.id
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      `SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") "votesCount", s.color,
+        p."createdAt",
+        p."updatedAt",
+        p."ownerId",
+      COUNT(DISTINCT pm."profileId") as "projectMembers"
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Vote" v on v."projectId" = p.id
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${whereString}
-      GROUP BY p.id
+      GROUP BY p.id, pr.id, s.name
       ORDER BY ${orderByText}
       LIMIT ${take} OFFSET ${skip};
     `
     )
+    console.log("Projects")
 
     const countResult = await db.$queryRaw<CountOutput[]>`
       SELECT count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it  ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
     `
+    console.log("Count", countResult)
 
     const statusFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT s.name, COUNT(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN ProjectStatus s on  s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
       GROUP BY s.name
       ORDER BY count DESC;`
+    console.log("facets")
 
     const categoryFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT p.categoryName as name, count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      SELECT p."categoryName" as name, count(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
-      AND p.categoryName IS NOT NULL
-      GROUP BY categoryName
+      AND p."categoryName" IS NOT NULL
+      GROUP BY "categoryName"
       ORDER BY count DESC
       LIMIT 10
     `
+    console.log("categoryFacets")
 
     const skillFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT Skills.name, Skills.id, count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      SELECT "Skills".name, "Skills".id, count(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
-      AND Skills.name IS NOT NULL
-      AND Skills.id IS NOT NULL
-      GROUP BY Skills.name
+      AND "Skills".name IS NOT NULL
+      AND "Skills".id IS NOT NULL
+      GROUP BY "Skills".id
       ORDER BY count DESC
       LIMIT 10
     `
+    console.log("skillFacets")
 
     const disciplineFacets = await db.$queryRaw<FacetOutput[]>`
-    SELECT Disciplines.name, Disciplines.id, count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+    SELECT "Disciplines".name, "Disciplines".id, count(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
-      AND Disciplines.name IS NOT NULL
-      AND Disciplines.id IS NOT NULL
-      GROUP BY Disciplines.name
+      AND "Disciplines".name IS NOT NULL
+      AND "Disciplines".id IS NOT NULL
+      GROUP BY "Disciplines".id
       ORDER BY count DESC
       LIMIT 10
     `
+    console.log("disciplineFacets")
+
     const labelFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT Labels.name, Labels.id, count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      SELECT "Labels".name, "Labels".id, count(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
-      AND Labels.name IS NOT NULL
-      AND Labels.id IS NOT NULL
-      GROUP BY Labels.name
+      AND "Labels".name IS NOT NULL
+      AND "Labels".id IS NOT NULL
+      GROUP BY "Labels".id
       ORDER BY count DESC
       LIMIT 10
     `
+    console.log("labelFacets")
 
     const projectFacets = await db.$queryRaw<ProjectFacetsOutput[]>`
-     SELECT DISTINCT p.isArchived as 'Status', COUNT (p.id) as count
-     FROM Projects p
-     WHERE 1=1 AND p.id IN (Select p.id  FROM Projects p
-     INNER JOIN projects_idx ON projects_idx.id = p.id
-     INNER JOIN ProjectStatus s on s.name = p.status
-     INNER JOIN Profiles pr on pr.id = p.ownerId
-     INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-     INNER JOIN Locations loc ON loc.id = pr.locationId
-     INNER JOIN InnovationTiers it ON it.name = p.tierName
-     LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-     LEFT JOIN Skills ON _ps.B = Skills.id
-     LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-     LEFT JOIN Labels ON _lp.A = Labels.id
-     LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
-       ${where}
-     )
-     GROUP BY p.isArchived
-     ORDER BY p.isArchived ASC`
+      SELECT DISTINCT p."isArchived" as "Status", COUNT (p.id) as count
+      FROM "Projects" p
+      WHERE 1=1 AND p.id IN (Select p.id  FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
+        ${where}
+      )
+      GROUP BY p."isArchived"
+      ORDER BY p."isArchived" ASC`
+    console.log("projectFacets")
 
     const tierFacets = await db.$queryRaw<FacetOutput[]>`
-     SELECT it.name, COUNT(DISTINCT p.id) as count
-     FROM Projects p
-     INNER JOIN ProjectStatus s on  s.name = p.status
-     INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-     INNER JOIN Profiles pr on pr.id = p.ownerId
-     INNER JOIN Locations loc ON loc.id = pr.locationId
-     INNER JOIN InnovationTiers it ON it.name = p.tierName
-     LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-     LEFT JOIN Skills ON _ps.B = Skills.id
-     LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-     LEFT JOIN Labels ON _lp.A = Labels.id
-     LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-     LEFT JOIN Disciplines ON _dp.A = Disciplines.id
-     ${where}
-     GROUP BY it.name
-     ORDER BY count DESC, it.name;`
+      SELECT it.name, COUNT(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
+      ${where}
+      GROUP BY it.name
+      ORDER BY count DESC, it.name;`
+    console.log("tierFacets")
 
     const locationsFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT loc.name, loc.id, count(DISTINCT p.id) as count
-      FROM Projects p
-      INNER JOIN projects_idx ON projects_idx.id = p.id
-      INNER JOIN ProjectStatus s on s.name = p.status
-      INNER JOIN ProjectMembers pm ON pm.projectId = p.id
-      INNER JOIN Profiles pr on pr.id = p.ownerId
-      INNER JOIN Locations loc ON loc.id = pr.locationId
-      INNER JOIN InnovationTiers it ON it.name = p.tierName
-      LEFT JOIN _ProjectsToSkills _ps ON _ps.A = p.id
-      LEFT JOIN Skills ON _ps.B = Skills.id
-      LEFT JOIN _LabelsToProjects _lp ON _lp.B = p.id
-      LEFT JOIN Labels ON _lp.A = Labels.id
-      LEFT JOIN _DisciplinesToProjects _dp ON _dp.B = p.id
-      LEFT JOIN Disciplines ON _dp.A = Disciplines.id
+      FROM "Projects" p
+      INNER JOIN "ProjectStatus" s on s.name = p.status
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
+      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
+      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
+      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
+      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
+      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
+      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
+      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
       AND loc.name IS NOT NULL
       AND loc.id IS NOT NULL
-      GROUP BY loc.name
+      GROUP BY loc.id
       ORDER BY count DESC
     `
+    console.log("locationsFacets")
 
     if (countResult.length < 1) throw new SearchProjectsError()
 

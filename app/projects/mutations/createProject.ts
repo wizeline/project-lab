@@ -9,7 +9,7 @@ export default resolver.pipe(
   async (input, { session }: Ctx) => {
     const defaultTier = await db.innovationTiers.findFirst({
       select: { name: true },
-      where: { default: true },
+      where: { defaultRow: true },
     })
 
     const project = await db.projects.create({

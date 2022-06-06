@@ -8,7 +8,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions", "orderByRelation"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 // --------------------------------------
@@ -187,12 +187,14 @@ model Projects {
   stages                 ProjectStages[]
   isArchived             Boolean                  @default(false)
   helpWanted             Boolean                  @default(true)
+  tsColumn               Unsupported("TSVECTOR")?
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
   @@index([categoryName], name: "projects_category_idx")
   @@index([isArchived], name: "projects_isArchived_idx")
   @@index([tierName], name: "projects_innovation_tier_idx")
+  @@index([tsColumn], name: "projects_ts_column_idx")
 }
 
 model ProjectsVersions {
@@ -270,7 +272,7 @@ model InnovationTiers {
   benefits   String
   requisites String
   goals      String
-  default    Boolean    @default(false)
+  defaultRow Boolean    @default(false)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now())
   projects   Projects[]

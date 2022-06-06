@@ -222,7 +222,7 @@ CREATE TABLE "InnovationTiers" (
     "benefits" TEXT NOT NULL,
     "requisites" TEXT NOT NULL,
     "goals" TEXT NOT NULL,
-    "default" BOOLEAN NOT NULL DEFAULT false,
+    "defaultRow" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
