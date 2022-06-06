@@ -4,6 +4,22 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 # **proposalHunt**
 
+## Requirements
+
+First you should install postgres on your computer. For MacOS an easy method is to use [Postgres.app](https://postgresapp.com/downloads.html). If you have an M1 chip, the lastest version has support for it without Rossetta. As documented in their [page](https://postgresapp.com/documentation/cli-tools.html), you can add postgresql tools to your path using:
+
+```
+sudo mkdir -p /etc/paths.d &&
+echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp
+```
+
+After that you can create a DB using the commands:
+
+```
+createdb projectlab
+createdb projectlab_test
+```
+
 ## Getting Started
 
 ### Environment Variables
@@ -11,7 +27,7 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 1. In root, create `.env.local` file with the following:
 
 ```
-DATABASE_URL="file:./db.sqlite"
+DATABASE_URL=postgresql://[username]@localhost:5432/projectlab
 AUTH0_CLIENT_ID=
 AUTH0_DOMAIN=
 AUTH0_CLIENT_SECRET=
@@ -27,7 +43,7 @@ WOS_API_URL=
 2. In root, create `.env.test.local` file with the following:
 
 ```
-DATABASE_URL="file:./db_test.sqlite"
+DATABASE_URL=postgresql://[username]@localhost:5432/projectlab_test
 ```
 
 3. Ask in `#team-projectlab` channel on _Slack_
