@@ -71,7 +71,7 @@ export default resolver.pipe(
     if (search && search !== "") {
       search !== "myProposals"
         ? (where = Prisma.sql`WHERE "tsColumn" @@ websearch_to_tsquery('english', ${search})`)
-        : (where = Prisma.sql`WHERE pm."profileId" == ${session.profileId}`)
+        : (where = Prisma.sql`WHERE pm."profileId" = ${session.profileId}`)
     }
 
     if (status) {
@@ -126,22 +126,13 @@ export default resolver.pipe(
     }
 
     // order by string for sorting
-    const orderByText = `${
-      orderBy.field === "projectMembers" || orderBy.field === "votesCount" ? "" : "p."
-    }${orderBy.field} ${orderBy.order}`
+    const orderByText =
+      orderBy.field === "projectMembers" || orderBy.field === "votesCount"
+        ? Prisma.empty
+        : `p."${orderBy.field}" ${orderBy.order}`
 
-    // convert where into string for the projects query
-    let whereString = where.sql
-    let strIdx = 0
-    while (whereString.match(/[?]/)) {
-      if (where.values[strIdx] || where.values[strIdx] === 0)
-        //When second statement is removed, bool values could cause an infinte loop
-        whereString = whereString.replace("?", "'" + where.values[strIdx]?.toString() + "'" || "")
-      strIdx++
-    }
-
-    const projects = await db.$queryRawUnsafe<SearchProjectsOutput[]>(
-      `SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") "votesCount", s.color,
+    const projects = await db.$queryRaw<SearchProjectsOutput[]>`
+      SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") "votesCount", s.color,
         p."createdAt",
         p."updatedAt",
         p."ownerId",
@@ -150,8 +141,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "Vote" v on v."projectId" = p.id
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
@@ -159,13 +150,11 @@ export default resolver.pipe(
       LEFT JOIN "Labels" ON _lp."A" = "Labels".id
       LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
-      ${whereString}
+      ${where}
       GROUP BY p.id, pr.id, s.name
       ORDER BY ${orderByText}
       LIMIT ${take} OFFSET ${skip};
     `
-    )
-    console.log("Projects")
 
     const countResult = await db.$queryRaw<CountOutput[]>`
       SELECT count(DISTINCT p.id) as count
@@ -173,8 +162,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -183,7 +172,6 @@ export default resolver.pipe(
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
     `
-    console.log("Count", countResult)
 
     const statusFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT s.name, COUNT(DISTINCT p.id) as count
@@ -202,7 +190,6 @@ export default resolver.pipe(
       ${where}
       GROUP BY s.name
       ORDER BY count DESC;`
-    console.log("facets")
 
     const categoryFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT p."categoryName" as name, count(DISTINCT p.id) as count
@@ -224,7 +211,6 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    console.log("categoryFacets")
 
     const skillFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT "Skills".name, "Skills".id, count(DISTINCT p.id) as count
@@ -232,8 +218,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -255,8 +241,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -270,7 +256,6 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    console.log("disciplineFacets")
 
     const labelFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT "Labels".name, "Labels".id, count(DISTINCT p.id) as count
@@ -278,8 +263,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -293,7 +278,6 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    console.log("labelFacets")
 
     const projectFacets = await db.$queryRaw<ProjectFacetsOutput[]>`
       SELECT DISTINCT p."isArchived" as "Status", COUNT (p.id) as count
@@ -302,8 +286,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -314,7 +298,6 @@ export default resolver.pipe(
       )
       GROUP BY p."isArchived"
       ORDER BY p."isArchived" ASC`
-    console.log("projectFacets")
 
     const tierFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT it.name, COUNT(DISTINCT p.id) as count
@@ -322,8 +305,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -333,7 +316,6 @@ export default resolver.pipe(
       ${where}
       GROUP BY it.name
       ORDER BY count DESC, it.name;`
-    console.log("tierFacets")
 
     const locationsFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT loc.name, loc.id, count(DISTINCT p.id) as count
@@ -341,8 +323,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -355,7 +337,6 @@ export default resolver.pipe(
       GROUP BY loc.id
       ORDER BY count DESC
     `
-    console.log("locationsFacets")
 
     if (countResult.length < 1) throw new SearchProjectsError()
 
