@@ -28,8 +28,17 @@ jobs:
       - name: Remove existing .env file
         run: rm -rf .env
 
+      - uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: "12"
+          postgresql db: lab_test
+          postgresql user: lab_user
+          postgresql password: lab_pass
+
       - name: Set .env File
-        run: aws secretsmanager get-secret-value --secret-id env-development | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > .env
+        run: echo 'PG_URL=postgresql://lab_user:lab_pass@localhost/lab_test' > .env
+      - name: Set double .env File (bug in prisma)
+        run: echo 'DATABASE_URL=postgresql://lab_user:lab_pass@localhost/lab_test' >> .env
 
       - name: Install Blitz Globally
         run: yarn global add blitz
@@ -37,19 +46,13 @@ jobs:
       - name: Install Dependancies
         run: yarn install
 
-      - name: Create DB Folder
-        run: sudo mkdir -p /home/admin/projectlab/db
-
-      - name: Init DB
-        run: blitz prisma migrate reset --force
-
-      - name: Add Full Text Searches
-        run: sqlite3 /home/admin/projectlab/db/db.sqlite < db/search_indexes.sql
-
       - name: Run Tests
         run: yarn test
         env:
           NODE_ENV: test
+
+      - name: Init DB
+        run: blitz prisma migrate reset --force
 
       - name: Add Test Data
         run: blitz db seed

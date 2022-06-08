@@ -9,7 +9,6 @@ jobs:
   deploy-branch:
     env:
       NODE_ENV: "production"
-      DB_PATH: "/home/admin/projectlab/db/db.sqlite"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,46 +46,12 @@ jobs:
       - name: Install Dependancies
         run: yarn install
 
-      - name: Create DB Folder
-        run: sudo mkdir -p /home/admin/projectlab/db
-
       - name: Set Up App Domain
         run: |
           if [ "${{ steps.get-branch.outputs.branch }}" == "production" ]; then
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ./blitz.config.ts
           else
             sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ steps.get-branch.outputs.branch }}.labs.wizeline.com/g" ./blitz.config.ts
-          fi
-
-      - name: Install Litestream
-        if: ${{ steps.get-branch.outputs.branch == 'production' || steps.get-branch.outputs.branch == 'development' }}
-        run: |
-          wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
-          sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
-          litestream version
-
-      - name: Restore Database
-        if: ${{ steps.get-branch.outputs.branch == 'production' || steps.get-branch.outputs.branch == 'development' }}
-        run: litestream restore -o ${{ env.DB_PATH }} "s3://${{ secrets.LITESTREAM_S3_BUCKET }}/${{ secrets.LITESTREAM_S3_PATH }}"
-
-      - name: Init DB
-        run: |
-          if [ -f "${{ env.DB_PATH }}" ]; then
-            blitz prisma migrate deploy
-          else
-            blitz prisma migrate reset --force
-          fi
-
-      - name: Add Full Text Searches
-        run: sqlite3 ${{ env.DB_PATH }} < db/search_indexes.sql
-
-      - name: Sync Skills With Wizeline OS
-        run: yarn sync-all-from-wos
-
-      - name: Add Test Data
-        run: |
-          if [ "${{ steps.get-branch.outputs.branch }}" != "production" ]; then
-            blitz db seed
           fi
 
       - name: Terraform Change Workspace Lightsail
@@ -102,14 +67,6 @@ jobs:
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
 
-      - id: get-lightsail-username
-        name: Get Lightsail Instance Username
-        run: echo ::set-output name=USERNAME::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.username')
-
-      - id: get-lightsail-ip-address
-        name: Get Lightsail Instance IP Address
-        run: echo ::set-output name=IP_ADDRESS::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.ipAddress')
-
       - name: Prepare Server For Build
         uses: appleboy/ssh-action@master
         with:
@@ -124,9 +81,6 @@ jobs:
 
       - name: Remove Node Modules
         run: rm -rf node_modules
-
-      - name: Move DB
-        run: mv ${{ env.DB_PATH }} ./db/db.sqlite
 
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0

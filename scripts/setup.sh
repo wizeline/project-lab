@@ -31,12 +31,6 @@ sudo ufw allow 8080
 echo y | sudo ufw enable
 sudo ufw status
 
-# Install litestream
-wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
-sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
-litestream version
-sudo systemctl enable litestream
-
 # Install yarn
 sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
@@ -76,7 +70,6 @@ mkdir -p ~/projectlab/app
 # Replace old db
 rm -rf ~/projectlab/db
 mkdir -p ~/projectlab/db
-mv ./db/db.sqlite ~/projectlab/db/db.sqlite
 
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
@@ -87,18 +80,12 @@ sudo systemctl restart wos-sync.service
 # Change to app directory
 cd ~/projectlab/app
 
-# Start litestream replication
-if [ "$WORKSPACE" == "production" ]
-then
-pm2 stop db-replication
-npm run pm2:db-replication
-fi
-
 # Launch prisma studio on dev env
 if [ "$WORKSPACE" != "production" ]
 then
 pm2 stop prisma-studio
 npm run pm2:prisma-studio
+npx blitz db seed
 fi
 
 # Start application
