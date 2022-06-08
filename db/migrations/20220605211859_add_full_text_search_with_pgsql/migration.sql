@@ -61,7 +61,7 @@ BEGIN
 END;
 $body$;
 
-CREATE OR REPLACE TRIGGER project_members_versions_trigger
+CREATE TRIGGER project_members_versions_trigger
   AFTER INSERT OR UPDATE OR DELETE
   ON "ProjectMembers"
   FOR EACH ROW
@@ -86,7 +86,7 @@ BEGIN
 END;
 $body$;
 
-CREATE OR REPLACE TRIGGER practiced_skills_versions_trigger
+CREATE TRIGGER practiced_skills_versions_trigger
   AFTER INSERT OR UPDATE
   ON "_ProjectMembersToSkills"
   FOR EACH ROW
@@ -113,7 +113,7 @@ BEGIN
 END;
 $body$;
 
-CREATE OR REPLACE TRIGGER innovation_tier_default_trigger
+CREATE TRIGGER innovation_tier_default_trigger
   BEFORE INSERT OR UPDATE
   ON "InnovationTiers"
   FOR EACH ROW
