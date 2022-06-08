@@ -49,13 +49,13 @@ CREATE OR REPLACE FUNCTION project_members_versions_fn() RETURNS TRIGGER
 BEGIN
   IF (TG_OP = 'INSERT') THEN
     INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
-    VALUES (new.projectId, new.profileId, new.hoursPerWeek, new.role, new.active, '');
+    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.role, new.active, '');
   ELSIF (TG_OP = 'UPDATE') THEN
     INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
-    VALUES (new.projectId, new.profileId, new.hoursPerWeek, new.role, new.active, '');
+    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.role, new.active, '');
   ELSIF (TG_OP = 'DELETE') THEN
     INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
-    VALUES (old.projectId, old.profileId, 0, '', false, '');
+    VALUES (old."projectId", old."profileId", 0, '', false, '');
   END IF;
   RETURN NULL;
 END;
@@ -75,12 +75,12 @@ BEGIN
   UPDATE "ProjectMembersVersions"
   SET
     "updatedAt" = CURRENT_TIMESTAMP,
-    "practicedSkills" = (SELECT string_agg("B", ',') FROM "_ProjectMembersToSkills" WHERE "A" = new.A)
+    "practicedSkills" = (SELECT string_agg(_pms."B", ',') FROM "_ProjectMembersToSkills" _pms WHERE _pms."A" = new."A")
   WHERE id = (
-    SELECT v.id FROM ProjectMembers pm
-    INNER JOIN ProjectMembersVersions v ON pm.profileId = v.profileId AND pm.projectId = v.projectId
-    WHERE pm.id = new.A
-    ORDER BY v.createdAt DESC LIMIT 1
+    SELECT v.id FROM "ProjectMembers" pm
+    INNER JOIN "ProjectMembersVersions" v ON pm."profileId" = v."profileId" AND pm."projectId" = v."projectId"
+    WHERE pm.id = new."A"
+    ORDER BY v."createdAt" DESC LIMIT 1
   );
   RETURN NULL;
 END;
