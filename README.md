@@ -27,7 +27,7 @@ createdb projectlab_test
 1. In root, create `.env.local` file with the following:
 
 ```
-PG_URL=postgresql://[username]@localhost:5432/projectlab
+DATABASE_URL=postgresql://[username]@localhost:5432/projectlab
 AUTH0_CLIENT_ID=
 AUTH0_DOMAIN=
 AUTH0_CLIENT_SECRET=
@@ -41,10 +41,8 @@ WOS_API_URL=
 ```
 
 2. In root, create `.env.test.local` file with the following:
-   NOTICE: the double env variable name, seems like a bug in prisma or blitz
 
 ```
-PG_URL=postgresql://[username]@localhost:5432/projectlab_test
 DATABASE_URL=postgresql://[username]@localhost:5432/projectlab_test
 ```
 

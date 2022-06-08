@@ -38,9 +38,7 @@ jobs:
           postgresql password: lab_pass
 
       - name: Set .env File
-        run: echo 'PG_URL=postgresql://lab_user:lab_pass@localhost/lab_test' > .env
-      - name: Set double .env File (bug in prisma)
-        run: echo 'DATABASE_URL=postgresql://lab_user:lab_pass@localhost/lab_test' >> .env
+        run: echo 'DATABASE_URL=postgresql://lab_user:lab_pass@localhost/lab_test' > .env
 
       - name: Install Dependancies
         run: yarn install
