@@ -17,6 +17,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
   disabled?: boolean
+  buttonType?: "submit" | "button"
 }
 
 export function Form<S extends z.ZodType<any, any>>({
@@ -27,6 +28,7 @@ export function Form<S extends z.ZodType<any, any>>({
   initialValues,
   onSubmit,
   disabled,
+  buttonType = "submit",
   ...props
 }: FormProps<S>) {
   const { projectformType, ...validFormProps } = props
@@ -36,7 +38,11 @@ export function Form<S extends z.ZodType<any, any>>({
       validate={validateZodSchema(schema)}
       onSubmit={onSubmit}
       render={({ handleSubmit, submitting, submitError }) => (
-        <form onSubmit={(e) => e.preventDefault()} className="form" {...validFormProps}>
+        <form
+          onSubmit={buttonType === "button" ? (e) => e.preventDefault() : handleSubmit}
+          className="form"
+          {...validFormProps}
+        >
           {/* Form fields supplied as children are rendered here */}
           {children}
 
@@ -51,7 +57,7 @@ export function Form<S extends z.ZodType<any, any>>({
               <button
                 style={fullWidthButton ? { width: "100%" } : {}}
                 className="primary"
-                type="button"
+                type={buttonType}
                 disabled={submitting || disabled}
                 onClick={handleSubmit}
               >
