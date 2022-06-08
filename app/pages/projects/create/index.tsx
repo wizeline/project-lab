@@ -21,6 +21,7 @@ export const NewProject = () => {
       // add current profile as default member
       projectMembers: InitialMembers(session),
       helpWanted: true,
+      repoUrls: [],
     }
   }, [session])
 

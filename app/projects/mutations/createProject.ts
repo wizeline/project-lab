@@ -30,6 +30,9 @@ export default resolver.pipe(
         projectMembers: {
           create: input.projectMembers,
         },
+        repoUrls: {
+          create: input.repoUrls,
+        },
         innovationTiers: { connect: { name: input.innovationTiers?.name || defaultTier?.name } },
       },
     })

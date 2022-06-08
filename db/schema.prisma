@@ -163,7 +163,7 @@ model Projects {
   valueStatement         String?
   target                 String?
   demo                   String?
-  repoUrl                String?
+  repoUrls               Repos[]
   slackChannel           String?
   isApproved             Boolean                  @default(false)
   status                 String?                  @default("Idea Submitted")
@@ -206,7 +206,6 @@ model ProjectsVersions {
   valueStatement String?
   target         String?
   demo           String?
-  repoUrl        String?
   slackChannel   String?
   isApproved     Boolean        @default(false)
   status         String?        @default("Idea Submitted")
@@ -327,4 +326,13 @@ model ContributorPath {
   projectMember   ProjectMembers @relation(fields: [projectMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projectTask     ProjectTasks   @relation(fields: [projectTaskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projectStage    ProjectStages  @relation(fields: [projectStageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Repos {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  projects  Projects @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  projectId String
 }
