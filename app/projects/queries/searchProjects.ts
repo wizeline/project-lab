@@ -179,8 +179,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -197,8 +197,8 @@ export default resolver.pipe(
       INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "Locations" loc ON loc.id = pr."locationId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
+      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
@@ -233,7 +233,6 @@ export default resolver.pipe(
       ORDER BY count DESC
       LIMIT 10
     `
-    console.log("skillFacets")
 
     const disciplineFacets = await db.$queryRaw<FacetOutput[]>`
     SELECT "Disciplines".name, "Disciplines".id, count(DISTINCT p.id) as count
