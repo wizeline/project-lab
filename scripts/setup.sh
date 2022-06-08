@@ -38,15 +38,12 @@ export PATH="$PATH:$(yarn global bin)"
 # Install pm2
 sudo npm install --global pm2
 
-# Install blitz globally
-sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
-
 # Set up env
 mv env-tmp .env
 
 # Unzip Dependancies
 yarn install
-blitz build
+yarn build
 
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
@@ -87,6 +84,8 @@ pm2 stop prisma-studio
 npm run pm2:prisma-studio
 npx blitz db seed
 fi
+
+npx blitz prisma migrate deploy
 
 # Start application
 pm2 stop server

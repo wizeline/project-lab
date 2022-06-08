@@ -40,9 +40,6 @@ jobs:
       - name: Set double .env File (bug in prisma)
         run: echo 'DATABASE_URL=postgresql://lab_user:lab_pass@localhost/lab_test' >> .env
 
-      - name: Install Blitz Globally
-        run: yarn global add blitz
-
       - name: Install Dependancies
         run: yarn install
 
@@ -52,10 +49,10 @@ jobs:
           NODE_ENV: test
 
       - name: Init DB
-        run: blitz prisma migrate reset --force
+        run: npx blitz prisma migrate reset --force
 
       - name: Add Test Data
-        run: blitz db seed
+        run: npx blitz db seed
 
       - name: Run Build
         run: yarn build
