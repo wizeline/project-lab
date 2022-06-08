@@ -36,7 +36,7 @@ BEGIN
 END;
 $body$;
 
-CREATE OR REPLACE TRIGGER profiles_search_col_trigger
+CREATE TRIGGER profiles_search_col_trigger
   BEFORE INSERT OR UPDATE
   ON "Profiles"
   FOR EACH ROW
