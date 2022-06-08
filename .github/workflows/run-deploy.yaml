@@ -40,12 +40,6 @@ jobs:
           aws secretsmanager get-secret-value --secret-id ${{ github.event.client_payload.secret_name }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
           cp env-tmp .env
 
-      - name: Install Blitz Globally
-        run: yarn global add blitz
-
-      - name: Install Dependancies
-        run: yarn install
-
       - name: Set Up App Domain
         run: |
           if [ "${{ steps.get-branch.outputs.branch }}" == "production" ]; then
@@ -76,7 +70,6 @@ jobs:
           script: |
             rm -rf ~/projectlab/tmp
             mkdir -p ~/projectlab/app
-            mkdir -p ~/projectlab/db
             mkdir -p ~/projectlab/tmp
 
       - name: Remove Node Modules
