@@ -41,3 +41,80 @@ CREATE TRIGGER profiles_search_col_trigger
   ON "Profiles"
   FOR EACH ROW
   EXECUTE FUNCTION profiles_search_col_fn();
+
+---
+
+CREATE OR REPLACE FUNCTION project_members_versions_fn() RETURNS TRIGGER
+  LANGUAGE plpgsql AS $body$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
+    VALUES (new.projectId, new.profileId, new.hoursPerWeek, new.role, new.active, '');
+  ELSIF (TG_OP = 'UPDATE') THEN
+    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
+    VALUES (new.projectId, new.profileId, new.hoursPerWeek, new.role, new.active, '');
+  ELSIF (TG_OP = 'DELETE') THEN
+    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
+    VALUES (old.projectId, old.profileId, 0, '', false, '');
+  END IF;
+  RETURN NULL;
+END;
+$body$;
+
+CREATE OR REPLACE TRIGGER project_members_versions_trigger
+  AFTER INSERT OR UPDATE OR DELETE
+  ON "ProjectMembers"
+  FOR EACH ROW
+  EXECUTE FUNCTION project_members_versions_fn();
+
+---
+
+CREATE OR REPLACE FUNCTION practiced_skills_versions_fn() RETURNS TRIGGER
+  LANGUAGE plpgsql AS $body$
+BEGIN
+  UPDATE "ProjectMembersVersions"
+  SET
+    "updatedAt" = CURRENT_TIMESTAMP,
+    "practicedSkills" = (SELECT string_agg("B", ',') FROM "_ProjectMembersToSkills" WHERE "A" = new.A)
+  WHERE id = (
+    SELECT v.id FROM ProjectMembers pm
+    INNER JOIN ProjectMembersVersions v ON pm.profileId = v.profileId AND pm.projectId = v.projectId
+    WHERE pm.id = new.A
+    ORDER BY v.createdAt DESC LIMIT 1
+  );
+  RETURN NULL;
+END;
+$body$;
+
+CREATE OR REPLACE TRIGGER practiced_skills_versions_trigger
+  AFTER INSERT OR UPDATE
+  ON "_ProjectMembersToSkills"
+  FOR EACH ROW
+  EXECUTE FUNCTION practiced_skills_versions_fn();
+
+---
+
+CREATE OR REPLACE FUNCTION innovation_tier_default_fn() RETURNS TRIGGER
+  LANGUAGE plpgsql AS $body$
+BEGIN
+  IF
+    exists(SELECT "defaultRow" FROM "InnovationTiers" WHERE "defaultRow" = true)
+    AND (
+      (TG_OP = 'INSERT' AND NEW."defaultRow" = true)
+      OR (TG_OP = 'UPDATE' AND NEW."defaultRow" = true AND OLD."defaultRow" = false)
+    )
+  THEN
+    raise using
+      errcode='DTIER',
+      message='default tier already exists';
+  ELSE
+    RETURN NEW;
+  END IF;
+END;
+$body$;
+
+CREATE OR REPLACE TRIGGER innovation_tier_default_trigger
+  BEFORE INSERT OR UPDATE
+  ON "InnovationTiers"
+  FOR EACH ROW
+  EXECUTE FUNCTION innovation_tier_default_fn();
