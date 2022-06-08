@@ -43,13 +43,13 @@ jobs:
       - name: Install Dependancies
         run: yarn install
 
+      - name: Init DB
+        run: npx blitz prisma migrate reset --force
+
       - name: Run Tests
         run: yarn test
         env:
           NODE_ENV: test
-
-      - name: Init DB
-        run: npx blitz prisma migrate reset --force
 
       - name: Add Test Data
         run: npx blitz db seed
