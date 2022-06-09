@@ -61,6 +61,14 @@ jobs:
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
 
+      - id: get-lightsail-username
+        name: Get Lightsail Instance Username
+        run: echo ::set-output name=USERNAME::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.username')
+
+      - id: get-lightsail-ip-address
+        name: Get Lightsail Instance IP Address
+        run: echo ::set-output name=IP_ADDRESS::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.ipAddress')
+
       - name: Prepare Server For Build
         uses: appleboy/ssh-action@master
         with:
