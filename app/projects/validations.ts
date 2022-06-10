@@ -61,7 +61,7 @@ export const FullFormFields = {
   repoUrls: z
     .array(
       z.object({
-        id: z.string().optional(),
+        id: z.number().optional(),
         url: z.string(),
       })
     )

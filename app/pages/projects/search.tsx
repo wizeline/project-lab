@@ -50,7 +50,6 @@ export const Projects = () => {
   const search = router.query.q || ""
   const { status, category, skill, label, projectStatus, discipline, location, tier }: queryItems =
     router.query
-  const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     status: status ? [status] : [],
@@ -242,17 +241,6 @@ export const Projects = () => {
     })
   }, [router.query.q, status, category, skill, label, discipline, projectStatus, tier, location])
 
-  useEffect(() => {
-    if (isFirstLoading) {
-      const queryParams = JSON.parse(JSON.stringify(qParams))
-      let params = queryParams["projectStatus"] === undefined ? { projectStatus: "Active" } : null
-      Router.push({
-        pathname: "/projects/search",
-        query: { ...queryParams, ...params },
-      })
-      setIsFirstLoading(false)
-    }
-  }, [qParams, isFirstLoading])
   const handleTabChange = (selectedTab: string) => {
     selectedTab === "allResults"
       ? setTab({ allResults: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })

@@ -54,6 +54,7 @@ export const NewProject = () => {
           schema={FullCreate}
           onSubmit={projectFormOnSubmit}
           disabled={savingProject}
+          buttonType="button"
         />
       </div>
     </div>

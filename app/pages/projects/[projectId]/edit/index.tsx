@@ -120,6 +120,7 @@ export const EditProject = () => {
               schema={FullCreate}
               initialValues={project}
               onSubmit={handleSubmitProjectDetails}
+              buttonType="button"
             />
           </TabPanel>
           <TabPanel value={tabIndex} index={1}>
