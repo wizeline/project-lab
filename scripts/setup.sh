@@ -73,9 +73,11 @@ echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" 
 sudo apt update
 sudo apt -y install postgresql-12 postgresql-client-12
 sudo -u postgres psql -c "CREATE USER admin;"
+sudo -u postgres psql -c "ALTER USER admin WITH ENCRYPTED PASSWORD 'password';"
+sudo -u postgres psql -c "ALTER USER admin WITH SUPERUSER;"
 sudo -u postgres psql -c "CREATE DATABASE projectlab;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
-echo "DATABSE_URL=postgresql://admin@localhost:5432/projectlab" >> .env
+echo "DATABASE_URL=postgresql://admin:password@localhost/projectlab" >> .env
 
 echo "Load prod database"
 pg_dump --dbname $DB_URL -f dump.sql
