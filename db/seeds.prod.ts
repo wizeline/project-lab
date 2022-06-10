@@ -113,7 +113,7 @@ const seed = async () => {
       benefits: "Have a one time 50 USD budget",
       requisites: "None, manager approval",
       goals: "Create an artifact (documentation, blog post, etc)",
-      default: true,
+      defaultRow: true,
     },
   })
   await db.innovationTiers.upsert({

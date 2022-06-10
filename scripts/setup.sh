@@ -31,12 +31,6 @@ sudo ufw allow 8080
 echo y | sudo ufw enable
 sudo ufw status
 
-# Install litestream
-wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
-sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
-litestream version
-sudo systemctl enable litestream
-
 # Install yarn
 sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
@@ -44,15 +38,12 @@ export PATH="$PATH:$(yarn global bin)"
 # Install pm2
 sudo npm install --global pm2
 
-# Install blitz globally
-sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
-
 # Set up env
 mv env-tmp .env
 
 # Unzip Dependancies
 yarn install
-blitz build
+yarn build
 
 # Setup nginx
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
@@ -76,35 +67,41 @@ mkdir -p ~/projectlab/app
 # Replace old db
 rm -rf ~/projectlab/db
 mkdir -p ~/projectlab/db
-mv ./db/db.sqlite ~/projectlab/db/db.sqlite
 
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
-# Start services
-sudo systemctl restart wos-sync.service
-
 # Change to app directory
 cd ~/projectlab/app
 
-# Start litestream replication
-if [ "$WORKSPACE" == "production" ]
-then
-pm2 stop db-replication
-npm run pm2:db-replication
-fi
-
-# Launch prisma studio on dev env
+# Preparations for dev environments
 if [ "$WORKSPACE" != "production" ]
 then
+
+# install database
+sudo apt install -y postgresql
+sudo -u postgres psql -c "CREATE USER admin;"
+sudo -u postgres psql -c "CREATE DATABASE projectlab;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
+echo "DATABSE_URL=postgresql://admin@localhost:5432/projectlab" >> .env
+
+# load prod database
+pg_dump --dbname $DB_URL | psql projectlab
+
+# Launch prisma studio
 pm2 stop prisma-studio
 npm run pm2:prisma-studio
+npx blitz db seed
 fi
 
 # Start application
 pm2 stop server
+npx blitz prisma migrate deploy
 npm run pm2:server
 
 # Enable pm2 service
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 sudo systemctl enable pm2-admin
+
+# Start services
+sudo systemctl restart wos-sync.service
