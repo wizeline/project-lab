@@ -35,7 +35,6 @@ mv env-tmp .env
 
 echo "Unzip Dependencies"
 yarn install
-yarn build
 
 echo "Setup nginx"
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
@@ -72,6 +71,7 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
 sudo apt update
 sudo apt -y install postgresql-12 postgresql-client-12
+sudo -u postgres psql -c "DROP DATABASE projectlab;"
 sudo -u postgres psql -c "CREATE USER admin;"
 sudo -u postgres psql -c "ALTER USER admin WITH ENCRYPTED PASSWORD 'password';"
 sudo -u postgres psql -c "ALTER USER admin WITH SUPERUSER;"
@@ -80,8 +80,8 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
 echo "DATABASE_URL=postgresql://admin:password@localhost/projectlab" >> .env
 
 echo "Load prod database"
-pg_dump --dbname $DB_URL -Fc > db.dump
-pg_restore -d "postgresql://admin:password@localhost/projectlab" --clean --create db.dump
+pg_dump --dbname $DB_URL --clean --if-exists > db.dump
+psql -d "postgresql://admin:password@localhost/projectlab" < db.dump
 
 echo "Launch prisma studio"
 pm2 stop prisma-studio
@@ -92,6 +92,7 @@ fi
 echo "Start application"
 pm2 stop server
 npx blitz prisma migrate deploy
+yarn build
 npm run pm2:server
 
 echo "Enable pm2 service"
