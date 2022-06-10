@@ -71,26 +71,37 @@ mkdir -p ~/projectlab/db
 # Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
-# Start services
-sudo systemctl restart wos-sync.service
-
 # Change to app directory
 cd ~/projectlab/app
 
-# Launch prisma studio on dev env
+# Preparations for dev environments
 if [ "$WORKSPACE" != "production" ]
 then
+
+# install database
+sudo apt install -y postgresql
+sudo -u postgres psql -c "CREATE USER admin;"
+sudo -u postgres psql -c "CREATE DATABASE projectlab;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
+echo "DATABSE_URL=postgresql://admin@localhost:5432/projectlab" >> .env
+
+# load prod database
+pg_dump --dbname $DB_URL | psql projectlab
+
+# Launch prisma studio
 pm2 stop prisma-studio
 npm run pm2:prisma-studio
 npx blitz db seed
 fi
 
-npx blitz prisma migrate deploy
-
 # Start application
 pm2 stop server
+npx blitz prisma migrate deploy
 npm run pm2:server
 
 # Enable pm2 service
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 sudo systemctl enable pm2-admin
+
+# Start services
+sudo systemctl restart wos-sync.service
