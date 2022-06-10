@@ -29,6 +29,7 @@ export PATH="$PATH:$(yarn global bin)"
 
 echo "Install pm2"
 sudo npm install --global pm2
+pm2 stop server ## in case it is already running
 
 echo "Set up env"
 mv env-tmp .env
@@ -90,7 +91,6 @@ npx blitz db seed
 fi
 
 echo "Start application"
-pm2 stop server
 npx blitz prisma migrate deploy
 yarn build
 npm run pm2:server
