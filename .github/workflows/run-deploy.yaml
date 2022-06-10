@@ -84,10 +84,7 @@ jobs:
         run: rm -rf node_modules
 
       - name: Archive release
-        uses: thedoctor0/zip-release@main
-        with:
-          type: "tar"
-          filename: "archive.tar.gz"
+        run: tar -zcf archive.tar.gz --exclude archive.tar.gz .
 
       - name: Copy Files To Lightsail Instance
         uses: wlixcc/SFTP-Deploy-Action@v1.0
