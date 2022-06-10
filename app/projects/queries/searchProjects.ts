@@ -125,14 +125,8 @@ export default resolver.pipe(
       where = Prisma.sql`${where} AND loc.name = ${Prisma.join(locationSelected)}`
     }
 
-    // order by string for sorting
-    const orderByText =
-      orderBy.field === "projectMembers" || orderBy.field === "votesCount"
-        ? Prisma.empty
-        : `p."${orderBy.field}" ${orderBy.order}`
-
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
-      SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") "votesCount", s.color,
+      SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") AS "votesCount", s.color,
         p."createdAt",
         p."updatedAt",
         p."ownerId",
@@ -152,7 +146,12 @@ export default resolver.pipe(
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
       GROUP BY p.id, pr.id, s.name
-      ORDER BY ${orderByText}
+      ORDER BY
+        CASE ${orderBy.field}
+          WHEN 'createdAt' THEN p."createdAt"
+          ELSE p."updatedAt"
+        END
+        DESC
       LIMIT ${take} OFFSET ${skip};
     `
 

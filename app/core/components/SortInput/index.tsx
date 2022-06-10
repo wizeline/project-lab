@@ -15,14 +15,14 @@ export const SortInput = ({ setSortQuery }: iProps) => {
       label: "Most recent",
       value: "mostRecent",
     },
-    {
-      label: "Most voted",
-      value: "mostVoted",
-    },
-    {
-      label: "Project Members",
-      value: "projectMembers",
-    },
+    // {
+    //   label: "Most voted",
+    //   value: "mostVoted",
+    // },
+    // {
+    //   label: "Project Members",
+    //   value: "projectMembers",
+    // },
     {
       label: "Last Updated",
       value: "lastUpdated",
