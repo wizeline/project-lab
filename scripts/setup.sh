@@ -80,8 +80,8 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
 echo "DATABASE_URL=postgresql://admin:password@localhost/projectlab" >> .env
 
 echo "Load prod database"
-pg_dump --dbname $DB_URL -f dump.sql
-psql projectlab < dump.sql
+pg_dump --dbname $DB_URL -Fc > db.dump
+pg_restore -d "postgresql://admin:password@localhost/projectlab" --clean --create db.dump
 
 echo "Launch prisma studio"
 pm2 stop prisma-studio
