@@ -5,15 +5,7 @@ cd ~/projectlab/tmp
 
 # Set up variables
 WORKSPACE=$1
-AWS_ACCESS_KEY_ID=$2
-AWS_SECRET_ACCESS_KEY=$3
-
-# Remember variables
-echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" > ~/.bashrc
-echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> ~/.bashrc
-
-export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+DB_URL=$2
 
 # Run update
 sudo apt -y update
@@ -79,7 +71,11 @@ if [ "$WORKSPACE" != "production" ]
 then
 
 # install database
-sudo apt install -y postgresql
+sudo apt -y install gnupg2
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+sudo apt update
+sudo apt -y install postgresql-12 postgresql-client-12
 sudo -u postgres psql -c "CREATE USER admin;"
 sudo -u postgres psql -c "CREATE DATABASE projectlab;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
