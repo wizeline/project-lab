@@ -88,6 +88,7 @@ then
 fi
 
 if [ "$WORKSPACE" == "production" ]
+then
   echo "*** Step: *** Run migrations and seeds in production"
   npx blitz prisma migrate deploy
   npx blitz db seed -f db/seeds.prod
