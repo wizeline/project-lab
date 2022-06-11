@@ -4,6 +4,7 @@ const config: BlitzConfig = {
   env: {
     BASE_URL: "http://localhost:3000",
   },
+  reactStrictMode: true,
   middleware: [
     sessionMiddleware({
       cookiePrefix: "proposalHunt",
