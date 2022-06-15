@@ -1,14 +1,16 @@
 import React, { useState } from "react"
 import { Chip, Grid, TextField } from "@mui/material"
 import { Field } from "react-final-form"
+import { MultivalueFieldSpan } from "./MultivalueField.styles"
 
 interface ProfilesSelectProps {
   name: string
   label: string
+  footer: string
   helperText?: string
 }
 
-export const MultiValueField = ({ name, label }: ProfilesSelectProps) => {
+export const MultiValueField = ({ name, label, footer }: ProfilesSelectProps) => {
   const [inputValue, setInputValue] = useState<string>("")
 
   return (
@@ -31,6 +33,7 @@ export const MultiValueField = ({ name, label }: ProfilesSelectProps) => {
         const isError = touched && normalizedError !== undefined
         return (
           <>
+            <MultivalueFieldSpan>* {footer}</MultivalueFieldSpan>
             <TextField
               label={label}
               error={isError}

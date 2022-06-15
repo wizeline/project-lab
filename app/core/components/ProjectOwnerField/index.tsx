@@ -3,6 +3,7 @@ import { useQuery } from "blitz"
 import { Autocomplete, TextField } from "@mui/material"
 import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
+import debounce from "lodash/debounce"
 
 interface ProfilesSelectProps {
   name: string
@@ -15,9 +16,10 @@ export const ProjectOwnerField = ({ name, label, owner, helperText }: ProfilesSe
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [data, { isLoading }] = useQuery(getProfiles, searchTerm, { suspense: false })
   const [value, setValue] = useState(owner)
-  const [inputValue, setInputValue] = useState("")
 
   const profiles = data || []
+
+  const setSearchTermDebounced = debounce(setSearchTerm, 500)
 
   return (
     <Field name={name}>
@@ -29,18 +31,15 @@ export const ProjectOwnerField = ({ name, label, owner, helperText }: ProfilesSe
             id={name}
             loading={isLoading || !data}
             value={value}
-            onChange={(event: any, newValue: any | null, reason) => {
+            onChange={(_, newValue: any | null, reason) => {
               if (reason === "selectOption") {
                 setValue(newValue)
                 input.onChange({ id: newValue.profileId })
               }
             }}
-            inputValue={inputValue}
             isOptionEqualToValue={(option, value) => option.profileId === value.profileId}
             getOptionLabel={(option) => option.name}
-            onInputChange={(event, newInputValue) => {
-              setInputValue(newInputValue)
-            }}
+            onInputChange={(_, value) => setSearchTermDebounced(value)}
             options={profiles}
             renderInput={(params) => (
               <TextField
