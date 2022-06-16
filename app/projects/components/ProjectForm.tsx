@@ -89,7 +89,11 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Who is your target user/client"
           placeholder="Millenials"
         />
-        <MultiValueField name="repoUrls" label="Repo URLs" />
+        <MultiValueField
+          name="repoUrls"
+          label="Repo URLs"
+          footer="Type the Repo URL and press Enter to add it to your project. You can add as many URLs as you need."
+        />
         <LabeledTextField
           fullWidth
           style={{ margin: "1em 0" }}
