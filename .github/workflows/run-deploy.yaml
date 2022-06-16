@@ -69,12 +69,16 @@ jobs:
         name: Get Lightsail Instance IP Address
         run: echo ::set-output name=IP_ADDRESS::$(aws lightsail get-instance-access-details --instance-name project-lab-${{ steps.get-branch.outputs.branch }} | jq -r '.accessDetails.ipAddress')
 
+      - id: get-lightsail-ssh-key
+        name: Get Lightsail Private SSH Key
+        run: echo ::set-output name=SSH_PRIVATE_KEY::$(aws lightsail download-default-key-pair | jq -r '.privateKeyBase64' | head -n -1)
+
       - name: Prepare Server For Build
         uses: appleboy/ssh-action@master
         with:
           host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ steps.get-lightsail-ssh-key.outputs.SSH_PRIVATE_KEY }}
           script: |
             rm -rf ~/projectlab/tmp
             mkdir -p ~/projectlab/app
@@ -88,7 +92,7 @@ jobs:
         with:
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
           server: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh_private_key: ${{ steps.get-lightsail-ssh-key.outputs.SSH_PRIVATE_KEY }}
           local_path: "./*"
           remote_path: "/home/admin/projectlab/tmp/"
           args: "-o ConnectTimeout=60"
@@ -100,7 +104,7 @@ jobs:
           command_timeout: 30m
           host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ steps.get-lightsail-ssh-key.outputs.SSH_PRIVATE_KEY }}
           script: |
             chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
             /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.DB_URL }}
