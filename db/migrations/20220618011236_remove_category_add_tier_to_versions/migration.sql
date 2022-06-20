@@ -48,15 +48,15 @@ ALTER TABLE "ProjectsVersions" ADD CONSTRAINT "ProjectsVersions_tierName_fkey" F
 CREATE OR REPLACE FUNCTION project_versions_fn() RETURNS TRIGGER
   LANGUAGE plpgsql AS $body$
 BEGIN
-  IF (TG_OP = 'INSERT') THEN
-    INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "membersCount", "votesCount", "isArchived")
-    VALUES (new.id, new."ownerId", new."name", new.logo, new.description, new."valueStatement", new."target", new.demo, new."slackChannel", new."isApproved", new."status", new."tierName", new."searchSkills", new."membersCount", new."votesCount", new."isArchived");
-  ELSIF (TG_OP = 'UPDATE') THEN
-    INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "membersCount", "votesCount", "isArchived")
-    VALUES (new.id, new."ownerId", new."name", new.logo, new.description, new."valueStatement", new."target", new.demo, new."slackChannel", new."isApproved", new."status", new."tierName", new."searchSkills", new."membersCount", new."votesCount", new."isArchived");
+  IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+    INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "isArchived", "membersCount", "votesCount")
+    VALUES (new.id, new."ownerId", new."name", new.logo, new.description, new."valueStatement", new."target", new.demo, new."slackChannel", new."isApproved", new."status", new."tierName", new."searchSkills", new."isArchived",
+      (SELECT count(*) FROM "ProjectMembers" WHERE "projectId" = new.id AND "active" = TRUE),
+      (SELECT count(*) FROM "Vote" WHERE "projectId" = new.id)
+    );
   ELSIF (TG_OP = 'DELETE') THEN
-    INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "membersCount", "votesCount", "isArchived")
-    VALUES (old.id, old."ownerId", old."name", '', '', '', '', '', '', FALSE, old."status", old."tierName", '', 0, 0, TRUE);
+    INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "isArchived", "membersCount", "votesCount")
+    VALUES (old.id, old."ownerId", old."name", '', '', '', '', '', '', FALSE, old."status", old."tierName", '', TRUE, 0, 0);
   END IF;
   RETURN NULL;
 END;
