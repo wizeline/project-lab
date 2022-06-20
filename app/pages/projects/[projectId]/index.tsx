@@ -1,4 +1,4 @@
-import { Fragment, Suspense, useState } from "react"
+import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import {
   Link,
@@ -171,10 +171,10 @@ export const Project = () => {
               direction={{ xs: "column", md: "row" }}
             >
               <Grid item>
-                <div className="itemHeadName">Category:</div>{" "}
+                <div className="itemHeadName">Tier:</div>{" "}
               </Grid>
               <Grid item>
-                <div className="itemHeadValue">{project.categoryName}</div>
+                <div className="itemHeadValue">{project.tierName}</div>
               </Grid>
             </Grid>
             <Grid
