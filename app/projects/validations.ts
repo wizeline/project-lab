@@ -57,7 +57,6 @@ export const FullFormFields = {
   valueStatement: z.string(),
   target: z.string().nullish(),
   projectStatus: z.object({ name: z.string() }).optional(),
-  category: z.object({ name: z.string() }).optional(),
   repoUrls: z
     .array(
       z.object({
@@ -186,10 +185,6 @@ export const CreateProjectMember = z.object({
   hoursPerWeek: z.number(),
   practicedSkills: z.array(z.object({ id: z.string() })),
   role: z.string(),
-})
-
-export const UpdateProjectsCategory = z.object({
-  categoryName: z.object({ name: z.string() }),
 })
 
 export const UpdateProjectsInoovationTier = z.object({

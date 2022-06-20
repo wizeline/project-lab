@@ -1,7 +1,7 @@
 import { resolver, Ctx } from "blitz"
 import db from "db"
 import { FullCreate } from "app/projects/validations"
-import { defaultCategory, defaultStatus, contributorPath } from "app/core/utils/constants"
+import { defaultStatus, contributorPath } from "app/core/utils/constants"
 
 export default resolver.pipe(
   resolver.zod(FullCreate),
@@ -16,7 +16,6 @@ export default resolver.pipe(
       data: {
         ...input,
         owner: { connect: { id: session.profileId } },
-        category: { connect: { name: input.category?.name || defaultCategory } },
         projectStatus: { connect: { name: input.projectStatus?.name || defaultStatus } },
         skills: {
           connect: input.skills,

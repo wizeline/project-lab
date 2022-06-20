@@ -89,7 +89,6 @@ export default resolver.pipe(
       data: {
         ...data,
         updatedAt: new Date(),
-        category: { connect: { name: data.category?.name } },
         projectStatus: { connect: { name: data.projectStatus?.name } },
         owner: { connect: { id: data.owner?.id } },
         skills: {
@@ -107,7 +106,6 @@ export default resolver.pipe(
         innovationTiers: { connect: { name: data.innovationTiers?.name } },
       },
       include: {
-        category: true,
         projectStatus: true,
         skills: true,
         disciplines: true,

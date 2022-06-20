@@ -5,7 +5,6 @@ import db from "db"
 interface SearchProjectsInput {
   search: string | string[]
   status: any
-  category: any
   skill: any
   discipline: any
   tier: any
@@ -53,7 +52,6 @@ export default resolver.pipe(
   async (
     {
       search,
-      category,
       status,
       skill,
       discipline,
@@ -77,11 +75,6 @@ export default resolver.pipe(
     if (status) {
       const statuses = typeof status === "string" ? [status] : status
       where = Prisma.sql`${where} AND s.name IN (${Prisma.join(statuses)}) `
-    }
-
-    if (category) {
-      const categories = typeof category === "string" ? [category] : category
-      where = Prisma.sql`${where} AND "categoryName" IN (${Prisma.join(categories)})`
     }
 
     if (skill) {
@@ -193,27 +186,6 @@ export default resolver.pipe(
       ${where}
       GROUP BY s.name
       ORDER BY count DESC;`
-
-    const categoryFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT p."categoryName" as name, count(DISTINCT p.id) as count
-      FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
-      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
-      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
-      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
-      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
-      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
-      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
-      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
-      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
-      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
-      ${where}
-      AND p."categoryName" IS NOT NULL
-      GROUP BY "categoryName"
-      ORDER BY count DESC
-      LIMIT 10
-    `
 
     const skillFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT "Skills".name, "Skills".id, count(DISTINCT p.id) as count
@@ -351,7 +323,6 @@ export default resolver.pipe(
       hasMore,
       count: countResult[0]?.count,
       statusFacets,
-      categoryFacets,
       skillFacets,
       labelFacets,
       projectFacets,
