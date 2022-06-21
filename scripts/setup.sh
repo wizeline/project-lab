@@ -61,6 +61,7 @@ cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
 echo "*** Step: *** Change to app directory"
 cd ~/projectlab/app
+rm -rf ~/projectlab/tmp
 
 echo "*** Step: *** Preparations for dev environments"
 if [ "$WORKSPACE" != "production" ]
