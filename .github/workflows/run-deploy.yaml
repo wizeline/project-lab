@@ -101,7 +101,11 @@ jobs:
           host: ${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
           username: ${{steps.get-lightsail-username.outputs.USERNAME}}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: bash /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.DB_URL }}
+          script_stop: true
+          script: |
+            chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
+            /home/admin/projectlab/tmp/scripts/setup.sh ${{ steps.get-branch.outputs.branch }} ${{ secrets.DB_URL }}
+            rm -rf ~/projectlab/tmp
 
       - name: Terraform Change Workspace Distribution
         uses: dflook/terraform-new-workspace@v1

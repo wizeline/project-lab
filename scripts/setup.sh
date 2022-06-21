@@ -61,7 +61,6 @@ cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
 echo "*** Step: *** Change to app directory"
 cd ~/projectlab/app
-rm -rf ~/projectlab/tmp
 
 echo "*** Step: *** Preparations for dev environments"
 if [ "$WORKSPACE" != "production" ]
@@ -103,3 +102,4 @@ echo "Enable app services"
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 sudo systemctl enable pm2-admin
 sudo systemctl restart wos-sync.service
+rm -rf ~/projectlab/tmp
