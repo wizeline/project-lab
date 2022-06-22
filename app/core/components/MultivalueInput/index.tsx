@@ -42,6 +42,7 @@ export const MultiValueField = ({ name, label, footer }: ProfilesSelectProps) =>
               onKeyDown={(e) => handleEnterKeyPress(e)}
               onChange={(e) => setInputValue(e.target.value)}
               fullWidth
+              onBlur={() => addOption()}
             />
             <Grid
               container
