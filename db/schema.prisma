@@ -204,7 +204,6 @@ model ProjectsVersions {
   tierName       String?          @default("Tier 3 (Experiment)")
   searchSkills   String           @default("")
   createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now())
   membersCount   Int              @default(0)
   votesCount     Int              @default(0)
   isArchived     Boolean          @default(false)

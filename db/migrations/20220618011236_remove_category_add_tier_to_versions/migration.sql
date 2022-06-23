@@ -28,6 +28,7 @@ DROP COLUMN "positions";
 -- AlterTable
 ALTER TABLE "ProjectsVersions" DROP COLUMN "categoryName",
 DROP COLUMN "positions",
+DROP COLUMN "updatedAt",
 ADD COLUMN     "projectId" TEXT NOT NULL,
 ADD COLUMN     "tierName" TEXT DEFAULT E'Tier 3 (Experiment)';
 
@@ -68,8 +69,16 @@ CREATE TRIGGER project_versions_trigger
   FOR EACH ROW
   EXECUTE FUNCTION project_versions_fn();
 
-INSERT INTO "ProjectsVersions"("projectId", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "isArchived", "membersCount", "votesCount")
-  (SELECT p.id, p."ownerId", p."name", p.logo, p."description", p."valueStatement", p."target", p.demo, p."slackChannel", p."isApproved", p."status", p."tierName", p."searchSkills", p."isArchived",
+-- INSERT first project version from createdAt
+INSERT INTO "ProjectsVersions"("projectId", "createdAt", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "isArchived", "membersCount", "votesCount")
+  (SELECT p.id, p."createdAt", p."ownerId", p."name", p.logo, p."description", p."valueStatement", p."target", p.demo, p."slackChannel", p."isApproved", p."status", p."tierName", p."searchSkills", p."isArchived",
+    1, 0
+    FROM "Projects" p
+  );
+
+-- INSERT second project version from updatedAt
+INSERT INTO "ProjectsVersions"("projectId", "createdAt", "ownerId", "name", "logo", "description", "valueStatement", "target", "demo", "slackChannel", "isApproved", "status", "tierName", "searchSkills", "isArchived", "membersCount", "votesCount")
+  (SELECT p.id, p."updatedAt", p."ownerId", p."name", p.logo, p."description", p."valueStatement", p."target", p.demo, p."slackChannel", p."isApproved", p."status", p."tierName", p."searchSkills", p."isArchived",
     count(DISTINCT pm."profileId") as "membersCount",
     count(DISTINCT v."profileId") as "votesCount"
     FROM "Projects" p
