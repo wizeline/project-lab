@@ -13,7 +13,7 @@ sudo mkdir -p /etc/paths.d &&
 echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp
 ```
 
-After that you can create a DB using the commands:
+After that you can create a DB using this commands on the terminal:
 
 ```
 createdb projectlab
