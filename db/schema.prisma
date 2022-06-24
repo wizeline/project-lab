@@ -89,8 +89,8 @@ model Profiles {
   updatedAt              DateTime                 @default(now())
   terminatedAt           DateTime?
   deleted                Boolean                  @default(false)
-  jobTitles              JobTitles?               @relation(fields: [jobTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locations              Locations?               @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  jobTitles              JobTitles?               @relation(fields: [jobTitleId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  locations              Locations?               @relation(fields: [locationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   projectMembers         ProjectMembers[]
   projectMembersVersions ProjectMembersVersions[]
   projects               Projects[]
@@ -165,7 +165,7 @@ model Projects {
   searchSkills           String                   @default("")
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @default(now())
-  owner                  Profiles?                @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner                  Profiles?                @relation(fields: [ownerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   projectStatus          ProjectStatus?           @relation(fields: [status], references: [name], onDelete: SetNull, onUpdate: Cascade)
   innovationTiers        InnovationTiers?         @relation(fields: [tierName], references: [name], onDelete: SetNull, onUpdate: Cascade)
   projectMembers         ProjectMembers[]
