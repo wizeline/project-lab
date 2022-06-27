@@ -89,9 +89,9 @@ export default async function syncCatalogs(
   })
 
   await db.$transaction([
-    db.$queryRaw`DELETE FROM JobTitles WHERE id NOT IN (${jobTitleSkillIds.join(",")})`,
-    db.$queryRaw`DELETE FROM Locations WHERE id NOT IN (${locationsIds.join(",")})`,
-    db.$queryRaw`DELETE FROM Skills WHERE id NOT IN (${skillsIds.join(",")})`,
+    db.$queryRaw`DELETE FROM "JobTitles" WHERE id NOT IN (${jobTitleSkillIds.join(",")})`,
+    db.$queryRaw`DELETE FROM "Locations" WHERE id NOT IN (${locationsIds.join(",")})`,
+    db.$queryRaw`DELETE FROM "Skills" WHERE id NOT IN (${skillsIds.join(",")})`,
     ...skillsUpserts,
     ...jobTitlesUpserts,
     ...locationsUpserts,
@@ -102,7 +102,7 @@ export default async function syncCatalogs(
   console.info(`Inserted/Updated ${jobTitlesFromWizelineOs.length} new job titles(s)`)
 
   await db.$transaction([
-    db.$queryRaw`UPDATE Profiles SET deleted=1 WHERE id NOT IN (${profileIds.join(",")})`,
+    db.$queryRaw`UPDATE "Profiles" SET deleted=TRUE WHERE id NOT IN (${profileIds.join(",")})`,
     ...profilesUpsert,
   ])
 

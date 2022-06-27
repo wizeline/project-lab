@@ -26,7 +26,7 @@ import updateTier from "app/innovationTiers/mutations/updateTier"
 import deleteTier from "app/innovationTiers/mutations/deleteTier"
 import getProjects from "app/projects/queries/getProjects"
 import { Form } from "app/core/components/Form"
-import { UpdateProjectsCategory, UpdateProjectsInoovationTier } from "app/projects/validations"
+import { UpdateProjectsInoovationTier } from "app/projects/validations"
 import updateTierProject from "app/projects/mutations/updateTierProject"
 
 declare module "@mui/material/Button" {

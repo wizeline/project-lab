@@ -118,27 +118,6 @@ const seed = async () => {
     create: { name: "Inactive" },
   })
 
-  await db.category.upsert({
-    where: { name: "Experimenter" },
-    update: {},
-    create: { name: "Experimenter" },
-  })
-  await db.category.upsert({
-    where: { name: "Value Creator" },
-    update: {},
-    create: { name: "Value Creator" },
-  })
-  await db.category.upsert({
-    where: { name: "Business Enabler" },
-    update: {},
-    create: { name: "Business Enabler" },
-  })
-  await db.category.upsert({
-    where: { name: "Strategic Differentiator" },
-    update: {},
-    create: { name: "Strategic Differentiator" },
-  })
-
   await db.labels.upsert({
     where: { name: "Innovation Camp 2020" },
     update: {},
@@ -545,7 +524,7 @@ const seed = async () => {
       create: {
         name: "Project Lab",
         owner: { connect: { id: jbc.id } },
-        category: { connect: { name: "Value Creator" } },
+        innovationTiers: { connect: { name: "Tier 1" } },
         description: "Visibility of initiatives. Follow up of skills and work from Wizeliners",
         valueStatement: "New WCI board",
         target: "All wizeliners",
@@ -610,7 +589,7 @@ const seed = async () => {
       create: {
         name: "Wizepace",
         owner: { connect: { id: ev.id } },
-        category: { connect: { name: "Value Creator" } },
+        innovationTiers: { connect: { name: "Tier 2" } },
         description:
           "The global pandemic has changed how we view the workplace and the needs we have. However, the office is still one of many tools that Wizeliners have to facilitate collaboration and social engagement. Acknowledging the previous facts, we need to think of a way to come back to our workplaces",
         valueStatement: `This solution is called Wizeline + Space = Wizepace. We will implement a solution that:

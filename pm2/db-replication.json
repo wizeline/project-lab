@@ -1,5 +1,0 @@
-{
-  "name": "db-replication",
-  "script": "litestream replicate /home/admin/projectlab/db/db.sqlite s3://litestream-project-lab-sqlite-backups/backups",
-  "instances": "1"
-}

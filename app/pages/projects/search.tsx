@@ -17,7 +17,6 @@ import checkMembership from "app/membership/queries/checkMembership"
 
 type SearchFilters = {
   status: string[]
-  category: string[]
   skill: string[]
   label: string[]
   projectStatus: string[]
@@ -30,7 +29,6 @@ type queryItems = {
   page?: number
   q?: string
   status?: string
-  category?: string
   skill?: string
   label?: string
   discipline?: string
@@ -49,13 +47,11 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, category, skill, label, projectStatus, discipline, location, tier }: queryItems =
+  const { status, skill, label, projectStatus, discipline, location, tier }: queryItems =
     router.query
-  const [isFirstLoading, setIsFirstLoading] = useState(true)
   const [chips, setChips] = useState<string[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     status: status ? [status] : [],
-    category: category ? [category] : [],
     skill: skill ? [skill] : [],
     label: label ? [label] : [],
     discipline: discipline ? [discipline] : [],
@@ -82,7 +78,6 @@ export const Projects = () => {
       projects,
       hasMore,
       statusFacets,
-      categoryFacets,
       skillFacets,
       disciplineFacets,
       labelFacets,
@@ -93,7 +88,6 @@ export const Projects = () => {
     },
   ] = useQuery(searchProjects, {
     search,
-    category,
     status,
     skill,
     label,
@@ -239,7 +233,6 @@ export const Projects = () => {
     }
     setFilters({
       status: status ? [status] : [],
-      category: category ? [category] : [],
       skill: skill ? [skill] : [],
       label: label ? [label] : [],
       discipline: discipline ? [discipline] : [],
@@ -247,19 +240,8 @@ export const Projects = () => {
       tier: tier ? [tier] : [],
       location: location ? [location] : [],
     })
-  }, [router.query.q, status, category, skill, label, discipline, projectStatus, tier, location])
+  }, [router.query.q, status, skill, label, discipline, projectStatus, tier, location])
 
-  useEffect(() => {
-    if (isFirstLoading) {
-      const queryParams = JSON.parse(JSON.stringify(qParams))
-      let params = queryParams["projectStatus"] === undefined ? { projectStatus: "Active" } : null
-      Router.push({
-        pathname: "/projects/search",
-        query: { ...queryParams, ...params },
-      })
-      setIsFirstLoading(false)
-    }
-  }, [qParams, isFirstLoading])
   const handleTabChange = (selectedTab: string) => {
     selectedTab === "allResults"
       ? setTab({ allResults: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
@@ -346,35 +328,6 @@ export const Projects = () => {
                               href=""
                               color="#AF2E33"
                               onClick={(e) => goToSearchWithFilters(e, "status")}
-                            >
-                              {item.name} ({item.count})
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionDetails>
-                  </Accordion>
-                )}
-                {categoryFacets.length > 0 && (
-                  <Accordion disableGutters className="homeWrapper__accordion">
-                    <AccordionSummary
-                      expandIcon={<ExpandMore />}
-                      aria-controls="panel1a-controls"
-                      id="panel1a-header"
-                      className="accordion__filter__title"
-                    >
-                      <h4>Categories</h4>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <ul className="homeWrapper__myProposals--list">
-                        {categoryFacets.map((item) => (
-                          <li key={item.name}>
-                            <Link
-                              id={item.name}
-                              underline="none"
-                              href=""
-                              color="#AF2E33"
-                              onClick={(e) => goToSearchWithFilters(e, "category")}
                             >
                               {item.name} ({item.count})
                             </Link>

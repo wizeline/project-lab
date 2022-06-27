@@ -33,7 +33,7 @@ export const SkillsSelect = ({
   const [data, { isLoading }] = useQuery(
     getSkills,
     {
-      where: { name: { contains: searchTerm } },
+      where: { name: { contains: searchTerm, mode: "insensitive" } },
       orderBy: { id: "asc" },
     },
     { suspense: false }

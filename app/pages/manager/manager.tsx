@@ -15,7 +15,6 @@ import {
 import { SyntheticEvent, useState } from "react"
 import TabPanel from "app/projects/components/TabPanel.component"
 import LabelsDataGrid from "app/core/components/LabelsDataGrid"
-import CategoryDataGrid from "app/core/components/CategoryDataGrid"
 import ProjectStatusDataGrid from "app/core/components/ProjectStatusDataGrid"
 import AdminsDataGrid from "app/core/components/AdminsDataGrid"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
@@ -67,9 +66,6 @@ const ManagerPage: BlitzPage = () => {
               </Box>
               <TabPanel value={tabIndex} index={0}>
                 <LabelsDataGrid />
-              </TabPanel>
-              <TabPanel value={tabIndex} index={1}>
-                <CategoryDataGrid />
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
                 <ProjectStatusDataGrid />

@@ -1,4 +1,4 @@
-import { Fragment, Suspense, useState } from "react"
+import { Suspense, useState } from "react"
 import Editor from "rich-markdown-editor"
 import {
   Link,
@@ -171,10 +171,10 @@ export const Project = () => {
               direction={{ xs: "column", md: "row" }}
             >
               <Grid item>
-                <div className="itemHeadName">Category:</div>{" "}
+                <div className="itemHeadName">Tier:</div>{" "}
               </Grid>
               <Grid item>
-                <div className="itemHeadValue">{project.categoryName}</div>
+                <div className="itemHeadValue">{project.tierName}</div>
               </Grid>
             </Grid>
             <Grid
@@ -283,10 +283,10 @@ export const Project = () => {
                   </CardContent>
                 </Card>
               )}
-              {project.repoUrl && (
+              {project.repoUrls && (
                 <Card variant="outlined">
                   <CardContent>
-                    <big>Repo URL:</big>
+                    <big>Repos URLs:</big>
                     <Box
                       component="form"
                       sx={{
@@ -295,17 +295,13 @@ export const Project = () => {
                       noValidate
                       autoComplete="off"
                     >
-                      <TextField
-                        id="foo"
-                        defaultValue={project.repoUrl}
-                        variant="outlined"
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
+                      {project.repoUrls.map((item, index) => (
+                        <Stack spacing={2} key={index}>
+                          <a href={item.url} target="_blank" rel="noreferrer">
+                            {item.url}
+                          </a>
+                        </Stack>
+                      ))}
                     </Box>
                   </CardContent>
                 </Card>

@@ -5,25 +5,21 @@ cd ~/projectlab/tmp
 
 # Set up variables
 WORKSPACE=$1
-AWS_ACCESS_KEY_ID=$2
-AWS_SECRET_ACCESS_KEY=$3
+DB_URL=$2
 
-# Remember variables
-echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" > ~/.bashrc
-echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> ~/.bashrc
+echo "*** Step: *** Install postgresql client"
+sudo apt -y install gnupg2
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+sudo apt update
+sudo apt -y install postgresql-client-12
 
-export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-
-# Run update
-sudo apt -y update
-
-# Install node
+echo "*** Step: *** Install node"
 sudo apt-get install -y gnupg2
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 sudo apt -y install nodejs gcc g++ make
 
-# Install nginx
+echo "*** Step: *** Install nginx"
 sudo apt install -y nginx ufw
 sudo ufw allow 22
 sudo ufw allow 80
@@ -31,80 +27,79 @@ sudo ufw allow 8080
 echo y | sudo ufw enable
 sudo ufw status
 
-# Install litestream
-wget https://github.com/benbjohnson/litestream/releases/download/v0.3.5/litestream-v0.3.5-linux-amd64.deb
-sudo dpkg -i litestream-v0.3.5-linux-amd64.deb
-litestream version
-sudo systemctl enable litestream
-
-# Install yarn
+echo "*** Step: *** Install yarn"
 sudo npm install --global yarn
 export PATH="$PATH:$(yarn global bin)"
 
-# Install pm2
+echo "*** Step: *** Install pm2"
 sudo npm install --global pm2
+pm2 stop server ## in case it is already running
 
-# Install blitz globally
-sudo npm i -g blitz --legacy-peer-deps --unsafe-perm=true
-
-# Set up env
+echo "*** Step: *** Set up env"
 mv env-tmp .env
 
-# Unzip Dependancies
+echo "*** Step: *** Install dependencies"
 yarn install
-blitz build
 
-# Setup nginx
+echo "*** Step: *** Setup nginx"
 sudo cp -rf ~/projectlab/tmp/nginx/config /etc/nginx/sites-enabled/default
 sudo service nginx restart
 
-# Enable wos-sync service
 if [ ! -f "/etc/systemd/system/wos-sync.service" ]
 then
+echo "*** Step: *** Enable wos-sync service"
 sudo cp ~/projectlab/tmp/systemd/wos-sync.service /etc/systemd/system/wos-sync.service
 sudo cp ~/projectlab/tmp/systemd/wos-sync.timer /etc/systemd/system/wos-sync.timer
 sudo systemctl daemon-reload
 sudo systemctl enable wos-sync.service
 fi
 
-# Remove app folder
+echo "*** Step: *** Replace app folders"
 rm -rf ~/projectlab/app
-
-# Create app folder
 mkdir -p ~/projectlab/app
-
-# Replace old db
-rm -rf ~/projectlab/db
-mkdir -p ~/projectlab/db
-mv ./db/db.sqlite ~/projectlab/db/db.sqlite
-
-# Copy files to app folder
 cp -R ~/projectlab/tmp/. ~/projectlab/app/
 
-# Start services
-sudo systemctl restart wos-sync.service
-
-# Change to app directory
+echo "*** Step: *** Change to app directory"
 cd ~/projectlab/app
 
-# Start litestream replication
-if [ "$WORKSPACE" == "production" ]
-then
-pm2 stop db-replication
-npm run pm2:db-replication
-fi
-
-# Launch prisma studio on dev env
+echo "*** Step: *** Preparations for dev environments"
 if [ "$WORKSPACE" != "production" ]
 then
-pm2 stop prisma-studio
-npm run pm2:prisma-studio
+  echo "*** Step: *** Install database"
+  sudo apt -y install postgresql-12
+  sudo -u postgres psql -c "DROP DATABASE projectlab;"
+  sudo -u postgres psql -c "CREATE USER admin;"
+  sudo -u postgres psql -c "ALTER USER admin WITH ENCRYPTED PASSWORD 'password';"
+  sudo -u postgres psql -c "ALTER USER admin WITH SUPERUSER;"
+  sudo -u postgres psql -c "CREATE DATABASE projectlab;"
+  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE projectlab TO admin;"
+  echo "DATABASE_URL=postgresql://admin:password@localhost/projectlab" >> .env
+
+  echo "*** Step: *** Load prod database and run migrations and seeds"
+  pg_dump --dbname $DB_URL --clean --if-exists > db.sql
+  psql -d "postgresql://admin:password@localhost/projectlab" < db.sql
+  npx blitz prisma migrate deploy
+  npx blitz db seed
+  npx blitz db seed -f db/seeds.prod
+
+  echo "*** Step: *** Launch prisma studio"
+  pm2 stop prisma-studio
+  npm run pm2:prisma-studio
 fi
 
-# Start application
-pm2 stop server
+if [ "$WORKSPACE" == "production" ]
+then
+  echo "*** Step: *** Run migrations and seeds in production"
+  npx blitz prisma migrate deploy
+  npx blitz db seed -f db/seeds.prod
+fi
+
+echo "*** Step: *** Start application"
+yarn build
 npm run pm2:server
 
-# Enable pm2 service
+echo "Enable app services"
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 sudo systemctl enable pm2-admin
+sudo systemctl restart wos-sync.service
+rm -rf ~/projectlab/tmp

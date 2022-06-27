@@ -21,6 +21,7 @@ export const NewProject = () => {
       // add current profile as default member
       projectMembers: InitialMembers(session),
       helpWanted: true,
+      repoUrls: [],
     }
   }, [session])
 
@@ -53,6 +54,7 @@ export const NewProject = () => {
           schema={FullCreate}
           onSubmit={projectFormOnSubmit}
           disabled={savingProject}
+          buttonType="button"
         />
       </div>
     </div>

@@ -30,8 +30,8 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
 }
 
 export const getUserProfile = async (userId: number): Promise<string> => {
-  const userProfileResult = await db.$queryRaw<ProfileOutput[]>`SELECT p.id FROM Profiles p
-  INNER JOIN User u ON u.email = p.email
+  const userProfileResult = await db.$queryRaw<ProfileOutput[]>`SELECT p.id FROM "Profiles" p
+  INNER JOIN "User" u ON u.email = p.email
   WHERE u.id = ${userId}`
 
   if (userProfileResult.length != 1 || !userProfileResult[0]) throw new ProfileNotFoundError()

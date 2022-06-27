@@ -14,19 +14,18 @@ import { ProjectMembersField } from "app/core/components/ProjectMembersField"
 import { ProjectOwnerField } from "app/core/components/ProjectOwnerField"
 import TextEditor from "app/core/components/TextEditor"
 
-import getCategories from "app/categories/queries/getCategories"
 import getStatuses from "app/statuses/queries/getStatuses"
-import { defaultCategory, defaultStatus, adminRoleName } from "app/core/utils/constants"
+import { defaultStatus, adminRoleName } from "app/core/utils/constants"
 import { useCurrentUser } from "../../core/hooks/useCurrentUser"
 import getInnovationTiers from "app/innovationTiers/queries/getInnovationTiers"
 import { LabeledSwitchField } from "app/core/components/LabeledSwitchField"
+import MultiValueField from "app/core/components/MultivalueInput"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectformType, initialValues } = props
   const [displayFields, setDisplayFields] = useState(projectformType == "create" ? false : true)
-  const [categories] = useQuery(getCategories, {})
   const [statuses] = useQuery(getStatuses, {})
   const [{ tiers }] = useQuery(getInnovationTiers, {})
 
@@ -88,12 +87,10 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           label="Who is your target user/client"
           placeholder="Millenials"
         />
-        <LabeledTextField
-          fullWidth
-          style={{ margin: "1em 0" }}
-          name="repoUrl"
-          label="Repo URL"
-          placeholder="https://github.com"
+        <MultiValueField
+          name="repoUrls"
+          label="Repo URLs"
+          footer="Type the Repo URL and press Enter to add it to your project. You can add as many URLs as you need."
         />
         <LabeledTextField
           fullWidth
@@ -101,13 +98,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           name="slackChannel"
           label="Slack Channel"
           placeholder="#project-name"
-        />
-        <InputSelect
-          valuesList={categories}
-          defaultValue={defaultCategory}
-          name="category"
-          label="Category"
-          disabled={user?.role !== adminRoleName}
         />
         {projectformType !== "create" && (
           <InputSelect
