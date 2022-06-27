@@ -13,6 +13,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
 import Wrapper from "./projects.styles"
+import checkMembership from "app/membership/queries/checkMembership"
 
 type SearchFilters = {
   status: string[]
@@ -55,6 +56,12 @@ export const Projects = () => {
     tier: tier ? [tier] : [],
     location: location ? [location] : [],
   })
+
+  const [searchUser, setUser] = useState<string>("")
+
+  const [dataMembership] = useQuery(checkMembership, searchUser, { suspense: false })
+
+  console.log(dataMembership)
 
   useEffect(() => {
     setChips(Object.values(filters).flat())
@@ -547,6 +554,8 @@ export const Projects = () => {
 }
 
 const SearchProjectsPage: BlitzPage = () => {
+  console.log("inicio")
+
   return (
     <>
       <Suspense fallback={<Loader />}>
