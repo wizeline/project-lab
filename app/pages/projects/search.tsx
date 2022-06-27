@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close"
 import { SortInput } from "app/core/components/SortInput"
 import Wrapper from "./projects.styles"
 import checkMembership from "app/membership/queries/checkMembership"
+import MembershipModal from "app/membership/components/membershipModal"
 
 type SearchFilters = {
   status: string[]
@@ -57,11 +58,16 @@ export const Projects = () => {
     location: location ? [location] : [],
   })
 
-  const [searchUser, setUser] = useState<string>("")
+  const userProfileId = user.profileId!
+  const [openMembershipModal, setOpenMembershipModal] = useState<boolean>(false)
 
-  const [dataMembership] = useQuery(checkMembership, searchUser, { suspense: false })
+  const [dataMembership] = useQuery(checkMembership, userProfileId, { suspense: false })
 
-  console.log(dataMembership)
+  useEffect(() => {
+    if (dataMembership > 30) {
+      setOpenMembershipModal(true)
+    }
+  }, [dataMembership])
 
   useEffect(() => {
     setChips(Object.values(filters).flat())
@@ -69,7 +75,6 @@ export const Projects = () => {
 
   //sorting variables
   const [sortQuery, setSortQuery] = useState({ field: "name", order: "desc" })
-
   let [
     {
       projects,
@@ -299,6 +304,10 @@ export const Projects = () => {
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
   const handleMobileFilters = () => {
     setOpenMobileFilters(!openMobileFilters)
+  }
+
+  const deleteConfirmationHandler = async () => {
+    setOpenMembershipModal(false)
   }
 
   return (
@@ -549,13 +558,22 @@ export const Projects = () => {
           </div>
         </div>
       </Wrapper>
+      <MembershipModal
+        open={openMembershipModal}
+        handleClose={() => setOpenMembershipModal(false)}
+        close={() => setOpenMembershipModal(false)}
+        label="Remove"
+        className="warning"
+        disabled={false}
+        onClick={async () => {
+          deleteConfirmationHandler()
+        }}
+      ></MembershipModal>
     </>
   )
 }
 
 const SearchProjectsPage: BlitzPage = () => {
-  console.log("inicio")
-
   return (
     <>
       <Suspense fallback={<Loader />}>
