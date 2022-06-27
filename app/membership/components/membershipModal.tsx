@@ -2,23 +2,27 @@ import { useState } from "react"
 import ModalBox from "../../core/components/ModalBox/index"
 import checkMembership from "app/membership/queries/checkMembership"
 
-const membershipModal = ({ idUser }) => {
-  //   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+interface IProps {
+  open: boolean
+  handleClose: React.MouseEventHandler
+  close: Function
+  label: string
+  onClick: React.MouseEventHandler
+  disabled?: boolean | false
+  className?: string | ""
+}
 
+const MembershipModal = ({ ...props }: IProps) => {
   return (
     <>
-      {/* <ModalBox
-        open={openDeleteModal}
-        handleClose={() => setOpenDeleteModal(false)}
-        close={() => setOpenDeleteModal(false)}
-      >
+      <ModalBox open={props.open} close={props.close} handleClose={props.handleClose}>
         <h2>
           Hey, it seems like you haven't been involved in these projects in a while. Are you still
           working on it?
         </h2>
-      </ModalBox> */}
+      </ModalBox>
     </>
   )
 }
 
-export default membershipModal
+export default MembershipModal
