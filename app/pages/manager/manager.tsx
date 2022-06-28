@@ -59,7 +59,6 @@ const ManagerPage: BlitzPage = () => {
                   aria-label="Manage Projects Attributes"
                 >
                   <TabStyles label="Labels" />
-                  <TabStyles label="Categories" />
                   <TabStyles label="Statuses" />
                   <TabStyles label="Innovation Tiers" />
                 </Tabs>
@@ -67,10 +66,10 @@ const ManagerPage: BlitzPage = () => {
               <TabPanel value={tabIndex} index={0}>
                 <LabelsDataGrid />
               </TabPanel>
-              <TabPanel value={tabIndex} index={2}>
+              <TabPanel value={tabIndex} index={1}>
                 <ProjectStatusDataGrid />
               </TabPanel>
-              <TabPanel value={tabIndex} index={3}>
+              <TabPanel value={tabIndex} index={2}>
                 <InnovationTiersGrid />
               </TabPanel>
             </EditPanelsStyles>
