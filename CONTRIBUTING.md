@@ -2,7 +2,7 @@
 
 #### **Did you find a bug?**
 
-- **Ensure the bug was not already reported** by searching on GitHub under [project](https://github.com/wizeline/project-lab/projects/1).
+- **Ensure the bug was not already reported** by searching on GitHub under [issues](https://github.com/wizeline/project-lab/issues).
 
 - If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/wizeline/project-lab/projects/1). Be sure the issue is in the Backlog column, so it can be reviewed and then added to the To do column, also be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
 
