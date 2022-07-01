@@ -206,7 +206,6 @@ export default resolver.pipe(
       AND "Skills".id IS NOT NULL
       GROUP BY "Skills".id
       ORDER BY count DESC
-      LIMIT 10
     `
 
     const disciplineFacets = await db.$queryRaw<FacetOutput[]>`
@@ -228,7 +227,6 @@ export default resolver.pipe(
       AND "Disciplines".id IS NOT NULL
       GROUP BY "Disciplines".id
       ORDER BY count DESC
-      LIMIT 10
     `
 
     const labelFacets = await db.$queryRaw<FacetOutput[]>`
@@ -250,7 +248,6 @@ export default resolver.pipe(
       AND "Labels".id IS NOT NULL
       GROUP BY "Labels".id
       ORDER BY count DESC
-      LIMIT 10
     `
 
     const projectFacets = await db.$queryRaw<ProjectFacetsOutput[]>`
