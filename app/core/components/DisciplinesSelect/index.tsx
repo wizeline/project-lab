@@ -1,7 +1,7 @@
 import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
 import { CircularProgress, TextField, Autocomplete } from "@mui/material"
-import { Field } from "react-final-form"
+import { Field, useFormState } from "react-final-form"
 import getDisciplines from "app/disciplines/queries/getDisciplines"
 import debounce from "lodash/debounce"
 
@@ -33,14 +33,18 @@ export const DisciplinesSelect = ({
   const [data, { isLoading }] = useQuery(
     getDisciplines,
     {
-      where: { name: { contains: searchTerm } },
-      orderBy: { id: "asc" },
+      where: { name: { contains: searchTerm, mode: "insensitive" } },
+      orderBy: { name: "asc" },
     },
     { suspense: false }
   )
 
   const { disciplines } = data || { disciplines: [] }
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
+
+  const { values } = useFormState()
+
+  if (!values["helpWanted"]) return null
 
   return (
     <Field name={name}>
