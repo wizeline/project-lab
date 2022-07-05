@@ -64,16 +64,17 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       ></TextEditor>
       <LabeledSwitchField
         name="helpWanted"
-        label="Help wanted"
+        label="We need some help"
         initialValues={initialValues ? initialValues.helpWanted : true}
       />
+      <DisciplinesSelect name="disciplines" label="Looking for..." />
 
       {projectformType === "create" && (
         <FormControlLabel
           value="1"
           control={<Switch color="primary" onChange={handleDisplaySwitch} />}
           label="Add more details"
-          labelPlacement="start"
+          labelPlacement="end"
         />
       )}
       {projectformType !== "create" && (
@@ -109,7 +110,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
           />
         )}
         <SkillsSelect name="skills" label="Skills" />
-        <DisciplinesSelect name="disciplines" label="Looking for..." />
         <LabelsSelect name="labels" label="Labels" />
         {projectformType !== "create" && (
           <InputSelect
