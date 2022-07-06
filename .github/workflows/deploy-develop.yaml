@@ -7,14 +7,13 @@ defaults:
     shell: bash
 jobs:
   deploy-branch:
-    env:
-      NODE_ENV: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dispatch Deploy
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
-          repository: wizeline/project-lab
-          event-type: deploy
-          client-payload: '{"ref": "${{ github.ref }}", "branch": "development" , "secret_name":"env-development" }'
+    uses: ./.github/workflows/run-deploy.yaml
+    with:
+      branch_name: development
+      github_ref: ${{ github.ref_name }}
+    secrets:
+      AWS_SECRET_NAME: env-development
+      PIPELINE_AWS_ACCESS_KEY_ID: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
+      PIPELINE_AWS_SECRET_ACCESS_KEY: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DB_URL: ${{ secrets.DB_URL }}
