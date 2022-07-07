@@ -5,19 +5,19 @@ defaults:
   run:
     shell: bash
 jobs:
-  deploy-branch:
-    env:
-      NODE_ENV: production
+  get-github-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Get Github Branch
         id: get-branch
         run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g" | tr '[:upper:]' '[:lower:]')
+    outputs:
+      branch_name: ${{ steps.get-branch.outputs.branch }}
 
-      - name: Dispatch Deploy
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
-          repository: wizeline/project-lab
-          event-type: deploy
-          client-payload: '{"ref": "${{ github.ref_name }}", "branch": "${{ steps.get-branch.outputs.branch }}" , "secret_name":"env-development" }'
+  deploy-branch:
+    needs: get-github-branch
+    uses: ./.github/workflows/run-deploy.yaml
+    with:
+      branch_name: ${{ needs.get-github-branch.outputs.branch-name }}
+      github_ref: ${{ github.ref_name }}
+    secrets: inherit
