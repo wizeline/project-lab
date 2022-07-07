@@ -11,9 +11,5 @@ jobs:
     with:
       branch_name: development
       github_ref: ${{ github.ref_name }}
-    secrets:
       AWS_SECRET_NAME: env-development
-      PIPELINE_AWS_ACCESS_KEY_ID: ${{ secrets.PIPELINE_AWS_ACCESS_KEY_ID }}
-      PIPELINE_AWS_SECRET_ACCESS_KEY: ${{ secrets.PIPELINE_AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      DB_URL: ${{ secrets.DB_URL }}
+    secrets: inherit

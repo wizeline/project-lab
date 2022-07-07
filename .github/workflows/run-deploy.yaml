@@ -8,6 +8,9 @@ on:
       github_ref:
         required: true
         type: string
+      AWS_SECRET_NAME:
+        required: true
+        type: string
     secrets:
       PIPELINE_AWS_ACCESS_KEY_ID:
         required: true
@@ -16,8 +19,6 @@ on:
       SSH_PRIVATE_KEY:
         required: true
       DB_URL:
-        required: true
-      AWS_SECRET_NAME:
         required: true
 defaults:
   run:
@@ -54,7 +55,7 @@ jobs:
 
       - name: Set .env File
         run: |
-          aws secretsmanager get-secret-value --secret-id ${{ secrets.AWS_SECRET_NAME }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
+          aws secretsmanager get-secret-value --secret-id ${{ inputs.AWS_SECRET_NAME }} | jq -r '.SecretString' | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" > env-tmp
           cp env-tmp .env
 
       - name: Set Up App Domain

@@ -20,4 +20,5 @@ jobs:
     with:
       branch_name: ${{ needs.get-github-branch.outputs.branch-name }}
       github_ref: ${{ github.ref_name }}
+      AWS_SECRET_NAME: env-development
     secrets: inherit
