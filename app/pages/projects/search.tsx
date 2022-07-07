@@ -18,7 +18,6 @@ type SearchFilters = {
   status: string[]
   skill: string[]
   label: string[]
-  projectStatus: string[]
   discipline: string[]
   tier: string[]
   location: string[]
@@ -31,7 +30,6 @@ type queryItems = {
   skill?: string
   label?: string
   discipline?: string
-  projectStatus?: string
   tier?: string
   location?: string
   count?: number
@@ -46,15 +44,14 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, skill, label, projectStatus, discipline, location, tier }: queryItems =
-    router.query
+  const { status, skill, label, discipline, location, tier }: queryItems = router.query
   const [chips, setChips] = useState<string[]>([])
+  const [title, setTitle] = useState<string>("Active Projects")
   const [filters, setFilters] = useState<SearchFilters>({
     status: status ? [status] : [],
     skill: skill ? [skill] : [],
     label: label ? [label] : [],
     discipline: discipline ? [discipline] : [],
-    projectStatus: projectStatus ? [projectStatus] : [],
     tier: tier ? [tier] : [],
     location: location ? [location] : [],
   })
@@ -74,7 +71,6 @@ export const Projects = () => {
       skillFacets,
       disciplineFacets,
       labelFacets,
-      projectFacets,
       tierFacets,
       locationsFacets,
       count,
@@ -84,7 +80,6 @@ export const Projects = () => {
     status,
     skill,
     label,
-    projectStatus,
     discipline,
     tier,
     location,
@@ -208,47 +203,88 @@ export const Projects = () => {
 
   //Tabs selection logic
   const [tab, setTab] = useState({
-    allResults: "homeWrapper__navbar__tabs--title--selected",
+    ideas: "",
+    activeProjects: "homeWrapper__navbar__tabs--title--selected",
     myProposals: "",
   })
 
   useEffect(() => {
     if (router.query.q === "myProposals") {
       setTab({
-        allResults: "",
+        ideas: "",
+        activeProjects: "",
         myProposals: "homeWrapper__navbar__tabs--title--selected",
       })
-    } else {
+      setTitle("My Proposals")
+    } else if (status === "Idea Submitted") {
       setTab({
-        allResults: "homeWrapper__navbar__tabs--title--selected",
+        ideas: "homeWrapper__navbar__tabs--title--selected",
+        activeProjects: "",
         myProposals: "",
       })
+      setTitle("Ideas")
+    } else if (status === "Idea in Progress") {
+      setTab({
+        ideas: "",
+        activeProjects: "homeWrapper__navbar__tabs--title--selected",
+        myProposals: "",
+      })
+      setTitle("Active Projects")
+    } else {
+      setTab({
+        ideas: "",
+        activeProjects: "",
+        myProposals: "",
+      })
+      setTitle("All Results")
     }
     setFilters({
       status: status ? [status] : [],
       skill: skill ? [skill] : [],
       label: label ? [label] : [],
       discipline: discipline ? [discipline] : [],
-      projectStatus: projectStatus ? [projectStatus] : [],
       tier: tier ? [tier] : [],
       location: location ? [location] : [],
     })
-  }, [router.query.q, status, skill, label, discipline, projectStatus, tier, location])
+  }, [router.query.q, status, skill, label, discipline, tier, location])
 
   const handleTabChange = (selectedTab: string) => {
-    selectedTab === "allResults"
-      ? setTab({ allResults: "homeWrapper__navbar__tabs--title--selected", myProposals: "" })
-      : setTab({ allResults: "", myProposals: "homeWrapper__navbar__tabs--title--selected" })
+    if (selectedTab === "activeProjects") {
+      setTab({
+        ideas: "",
+        activeProjects: "homeWrapper__navbar__tabs--title--selected",
+        myProposals: "",
+      })
+    } else if (selectedTab === "myProposals") {
+      setTab({
+        ideas: "",
+        activeProjects: "",
+        myProposals: "homeWrapper__navbar__tabs--title--selected",
+      })
+    } else {
+      setTab({
+        ideas: "homeWrapper__navbar__tabs--title--selected",
+        activeProjects: "",
+        myProposals: "",
+      })
+    }
     handleTabChangeSearch(selectedTab)
   }
 
   const handleTabChangeSearch = (selectedTab: string) => {
-    selectedTab === "allResults"
-      ? router.push({ pathname: "/projects/search", query: { projectStatus: "Active" } })
-      : router.push({
-          pathname: "/projects/search",
-          query: { q: "myProposals", projectStatus: "Active" },
-        })
+    if (selectedTab === "activeProjects") {
+      router.push({ pathname: "/projects/search", query: { status: "Idea in Progress" } })
+    } else if (selectedTab === "myProposals") {
+      router.push({
+        pathname: "/projects/search",
+        query: { q: "myProposals" },
+      })
+    } else {
+      router.push({
+        pathname: "/projects/search",
+        query: { status: "Idea Submitted" },
+      })
+    }
   }
 
   //Mobile Filters logic
@@ -264,10 +300,16 @@ export const Projects = () => {
         <div className="homeWrapper__navbar">
           <div className="homeWrapper__navbar__tabs">
             <div
-              className={`homeWrapper__navbar__tabs--title ${tab.allResults}`}
-              onClick={() => handleTabChange("allResults")}
+              className={`homeWrapper__navbar__tabs--title ${tab.ideas}`}
+              onClick={() => handleTabChange("ideas")}
             >
-              All Results
+              Ideas
+            </div>
+            <div
+              className={`homeWrapper__navbar__tabs--title ${tab.activeProjects}`}
+              onClick={() => handleTabChange("activeProjects")}
+            >
+              Active Projects
             </div>
             <div
               className={`homeWrapper__navbar__tabs--title ${tab.myProposals}`}
@@ -300,19 +342,6 @@ export const Projects = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                       <ul className="homeWrapper__myProposals--list">
-                        {projectFacets.map((item) => (
-                          <li key={item.Status ? "Archived" : "Active"}>
-                            <Link
-                              id={item.Status ? "Archived" : "Active"}
-                              underline="none"
-                              href=""
-                              color="#AF2E33"
-                              onClick={(e) => goToSearchWithFilters(e, "projectStatus")}
-                            >
-                              {item.Status ? "Archived" : "Active"} ({item.count})
-                            </Link>
-                          </li>
-                        ))}
                         {statusFacets.map((item) => (
                           <li key={item.name}>
                             <Link
@@ -480,7 +509,7 @@ export const Projects = () => {
           </div>
           <div className="homeWrapper__information">
             <div className="homeWrapper__information--row">
-              <CardBox title={tab.allResults ? `All Results (${count || 0})` : "My Projects"}>
+              <CardBox title={title + ` (${count || 0})`}>
                 <div className="homeWrapper__navbar__sort">
                   <SortInput setSortQuery={setSortQuery} />
                   <button className="filter__mobile-button" onClick={handleMobileFilters}>
