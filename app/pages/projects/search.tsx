@@ -331,7 +331,7 @@ export const Projects = () => {
                 {makeChips()}
                 <div className="filter__title">Filters</div>
                 {statusFacets.length > 0 && (
-                  <Accordion disableGutters className="homeWrapper__accordion">
+                  <Accordion expanded disableGutters className="homeWrapper__accordion">
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
                       aria-controls="panel1a-controls"
