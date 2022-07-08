@@ -18,7 +18,7 @@ jobs:
     needs: get-github-branch
     uses: ./.github/workflows/run-deploy.yaml
     with:
-      branch_name: ${{ needs.get-github-branch.outputs.branch-name }}
+      branch_name: ${{ needs.get-github-branch.outputs.branch_name }}
       github_ref: ${{ github.ref_name }}
       AWS_SECRET_NAME: env-development
     secrets: inherit
