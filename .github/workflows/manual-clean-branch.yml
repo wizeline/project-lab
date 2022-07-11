@@ -1,12 +1,16 @@
-name: Automatic Clean Branch
-on: [delete]
+name: Manually Clean Branch Env
+on:
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
 jobs:
   get-github-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Get Github Branch
         id: get-branch
-        run: echo ::set-output name=branch::$(echo ${{ github.event.ref }} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g")
+        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/*/} | sed "s/_/-/g" | sed "s/\//-/g" | sed "s/ /-/g" | tr '[:upper:]' '[:lower:]')
     outputs:
       branch_name: ${{ steps.get-branch.outputs.branch }}
 
