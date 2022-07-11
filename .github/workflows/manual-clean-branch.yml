@@ -16,7 +16,7 @@ jobs:
 
   clean-branch:
     needs: get-github-branch
-    uses: ./.github/workflows/run-clean.yaml
+    uses: ./.github/workflows/run-clean.yml
     with:
       branch_name: ${{ needs.get-github-branch.outputs.branch_name }}
     secrets: inherit
