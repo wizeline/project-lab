@@ -30,7 +30,7 @@ locals {
 }
 
 data "aws_acm_certificate" "certificate" {
-  domain   = "labs.wizeline.com"
+  domain   = var.base_domain_name
   types    = ["AMAZON_ISSUED"]
   statuses = ["ISSUED"]
 }
@@ -38,7 +38,7 @@ data "aws_acm_certificate" "certificate" {
 resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
   origin {
     origin_id   = local.env_prefix == "production" ? "production" : local.env_prefix
-    domain_name = local.env_prefix == "production" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
+    domain_name = local.env_prefix == "production" ? "origin.${var.base_domain_name}" : "${local.env_prefix}-origin.${var.base_domain_name}"
     custom_origin_config {
       http_port              = 8080
       https_port             = 8080
@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "production" ? "prisma-studio.labs.wizeline.com" : "prisma-studio-${local.env_prefix}.labs.wizeline.com"]
+  aliases = [local.env_prefix == "production" ? "prisma-studio.${var.base_domain_name}" : "prisma-studio-${local.env_prefix}.${var.base_domain_name}"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
@@ -109,7 +109,7 @@ resource "aws_cloudfront_distribution" "distribution_prisma_studio" {
 resource "aws_cloudfront_distribution" "distribution" {
   origin {
     origin_id   = local.env_prefix == "production" ? "production" : local.env_prefix
-    domain_name = local.env_prefix == "production" ? "origin.labs.wizeline.com" : "${local.env_prefix}-origin.labs.wizeline.com"
+    domain_name = local.env_prefix == "production" ? "origin.${var.base_domain_name}" : "${local.env_prefix}-origin.${var.base_domain_name}"
     custom_origin_config {
       http_port              = 80
       https_port             = 80
@@ -118,7 +118,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "production" ? "labs.wizeline.com" : "${local.env_prefix}.labs.wizeline.com"]
+  aliases = [local.env_prefix == "production" ? "${var.base_domain_name}" : "${local.env_prefix}.${var.base_domain_name}"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
@@ -178,7 +178,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 }
 
 data "aws_route53_zone" "route53_zone" {
-  name         = "labs.wizeline.com"
+  name         = var.base_domain_name
   private_zone = false
 }
 

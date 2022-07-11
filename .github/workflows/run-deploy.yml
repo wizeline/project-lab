@@ -20,6 +20,8 @@ on:
         required: true
       DB_URL:
         required: true
+      BASE_DOMAIN_NAME:
+        required: true
 defaults:
   run:
     shell: bash
@@ -61,9 +63,9 @@ jobs:
       - name: Set Up App Domain
         run: |
           if [ "${{ inputs.branch_name }}" == "production" ]; then
-            sed -i -e "s/http:\/\/localhost:3000/https:\/\/labs.wizeline.com/g" ./blitz.config.ts
+            sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ secrets.BASE_DOMAIN_NAME }}/g" ./blitz.config.ts
           else
-            sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ inputs.branch_name }}.labs.wizeline.com/g" ./blitz.config.ts
+            sed -i -e "s/http:\/\/localhost:3000/https:\/\/${{ inputs.branch_name }}.${{ secrets.BASE_DOMAIN_NAME }}/g" ./blitz.config.ts
           fi
 
       - name: Terraform Change Workspace Lightsail
@@ -136,4 +138,6 @@ jobs:
           path: "terraform/distribution/"
           workspace: ${{ inputs.branch_name }}
           auto_approve: true
-          var: lightsail_instance_ip_address=${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}
+          variables: |
+            lightsail_instance_ip_address = "${{steps.get-lightsail-ip-address.outputs.IP_ADDRESS}}"
+            base_domain_name = "${{ secrets.BASE_DOMAIN_NAME }}"
