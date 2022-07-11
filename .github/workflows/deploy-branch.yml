@@ -16,7 +16,7 @@ jobs:
 
   deploy-branch:
     needs: get-github-branch
-    uses: ./.github/workflows/run-deploy.yaml
+    uses: ./.github/workflows/run-deploy.yml
     with:
       branch_name: ${{ needs.get-github-branch.outputs.branch_name }}
       github_ref: ${{ github.ref_name }}

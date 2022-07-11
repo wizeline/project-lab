@@ -8,7 +8,7 @@ defaults:
     shell: bash
 jobs:
   deploy-branch:
-    uses: ./.github/workflows/run-deploy.yaml
+    uses: ./.github/workflows/run-deploy.yml
     with:
       branch_name: production
       github_ref: ${{ github.ref }}
