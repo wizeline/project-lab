@@ -7,16 +7,19 @@ cd ~/projectlab/tmp
 WORKSPACE=$1
 DB_URL=$2
 
-echo "*** Step: *** Install postgresql client"
+
+echo "*** Step: *** prepare to add new deb sources for postgres and node"
+sudo apt update
 sudo apt -y install gnupg2
+
+echo "*** Step: *** Install postgresql client"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
 sudo apt update
 sudo apt -y install postgresql-client-12
 
 echo "*** Step: *** Install node"
-sudo apt-get install -y gnupg2
-curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash -
 sudo apt -y install nodejs gcc g++ make
 
 echo "*** Step: *** Install nginx"
@@ -78,8 +81,8 @@ then
   echo "*** Step: *** Load prod database and run migrations and seeds"
   pg_dump --dbname $DB_URL --clean --if-exists > db.sql
   psql -d "postgresql://admin:password@localhost/projectlab" < db.sql
-  npx blitz prisma migrate deploy
-  npx blitz db seed
+  npx -y blitz prisma migrate deploy # first npx with -y to avoid prompt to install
+  npx blitz db seed -f
   npx blitz db seed -f db/seeds.prod
 
   echo "*** Step: *** Launch prisma studio"
@@ -90,7 +93,7 @@ fi
 if [ "$WORKSPACE" == "production" ]
 then
   echo "*** Step: *** Run migrations and seeds in production"
-  npx blitz prisma migrate deploy
+  npx -y blitz prisma migrate deploy # first npx with -y to avoid prompt to install
   npx blitz db seed -f db/seeds.prod
 fi
 
@@ -98,8 +101,11 @@ echo "*** Step: *** Start application"
 yarn build
 npm run pm2:server
 
-echo "Enable app services"
+echo "*** Step: ** Enable app services"
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 sudo systemctl enable pm2-admin
 sudo systemctl restart wos-sync.service
+
+
+echo "*** Step: ** Cleanup"
 rm -rf ~/projectlab/tmp

@@ -123,7 +123,6 @@ jobs:
           script: |
             chmod +x /home/admin/projectlab/tmp/scripts/setup.sh
             /home/admin/projectlab/tmp/scripts/setup.sh ${{ inputs.branch_name }} ${{ secrets.DB_URL }}
-            rm -rf ~/projectlab/tmp
 
       - name: Terraform Change Workspace Distribution
         uses: dflook/terraform-new-workspace@v1
