@@ -118,7 +118,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
   enabled = true
-  aliases = [local.env_prefix == "production" ? "${var.base_domain_name}" : "${local.env_prefix}.${var.base_domain_name}"]
+  aliases = [local.env_prefix == "production" ? var.base_domain_name : "${local.env_prefix}.${var.base_domain_name}"]
   tags    = local.resource_tags
 
   ordered_cache_behavior {
