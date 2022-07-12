@@ -106,7 +106,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
             defaultValue={defaultStatus}
             name="projectStatus"
             label="Status"
-            disabled={user?.role !== adminRoleName}
           />
         )}
         <SkillsSelect name="skills" label="Skills" />
