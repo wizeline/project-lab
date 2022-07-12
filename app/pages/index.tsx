@@ -10,7 +10,7 @@ const Home = () => {
     router &&
       router.replace({
         pathname: "/projects/search",
-        query: { projectStatus: "Active" },
+        query: { status: "Idea in Progress" },
       })
   }, [router])
 

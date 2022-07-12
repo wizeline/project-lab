@@ -12,7 +12,6 @@ interface SearchProjectsInput {
   label: any
   skip: number
   take: number
-  projectStatus: any
   orderBy: { field: string; order: string }
 }
 
@@ -56,7 +55,6 @@ export default resolver.pipe(
       skill,
       discipline,
       label,
-      projectStatus,
       tier,
       location,
       orderBy,
@@ -67,14 +65,14 @@ export default resolver.pipe(
   ) => {
     let where = Prisma.sql`WHERE p.id IS NOT NULL`
     if (search && search !== "") {
-      search !== "myProposals"
-        ? (where = Prisma.sql`WHERE "tsColumn" @@ websearch_to_tsquery('english', ${search})`)
-        : (where = Prisma.sql`WHERE pm."profileId" = ${session.profileId}`)
+      search === "myProposals"
+        ? (where = Prisma.sql`WHERE pm."profileId" = ${session.profileId}`)
+        : (where = Prisma.sql`WHERE "tsColumn" @@ websearch_to_tsquery('english', ${search})`)
     }
 
     if (status) {
       const statuses = typeof status === "string" ? [status] : status
-      where = Prisma.sql`${where} AND s.name IN (${Prisma.join(statuses)}) `
+      where = Prisma.sql`${where} AND p.status IN (${Prisma.join(statuses)}) `
     }
 
     if (skill) {
@@ -95,22 +93,6 @@ export default resolver.pipe(
     if (label) {
       const labels = typeof label === "string" ? [label] : label
       where = Prisma.sql`${where} AND "Labels".name IN (${Prisma.join(labels)})`
-    }
-    if (projectStatus) {
-      const selectedStatus = typeof label === "string" ? [projectStatus][0] : projectStatus
-      let filterValue: boolean[] = []
-
-      switch (selectedStatus) {
-        case "Active":
-          filterValue[0] = false
-          break
-        case "Archived":
-          filterValue[0] = true
-          break
-      }
-
-      if (filterValue.length !== 0)
-        where = Prisma.sql`${where} AND p."isArchived" = ${filterValue[0]}`
     }
 
     if (location) {
@@ -155,7 +137,6 @@ export default resolver.pipe(
     const countResult = await db.$queryRaw<CountOutput[]>`
       SELECT count(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -170,9 +151,8 @@ export default resolver.pipe(
     `
 
     const statusFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT s.name, COUNT(DISTINCT p.id) as count
+      SELECT p.status as name, COUNT(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -184,13 +164,12 @@ export default resolver.pipe(
       LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
       ${where}
-      GROUP BY s.name
+      GROUP BY p.status
       ORDER BY count DESC;`
 
     const skillFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT "Skills".name, "Skills".id, count(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -211,7 +190,6 @@ export default resolver.pipe(
     const disciplineFacets = await db.$queryRaw<FacetOutput[]>`
     SELECT "Disciplines".name, "Disciplines".id, count(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -232,7 +210,6 @@ export default resolver.pipe(
     const labelFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT "Labels".name, "Labels".id, count(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -250,30 +227,9 @@ export default resolver.pipe(
       ORDER BY count DESC
     `
 
-    const projectFacets = await db.$queryRaw<ProjectFacetsOutput[]>`
-      SELECT DISTINCT p."isArchived" as "Status", COUNT (p.id) as count
-      FROM "Projects" p
-      WHERE 1=1 AND p.id IN (Select p.id  FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
-      INNER JOIN "Profiles" pr on pr.id = p."ownerId"
-      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
-      INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
-      LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
-      LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
-      LEFT JOIN "Skills" ON _ps."B" = "Skills".id
-      LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
-      LEFT JOIN "Labels" ON _lp."A" = "Labels".id
-      LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
-      LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
-        ${where}
-      )
-      GROUP BY p."isArchived"
-      ORDER BY p."isArchived" ASC`
-
     const tierFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT it.name, COUNT(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -291,7 +247,6 @@ export default resolver.pipe(
     const locationsFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT loc.name, loc.id, count(DISTINCT p.id) as count
       FROM "Projects" p
-      INNER JOIN "ProjectStatus" s on s.name = p.status
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "InnovationTiers" it ON it.name = p."tierName"
@@ -322,7 +277,6 @@ export default resolver.pipe(
       statusFacets,
       skillFacets,
       labelFacets,
-      projectFacets,
       disciplineFacets,
       tierFacets,
       locationsFacets,
