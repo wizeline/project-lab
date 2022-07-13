@@ -19,17 +19,23 @@ export default resolver.pipe(
           return { id: skill.id }
         }
       )
+      // Creates the array for the roles connect
+      const rolesArrayConnect = data.projectMembers[index].role?.map((r) => {
+        return { id: r.id }
+      })
       // Create only the members that don't exist in this project
       if (data.projectMembers[index].profile) {
         activeMembers.push(data.projectMembers[index]?.id)
-        // Just disconnects ALL related practicedSkills, so it can UPDATE just the new selected ones after...
+        // Just disconnects ALL related practicedSkills and roles, so it can UPDATE just the new selected ones after...
         await db.projectMembers.update({
           where: { id: data.projectMembers[index].id },
           data: {
             practicedSkills: { set: [] },
+            role: { set: [] },
           },
           include: {
             practicedSkills: true,
+            role: true,
           },
         })
         // Makes all the actual updates to the projectMember
@@ -37,7 +43,7 @@ export default resolver.pipe(
           where: { id: data.projectMembers[index].id },
           data: {
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
-            role: data.projectMembers[index].role,
+            role: { connect: rolesArrayConnect },
             active: data.projectMembers[index].active,
             practicedSkills: { connect: practicedSkillsArrayConnect },
           },
@@ -51,7 +57,7 @@ export default resolver.pipe(
             project: { connect: { id } },
             profile: { connect: { id: data.projectMembers[index].profileId } },
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
-            role: data.projectMembers[index].role,
+            role: { connect: rolesArrayConnect },
             practicedSkills: { connect: practicedSkillsArrayConnect },
           },
         })
@@ -120,6 +126,7 @@ export default resolver.pipe(
         projectMembers: {
           include: {
             profile: { select: { firstName: true, lastName: true, email: true } },
+            role: true,
             contributorPath: true,
             practicedSkills: true,
           },

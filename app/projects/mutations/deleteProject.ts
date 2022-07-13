@@ -22,7 +22,7 @@ export default resolver.pipe(
         owner: true,
         projectMembers: {
           include: { profile: { select: { firstName: true, lastName: true } } },
-          orderBy: [{ active: "desc" }, { role: "asc" }],
+          orderBy: [{ active: "desc" }],
         },
       },
     })

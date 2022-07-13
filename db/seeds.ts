@@ -508,7 +508,9 @@ const seed = async () => {
             {
               profile: { connect: { id: jp.id } },
               hoursPerWeek: 3,
-              role: "Tech Lead",
+              role: {
+                connect: [{ name: "Tech Lead" }],
+              },
             },
           ],
         },
@@ -546,27 +548,37 @@ const seed = async () => {
             {
               profile: { connect: { id: jbc.id } },
               hoursPerWeek: 3,
-              role: "Frontend",
+              role: {
+                connect: [{ name: "Frontend" }],
+              },
             },
             {
               profile: { connect: { id: tejeda.id } },
               hoursPerWeek: 3,
-              role: "Backend",
+              role: {
+                connect: [{ name: "Backend" }],
+              },
             },
             {
               profile: { connect: { id: george.id } },
               hoursPerWeek: 3,
-              role: "SRE",
+              role: {
+                connect: [{ name: "Site Reliability Engineer" }],
+              },
             },
             {
               profile: { connect: { id: jquiroz.id } },
               hoursPerWeek: 3,
-              role: "Frontend",
+              role: {
+                connect: [{ name: "Frontend" }],
+              },
             },
             {
               profile: { connect: { id: jamj.id } },
               hoursPerWeek: 3,
-              role: "Frontend",
+              role: {
+                connect: [{ name: "Frontend" }],
+              },
               practicedSkills: {
                 connect: [
                   { id: "b27f5e6c-4470-4f83-8fd6-dc097e127f44" },
@@ -613,7 +625,9 @@ const seed = async () => {
             {
               profile: { connect: { id: ev.id } },
               hoursPerWeek: 3,
-              role: "Tech Lead",
+              role: {
+                connect: [{ name: "Tech Lead" }],
+              },
             },
           ],
         },
@@ -650,7 +664,9 @@ const seed = async () => {
             {
               profile: { connect: { id: b.id } },
               hoursPerWeek: 3,
-              role: "Tech Lead",
+              role: {
+                connect: [{ name: "Tech Lead" }],
+              },
             },
           ],
         },
@@ -694,7 +710,9 @@ const seed = async () => {
             {
               profile: { connect: { id: enoc.id } },
               hoursPerWeek: 3,
-              role: "Tech Lead",
+              role: {
+                connect: [{ name: "Tech Lead" }],
+              },
             },
           ],
         },

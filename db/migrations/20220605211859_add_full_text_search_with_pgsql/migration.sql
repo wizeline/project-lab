@@ -48,11 +48,11 @@ CREATE OR REPLACE FUNCTION project_members_versions_fn() RETURNS TRIGGER
   LANGUAGE plpgsql AS $body$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
-    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
-    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.role, new.active, '');
+    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "active", "practicedSkills")
+    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.active, '');
   ELSIF (TG_OP = 'UPDATE') THEN
-    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
-    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.role, new.active, '');
+    INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "active", "practicedSkills")
+    VALUES (new."projectId", new."profileId", new."hoursPerWeek", new.active, '');
   ELSIF (TG_OP = 'DELETE') THEN
     INSERT INTO "ProjectMembersVersions"("projectId", "profileId", "hoursPerWeek", "role", "active", "practicedSkills")
     VALUES (old."projectId", old."profileId", 0, '', false, '');

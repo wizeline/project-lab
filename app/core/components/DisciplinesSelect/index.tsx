@@ -15,6 +15,7 @@ interface DisciplinesSelectProps {
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   size?: "small" | "medium" | undefined
   style?: object
+  parentName?: string
 }
 
 export const DisciplinesSelect = ({
@@ -27,6 +28,7 @@ export const DisciplinesSelect = ({
   outerProps,
   size,
   style,
+  parentName,
 }: DisciplinesSelectProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
@@ -44,7 +46,7 @@ export const DisciplinesSelect = ({
 
   const { values } = useFormState()
 
-  if (!values["helpWanted"]) return null
+  if (parentName && !values[parentName]) return null
 
   return (
     <Field name={name}>

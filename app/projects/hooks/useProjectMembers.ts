@@ -12,7 +12,9 @@ const useProjectMembers = () => {
     profileId?: string
     hoursPerWeek: number
     practicedSkills: any[]
-    role: string
+    role: {
+      id: string
+    }[]
   }
   const createProjectMemberHandler = async (object: IProjectMember) => {
     const cpm = await createProjectMemberMutation(object)

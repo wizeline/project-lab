@@ -24,8 +24,9 @@ export default resolver.pipe(
             profile: { select: { firstName: true, lastName: true, email: true } },
             contributorPath: true,
             practicedSkills: true,
+            role: true,
           },
-          orderBy: [{ active: "desc" }, { role: "asc" }],
+          orderBy: [{ active: "desc" }],
         },
         stages: {
           include: {

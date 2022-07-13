@@ -13,6 +13,7 @@ import { Field } from "react-final-form"
 import getProfiles from "app/profiles/queries/searchProfiles"
 import debounce from "lodash/debounce"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { DisciplinesSelect } from "app/core/components/DisciplinesSelect"
 
 interface ProfilesSelectProps {
   name: string
@@ -85,18 +86,35 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
-                  <Grid item xs={6} sm={2}>
-                    <TextField
-                      label="Role"
-                      defaultValue={row.role}
-                      size="small"
-                      onChange={(event) => {
-                        row.role = event.target.value
+                  <Grid item xs={12} sm={4}>
+                    <DisciplinesSelect
+                      customOnChange={(value) => {
+                        row.role = value
                         input.onChange(input.value)
                       }}
+                      fullWidth={true}
+                      name={`role-${row.profileId}`}
+                      label="Role(s)"
+                      defaultValue={row.role}
+                      size="small"
+                      style={{ margin: 0 }}
                     />
                   </Grid>
-                  <Grid item xs={6} sm={2}>
+                  <Grid item xs={12} sm={4}>
+                    <SkillsSelect
+                      customOnChange={(value) => {
+                        row.practicedSkills = value
+                        input.onChange(input.value)
+                      }}
+                      defaultValue={row.practicedSkills}
+                      fullWidth={true}
+                      label="Skills"
+                      name={`practicedSkills-${row.profileId}`}
+                      size="small"
+                      style={{ margin: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={1}>
                     <TextField
                       label="Hours"
                       helperText="H. per week"
@@ -116,21 +134,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6} sm={4}>
-                    <SkillsSelect
-                      customOnChange={(value) => {
-                        row.practicedSkills = value
-                        input.onChange(input.value)
-                      }}
-                      defaultValue={row.practicedSkills}
-                      fullWidth={true}
-                      label="Skills"
-                      name={`practicedSkills-${row.profileId}`}
-                      size="small"
-                      style={{ margin: 0 }}
-                    />
-                  </Grid>
-                  <Grid item xs={6} sm={2} style={{ textAlign: "center" }}>
+                  <Grid item xs={6} sm={1} style={{ textAlign: "center" }}>
                     <FormControlLabel
                       label="Active"
                       control={

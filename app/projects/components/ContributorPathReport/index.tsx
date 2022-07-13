@@ -75,7 +75,7 @@ export const ContributorPathReport = ({ project }: IProps) => {
             <th>Active</th>
             <th>Name</th>
             <th align="center">Email</th>
-            <th>Role</th>
+            <th>Role(s)</th>
             <th>
               H.P.W.
               <br />
@@ -126,7 +126,12 @@ export const ContributorPathReport = ({ project }: IProps) => {
                     </EmailAt>
                   </HtmlTooltip>
                 </td>
-                <td>{member.role}</td>
+                <td>
+                  {member.role.reduce(
+                    (acc, r, idx) => (idx === 0 ? r.name : acc + `, ${r.name}`),
+                    ""
+                  )}
+                </td>
                 <td align="center">{member.hoursPerWeek}</td>
                 {project.stages?.map((stage, s) => (
                   <td key={s}>
