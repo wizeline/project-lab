@@ -117,6 +117,7 @@ export const Projects = () => {
           item.searchSkills && item.searchSkills.split(",").map((skill) => ({ name: skill.trim() }))
         }
         isOwner={item.ownerId === user.profileId}
+        tierName={item.tierName}
       />
     )
   }

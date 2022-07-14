@@ -12,6 +12,10 @@ export const SortInput = ({ setSortQuery }: iProps) => {
   //sorting options
   const sortOptions = [
     {
+      label: "Tier",
+      value: "tier",
+    },
+    {
       label: "Most recent",
       value: "mostRecent",
     },
@@ -45,6 +49,9 @@ export const SortInput = ({ setSortQuery }: iProps) => {
     }
     if (sortBy === "lastUpdated") {
       setSortQuery({ field: "updatedAt", order: "desc" })
+    }
+    if (sortBy === "tier") {
+      setSortQuery({ field: "tier", order: "desc" })
     }
   }, [sortBy, setSortQuery])
 
