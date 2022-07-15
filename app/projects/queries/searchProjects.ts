@@ -100,13 +100,15 @@ export default resolver.pipe(
       where = Prisma.sql`${where} AND loc.name = ${Prisma.join(locationSelected)}`
     }
 
-    let orderQuery = Prisma.sql`ORDER BY p."createdAt" DESC`
+    let orderQuery = Prisma.sql`ORDER BY "tierName" ASC`
     if (orderBy.field == "updatedAt") {
       orderQuery = Prisma.sql`ORDER BY p."updatedAt" DESC`
     } else if (orderBy.field == "votesCount") {
       orderQuery = Prisma.sql`ORDER BY "votesCount" DESC`
     } else if (orderBy.field == "projectMembers") {
       orderQuery = Prisma.sql`ORDER BY "projectMembers" DESC`
+    } else if (orderBy.field == "mostRecent") {
+      orderQuery = Prisma.sql`ORDER BY p."createdAt" DESC`
     }
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
@@ -114,6 +116,7 @@ export default resolver.pipe(
         p."createdAt",
         p."updatedAt",
         p."ownerId",
+        p."tierName",
       COUNT(DISTINCT pm."profileId") as "projectMembers"
       FROM "Projects" p
       INNER JOIN "ProjectStatus" s on s.name = p.status

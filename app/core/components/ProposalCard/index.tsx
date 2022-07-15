@@ -3,6 +3,8 @@ import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@mui/material"
 import EllipsisText from "app/core/components/EllipsisText"
 import ThumbUpIcon from "@mui/icons-material/ThumbUp"
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark"
+import HelpIcon from "@mui/icons-material/Help"
 import Image from "next/image"
 
 import { ProposalCardWrap } from "./ProposalCard.styles"
@@ -19,9 +21,11 @@ interface IProps {
   votesCount?: number | null
   skills?: { name: string }[]
   isOwner?: boolean
+  tierName: String
 }
 
 export const ProposalCard = (props: IProps) => {
+  const stopEvent = (event) => event.stopPropagation()
   return (
     <>
       <Card
@@ -68,7 +72,27 @@ export const ProposalCard = (props: IProps) => {
                   <hr />
 
                   <div>
-                    <p className="ProposalCard__status--display">{props.status}</p>
+                    <div>
+                      <p className="ProposalCard__status--display">{props.status}</p>
+                      <div className="ProposalCard__tier">
+                        <a
+                          href="https://wizeline.atlassian.net/wiki/spaces/wiki/pages/3075342381/Innovation+Tiers"
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={stopEvent}
+                        >
+                          <label className="ProposalCard__head__description--tier">
+                            {props.tierName}
+                          </label>
+                        </a>
+                        <label
+                          className="ProposalCard__head__description--tier--extra"
+                          title="Maturation framework for innovation projects"
+                        >
+                          <HelpIcon sx={{ fontSize: 15 }} />
+                        </label>
+                      </div>
+                    </div>
                     <div className="ProposalCard__status--like">
                       <p>{props.votesCount} </p>
                       <span>
