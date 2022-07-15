@@ -119,6 +119,16 @@ const seed = async () => {
     update: {},
     create: { name: "Owner" },
   })
+  await db.disciplines.upsert({
+    where: { name: "Stakeholder" },
+    update: {},
+    create: { name: "Stakeholder" },
+  })
+  await db.disciplines.upsert({
+    where: { name: "Consultant" },
+    update: {},
+    create: { name: "Consultant" },
+  })
 
   await db.innovationTiers.upsert({
     where: { name: "Tier 3 (Experiment)" },
