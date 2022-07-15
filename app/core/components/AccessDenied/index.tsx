@@ -16,7 +16,10 @@ export const AccessDenied = () => {
           </Container>
         </Grid>
         <Grid item xs={12}>
-          <GoBack title="Back to main page" onClick={() => router.push(Routes.ProjectsPage())} />
+          <GoBack
+            title="Back to main page"
+            onClick={() => router.push(Routes.SearchProjectsPage())}
+          />
         </Grid>
       </Grid>
     </div>
