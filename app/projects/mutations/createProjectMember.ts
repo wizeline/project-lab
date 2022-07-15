@@ -10,13 +10,15 @@ export default resolver.pipe(
       return { id: skill.id }
     })
 
+    const rolesArrayConnect = input.role?.map((r) => ({ id: r.id }))
+
     const projectMember = await db.projectMembers.create({
       data: {
         project: { connect: { id: input.projectId } },
         profile: { connect: { id: session.profileId } },
         hoursPerWeek: input.hoursPerWeek,
         practicedSkills: { connect: practicedSkillsArrayConnect },
-        role: input.role,
+        role: { connect: rolesArrayConnect },
       },
     })
     return projectMember

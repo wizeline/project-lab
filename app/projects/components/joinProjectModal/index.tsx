@@ -7,6 +7,7 @@ import Button from "@mui/material/Button"
 
 import useProjectMembers from "app/projects/hooks/useProjectMembers"
 import { SkillsSelect } from "app/core/components/SkillsSelect"
+import { DisciplinesSelect } from "app/core/components/DisciplinesSelect"
 import { Grid, FormDivContainer, CommitmentDivContainer } from "./joinProjectModal.styles"
 import { Routes, useRouter } from "blitz"
 
@@ -17,7 +18,11 @@ interface IProps {
 }
 
 export const JoinFields = z.object({
-  role: z.string(),
+  role: z.array(
+    z.object({
+      id: z.string(),
+    })
+  ),
   hoursPerWeek: z.string().refine((val) => !val || /^\d+$/.test(val), {
     message: "Value must be an integer",
   }),
@@ -36,6 +41,7 @@ const JoinProjectModal = (props: IProps) => {
   const INIT_VALUES_MODALFORM = useMemo(() => {
     return {
       practicedSkills: [],
+      role: [],
     }
   }, [])
 
@@ -70,12 +76,7 @@ const JoinProjectModal = (props: IProps) => {
             <h1>Join Project</h1>
 
             <p className="question">What role will you be playing?</p>
-            <LabeledTextField
-              name="role"
-              fullWidth
-              label="Role"
-              outerProps={{ style: { marginTop: 10, marginBottom: 20 } }}
-            />
+            <DisciplinesSelect name="role" label="Role(s)" />
 
             <p className="question">What's your availability?</p>
             <LabeledTextField

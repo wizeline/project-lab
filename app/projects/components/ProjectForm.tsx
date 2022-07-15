@@ -67,7 +67,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="We need some help"
         initialValues={initialValues ? initialValues.helpWanted : true}
       />
-      <DisciplinesSelect name="disciplines" label="Looking for..." />
+      <DisciplinesSelect name="disciplines" label="Looking for..." parentName="helpWanted" />
 
       {projectformType === "create" && (
         <FormControlLabel

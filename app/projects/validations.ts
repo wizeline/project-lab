@@ -6,7 +6,7 @@ export const InitialMembers = (session) => {
         {
           profileId: session.profileId,
           name: session.name,
-          role: "Owner",
+          role: [{ id: "1", name: "Owner" }],
           active: true,
           hoursPerWeek: 40,
           practicedSkills: [],
@@ -28,7 +28,14 @@ const projectMembers = z
         )
         .optional(),
       profileId: z.string(),
-      role: z.string().nullish(),
+      role: z
+        .array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+          })
+        )
+        .optional(),
       profile: z
         .object({
           firstName: z.string(),
@@ -184,7 +191,7 @@ export const CreateProjectMember = z.object({
   projectId: z.any(),
   hoursPerWeek: z.number(),
   practicedSkills: z.array(z.object({ id: z.string() })),
-  role: z.string(),
+  role: z.array(z.object({ id: z.string() })),
 })
 
 export const UpdateProjectsInoovationTier = z.object({

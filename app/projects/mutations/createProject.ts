@@ -12,9 +12,11 @@ export default resolver.pipe(
       where: { defaultRow: true },
     })
 
+    const { projectMembers, ...formInput } = input
+
     const project = await db.projects.create({
       data: {
-        ...input,
+        ...formInput,
         owner: { connect: { id: session.profileId } },
         projectStatus: { connect: { name: input.projectStatus?.name || defaultStatus } },
         skills: {
@@ -25,9 +27,6 @@ export default resolver.pipe(
         },
         labels: {
           connect: input.labels,
-        },
-        projectMembers: {
-          create: input.projectMembers,
         },
         repoUrls: {
           create: input.repoUrls,
@@ -58,6 +57,23 @@ export default resolver.pipe(
           projectTasks: {
             create: projectTasks,
           },
+        },
+      })
+    }
+
+    // Loop Project Members
+    for (let index = 0; index < projectMembers.length; index++) {
+      // Creates the array for the roles connect
+      const rolesArrayConnect = projectMembers[index].role?.map((r) => {
+        return r.name === "Owner" ? { name: r.name } : { id: r.id }
+      })
+      await db.projectMembers.create({
+        data: {
+          project: { connect: { id: project.id } },
+          profile: projectMembers[index].profile,
+          hoursPerWeek: projectMembers[index].hoursPerWeek,
+          role: { connect: rolesArrayConnect },
+          practicedSkills: projectMembers[index].practicedSkills,
         },
       })
     }
