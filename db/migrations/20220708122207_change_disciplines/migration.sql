@@ -188,19 +188,19 @@ $body$;
 
 */
 -- DropForeignKey
-ALTER TABLE "ContributorPath" DROP CONSTRAINT "ContributorPath_projectMemberId_fkey";
+ALTER TABLE "ContributorPath" DROP CONSTRAINT IF EXISTS "ContributorPath_projectMemberId_fkey";
 
 -- DropForeignKey
-ALTER TABLE "_ProjectMembersToSkills" DROP CONSTRAINT "_ProjectMembersToSkills_A_fkey";
+ALTER TABLE "_ProjectMembersToSkills" DROP CONSTRAINT IF EXISTS "_ProjectMembersToSkills_A_fkey";
 
 -- DropForeignKey
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT "ProjectMembers_profileId_fkey";
+ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_profileId_fkey";
 
 -- DropForeignKey
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT "ProjectMembers_projectId_fkey";
+ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_projectId_fkey";
 
 -- AlterTable
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT "ProjectMembers_pkey";
+ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_pkey";
 
 ALTER TABLE "ProjectMembers" RENAME CONSTRAINT "new_ProjectMembers_pkey" TO "ProjectMembers_pkey";
 
