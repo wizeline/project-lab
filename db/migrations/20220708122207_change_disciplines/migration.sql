@@ -46,9 +46,11 @@ CREATE TRIGGER roles_versions_trigger
   EXECUTE FUNCTION roles_versions_fn();
 
 -- Insert new Disciplines
+CREATE EXTENSION pgcrypto; -- allow generating UUIDs from postgres
+
 INSERT INTO "Disciplines" VALUES
-(md5(random()::text), 'Stakeholder'),
-(md5(random()::text), 'Consultant')
+(gen_random_uuid(), 'Stakeholder'),
+(gen_random_uuid(), 'Consultant')
 ON CONFLICT do nothing;
 
 -- Procedure to migrate old roles into the new table
