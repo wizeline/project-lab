@@ -49,6 +49,7 @@ CREATE TRIGGER roles_versions_trigger
 CREATE EXTENSION pgcrypto; -- allow generating UUIDs from postgres
 
 INSERT INTO "Disciplines" VALUES
+(gen_random_uuid(), 'Owner'),
 (gen_random_uuid(), 'Stakeholder'),
 (gen_random_uuid(), 'Consultant')
 ON CONFLICT do nothing;
