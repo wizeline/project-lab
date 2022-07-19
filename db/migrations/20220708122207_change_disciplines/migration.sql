@@ -4,23 +4,7 @@
   - You are about to drop the column `role` on the `ProjectMembers` table. All the data in the column will be lost.
 
 */
-
 -- CreateTable
-CREATE TABLE "new_ProjectMembers" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "projectId" TEXT NOT NULL,
-    "profileId" TEXT NOT NULL,
-    "hoursPerWeek" INTEGER,
-    "active" BOOLEAN NOT NULL DEFAULT true
-);
-
-INSERT INTO "new_ProjectMembers" ("id","createdAt", "updatedAt", "projectId", "profileId", "hoursPerWeek", "active") SELECT "id", "createdAt", "updatedAt", "projectId", "profileId", "hoursPerWeek", "active" FROM "ProjectMembers";
-
-ALTER TABLE "ProjectMembers" RENAME TO "old_ProjectMembers";
-ALTER TABLE "new_ProjectMembers" RENAME TO "ProjectMembers";
-
 CREATE TABLE "_DisciplinesToProjectMembers" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -37,7 +21,6 @@ ALTER TABLE "_DisciplinesToProjectMembers" ADD CONSTRAINT "_DisciplinesToProject
 
 -- AddForeignKey
 ALTER TABLE "_DisciplinesToProjectMembers" ADD CONSTRAINT "_DisciplinesToProjectMembers_B_fkey" FOREIGN KEY ("B") REFERENCES "ProjectMembers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
 
 CREATE OR REPLACE FUNCTION roles_versions_fn() RETURNS TRIGGER
   LANGUAGE plpgsql AS $body$
@@ -158,9 +141,12 @@ INSERT INTO temps VALUES
 
 INSERT INTO "_DisciplinesToProjectMembers" SELECT d.id as "A", pm.id as "B" FROM "Disciplines" d
 	INNER JOIN "temps" te ON d.name = te.discipline
-	INNER JOIN "old_ProjectMembers" pm ON te.old_discipline = pm.role;
+	INNER JOIN "ProjectMembers" pm ON te.old_discipline = pm.role;
 
 DROP TABLE IF EXISTS "temps";
+
+-- AlterTable
+ALTER TABLE "ProjectMembers" DROP COLUMN "role";
 
 -- Modify ProjectMembersVersions function
 CREATE OR REPLACE FUNCTION project_members_versions_fn() RETURNS TRIGGER
@@ -179,51 +165,3 @@ BEGIN
   RETURN NULL;
 END;
 $body$;
-
-/*
-  Warnings:
-
-  - You are about to drop the `old_ProjectMembers` table. If the table is not empty, all the data it contains will be lost.
-  - A unique constraint covering the columns `[projectId,profileId]` on the table `ProjectMembers` will be added. If there are existing duplicate values, this will fail.
-
-*/
--- DropForeignKey
-ALTER TABLE "ContributorPath" DROP CONSTRAINT IF EXISTS "ContributorPath_projectMemberId_fkey";
-
--- DropForeignKey
-ALTER TABLE "_ProjectMembersToSkills" DROP CONSTRAINT IF EXISTS "_ProjectMembersToSkills_A_fkey";
-
--- DropForeignKey
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_profileId_fkey";
-
--- DropForeignKey
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_projectId_fkey";
-
--- AlterTable
-ALTER TABLE "old_ProjectMembers" DROP CONSTRAINT IF EXISTS "ProjectMembers_pkey";
-
-ALTER TABLE "ProjectMembers" RENAME CONSTRAINT "new_ProjectMembers_pkey" TO "ProjectMembers_pkey";
-
--- DropTable
-DROP TABLE "old_ProjectMembers";
-
--- CreateIndex
-CREATE INDEX "project_members_profile_id_idx" ON "ProjectMembers"("profileId");
-
--- CreateIndex
-CREATE INDEX "project_members_project_id_idx" ON "ProjectMembers"("projectId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ProjectMembers_projectId_profileId_key" ON "ProjectMembers"("projectId", "profileId");
-
--- AddForeignKey
-ALTER TABLE "ProjectMembers" ADD CONSTRAINT "ProjectMembers_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProjectMembers" ADD CONSTRAINT "ProjectMembers_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ContributorPath" ADD CONSTRAINT "ContributorPath_projectMemberId_fkey" FOREIGN KEY ("projectMemberId") REFERENCES "ProjectMembers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_ProjectMembersToSkills" ADD CONSTRAINT "_ProjectMembersToSkills_A_fkey" FOREIGN KEY ("A") REFERENCES "ProjectMembers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
