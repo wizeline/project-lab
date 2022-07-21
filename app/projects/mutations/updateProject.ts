@@ -43,6 +43,7 @@ export default resolver.pipe(
           where: { id: data.projectMembers[index].id },
           data: {
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
+            mentees: data.projectMembers[index].mentees,
             role: { connect: rolesArrayConnect },
             active: data.projectMembers[index].active,
             practicedSkills: { connect: practicedSkillsArrayConnect },
@@ -57,6 +58,7 @@ export default resolver.pipe(
             project: { connect: { id } },
             profile: { connect: { id: data.projectMembers[index].profileId } },
             hoursPerWeek: data.projectMembers[index].hoursPerWeek,
+            mentees: data.projectMembers[index].mentees,
             role: { connect: rolesArrayConnect },
             practicedSkills: { connect: practicedSkillsArrayConnect },
           },

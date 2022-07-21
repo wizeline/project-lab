@@ -86,7 +86,7 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       }
                     />
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <DisciplinesSelect
                       customOnChange={(value) => {
                         row.role = value
@@ -123,6 +123,25 @@ export const ProjectMembersField = ({ name, label, helperText }: ProfilesSelectP
                       defaultValue={row.hoursPerWeek}
                       onChange={(event) => {
                         row.hoursPerWeek = event.target.value
+                        input.onChange(input.value)
+                      }}
+                      sx={{
+                        "& .MuiFormHelperText-root": {
+                          marginLeft: 0,
+                          marginRight: 0,
+                          textAlign: "center",
+                        },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={1}>
+                    <TextField
+                      label="Mentees"
+                      size="small"
+                      type="number"
+                      defaultValue={row.mentees}
+                      onChange={(event) => {
+                        row.mentees = event.target.value
                         input.onChange(input.value)
                       }}
                       sx={{

@@ -10,6 +10,7 @@ export const InitialMembers = (session) => {
           active: true,
           hoursPerWeek: 40,
           practicedSkills: [],
+          mentees: 1,
         },
       ]
     : []
@@ -53,6 +54,15 @@ const projectMembers = z
         .transform((val) => (val ? parseInt(val) : null))
         // to allow numbers returned by prisma
         .or(z.number()),
+      mentees: z
+        .any()
+        .nullish()
+        .refine((val) => !val || /^\d+$/.test(`${val}`), {
+          message: "Mentees must be an integer",
+          path: ["projectMembers"],
+        })
+        .transform((val) => (val ? parseInt(val) : null))
+        .optional(),
       active: z.boolean().nullish(),
     })
   )
@@ -190,6 +200,7 @@ export const CreateContributorPath = z.object({
 export const CreateProjectMember = z.object({
   projectId: z.any(),
   hoursPerWeek: z.number(),
+  mentees: z.number().optional(),
   practicedSkills: z.array(z.object({ id: z.string() })),
   role: z.array(z.object({ id: z.string() })),
 })

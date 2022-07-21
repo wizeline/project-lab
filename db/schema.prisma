@@ -117,6 +117,7 @@ model ProjectMembers {
   project         Projects?         @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   contributorPath ContributorPath[]
   practicedSkills Skills[]
+  mentees         Int?              @default(1)
 
   @@unique([projectId, profileId], name: "project_members_project_id_profile_id_key")
   @@index([profileId], name: "project_members_profile_id_idx")

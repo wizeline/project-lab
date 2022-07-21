@@ -17,6 +17,7 @@ export default resolver.pipe(
         project: { connect: { id: input.projectId } },
         profile: { connect: { id: session.profileId } },
         hoursPerWeek: input.hoursPerWeek,
+        mentees: input.mentees,
         practicedSkills: { connect: practicedSkillsArrayConnect },
         role: { connect: rolesArrayConnect },
       },
