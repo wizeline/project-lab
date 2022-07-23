@@ -10,6 +10,7 @@ interface SearchProjectsInput {
   tier: any
   location: any
   label: any
+  role: any
   skip: number
   take: number
   orderBy: { field: string; order: string }
@@ -61,6 +62,7 @@ export default resolver.pipe(
       label,
       tier,
       location,
+      role,
       orderBy,
       skip = 0,
       take = 50,
@@ -104,6 +106,11 @@ export default resolver.pipe(
       where = Prisma.sql`${where} AND loc.name IN (${Prisma.join(locations)})`
     }
 
+    const roles = typeof role === "string" ? [role] : []
+    if (role) {
+      where = Prisma.sql`${where} AND roles.name IN (${Prisma.join(roles)})`
+    }
+
     let orderQuery = Prisma.sql`ORDER BY "tierName" ASC`
     if (orderBy.field == "updatedAt") {
       orderQuery = Prisma.sql`ORDER BY p."updatedAt" DESC`
@@ -129,10 +136,15 @@ export default resolver.pipe(
       LEFT JOIN "Labels" ON _lp."A" = "Labels".id
       LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
+      LEFT JOIN "_DisciplinesToProjectMembers" _dpm ON _dpm."B" = pm.id
+      LEFT JOIN "Disciplines" as roles ON _dpm."A" = roles.id
       ${where};
     `
 
-    const projectIdsWhere = Prisma.sql`WHERE p.id IN (${Prisma.join(ids.map((val) => val.id))})`
+    let projectIdsWhere = Prisma.sql`WHERE false`
+    if (ids.length > 0) {
+      projectIdsWhere = Prisma.sql`WHERE p.id IN (${Prisma.join(ids.map((val) => val.id))})`
+    }
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
       SELECT p.id, p.name, p.description, p."searchSkills", pr."firstName", pr."lastName", pr."avatarUrl", p.status, count(distinct v."profileId") AS "votesCount", s.color,
@@ -196,14 +208,14 @@ export default resolver.pipe(
       GROUP BY "Labels".id
       ORDER BY count DESC
     `
-    console.log("labels", labelFacets)
 
     const tierFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT p."tierName" as name, COUNT(DISTINCT p.id) as count
       FROM "Projects" p
       ${projectIdsWhere} AND p."tierName" NOT IN (${tiers.length > 0 ? Prisma.join(tiers) : ""})
       GROUP BY p."tierName"
-      ORDER BY count DESC, p."tierName";`
+      ORDER BY count DESC, p."tierName"
+    `
 
     const locationsFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT loc.name, loc.id, count(DISTINCT p.id) as count
@@ -218,7 +230,18 @@ export default resolver.pipe(
       ORDER BY count DESC
     `
 
-    if (ids.length < 1) throw new SearchProjectsError()
+    const roleFacets = await db.$queryRaw<FacetOutput[]>`
+      SELECT roles.name, roles.id, count(DISTINCT p.id) as count
+      FROM "Projects" p
+      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
+      INNER JOIN "_DisciplinesToProjectMembers" _dpm ON _dpm."B" = pm.id
+      INNER JOIN "Disciplines" as roles ON _dpm."A" = roles.id
+      ${projectIdsWhere} AND roles.name NOT IN (${roles.length > 0 ? Prisma.join(roles) : ""})
+      AND roles.name IS NOT NULL
+      AND roles.id IS NOT NULL
+      GROUP BY roles.id
+      ORDER BY count DESC
+    `
 
     const hasMore = skip + take < ids.length
     const nextPage = hasMore ? { take, skip: skip + take } : null
@@ -234,6 +257,7 @@ export default resolver.pipe(
       disciplineFacets,
       tierFacets,
       locationsFacets,
+      roleFacets,
     }
   }
 )
