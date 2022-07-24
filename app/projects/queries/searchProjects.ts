@@ -11,6 +11,7 @@ interface SearchProjectsInput {
   location: any
   label: any
   role: any
+  missing: any
   skip: number
   take: number
   orderBy: { field: string; order: string }
@@ -42,10 +43,6 @@ interface FacetOutput {
   count: number
 }
 
-interface ProjectFacetsOutput extends FacetOutput {
-  Status: string
-}
-
 export class SearchProjectsError extends Error {
   name = "SearchProjectsError"
   message = "There was an error while searching for projects."
@@ -63,6 +60,7 @@ export default resolver.pipe(
       tier,
       location,
       role,
+      missing,
       orderBy,
       skip = 0,
       take = 50,
@@ -108,7 +106,18 @@ export default resolver.pipe(
 
     const roles = typeof role === "string" ? [role] : []
     if (role) {
-      where = Prisma.sql`${where} AND roles.name IN (${Prisma.join(roles)})`
+      where = Prisma.sql`${where} AND roles.name IN (${Prisma.join(roles)}) AND pm.active = true`
+    }
+
+    const missingRoles = typeof missing === "string" ? [missing] : []
+    if (missing) {
+      where = Prisma.sql`${where} AND p.id NOT IN (
+        SELECT pm."projectId"
+        FROM "Disciplines" d
+        INNER JOIN "_DisciplinesToProjectMembers" _dpm ON _dpm."A" = d.id
+        INNER JOIN "ProjectMembers" pm ON pm.id = _dpm."B" AND pm.active = true
+        WHERE d.name IN (${Prisma.join(missingRoles)})
+      )`
     }
 
     let orderQuery = Prisma.sql`ORDER BY "tierName" ASC`
@@ -141,9 +150,9 @@ export default resolver.pipe(
       ${where};
     `
 
-    let projectIdsWhere = Prisma.sql`WHERE false`
+    let projectIdsWhere = Prisma.sql`false`
     if (ids.length > 0) {
-      projectIdsWhere = Prisma.sql`WHERE p.id IN (${Prisma.join(ids.map((val) => val.id))})`
+      projectIdsWhere = Prisma.sql`p.id IN (${Prisma.join(ids.map((val) => val.id))})`
     }
 
     const projects = await db.$queryRaw<SearchProjectsOutput[]>`
@@ -158,7 +167,7 @@ export default resolver.pipe(
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       LEFT JOIN "Vote" v on v."projectId" = p.id
-      ${projectIdsWhere}
+      WHERE ${projectIdsWhere}
       GROUP BY p.id, pr.id, s.name
       ${orderQuery}
       LIMIT ${take} OFFSET ${skip};
@@ -167,7 +176,9 @@ export default resolver.pipe(
     const statusFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT p.status as name, COUNT(DISTINCT p.id) as count
       FROM "Projects" p
-      ${projectIdsWhere} AND p.status NOT IN (${statuses.length > 0 ? Prisma.join(statuses) : ""})
+      WHERE ${projectIdsWhere} AND p.status NOT IN (${
+      statuses.length > 0 ? Prisma.join(statuses) : ""
+    })
       GROUP BY p.status
       ORDER BY count DESC;`
 
@@ -176,7 +187,9 @@ export default resolver.pipe(
       FROM "Projects" p
       LEFT JOIN "_ProjectsToSkills" _ps ON _ps."A" = p.id
       LEFT JOIN "Skills" ON _ps."B" = "Skills".id
-      ${projectIdsWhere} AND "Skills".name NOT IN (${skills.length > 0 ? Prisma.join(skills) : ""})
+      WHERE ${projectIdsWhere} AND "Skills".name NOT IN (${
+      skills.length > 0 ? Prisma.join(skills) : ""
+    })
       AND "Skills".name IS NOT NULL
       AND "Skills".id IS NOT NULL
       GROUP BY "Skills".id
@@ -188,7 +201,7 @@ export default resolver.pipe(
       FROM "Projects" p
       LEFT JOIN "_DisciplinesToProjects" _dp ON _dp."B" = p.id
       LEFT JOIN "Disciplines" ON _dp."A" = "Disciplines".id
-      ${projectIdsWhere} AND "Disciplines".name NOT IN (${
+      WHERE ${projectIdsWhere} AND "Disciplines".name NOT IN (${
       disciplines.length > 0 ? Prisma.join(disciplines) : ""
     })
       AND "Disciplines".name IS NOT NULL
@@ -202,7 +215,9 @@ export default resolver.pipe(
       FROM "Projects" p
       LEFT JOIN "_LabelsToProjects" _lp ON _lp."B" = p.id
       LEFT JOIN "Labels" ON _lp."A" = "Labels".id
-      ${projectIdsWhere} AND "Labels".name NOT IN (${labels.length > 0 ? Prisma.join(labels) : ""})
+      WHERE ${projectIdsWhere} AND "Labels".name NOT IN (${
+      labels.length > 0 ? Prisma.join(labels) : ""
+    })
       AND "Labels".name IS NOT NULL
       AND "Labels".id IS NOT NULL
       GROUP BY "Labels".id
@@ -212,7 +227,9 @@ export default resolver.pipe(
     const tierFacets = await db.$queryRaw<FacetOutput[]>`
       SELECT p."tierName" as name, COUNT(DISTINCT p.id) as count
       FROM "Projects" p
-      ${projectIdsWhere} AND p."tierName" NOT IN (${tiers.length > 0 ? Prisma.join(tiers) : ""})
+      WHERE ${projectIdsWhere} AND p."tierName" NOT IN (${
+      tiers.length > 0 ? Prisma.join(tiers) : ""
+    })
       GROUP BY p."tierName"
       ORDER BY count DESC, p."tierName"
     `
@@ -223,7 +240,9 @@ export default resolver.pipe(
       INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
       INNER JOIN "Profiles" pr on pr.id = p."ownerId"
       LEFT JOIN "Locations" loc ON loc.id = pr."locationId"
-      ${projectIdsWhere} AND loc.name NOT IN (${locations.length > 0 ? Prisma.join(locations) : ""})
+      WHERE ${projectIdsWhere} AND loc.name NOT IN (${
+      locations.length > 0 ? Prisma.join(locations) : ""
+    })
       AND loc.name IS NOT NULL
       AND loc.id IS NOT NULL
       GROUP BY loc.id
@@ -231,16 +250,13 @@ export default resolver.pipe(
     `
 
     const roleFacets = await db.$queryRaw<FacetOutput[]>`
-      SELECT roles.name, roles.id, count(DISTINCT p.id) as count
-      FROM "Projects" p
-      INNER JOIN "ProjectMembers" pm ON pm."projectId" = p.id
-      INNER JOIN "_DisciplinesToProjectMembers" _dpm ON _dpm."B" = pm.id
-      INNER JOIN "Disciplines" as roles ON _dpm."A" = roles.id
-      ${projectIdsWhere} AND roles.name NOT IN (${roles.length > 0 ? Prisma.join(roles) : ""})
-      AND roles.name IS NOT NULL
-      AND roles.id IS NOT NULL
-      GROUP BY roles.id
-      ORDER BY count DESC
+      SELECT d.name, d.id, count(DISTINCT p.id) as count
+      FROM "Disciplines" d
+      LEFT JOIN "_DisciplinesToProjectMembers" _dpm ON _dpm."A" = d.id
+      LEFT JOIN "ProjectMembers" pm ON pm.id = _dpm."B" AND pm.active = true
+      LEFT JOIN "Projects" p ON p.id = pm."projectId" AND ${projectIdsWhere}
+      GROUP BY d.id
+      ORDER BY LOWER(d.name) ASC
     `
 
     const hasMore = skip + take < ids.length
@@ -257,7 +273,10 @@ export default resolver.pipe(
       disciplineFacets,
       tierFacets,
       locationsFacets,
-      roleFacets,
+      roleFacets: roleFacets.filter((val) => val.count != 0 && roles.indexOf(val.name) == -1),
+      missingFacets: roleFacets.filter(
+        (val) => val.count != ids.length && missingRoles.indexOf(val.name) == -1
+      ),
     }
   }
 )

@@ -22,6 +22,7 @@ type SearchFilters = {
   tier: string[]
   location: string[]
   role: string[]
+  missing: string[]
 }
 
 type queryItems = {
@@ -34,6 +35,7 @@ type queryItems = {
   tier?: string
   location?: string
   role?: string
+  missing?: string
   count?: number
 }
 
@@ -46,7 +48,8 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, skill, label, discipline, location, tier, role }: queryItems = router.query
+  const { status, skill, label, discipline, location, tier, role, missing }: queryItems =
+    router.query
   const [chips, setChips] = useState<string[]>([])
   const [title, setTitle] = useState<string>("Active Projects")
   const [filters, setFilters] = useState<SearchFilters>({
@@ -57,6 +60,7 @@ export const Projects = () => {
     tier: tier ? [tier] : [],
     location: location ? [location] : [],
     role: role ? [role] : [],
+    missing: missing ? [missing] : [],
   })
 
   useEffect(() => {
@@ -77,6 +81,7 @@ export const Projects = () => {
       tierFacets,
       locationsFacets,
       roleFacets,
+      missingFacets,
       count,
     },
   ] = useQuery(searchProjects, {
@@ -88,6 +93,7 @@ export const Projects = () => {
     tier,
     location,
     role,
+    missing,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -252,8 +258,9 @@ export const Projects = () => {
       tier: tier ? [tier] : [],
       location: location ? [location] : [],
       role: role ? [role] : [],
+      missing: missing ? [missing] : [],
     })
-  }, [router.query.q, status, skill, label, discipline, tier, location, role])
+  }, [router.query.q, status, skill, label, discipline, tier, location, role, missing])
 
   const handleTabChange = (selectedTab: string) => {
     if (selectedTab === "activeProjects") {
@@ -473,6 +480,35 @@ export const Projects = () => {
                               href=""
                               color="#AF2E33"
                               onClick={(e) => goToSearchWithFilters(e, "role")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {missingFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Missing Roles</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {missingFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "missing")}
                             >
                               {item.name} ({item.count})
                             </Link>
