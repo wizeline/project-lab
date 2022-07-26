@@ -21,6 +21,8 @@ type SearchFilters = {
   discipline: string[]
   tier: string[]
   location: string[]
+  role: string[]
+  missing: string[]
 }
 
 type queryItems = {
@@ -32,6 +34,8 @@ type queryItems = {
   discipline?: string
   tier?: string
   location?: string
+  role?: string
+  missing?: string
   count?: number
 }
 
@@ -44,7 +48,8 @@ export const Projects = () => {
   const qParams = useRouterQuery()
   const page = Number(router.query.page) || 0
   const search = router.query.q || ""
-  const { status, skill, label, discipline, location, tier }: queryItems = router.query
+  const { status, skill, label, discipline, location, tier, role, missing }: queryItems =
+    router.query
   const [chips, setChips] = useState<string[]>([])
   const [title, setTitle] = useState<string>("Active Projects")
   const [filters, setFilters] = useState<SearchFilters>({
@@ -54,6 +59,8 @@ export const Projects = () => {
     discipline: discipline ? [discipline] : [],
     tier: tier ? [tier] : [],
     location: location ? [location] : [],
+    role: role ? [role] : [],
+    missing: missing ? [missing] : [],
   })
 
   useEffect(() => {
@@ -73,6 +80,8 @@ export const Projects = () => {
       labelFacets,
       tierFacets,
       locationsFacets,
+      roleFacets,
+      missingFacets,
       count,
     },
   ] = useQuery(searchProjects, {
@@ -83,6 +92,8 @@ export const Projects = () => {
     discipline,
     tier,
     location,
+    role,
+    missing,
     orderBy: { ...sortQuery },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -246,8 +257,10 @@ export const Projects = () => {
       discipline: discipline ? [discipline] : [],
       tier: tier ? [tier] : [],
       location: location ? [location] : [],
+      role: role ? [role] : [],
+      missing: missing ? [missing] : [],
     })
-  }, [router.query.q, status, skill, label, discipline, tier, location])
+  }, [router.query.q, status, skill, label, discipline, tier, location, role, missing])
 
   const handleTabChange = (selectedTab: string) => {
     if (selectedTab === "activeProjects") {
@@ -360,55 +373,26 @@ export const Projects = () => {
                     </AccordionDetails>
                   </Accordion>
                 )}
-                {skillFacets.length > 0 && (
+                {tierFacets.length > 0 && (
                   <Accordion disableGutters className="homeWrapper__accordion">
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
-                      aria-controls="panel2a-controls"
-                      id="panel2a-header"
+                      aria-controls="panel3a-controls"
+                      id="panel3a-header"
                       className="accordion__filter__title"
                     >
-                      <h4>Skills</h4>
+                      <h4>Innovation tiers</h4>
                     </AccordionSummary>
                     <AccordionDetails>
                       <ul className="homeWrapper__myProposals--list">
-                        {skillFacets.map((item) => (
+                        {tierFacets.map((item) => (
                           <li key={item.name}>
                             <Link
                               id={item.name}
                               underline="none"
                               href=""
                               color="#AF2E33"
-                              onClick={(e) => goToSearchWithFilters(e, "skill")}
-                            >
-                              {item.name} ({item.count})
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionDetails>
-                  </Accordion>
-                )}
-                {disciplineFacets.length > 0 && (
-                  <Accordion disableGutters className="homeWrapper__accordion">
-                    <AccordionSummary
-                      expandIcon={<ExpandMore />}
-                      aria-controls="panel2a-controls"
-                      id="panel2a-header"
-                      className="accordion__filter__title"
-                    >
-                      <h4>Looking for</h4>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <ul className="homeWrapper__myProposals--list">
-                        {disciplineFacets.map((item) => (
-                          <li key={item.name}>
-                            <Link
-                              id={item.name}
-                              underline="none"
-                              href=""
-                              color="#AF2E33"
-                              onClick={(e) => goToSearchWithFilters(e, "discipline")}
+                              onClick={(e) => goToSearchWithFilters(e, "tier")}
                             >
                               {item.name} ({item.count})
                             </Link>
@@ -447,26 +431,113 @@ export const Projects = () => {
                     </AccordionDetails>
                   </Accordion>
                 )}
-                {tierFacets.length > 0 && (
+                {disciplineFacets.length > 0 && (
                   <Accordion disableGutters className="homeWrapper__accordion">
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
-                      aria-controls="panel3a-controls"
-                      id="panel3a-header"
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
                       className="accordion__filter__title"
                     >
-                      <h4>Innovation tiers</h4>
+                      <h4>Looking for</h4>
                     </AccordionSummary>
                     <AccordionDetails>
                       <ul className="homeWrapper__myProposals--list">
-                        {tierFacets.map((item) => (
+                        {disciplineFacets.map((item) => (
                           <li key={item.name}>
                             <Link
                               id={item.name}
                               underline="none"
                               href=""
                               color="#AF2E33"
-                              onClick={(e) => goToSearchWithFilters(e, "tier")}
+                              onClick={(e) => goToSearchWithFilters(e, "discipline")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {roleFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Roles</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {roleFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "role")}
+                            >
+                              {item.name} ({item.count})
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {missingFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Missing Roles</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {missingFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "missing")}
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+                {skillFacets.length > 0 && (
+                  <Accordion disableGutters className="homeWrapper__accordion">
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel2a-controls"
+                      id="panel2a-header"
+                      className="accordion__filter__title"
+                    >
+                      <h4>Skills</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="homeWrapper__myProposals--list">
+                        {skillFacets.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              id={item.name}
+                              underline="none"
+                              href=""
+                              color="#AF2E33"
+                              onClick={(e) => goToSearchWithFilters(e, "skill")}
                             >
                               {item.name} ({item.count})
                             </Link>
