@@ -510,7 +510,7 @@ export const Projects = () => {
                               color="#AF2E33"
                               onClick={(e) => goToSearchWithFilters(e, "missing")}
                             >
-                              {item.name} ({item.count})
+                              {item.name}
                             </Link>
                           </li>
                         ))}
