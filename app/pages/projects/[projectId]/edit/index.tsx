@@ -17,6 +17,7 @@ import { FullCreate, ContributorPath } from "app/projects/validations"
 import DeleteButton from "app/projects/components/DeleteButton.component"
 import TabPanel from "app/projects/components/TabPanel.component"
 import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
+import { MentorshipTable } from "app/projects/components/MentorshipTable"
 import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
 import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
@@ -112,6 +113,7 @@ export const EditProject = () => {
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Edit project">
               <TabStyles label="Project Details" />
               <TabStyles label="Contributor's Path" />
+              <TabStyles label="Mentorship Details" />
             </Tabs>
           </Box>
           <TabPanel value={tabIndex} index={0}>
@@ -132,6 +134,9 @@ export const EditProject = () => {
               projectId={project.id}
               retrieveProjectInfo={retrieveProjectInfo}
             />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={2}>
+            <MentorshipTable />
           </TabPanel>
         </EditPanelsStyles>
       </div>

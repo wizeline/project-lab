@@ -97,6 +97,8 @@ model Profiles {
   projectsVersions       ProjectsVersions[]
   votes                  Vote[]
   comments               Comments[]
+  mentors                Mentorships[]            @relation("Mentors")
+  mentees                Mentorships[]            @relation("Mentees")
 
   @@index([email], name: "profiles_email_idx")
   @@index([jobTitleId], name: "profiles_job_title_id_idx")
@@ -181,6 +183,7 @@ model Projects {
   helpWanted             Boolean                  @default(true)
   tsColumn               Unsupported("TSVECTOR")?
   projectVersions        ProjectsVersions[]
+  mentorships            Mentorships[]
 
   @@index([ownerId], name: "projects_owner_id_idx")
   @@index([status], name: "projects_status_idx")
@@ -329,4 +332,18 @@ model Repos {
   updatedAt DateTime @default(now())
   projects  Projects @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projectId String
+}
+
+model Mentorships {
+  id        Int      @id @default(autoincrement())
+  mentorId  String
+  menteeId  String
+  startDate DateTime @default(now())
+  endDate   DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  projectId String
+  mentors   Profiles @relation("Mentors", fields: [mentorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mentees   Profiles @relation("Mentees", fields: [menteeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
