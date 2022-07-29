@@ -1,6 +1,7 @@
 import { Suspense, SyntheticEvent, useState } from "react"
 import { Box, Tabs } from "@mui/material"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { toast } from "react-toastify"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
@@ -60,7 +61,7 @@ export const EditProject = () => {
         ...values,
       })
       await setQueryData(updated)
-      router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+      toast.success("Changes saved successfully")
     } catch (error) {
       console.error(error)
       return {
@@ -85,7 +86,7 @@ export const EditProject = () => {
         ...values,
       })
       await refetch()
-      router.push(Routes.ShowProjectPage({ projectId: project.id }))
+      toast.success("Changes saved successfully")
     } catch (error) {
       console.error(error)
       return {

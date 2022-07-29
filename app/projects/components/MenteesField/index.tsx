@@ -7,7 +7,6 @@ import debounce from "lodash/debounce"
 interface MenteesFieldProps {
   defaultValue?: any[]
   onChange: (idx: number, arg: any, mentorProfileId: string) => void
-  fullWidth?: boolean
   helperText?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   size?: "small" | "medium" | undefined
@@ -22,7 +21,6 @@ interface MenteesFieldProps {
 export const MenteesField = ({
   onChange,
   inputValue,
-  fullWidth,
   helperText,
   style,
   submitting = false,
@@ -41,7 +39,6 @@ export const MenteesField = ({
   return (
     <Autocomplete
       multiple={false}
-      fullWidth={fullWidth ? fullWidth : false}
       style={style ? style : { margin: "1em 0" }}
       disabled={submitting}
       loading={isLoading || !data}

@@ -11,6 +11,8 @@ import LoginPage from "app/auth/pages/login"
 import Loader from "app/core/components/Loader"
 import { Suspense } from "react"
 import "app/pages/style.css"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
@@ -23,6 +25,17 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {getLayout(<Component {...pageProps} />)}
       </ErrorBoundary>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </Suspense>
   )
 }

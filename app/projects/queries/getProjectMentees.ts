@@ -40,7 +40,6 @@ export default resolver.pipe(
             },
           }
     })
-    console.log(finalMentees)
     return finalMentees
   }
 )
