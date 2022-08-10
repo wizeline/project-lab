@@ -11,6 +11,7 @@ const useProjectMembers = () => {
     projectId: string
     profileId?: string
     hoursPerWeek: number
+    mentees?: number
     practicedSkills: any[]
     role: {
       id: string

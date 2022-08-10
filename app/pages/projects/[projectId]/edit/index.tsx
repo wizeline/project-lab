@@ -1,6 +1,7 @@
 import { Suspense, SyntheticEvent, useState } from "react"
 import { Box, Tabs } from "@mui/material"
 import { useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { toast } from "react-toastify"
 import { useSessionUserIsProjectTeamMember } from "app/core/hooks/useSessionUserIsProjectTeamMember"
 import Layout from "app/core/layouts/Layout"
 import GoBack from "app/core/layouts/GoBack"
@@ -17,6 +18,7 @@ import { FullCreate, ContributorPath } from "app/projects/validations"
 import DeleteButton from "app/projects/components/DeleteButton.component"
 import TabPanel from "app/projects/components/TabPanel.component"
 import { ProjectContributorsPathForm } from "app/projects/components/ProjectContributorsPathForm"
+import { MentorshipTable } from "app/projects/components/MentorshipTable"
 import { TabStyles, EditPanelsStyles } from "app/projects/components/Styles/TabStyles.component"
 import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
 import { adminRoleName } from "app/core/utils/constants"
@@ -59,7 +61,7 @@ export const EditProject = () => {
         ...values,
       })
       await setQueryData(updated)
-      router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+      toast.success("Changes saved successfully")
     } catch (error) {
       console.error(error)
       return {
@@ -84,7 +86,7 @@ export const EditProject = () => {
         ...values,
       })
       await refetch()
-      router.push(Routes.ShowProjectPage({ projectId: project.id }))
+      toast.success("Changes saved successfully")
     } catch (error) {
       console.error(error)
       return {
@@ -112,6 +114,7 @@ export const EditProject = () => {
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Edit project">
               <TabStyles label="Project Details" />
               <TabStyles label="Contributor's Path" />
+              <TabStyles label="Mentorship Details" />
             </Tabs>
           </Box>
           <TabPanel value={tabIndex} index={0}>
@@ -132,6 +135,9 @@ export const EditProject = () => {
               projectId={project.id}
               retrieveProjectInfo={retrieveProjectInfo}
             />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={2}>
+            <MentorshipTable />
           </TabPanel>
         </EditPanelsStyles>
       </div>

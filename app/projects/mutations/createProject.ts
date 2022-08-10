@@ -72,6 +72,7 @@ export default resolver.pipe(
           project: { connect: { id: project.id } },
           profile: projectMembers[index].profile,
           hoursPerWeek: projectMembers[index].hoursPerWeek,
+          mentees: projectMembers[index].mentees,
           role: { connect: rolesArrayConnect },
           practicedSkills: projectMembers[index].practicedSkills,
         },
