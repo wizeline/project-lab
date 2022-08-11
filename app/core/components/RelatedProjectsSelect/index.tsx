@@ -2,8 +2,6 @@ import { Fragment, PropsWithoutRef, useState } from "react"
 import { useQuery } from "blitz"
 import { CircularProgress, TextField, Autocomplete } from "@mui/material"
 import { Field } from "react-final-form"
-// import getSkills from "app/skills/queries/getSkills"
-// import getRelatedProjects from "app/projects/queries/getRelatedProjects"
 import getProjects from "app/projects/queries/getProjects"
 import debounce from "lodash/debounce"
 
@@ -36,11 +34,6 @@ export const RelatedProjectsSelect = ({
 
   const [data, { isLoading }] = useQuery(
     getProjects,
-    // WHERE VERSION A
-    // {
-    //   where: { NOT: [{ id: "f621e435-d930-41e7-9c87-76e2a419e53e" }] },
-    // },
-    // WHERE VERSION B
     {
       where: { name: { contains: searchTerm, mode: "insensitive" }, id: { not: thisProject } },
       orderBy: { id: "asc" },
@@ -48,37 +41,12 @@ export const RelatedProjectsSelect = ({
     { suspense: false }
   )
 
-  const { projects, count } = data || { projects: ["1", "2"] }
-
-  // const [dataB, { isLoadingB }] = useQuery(getRelatedProjects, {}, { suspense: false })
-  // const { relatedProjects, countB } = dataB || { relatedProjects: ["1", "2"] }
-
-  // const parsedRelated = relatedProjects.map((e: any) =>
-  //   e.projectAId !== "87a26368-c115-4b1f-a4a1-e03202dfd14b"
-  //     ? {
-  //         id: e.projectA.id,
-  //         name: e.projectA.name,
-  //       }
-  //     : {
-  //         id: e.projectB.id,
-  //         name: e.projectB.name,
-  //       }
-  // )
+  const { projects, count } = data || { projects: [] }
 
   const setSearchTermDebounced = debounce(setSearchTerm, 500)
-  // return (
-  //   <div>
-  //     <p>the count: {JSON.stringify(count)} -- </p>
-  //     {JSON.stringify(parsedRelated)}
-  //   </div>
-  // )
 
   return (
     <>
-      <div>
-        {/* <p>the count: {JSON.stringify(count)} -- </p> */}
-        {/* {JSON.stringify(relatedProjects)} */}
-      </div>
       <Field name={name}>
         {({ input, meta: { touched, error, submitError, submitting } }) => {
           const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
