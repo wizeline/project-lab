@@ -58,7 +58,7 @@ export const EditProject = () => {
         isAdmin: user?.role === adminRoleName,
         ...values,
       })
-      await setQueryData(updated)
+      // await setQueryData(updated)
       router.push(Routes.ShowProjectPage({ projectId: updated.id }))
     } catch (error) {
       console.error(error)
