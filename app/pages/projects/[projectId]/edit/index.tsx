@@ -26,11 +26,10 @@ export const EditProject = () => {
   const user = useCurrentUser()
   const projectId = useParam("projectId", "string")
   const [deleteProjectMutation] = useMutation(deleteProject)
-  const [project, { setQueryData, refetch }] = useQuery(
+  const [project, { refetch }] = useQuery(
     getProject,
     { id: projectId },
     {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
@@ -58,7 +57,6 @@ export const EditProject = () => {
         isAdmin: user?.role === adminRoleName,
         ...values,
       })
-      // await setQueryData(updated)
       router.push(Routes.ShowProjectPage({ projectId: updated.id }))
     } catch (error) {
       console.error(error)
