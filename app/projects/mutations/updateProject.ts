@@ -86,9 +86,48 @@ export default resolver.pipe(
       (repo) => !projectRepoUrls.find((repoUrl) => repoUrl.id === repo.id)
     )
 
+    // Create related Projects
+    for (let i = 0; i < data.relatedProjects.length; i++) {
+      let relationExist = await db.relatedProjects.count({
+        where: {
+          OR: [
+            {
+              projectAId: data.relatedProjects[i].id,
+              projectBId: id,
+            },
+            {
+              projectAId: id,
+              projectBId: data.relatedProjects[i].id,
+            },
+          ],
+        },
+      })
+
+      if (relationExist === 0) {
+        await db.relatedProjects.create({
+          data: {
+            projectAId: id,
+            projectBId: data.relatedProjects[i].id,
+          },
+        })
+      }
+    }
+
+    // Delete related projects
+    const relatedProjectsIds = await data.relatedProjects.map((e) => e.id)
+    await db.relatedProjects.deleteMany({
+      where: {
+        OR: [
+          { projectAId: id, projectBId: { notIn: relatedProjectsIds } },
+          { projectAId: { notIn: relatedProjectsIds }, projectBId: id },
+        ],
+      },
+    })
+
     // Delete from Form values because We already updated the project members.
     delete data.projectMembers
     delete data.existedMembers
+    delete data.relatedProjects
 
     const project = await db.projects.update({
       where: { id },
