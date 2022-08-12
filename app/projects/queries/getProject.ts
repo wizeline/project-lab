@@ -11,7 +11,7 @@ export default resolver.pipe(
   resolver.zod(GetProject),
   resolver.authorize(),
   async ({ id }, { session }: Ctx) => {
-    const project = await db.projects.findFirst({
+    const projectQueried = await db.projects.findFirst({
       where: { id },
       include: {
         skills: true,
@@ -37,11 +37,36 @@ export default resolver.pipe(
         votes: { where: { projectId: id } },
         innovationTiers: true,
         repoUrls: true,
+        relatedProjectsA: {
+          include: {
+            projectA: { select: { id: true, name: true } },
+            projectB: { select: { id: true, name: true } },
+          },
+        },
+        relatedProjectsB: {
+          include: {
+            projectA: { select: { id: true, name: true } },
+            projectB: { select: { id: true, name: true } },
+          },
+        },
       },
     })
 
-    if (!project) throw new NotFoundError()
+    if (!projectQueried) throw new NotFoundError()
 
+    // Parse related Projects
+    const relatedProA = projectQueried.relatedProjectsA.map((e) => {
+      return e.projectA.id === id ? { ...e.projectB } : { ...e.projectA }
+    })
+    const relatedProB = projectQueried.relatedProjectsB.map((e) => {
+      return e.projectA.id === id ? { ...e.projectB } : { ...e.projectA }
+    })
+    const relatedProjects = { relatedProA, relatedProB }
+
+    const project = {
+      ...projectQueried,
+      relatedProjects: [...relatedProA, ...relatedProB],
+    }
     return project
   }
 )

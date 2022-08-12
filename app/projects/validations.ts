@@ -92,6 +92,15 @@ export const FullFormFields = {
   projectMembers,
   innovationTiers: z.object({ name: z.string() }).optional(),
   helpWanted: z.boolean().optional(),
+  relatedProjects: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string().optional(),
+        projectFieldLocation: z.string().optional(),
+      })
+    )
+    .optional(),
 }
 
 const extractSearchSkills = (val) => {

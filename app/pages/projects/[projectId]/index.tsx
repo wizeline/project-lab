@@ -350,6 +350,20 @@ export const Project = () => {
         </Grid>
       </div>
       <div className="wrapper">
+        <Grid>
+          <big>Related Projects</big>
+          <Box>
+            {project.relatedProjects.map((item, i) => {
+              return (
+                <Link key={i} href={Routes.ShowProjectPage({ projectId: item.id })}>
+                  <Chip sx={{ margin: "1em .5em" }} label={item.name}></Chip>
+                </Link>
+              )
+            })}
+          </Box>
+        </Grid>
+      </div>
+      <div className="wrapper">
         <ContributorPathReport project={project} />
       </div>
       <div className="wrapper">
