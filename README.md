@@ -20,6 +20,15 @@ createdb projectlab
 createdb projectlab_test
 ```
 
+For Windows you can install postgres from [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) and you can follow [this](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database#setting-up-postgresql-on-windows) easy setup (it also works for MacOS)
+
+Then open the SQL Shell and write this commands for creating a DB:
+
+```
+CREATE DATABASE projectlab;
+CREATE DATABASE projectlab_test;
+```
+
 ## Getting Started
 
 ### Environment Variables
@@ -44,6 +53,12 @@ WOS_API_URL=
 
 ```
 DATABASE_URL=postgresql://[username]@localhost:5432/projectlab_test
+```
+
+If you are using Windows, you should use this format in both files for the DATABASE_URL:
+
+```
+DATABASE_URL=postgresql://[username]:[password]@localhost:5432/[database]?schema=public
 ```
 
 3. Ask in `#team-projectlab` channel on _Slack_
