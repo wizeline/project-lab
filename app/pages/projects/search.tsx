@@ -129,6 +129,7 @@ export const Projects = () => {
         }
         isOwner={item.ownerId === user.profileId}
         tierName={item.tierName}
+        projectMembers={item.projectMembers}
       />
     )
   }
