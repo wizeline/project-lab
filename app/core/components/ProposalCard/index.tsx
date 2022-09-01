@@ -3,9 +3,9 @@ import { Link, Routes } from "blitz"
 import { CardActionArea, CardContent, Card } from "@mui/material"
 import EllipsisText from "app/core/components/EllipsisText"
 import ThumbUpIcon from "@mui/icons-material/ThumbUp"
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark"
 import HelpIcon from "@mui/icons-material/Help"
 import Image from "next/image"
+import PersonIcon from "@mui/icons-material/Person"
 
 import { ProposalCardWrap } from "./ProposalCard.styles"
 
@@ -22,6 +22,7 @@ interface IProps {
   skills?: { name: string }[]
   isOwner?: boolean
   tierName: String
+  projectMembers?: number | null
 }
 
 export const ProposalCard = (props: IProps) => {
@@ -93,11 +94,19 @@ export const ProposalCard = (props: IProps) => {
                         </label>
                       </div>
                     </div>
-                    <div className="ProposalCard__status--like">
-                      <p>{props.votesCount} </p>
-                      <span>
-                        <ThumbUpIcon sx={{ color: "#AF2E33", fontSize: 15 }} />
-                      </span>
+                    <div>
+                      <div className="ProposalCard__status--like">
+                        <p>{props.votesCount} </p>
+                        <span>
+                          <ThumbUpIcon sx={{ color: "#AF2E33", fontSize: 15 }} />
+                        </span>
+                      </div>
+                      <div className="ProposalCard__status--members">
+                        <p>{props.projectMembers} </p>
+                        <span>
+                          <PersonIcon sx={{ color: "#000000", fontSize: 15 }} />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

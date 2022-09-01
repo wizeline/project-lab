@@ -68,7 +68,15 @@ export const IncompleteIcon = styled.span`
 export const ContributorPathReport = ({ project }: IProps) => {
   return (
     <>
-      <big>Contributors</big>
+      <big>
+        Contributors (
+        {
+          project.projectMembers.filter((member) => {
+            return member.active
+          }).length
+        }{" "}
+        active)
+      </big>
       <table width="100%" className="table-project-members">
         <thead>
           <tr>

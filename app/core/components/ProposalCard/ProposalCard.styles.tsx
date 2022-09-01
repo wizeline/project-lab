@@ -117,6 +117,18 @@ export const ProposalCardWrap = styled.div`
       margin-left: 3px;
     }
   }
+  .ProposalCard__status--members {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: #000000;
+    font-size: 14px;
+    margin-right: 10px;
+
+    & span {
+      margin-left: 3px;
+    }
+  }
   .ProposalCard__head__description--tier {
     font-weight: 700;
     font-size: 12px;
