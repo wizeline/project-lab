@@ -9,8 +9,7 @@ const Home = () => {
   useEffect(() => {
     router &&
       router.replace({
-        pathname: "/projects/search",
-        query: { status: "Idea in Progress" },
+        pathname: "/projects",
       })
   }, [router])
 
